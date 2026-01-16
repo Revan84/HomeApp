@@ -1,3 +1,12 @@
-enum DeviceType { plug, thermo, hygro, thermoHygro }
+enum DeviceType {
+  plug,
+  thermo,
+  hygro,
+  thermoHygro,
+}
 
-enum DeviceProtocol { http, mqtt, ble }
+enum DeviceProtocol {
+  http,
+  mqtt,
+  ble,
+}

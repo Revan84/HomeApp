@@ -2,7 +2,7 @@ class DeviceCapabilities {
   final bool onOff;
   final bool temperature;
   final bool humidity;
-  final bool power; // mesure conso
+  final bool power;
 
   const DeviceCapabilities({
     this.onOff = false,

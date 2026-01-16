@@ -2,18 +2,17 @@ import 'device_capabilities.dart';
 import 'enums.dart';
 
 class Device {
-  final String id; // UUID
+  final String id;
   final String name;
   final DeviceType type;
   final DeviceProtocol protocol;
 
-  /// HTTP: IP/host (ex: 192.168.1.50)
-  /// BLE:  MAC (ex: AA:BB:CC:DD:EE:FF)
-  /// MQTT: clientId / topic root (selon ton design)
+  /// HTTP → IP
+  /// BLE → MAC
+  /// MQTT → topic root / client id
   final String address;
 
   final String room;
-
   final DeviceCapabilities capabilities;
 
   final DateTime? lastSeen;
@@ -71,16 +70,16 @@ class Device {
     return Device(
       id: json['id'] as String,
       name: json['name'] as String,
-      type: DeviceType.values.byName(json['type'] as String),
-      protocol: DeviceProtocol.values.byName(json['protocol'] as String),
+      type: DeviceType.values.byName(json['type']),
+      protocol: DeviceProtocol.values.byName(json['protocol']),
       address: json['address'] as String,
-      room: (json['room'] as String?) ?? 'Unknown',
+      room: json['room'] as String,
       capabilities: DeviceCapabilities.fromJson(
-        (json['capabilities'] as Map).cast<String, dynamic>(),
+        Map<String, dynamic>.from(json['capabilities']),
       ),
       lastSeen: json['lastSeen'] == null
           ? null
-          : DateTime.parse(json['lastSeen'] as String),
+          : DateTime.parse(json['lastSeen']),
       isOnline: json['isOnline'] == true,
     );
   }
