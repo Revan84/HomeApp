@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   // Neutres
-  static const bg = Color(0xFF202020);        // 202020
-  static const surface = Color(0xFF292929);   // 292929
+  static const bg = Color.fromARGB(255, 29, 29, 29);
+  static const surface = Color.fromARGB(255, 37, 37, 37);
   static const stroke = Color(0xFF535353);    // 535353
   static const textPrimary = Color(0xFFF8F2F2); // F8F2F2
   static const textSecondary = Color(0xFF969696); // 969696

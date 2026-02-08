@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'core/i18n/app_strings.dart';
+import 'core/widgets/curved_bottom_bar.dart';
+import 'core/theme/app_colors.dart';
+
 import 'features/home/view/home_tab.dart';
 import 'features/data/view/data_tab.dart';
 import 'features/equipments/view/equipments_tab.dart';
@@ -16,6 +20,9 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   int _index = 0;
 
+  final PageController _pageController = PageController();
+  bool _isProgrammaticJump = false;
+
   final _tabs = const <Widget>[
     HomeTab(),
     DataTab(),
@@ -24,22 +31,63 @@ class _AppShellState extends State<AppShell> {
     ProfileTab(),
   ];
 
+  Future<void> _goTo(int i) async {
+    if (i == _index) return;
+
+    setState(() => _index = i);
+
+    _isProgrammaticJump = true;
+    try {
+      await _pageController.animateToPage(
+        i,
+        duration: const Duration(milliseconds: 280),
+        curve: Curves.easeOutCubic,
+      );
+    } finally {
+      _isProgrammaticJump = false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _index,
+      extendBody: true,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 48),
+        child: FloatingActionButton(
+          backgroundColor: AppColors.bg,
+          foregroundColor: AppColors.success,
+          elevation: 0,
+          onPressed: () {},
+          child: const Icon(Icons.add),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      body: PageView(
+        controller: _pageController,
+        physics: const BouncingScrollPhysics(),
+        onPageChanged: (i) {
+          if (_isProgrammaticJump) return;
+          setState(() => _index = i);
+        },
         children: _tabs,
       ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _index,
-        onDestinationSelected: (i) => setState(() => _index = i),
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.home_outlined), label: 'Home'),
-          NavigationDestination(icon: Icon(Icons.show_chart_outlined), label: 'Data'),
-          NavigationDestination(icon: Icon(Icons.devices_outlined), label: 'Equipments'),
-          NavigationDestination(icon: Icon(Icons.auto_awesome_outlined), label: 'Automation'),
-          NavigationDestination(icon: Icon(Icons.person_outline), label: 'Profile'),
+      bottomNavigationBar: CurvedBottomBar(
+        index: _index,
+        onTap: (i) => _goTo(i),
+        labels: const [
+          AppStrings.tabHome,
+          AppStrings.tabData,
+          AppStrings.tabEquipments,
+          AppStrings.tabAutomation,
+          AppStrings.tabProfile,
+        ],
+        icons: const [
+          Icons.home_rounded,
+          Icons.bar_chart_rounded,
+          Icons.cast_connected_rounded,
+          Icons.sync_rounded,
+          Icons.person_rounded,
         ],
       ),
     );
