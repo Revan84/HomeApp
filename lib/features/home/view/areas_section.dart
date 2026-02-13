@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:front_end/core/i18n/loc.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_colors.dart';
-import '../../../core/i18n/app_strings.dart';
 import '../../../core/widgets/section_header.dart';
 import '../../../core/widgets/area_card.dart';
 
@@ -32,6 +32,14 @@ class _AreasSectionState extends State<AreasSection> {
 
   bool _isPlug(Equipment e) => e.type == EquipmentType.shellyPlusPlugS;
 
+  String _dash(BuildContext context, String? v) =>
+      (v == null || v.isEmpty) ? context.l10n.valueUnknown : v;
+
+  String _onOffLabel(BuildContext context, bool? on) {
+    if (on == null) return context.l10n.valueUnknown;
+    return on ? context.l10n.valueOn : context.l10n.valueOff;
+  }
+
   @override
   Widget build(BuildContext context) {
     final liveCtl = context.watch<LivePollingController>();
@@ -39,20 +47,18 @@ class _AreasSectionState extends State<AreasSection> {
     final rooms = widget.rooms;
     final hasToggle = rooms.length > 2;
 
-    final visibleRooms = (!hasToggle || _expanded)
-        ? rooms
-        : rooms.take(2).toList();
+    final visibleRooms = (!hasToggle || _expanded) ? rooms : rooms.take(2).toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SectionHeader(title: AppStrings.areas),
+        SectionHeader(title: context.l10n.areas),
         const SizedBox(height: 10),
 
         if (rooms.isEmpty)
-          const Padding(
-            padding: EdgeInsets.only(top: 8),
-            child: Text("Aucune pièce pour le moment."),
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Text(context.l10n.noRoomsYet),
           )
         else ...[
           ...visibleRooms.map((r) {
@@ -66,9 +72,9 @@ class _AreasSectionState extends State<AreasSection> {
 
               final value = e.showPower
                   ? (st?.powerW == null
-                        ? '—'
-                        : '${st!.powerW!.toStringAsFixed(0)} W')
-                  : (on == true ? 'ON' : 'OFF');
+                      ? context.l10n.valueUnknown
+                      : '${st!.powerW!.toStringAsFixed(0)} W')
+                  : _onOffLabel(context, on);
 
               return AreaDeviceItem(
                 id: e.id,
@@ -81,7 +87,7 @@ class _AreasSectionState extends State<AreasSection> {
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: AreaCard(
-                title: r.name,
+                title: _dash(context, r.name),
                 devices: items,
                 onDeviceTap: (deviceId) => widget.onOpenEquipment(deviceId),
               ),
@@ -102,7 +108,9 @@ class _AreasSectionState extends State<AreasSection> {
                   ),
                 ),
                 onPressed: () => setState(() => _expanded = !_expanded),
-                child: Text(_expanded ? 'See less' : 'See all'),
+                child: Text(
+                  _expanded ? context.l10n.seeLess : context.l10n.seeAll,
+                ),
               ),
             ),
           ],

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:front_end/core/i18n/loc.dart';
 import 'package:provider/provider.dart';
 
-import '../../../core/i18n/app_strings.dart';
 import '../../../core/widgets/section_header.dart';
 import '../../../core/widgets/favorite_card.dart';
 import '../../../core/utils/time_label.dart';
@@ -96,9 +96,12 @@ class _HomeTabState extends State<HomeTab> {
   }
 
   String _roomName(String? roomId) => roomId == null
-      ? '—'
-      : (_rooms.where((r) => r.id == roomId).map((r) => r.name).firstOrNull ??
-            '—');
+      ? context.l10n.valueUnknown
+      : (_rooms
+              .where((r) => r.id == roomId)
+              .map((r) => r.name)
+              .firstOrNull ??
+          context.l10n.valueUnknown);
 
   Future<void> _openDetails(Equipment e) async {
     final changed = await Navigator.of(context).push<bool>(
@@ -141,7 +144,7 @@ class _HomeTabState extends State<HomeTab> {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(16, 14, 16, 100),
             children: [
-              SectionHeader(title: AppStrings.favorites),
+              SectionHeader(title: context.l10n.favorites),
               const SizedBox(height: 10),
 
               if (_loading)
@@ -150,9 +153,9 @@ class _HomeTabState extends State<HomeTab> {
                   child: Center(child: CircularProgressIndicator()),
                 )
               else if (favorites.isEmpty)
-                const SizedBox(
+                SizedBox(
                   height: 150,
-                  child: Center(child: Text("Aucun favori pour le moment")),
+                  child: Center(child: Text(context.l10n.noFavorites)),
                 )
               else
                 SizedBox(
@@ -168,9 +171,11 @@ class _HomeTabState extends State<HomeTab> {
 
                       final value = supported
                           ? (e.showPower
-                                ? '${(st?.powerW ?? 0).toStringAsFixed(0)} W'
-                                : (st?.output == true ? 'ON' : 'OFF'))
-                          : '—';
+                              ? '${(st?.powerW ?? 0).toStringAsFixed(0)} W'
+                              : (st?.output == true
+                                  ? context.l10n.valueOn
+                                  : context.l10n.valueOff))
+                          : context.l10n.valueUnknown;
 
                       return FavoriteCard(
                         value: value,
@@ -183,9 +188,8 @@ class _HomeTabState extends State<HomeTab> {
                         showPowerButton: supported,
                         powerLoading: st?.toggling ?? false,
                         powerEnabled: st?.online ?? false,
-                        onPowerPressed: supported
-                            ? () => _toggleFavoritePlug(e)
-                            : null,
+                        onPowerPressed:
+                            supported ? () => _toggleFavoritePlug(e) : null,
                         trend: st?.trendPower ?? 0,
                         updatedLabel: ageLabel(st?.lastUpdatedAt),
                         onOpenDetails: () => _openDetails(e),

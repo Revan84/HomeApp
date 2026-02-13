@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:front_end/core/i18n/loc.dart';
 import 'package:front_end/features/home/view/add_room_sheet.dart';
 
-import 'core/i18n/app_strings.dart';
 import 'core/widgets/curved_bottom_bar.dart';
 import 'core/theme/app_colors.dart';
 
@@ -77,14 +77,14 @@ class _AppShellState extends State<AppShell> {
     return showMenu<_FabAction>(
       context: context,
       position: position,
-      items: const [
+      items: [
         PopupMenuItem<_FabAction>(
           value: _FabAction.addEquipment,
           child: Row(
             children: [
               Icon(Icons.add),
               SizedBox(width: 10),
-              Text("Ajouter un équipement"),
+              Text(context.l10n.addEquipmentTitle),
             ],
           ),
         ),
@@ -109,14 +109,14 @@ class _AppShellState extends State<AppShell> {
     return showMenu<_FabAction>(
       context: context,
       position: position,
-      items: const [
+      items: [
         PopupMenuItem<_FabAction>(
           value: _FabAction.addRoom,
           child: Row(
             children: [
               Icon(Icons.meeting_room_outlined),
               SizedBox(width: 10),
-              Text("Ajouter une pièce"),
+              Text(context.l10n.addRoomTitle),
             ],
           ),
         ),
@@ -210,12 +210,12 @@ class _AppShellState extends State<AppShell> {
       bottomNavigationBar: CurvedBottomBar(
         index: _index,
         onTap: (i) => _goTo(i),
-        labels: const [
-          AppStrings.tabHome,
-          AppStrings.tabData,
-          AppStrings.tabEquipments,
-          AppStrings.tabAutomation,
-          AppStrings.tabProfile,
+        labels: [
+          context.l10n.tabHome,
+          context.l10n.tabData,
+          context.l10n.tabEquipments,
+          context.l10n.tabAutomation,
+          context.l10n.tabProfile,
         ],
         icons: const [
           Icons.home_rounded,

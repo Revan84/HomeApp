@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:front_end/core/i18n/loc.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/network/network_detector.dart';
@@ -8,6 +9,15 @@ import '../../live/controller/live_polling_controller.dart';
 import '../model/equipment.dart';
 import 'edit_equipment_sheet.dart';
 import '../../equipments/model/equipment_mappers.dart';
+
+enum NetStatus {
+  unknown,
+  online,
+  offline,
+  notOnWifi,
+  wrongWifi,
+  permissionRequired,
+}
 
 class EquipmentDetailsPage extends StatefulWidget {
   final String equipmentId;
@@ -29,7 +39,25 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
   bool _depsReady = false;
 
   NetworkSnapshot? _net;
-  String _status = '...';
+
+  NetStatus _netStatus = NetStatus.unknown;
+
+  String _netStatusLabel(BuildContext context, NetStatus s) {
+    switch (s) {
+      case NetStatus.online:
+        return context.l10n.netStatusOnline;
+      case NetStatus.offline:
+        return context.l10n.netStatusOffline;
+      case NetStatus.notOnWifi:
+        return context.l10n.netStatusNotOnWifi;
+      case NetStatus.wrongWifi:
+        return context.l10n.netStatusWrongWifi;
+      case NetStatus.permissionRequired:
+        return context.l10n.netWifiPermissionRequired;
+      case NetStatus.unknown:
+        return context.l10n.valueUnknown;
+    }
+  }
 
   Map<String, dynamic>? _deviceInfo;
 
@@ -43,6 +71,9 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
 
   Future<void> _loadAll() async {
     setState(() => _loading = true);
+    _deviceInfo = null;
+    _net = null;
+    _netStatus = NetStatus.unknown;
 
     final nav = Navigator.of(context);
 
@@ -69,41 +100,42 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
   }
 
   Future<void> _refreshNetworkAndStatus() async {
-    if (_eq == null) return;
+    final eq = _eq;
+    if (eq == null) return;
 
     final snap = await _detector.getSnapshot(requestPermissionIfNeeded: true);
 
-    // Si Wi-Fi mais pas la permission: on STOP et on affiche un message clair
+    // Wi-Fi mais permission non accordée -> STOP
     if (snap.isWifi && !snap.permissionGranted) {
       if (!mounted) return;
       setState(() {
         _net = snap;
-        _status = "Permission requise pour lire le Wi-Fi (SSID/IP)";
+        _netStatus = NetStatus.permissionRequired;
       });
       return;
     }
 
     final sameSubnet = _detector.isSameSubnet24(
-      deviceIp: _eq!.ip,
+      deviceIp: eq.ip,
       wifiIp: snap.wifiIP,
     );
-    final reachable = await _detector.isReachable(_eq!.ip);
+    final reachable = await _detector.isReachable(eq.ip);
 
-    String status;
+    final NetStatus status;
     if (reachable) {
-      status = "En ligne";
+      status = NetStatus.online;
     } else if (!snap.isWifi) {
-      status = "Pas en Wi-Fi (ou Wi-Fi non détectable)";
+      status = NetStatus.notOnWifi;
     } else if (!sameSubnet) {
-      status = "Mauvais Wi-Fi (réseau différent)";
+      status = NetStatus.wrongWifi;
     } else {
-      status = "Hors ligne";
+      status = NetStatus.offline;
     }
 
     if (!mounted) return;
     setState(() {
       _net = snap;
-      _status = status;
+      _netStatus = status;
     });
   }
 
@@ -116,10 +148,14 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
   Future<void> _refreshDeviceInfoWith(ShellyRpcClient rpc) async {
     if (_eq == null) return;
 
-    if (_status.startsWith("Mauvais") || _status.startsWith("Pas en Wi")) {
+    // Ne pas spammer si mauvais wifi / pas wifi
+    if (_netStatus == NetStatus.wrongWifi ||
+        _netStatus == NetStatus.notOnWifi ||
+        _netStatus == NetStatus.permissionRequired) {
       return;
     }
 
+    // Only Shelly types
     if (!(_eq!.type == EquipmentType.shellyPlusPlugS ||
         _eq!.type == EquipmentType.shellyPlugS)) {
       return;
@@ -162,16 +198,16 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
     final ok = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text("Supprimer l’équipement ?"),
-        content: Text("“${eq.name}” sera supprimé."),
+        title: Text(context.l10n.deleteEquipmentConfirmTitle),
+        content: Text(context.l10n.deleteEquipmentConfirmBody(eq.name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text("Annuler"),
+            child: Text(context.l10n.cancel),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text("Supprimer"),
+            child: Text(context.l10n.delete),
           ),
         ],
       ),
@@ -197,6 +233,13 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
     _depsReady = true;
   }
 
+  String _dash(String? v) => (v == null || v.isEmpty) ? '—' : v;
+
+  String _onOffLabel(bool? on) {
+    if (on == null) return context.l10n.valueUnknown;
+    return on ? context.l10n.valueOn : context.l10n.valueOff;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_loading || _eq == null) {
@@ -204,17 +247,18 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
     }
 
     final eq = _eq!;
-    final liveCtl = context.watch<LivePollingController>();
+    final liveCtlWatch = context.watch<LivePollingController>();
+    final st = liveCtlWatch.live[eq.id];
 
-    final st = liveCtl.live[eq.id];
-
-    final ssid = _net?.ssid ?? '—';
-    final phoneIp = _net?.wifiIP ?? '—';
+    final ssid = _dash(_net?.ssid);
+    final phoneIp = _dash(_net?.wifiIP);
 
     final on = st?.output;
     final powerW = st?.powerW;
     final energyWh = st?.energyWh;
     final rssi = st?.rssi;
+
+    final showWifiPermissionCta = _netStatus == NetStatus.permissionRequired;
 
     return PopScope(
       canPop: true,
@@ -230,17 +274,17 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
           ),
           actions: [
             IconButton(
-              tooltip: "Rafraîchir",
+              tooltip: context.l10n.refresh,
               onPressed: _onRefreshPressed,
               icon: const Icon(Icons.refresh),
             ),
             IconButton(
-              tooltip: "Modifier",
+              tooltip: context.l10n.edit,
               onPressed: _edit,
               icon: const Icon(Icons.edit),
             ),
             IconButton(
-              tooltip: "Supprimer",
+              tooltip: context.l10n.delete,
               onPressed: _delete,
               icon: const Icon(Icons.delete_outline),
             ),
@@ -250,16 +294,19 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
           padding: const EdgeInsets.all(16),
           children: [
             _InfoCard(
-              title: "Réseau",
+              title: context.l10n.detailsNetworkTitle,
               lines: [
-                "Wi-Fi: $ssid",
-                "IP téléphone: $phoneIp",
-                "Équipement: ${eq.ip}",
-                "Statut: $_status",
+                context.l10n.detailsWifiLine(ssid),
+                context.l10n.detailsPhoneIpLine(phoneIp),
+                context.l10n.detailsEquipmentIpLine(eq.ip),
+                context.l10n.detailsStatusLine(
+                  _netStatusLabel(context, _netStatus),
+                ),
               ],
             ),
             const SizedBox(height: 4),
-            if ((_net?.isWifi ?? false) && !(_net?.permissionGranted ?? true))
+
+            if (showWifiPermissionCta)
               Padding(
                 padding: const EdgeInsets.only(top: 12),
                 child: SizedBox(
@@ -271,33 +318,59 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
                       await _onRefreshPressed();
                     },
                     icon: const Icon(Icons.lock_open),
-                    label: const Text("Autoriser l'accès Wi-Fi"),
+                    label: Text(context.l10n.netGrantWifiAccess),
                   ),
                 ),
               ),
+
             const SizedBox(height: 12),
+
             if (_deviceInfo != null)
               _InfoCard(
-                title: "Device info",
+                title: context.l10n.detailsDeviceInfoTitle,
                 lines: [
-                  "Model: ${_deviceInfo!['model'] ?? '—'}",
-                  "Gen: ${_deviceInfo!['gen'] ?? '—'}",
-                  "FW: ${_deviceInfo!['ver'] ?? '—'}",
-                  "MAC: ${_deviceInfo!['mac'] ?? '—'}",
+                  context.l10n.detailsDeviceModelLine(
+                    '${_deviceInfo!['model'] ?? '—'}',
+                  ),
+                  context.l10n.detailsDeviceGenLine(
+                    '${_deviceInfo!['gen'] ?? '—'}',
+                  ),
+                  context.l10n.detailsDeviceFwLine(
+                    '${_deviceInfo!['ver'] ?? '—'}',
+                  ),
+                  context.l10n.detailsDeviceMacLine(
+                    '${_deviceInfo!['mac'] ?? '—'}',
+                  ),
                 ],
               ),
+
             const SizedBox(height: 12),
+
             _InfoCard(
-              title: "Données live",
+              title: context.l10n.detailsLiveDataTitle,
               lines: [
                 if (eq.showToggle)
-                  "On/Off: ${on == null ? '—' : (on == true ? 'ON' : 'OFF')}",
+                  context.l10n.detailsOnOffLine(_onOffLabel(on)),
                 if (eq.showPower)
-                  "Puissance: ${powerW == null ? '—' : '${powerW.toStringAsFixed(0)} W'}",
+                  context.l10n.detailsPowerLine(
+                    powerW == null
+                        ? context.l10n.valueUnknown
+                        : '${powerW.toStringAsFixed(0)} W',
+                  ),
                 if (eq.showEnergy)
-                  "Énergie: ${energyWh == null ? '—' : '${energyWh.toStringAsFixed(0)} Wh'}",
-                if (eq.showRssi) "RSSI: ${rssi == null ? '—' : '$rssi dBm'}",
-                "Dernière maj: ${st?.lastUpdatedAt?.toLocal().toString() ?? '—'}",
+                  context.l10n.detailsEnergyLine(
+                    energyWh == null
+                        ? context.l10n.valueUnknown
+                        : '${energyWh.toStringAsFixed(0)} Wh',
+                  ),
+                if (eq.showRssi)
+                  context.l10n.detailsRssiLine(
+                    rssi == null ? context.l10n.valueUnknown : '$rssi dBm',
+                  ),
+                context.l10n.detailsLastUpdatedLine(
+                  st?.lastUpdatedAt?.toLocal().toString() ??
+                      context.l10n.valueUnknown,
+                ),
               ],
             ),
           ],
@@ -308,7 +381,11 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
                     ? null
                     : () => _liveCtl.toggle(eq.toEndpoint()),
                 icon: const Icon(Icons.power),
-                label: Text(on == true ? "Éteindre" : "Allumer"),
+                label: Text(
+                  on == true
+                      ? context.l10n.actionTurnOff
+                      : context.l10n.actionTurnOn,
+                ),
               )
             : null,
       ),

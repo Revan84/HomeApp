@@ -1,0 +1,342 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for French (`fr`).
+class AppLocalizationsFr extends AppLocalizations {
+  AppLocalizationsFr([String locale = 'fr']) : super(locale);
+
+  @override
+  String get tabHome => 'Accueil';
+
+  @override
+  String get tabData => 'Statistiques';
+
+  @override
+  String get tabEquipments => 'Équipements';
+
+  @override
+  String get tabAutomation => 'Automations';
+
+  @override
+  String get tabProfile => 'Profil';
+
+  @override
+  String get add => 'Ajouter';
+
+  @override
+  String get save => 'Sauvegarder';
+
+  @override
+  String get cancel => 'Annuler';
+
+  @override
+  String get delete => 'Supprimer';
+
+  @override
+  String get edit => 'Modifier';
+
+  @override
+  String get refresh => 'Rafraîchir';
+
+  @override
+  String get favorites => 'Favoris';
+
+  @override
+  String get noFavorites => 'Aucun favori pour le moment';
+
+  @override
+  String get addEquipmentTitle => 'Ajouter un équipement';
+
+  @override
+  String get editEquipmentTitle => 'Modifier l\'équipement';
+
+  @override
+  String get ipLocalLabel => 'IP locale';
+
+  @override
+  String get ipLocalHint => 'ex: 192.168.1.37';
+
+  @override
+  String get nameLabel => 'Nom';
+
+  @override
+  String get roomLabel => 'Pièce';
+
+  @override
+  String get none => 'Aucune';
+
+  @override
+  String get showDataTitle => 'Données à afficher';
+
+  @override
+  String get showOnOff => 'On/Off';
+
+  @override
+  String get showPower => 'Puissance (W)';
+
+  @override
+  String get showEnergy => 'Énergie (Wh/kWh)';
+
+  @override
+  String get showRssi => 'RSSI / Wi-Fi';
+
+  @override
+  String get favorite => 'Favori';
+
+  @override
+  String get test => 'Tester';
+
+  @override
+  String get testOk => 'Test OK';
+
+  @override
+  String get deleteEquipmentConfirmTitle => 'Supprimer l\'équipement ?';
+
+  @override
+  String deleteEquipmentConfirmBody(Object name) {
+    return '“$name” sera supprimé.';
+  }
+
+  @override
+  String get close => 'Fermer';
+
+  @override
+  String get nameHintExample => 'ex: Prise bureau';
+
+  @override
+  String get channelLabel => 'Canal (channel)';
+
+  @override
+  String get channelHint => '0';
+
+  @override
+  String get typeLabel => 'Type';
+
+  @override
+  String get equipmentTypeShellyPlusPlugS => 'Prise connectée (Shelly Plus)';
+
+  @override
+  String get equipmentTypeShellyPlugS => 'Prise connectée (Shelly Plug S)';
+
+  @override
+  String get equipmentTypeOther => 'Autre (test)';
+
+  @override
+  String get validationIpRequired => 'IP requise';
+
+  @override
+  String get validationIpInvalidFormat => 'Format IP invalide';
+
+  @override
+  String get validationIpInvalid => 'IP invalide';
+
+  @override
+  String get validationNumberInvalid => 'Nombre invalide';
+
+  @override
+  String get validationChannelInvalid => 'Canal invalide';
+
+  @override
+  String testFailed(Object error) {
+    return 'Test KO: $error';
+  }
+
+  @override
+  String get defaultEquipmentName => 'Équipement';
+
+  @override
+  String get detectedInfoTitle => 'Infos détectées';
+
+  @override
+  String deviceInfoName(Object value) {
+    return 'Nom: $value';
+  }
+
+  @override
+  String deviceInfoModel(Object value) {
+    return 'Modèle: $value';
+  }
+
+  @override
+  String deviceInfoMac(Object value) {
+    return 'MAC: $value';
+  }
+
+  @override
+  String get detailsNetworkTitle => 'Réseau';
+
+  @override
+  String detailsWifiLine(Object value) {
+    return 'Wi-Fi: $value';
+  }
+
+  @override
+  String detailsPhoneIpLine(Object value) {
+    return 'IP téléphone: $value';
+  }
+
+  @override
+  String detailsEquipmentIpLine(Object value) {
+    return 'Équipement: $value';
+  }
+
+  @override
+  String detailsStatusLine(Object value) {
+    return 'Statut: $value';
+  }
+
+  @override
+  String get netGrantWifiAccess => 'Autoriser l\'accès Wi-Fi';
+
+  @override
+  String get netWifiPermissionRequired =>
+      'Permission requise pour lire le Wi-Fi (SSID/IP)';
+
+  @override
+  String get netWifiPermissionRequiredPrefix => 'Permission requise';
+
+  @override
+  String get netStatusOnline => 'En ligne';
+
+  @override
+  String get netStatusOffline => 'Hors ligne';
+
+  @override
+  String get netStatusNotOnWifi => 'Pas en Wi-Fi (ou Wi-Fi non détectable)';
+
+  @override
+  String get netStatusNotOnWifiPrefix => 'Pas en Wi-Fi';
+
+  @override
+  String get netStatusWrongWifi => 'Mauvais Wi-Fi (réseau différent)';
+
+  @override
+  String get netStatusWrongWifiPrefix => 'Mauvais Wi-Fi';
+
+  @override
+  String get detailsDeviceInfoTitle => 'Infos appareil';
+
+  @override
+  String detailsDeviceModelLine(Object value) {
+    return 'Modèle: $value';
+  }
+
+  @override
+  String detailsDeviceGenLine(Object value) {
+    return 'Génération: $value';
+  }
+
+  @override
+  String detailsDeviceFwLine(Object value) {
+    return 'Firmware: $value';
+  }
+
+  @override
+  String detailsDeviceMacLine(Object value) {
+    return 'MAC: $value';
+  }
+
+  @override
+  String get detailsLiveDataTitle => 'Données live';
+
+  @override
+  String detailsOnOffLine(Object value) {
+    return 'On/Off: $value';
+  }
+
+  @override
+  String detailsPowerLine(Object value) {
+    return 'Puissance: $value';
+  }
+
+  @override
+  String detailsEnergyLine(Object value) {
+    return 'Énergie: $value';
+  }
+
+  @override
+  String detailsRssiLine(Object value) {
+    return 'RSSI: $value';
+  }
+
+  @override
+  String detailsLastUpdatedLine(Object value) {
+    return 'Dernière maj: $value';
+  }
+
+  @override
+  String get valueUnknown => '—';
+
+  @override
+  String get valueOn => 'ON';
+
+  @override
+  String get valueOff => 'OFF';
+
+  @override
+  String get actionTurnOn => 'Allumer';
+
+  @override
+  String get actionTurnOff => 'Éteindre';
+
+  @override
+  String get areas => 'Pièces';
+
+  @override
+  String get noRoomsYet => 'Aucune pièce pour le moment.';
+
+  @override
+  String get seeAll => 'Voir tout';
+
+  @override
+  String get seeLess => 'Voir moins';
+
+  @override
+  String get addRoomTitle => 'Ajouter une pièce';
+
+  @override
+  String get roomNameLabel => 'Nom de la pièce';
+
+  @override
+  String get roomNameHint => 'ex: Salon';
+
+  @override
+  String get validationRoomNameRequired => 'Nom requis';
+
+  @override
+  String get noEquipments => 'Aucun équipement';
+
+  @override
+  String get profileAccountSecurity => 'Compte et sécurité';
+
+  @override
+  String get profileRemoteAccess =>
+      'Accès distant (reverse proxy, état connexion)';
+
+  @override
+  String get profileLanguage => 'Langue';
+
+  @override
+  String get profileAppearance => 'Apparence';
+
+  @override
+  String get profileBackupRestore => 'Sauvegarde / Restauration configuration';
+
+  @override
+  String get profileLogout => 'Déconnexion';
+
+  @override
+  String get valueSystemDefault => 'Langue du système';
+
+  @override
+  String get profileTitle => 'Profil';
+
+  @override
+  String get languageFrench => 'Français';
+
+  @override
+  String get languageEnglish => 'Anglais';
+}

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:front_end/core/i18n/loc.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/secondary_text.dart';
 
@@ -52,7 +53,7 @@ class AreaCard extends StatelessWidget {
           const SizedBox(height: 10),
 
           if (devices.isEmpty)
-            const SecondaryText("Aucun équipement")
+            SecondaryText(context.l10n.noEquipments)
           else
             SizedBox(
               height: 95, // hauteur fixe pour mini cards

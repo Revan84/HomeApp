@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:front_end/core/i18n/loc.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/repositories/equipment_repository.dart';
@@ -79,21 +80,40 @@ class _EditEquipmentSheetState extends State<EditEquipmentSheet> {
 
   String? _validateIp(String? v) {
     final s = (v ?? '').trim();
-    if (s.isEmpty) return "IP requise";
+    if (s.isEmpty) return context.l10n.validationIpRequired;
+
     final reg = RegExp(r'^(\d{1,3}\.){3}\d{1,3}$');
-    if (!reg.hasMatch(s)) return "Format IP invalide";
+    if (!reg.hasMatch(s)) return context.l10n.validationIpInvalidFormat;
+
     final parts = s.split('.').map(int.parse).toList();
-    if (parts.any((p) => p < 0 || p > 255)) return "IP invalide";
+    if (parts.any((p) => p < 0 || p > 255)) return context.l10n.validationIpInvalid;
+
     return null;
+  }
+
+  String? _validateChannel(String? v) {
+    final n = int.tryParse((v ?? '').trim());
+    if (n == null) return context.l10n.validationNumberInvalid;
+    if (n < 0 || n > 3) return context.l10n.validationChannelInvalid;
+    return null;
+  }
+
+  String _typeLabel(BuildContext context, EquipmentType t) {
+    switch (t) {
+      case EquipmentType.shellyPlusPlugS:
+        return context.l10n.equipmentTypeShellyPlusPlugS;
+      case EquipmentType.shellyPlugS:
+        return context.l10n.equipmentTypeShellyPlugS;
+      case EquipmentType.other:
+        return context.l10n.equipmentTypeOther;
+    }
   }
 
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
 
     final updated = widget.initial.copyWith(
-      name: _nameCtrl.text.trim().isEmpty
-          ? "Équipement"
-          : _nameCtrl.text.trim(),
+      name: _nameCtrl.text.trim().isEmpty ? context.l10n.defaultEquipmentName : _nameCtrl.text.trim(),
       ip: _ipCtrl.text.trim(),
       type: _type,
       roomId: _selectedRoomId,
@@ -116,10 +136,7 @@ class _EditEquipmentSheetState extends State<EditEquipmentSheet> {
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
     final roomIds = _rooms.map((r) => r.id).toSet();
-    final safeRoomId =
-        (_selectedRoomId != null && roomIds.contains(_selectedRoomId))
-        ? _selectedRoomId
-        : null;
+    final safeRoomId = (_selectedRoomId != null && roomIds.contains(_selectedRoomId)) ? _selectedRoomId : null;
 
     return Padding(
       padding: EdgeInsets.only(bottom: bottomInset),
@@ -133,10 +150,10 @@ class _EditEquipmentSheetState extends State<EditEquipmentSheet> {
               children: [
                 Row(
                   children: [
-                    const Expanded(
+                    Expanded(
                       child: Text(
-                        "Modifier l’équipement",
-                        style: TextStyle(
+                        context.l10n.editEquipmentTitle,
+                        style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
                         ),
@@ -145,70 +162,58 @@ class _EditEquipmentSheetState extends State<EditEquipmentSheet> {
                     IconButton(
                       onPressed: () => Navigator.pop(context, false),
                       icon: const Icon(Icons.close),
+                      tooltip: context.l10n.close,
                     ),
                   ],
                 ),
 
                 TextFormField(
                   controller: _nameCtrl,
-                  decoration: const InputDecoration(labelText: "Nom"),
+                  decoration: InputDecoration(labelText: context.l10n.nameLabel),
                 ),
                 const SizedBox(height: 10),
+
                 TextFormField(
                   controller: _ipCtrl,
-                  decoration: const InputDecoration(labelText: "IP"),
+                  decoration: InputDecoration(labelText: context.l10n.ipLocalLabel),
                   keyboardType: TextInputType.number,
                   validator: _validateIp,
                 ),
                 const SizedBox(height: 10),
+
                 TextFormField(
                   initialValue: _channel.toString(),
                   keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    labelText: "Canal (channel)",
-                    hintText: "0",
+                  decoration: InputDecoration(
+                    labelText: context.l10n.channelLabel,
+                    hintText: context.l10n.channelHint,
                   ),
-                  validator: (v) {
-                    final n = int.tryParse((v ?? '').trim());
-                    if (n == null) return "Nombre invalide";
-                    if (n < 0 || n > 3) return "Canal invalide";
-                    return null;
-                  },
-                  onChanged: (v) =>
-                      _channel = int.tryParse(v.trim()) ?? _channel,
+                  validator: _validateChannel,
+                  onChanged: (v) => _channel = int.tryParse(v.trim()) ?? _channel,
                 ),
                 const SizedBox(height: 10),
 
                 DropdownButtonFormField<EquipmentType>(
                   initialValue: _type,
-                  decoration: const InputDecoration(labelText: "Type"),
-                  items: const [
-                    DropdownMenuItem(
-                      value: EquipmentType.shellyPlusPlugS,
-                      child: Text("Prise connectée (Shelly Plus)"),
-                    ),
-                    DropdownMenuItem(
-                      value: EquipmentType.other,
-                      child: Text("Thermomètre (test)"),
-                    ),
-                    DropdownMenuItem(
-                      value: EquipmentType.other,
-                      child: Text("Hygromètre (test)"),
-                    ),
-                  ],
-                  onChanged: (v) =>
-                      setState(() => _type = v ?? EquipmentType.other),
+                  decoration: InputDecoration(labelText: context.l10n.typeLabel),
+                  items: EquipmentType.values.map((t) {
+                    return DropdownMenuItem(
+                      value: t,
+                      child: Text(_typeLabel(context, t)),
+                    );
+                  }).toList(),
+                  onChanged: (v) => setState(() => _type = v ?? EquipmentType.other),
                 ),
 
                 const SizedBox(height: 10),
 
                 DropdownButtonFormField<String?>(
                   initialValue: safeRoomId,
-                  decoration: const InputDecoration(labelText: "Pièce"),
+                  decoration: InputDecoration(labelText: context.l10n.roomLabel),
                   items: [
-                    const DropdownMenuItem<String?>(
+                    DropdownMenuItem<String?>(
                       value: null,
-                      child: Text("Aucune"),
+                      child: Text(context.l10n.none),
                     ),
                     ..._rooms.map(
                       (r) => DropdownMenuItem<String?>(
@@ -223,7 +228,7 @@ class _EditEquipmentSheetState extends State<EditEquipmentSheet> {
                 SwitchListTile(
                   value: _isFavorite,
                   onChanged: (v) => setState(() => _isFavorite = v),
-                  title: const Text("Favori"),
+                  title: Text(context.l10n.favorite),
                 ),
 
                 const SizedBox(height: 8),
@@ -231,22 +236,22 @@ class _EditEquipmentSheetState extends State<EditEquipmentSheet> {
                 SwitchListTile(
                   value: _showToggle,
                   onChanged: (v) => setState(() => _showToggle = v),
-                  title: const Text("On/Off"),
+                  title: Text(context.l10n.showOnOff),
                 ),
                 SwitchListTile(
                   value: _showPower,
                   onChanged: (v) => setState(() => _showPower = v),
-                  title: const Text("Puissance (W)"),
+                  title: Text(context.l10n.showPower),
                 ),
                 SwitchListTile(
                   value: _showEnergy,
                   onChanged: (v) => setState(() => _showEnergy = v),
-                  title: const Text("Énergie"),
+                  title: Text(context.l10n.showEnergy),
                 ),
                 SwitchListTile(
                   value: _showRssi,
                   onChanged: (v) => setState(() => _showRssi = v),
-                  title: const Text("RSSI"),
+                  title: Text(context.l10n.showRssi),
                 ),
 
                 const SizedBox(height: 12),
@@ -255,7 +260,7 @@ class _EditEquipmentSheetState extends State<EditEquipmentSheet> {
                   child: ElevatedButton.icon(
                     onPressed: _save,
                     icon: const Icon(Icons.save),
-                    label: const Text("Sauvegarder"),
+                    label: Text(context.l10n.save),
                   ),
                 ),
               ],

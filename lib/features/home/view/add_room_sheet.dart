@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:front_end/core/i18n/loc.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/repositories/room_repository.dart';
@@ -26,10 +27,13 @@ class _AddRoomSheetState extends State<AddRoomSheet> {
 
     setState(() => _saving = true);
 
-    await context.read<RoomRepository>().add(_ctrl.text);
+    final repo = context.read<RoomRepository>();
+    final nav = Navigator.of(context);
+
+    await repo.add(_ctrl.text);
 
     if (!mounted) return;
-    Navigator.of(context).pop(true);
+    nav.pop(true);
   }
 
   @override
@@ -48,32 +52,48 @@ class _AddRoomSheetState extends State<AddRoomSheet> {
               children: [
                 Row(
                   children: [
-                    const Expanded(
+                    Expanded(
                       child: Text(
-                        "Ajouter une pièce",
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                        context.l10n.addRoomTitle,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                     IconButton(
                       onPressed: () => Navigator.pop(context, false),
                       icon: const Icon(Icons.close),
+                      tooltip: context.l10n.close,
                     ),
                   ],
                 ),
+
                 TextFormField(
                   controller: _ctrl,
-                  decoration: const InputDecoration(labelText: "Nom de la pièce", hintText: "ex: Salon"),
-                  validator: (v) => (v == null || v.trim().isEmpty) ? "Nom requis" : null,
+                  decoration: InputDecoration(
+                    labelText: context.l10n.roomNameLabel,
+                    hintText: context.l10n.roomNameHint,
+                  ),
+                  validator: (v) => (v == null || v.trim().isEmpty)
+                      ? context.l10n.validationRoomNameRequired
+                      : null,
                 ),
+
                 const SizedBox(height: 12),
+
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
                     onPressed: _saving ? null : _save,
                     icon: _saving
-                        ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
                         : const Icon(Icons.save),
-                    label: const Text("Sauvegarder"),
+                    label: Text(context.l10n.save),
                   ),
                 ),
               ],

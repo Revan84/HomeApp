@@ -1,0 +1,449 @@
+{
+    "@@locale": "fr",
+    "tabHome": "Accueil",
+    "@tabHome": {
+        "description": "Libellé de l'onglet Accueil (barre de navigation)"
+    },
+    "tabData": "Statistiques",
+    "@tabData": {
+        "description": "Libellé de l'onglet Statistiques (barre de navigation)"
+    },
+    "tabEquipments": "Équipements",
+    "@tabEquipments": {
+        "description": "Libellé de l'onglet Équipements (barre de navigation)"
+    },
+    "tabAutomation": "Automations",
+    "@tabAutomation": {
+        "description": "Libellé de l'onglet Automations (barre de navigation)"
+    },
+    "tabProfile": "Profil",
+    "@tabProfile": {
+        "description": "Libellé de l'onglet Profil (barre de navigation)"
+    },
+    "add": "Ajouter",
+    "@add": {
+        "description": "Libellé générique d'action : ajouter"
+    },
+    "save": "Sauvegarder",
+    "@save": {
+        "description": "Libellé générique d'action : sauvegarder"
+    },
+    "cancel": "Annuler",
+    "@cancel": {
+        "description": "Libellé générique d'action : annuler"
+    },
+    "delete": "Supprimer",
+    "@delete": {
+        "description": "Libellé générique d'action : supprimer"
+    },
+    "edit": "Modifier",
+    "@edit": {
+        "description": "Libellé générique d'action : modifier"
+    },
+    "refresh": "Rafraîchir",
+    "@refresh": {
+        "description": "Libellé générique d'action : rafraîchir"
+    },
+    "favorites": "Favoris",
+    "@favorites": {
+        "description": "Titre de section : favoris"
+    },
+    "noFavorites": "Aucun favori pour le moment",
+    "@noFavorites": {
+        "description": "Message affiché quand la liste des favoris est vide"
+    },
+    "addEquipmentTitle": "Ajouter un équipement",
+    "@addEquipmentTitle": {
+        "description": "Titre de la bottom sheet d'ajout d'équipement"
+    },
+    "editEquipmentTitle": "Modifier l'équipement",
+    "@editEquipmentTitle": {
+        "description": "Titre de la bottom sheet de modification d'équipement"
+    },
+    "ipLocalLabel": "IP locale",
+    "@ipLocalLabel": {
+        "description": "Label du champ IP locale"
+    },
+    "ipLocalHint": "ex: 192.168.1.37",
+    "@ipLocalHint": {
+        "description": "Hint/exemple du champ IP locale"
+    },
+    "nameLabel": "Nom",
+    "@nameLabel": {
+        "description": "Label du champ Nom"
+    },
+    "roomLabel": "Pièce",
+    "@roomLabel": {
+        "description": "Label du champ de sélection de pièce"
+    },
+    "none": "Aucune",
+    "@none": {
+        "description": "Option générique : aucune"
+    },
+    "showDataTitle": "Données à afficher",
+    "@showDataTitle": {
+        "description": "Titre de section : choix des données affichées"
+    },
+    "showOnOff": "On/Off",
+    "@showOnOff": {
+        "description": "Option d'affichage : interrupteur On/Off"
+    },
+    "showPower": "Puissance (W)",
+    "@showPower": {
+        "description": "Option d'affichage : puissance en watts"
+    },
+    "showEnergy": "Énergie (Wh/kWh)",
+    "@showEnergy": {
+        "description": "Option d'affichage : énergie (Wh/kWh)"
+    },
+    "showRssi": "RSSI / Wi-Fi",
+    "@showRssi": {
+        "description": "Option d'affichage : RSSI / qualité Wi-Fi"
+    },
+    "favorite": "Favori",
+    "@favorite": {
+        "description": "Libellé du switch : marquer comme favori"
+    },
+    "test": "Tester",
+    "@test": {
+        "description": "Bouton : tester la connexion / détection"
+    },
+    "testOk": "Test OK",
+    "@testOk": {
+        "description": "Libellé du bouton quand le test est réussi"
+    },
+    "deleteEquipmentConfirmTitle": "Supprimer l'équipement ?",
+    "@deleteEquipmentConfirmTitle": {
+        "description": "Titre de la boîte de dialogue de confirmation de suppression"
+    },
+    "deleteEquipmentConfirmBody": "“{name}” sera supprimé.",
+    "@deleteEquipmentConfirmBody": {
+        "description": "Message de confirmation de suppression, avec le nom de l'équipement",
+        "placeholders": {
+            "name": {}
+        }
+    },
+    "close": "Fermer",
+    "@close": {
+        "description": "Tooltip/label : fermer"
+    },
+    "nameHintExample": "ex: Prise bureau",
+    "@nameHintExample": {
+        "description": "Hint/exemple du champ Nom"
+    },
+    "channelLabel": "Canal (channel)",
+    "@channelLabel": {
+        "description": "Label du champ canal (index de relais/sortie)"
+    },
+    "channelHint": "0",
+    "@channelHint": {
+        "description": "Hint/exemple du champ canal"
+    },
+    "typeLabel": "Type",
+    "@typeLabel": {
+        "description": "Label du champ Type d'équipement"
+    },
+    "equipmentTypeShellyPlusPlugS": "Prise connectée (Shelly Plus)",
+    "@equipmentTypeShellyPlusPlugS": {
+        "description": "Libellé de type : Shelly Plus Plug S"
+    },
+    "equipmentTypeShellyPlugS": "Prise connectée (Shelly Plug S)",
+    "@equipmentTypeShellyPlugS": {
+        "description": "Libellé de type : Shelly Plug S"
+    },
+    "equipmentTypeOther": "Autre (test)",
+    "@equipmentTypeOther": {
+        "description": "Libellé de type : autre équipement (test)"
+    },
+    "validationIpRequired": "IP requise",
+    "@validationIpRequired": {
+        "description": "Erreur de validation : IP manquante"
+    },
+    "validationIpInvalidFormat": "Format IP invalide",
+    "@validationIpInvalidFormat": {
+        "description": "Erreur de validation : format IP invalide"
+    },
+    "validationIpInvalid": "IP invalide",
+    "@validationIpInvalid": {
+        "description": "Erreur de validation : IP hors plage"
+    },
+    "validationNumberInvalid": "Nombre invalide",
+    "@validationNumberInvalid": {
+        "description": "Erreur de validation : valeur numérique invalide"
+    },
+    "validationChannelInvalid": "Canal invalide",
+    "@validationChannelInvalid": {
+        "description": "Erreur de validation : canal hors plage"
+    },
+    "testFailed": "Test KO: {error}",
+    "@testFailed": {
+        "description": "Message d'erreur quand le test de connexion échoue",
+        "placeholders": {
+            "error": {}
+        }
+    },
+    "defaultEquipmentName": "Équipement",
+    "@defaultEquipmentName": {
+        "description": "Nom par défaut si l'utilisateur ne saisit rien"
+    },
+    "detectedInfoTitle": "Infos détectées",
+    "@detectedInfoTitle": {
+        "description": "Titre du bloc d'informations détectées via RPC"
+    },
+    "deviceInfoName": "Nom: {value}",
+    "@deviceInfoName": {
+        "description": "Ligne info device : nom",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "deviceInfoModel": "Modèle: {value}",
+    "@deviceInfoModel": {
+        "description": "Ligne info device : modèle",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "deviceInfoMac": "MAC: {value}",
+    "@deviceInfoMac": {
+        "description": "Ligne info device : adresse MAC",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "detailsNetworkTitle": "Réseau",
+    "@detailsNetworkTitle": {
+        "description": "Titre de la carte réseau sur la page détails équipement"
+    },
+    "detailsWifiLine": "Wi-Fi: {value}",
+    "@detailsWifiLine": {
+        "description": "Ligne SSID Wi-Fi",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "detailsPhoneIpLine": "IP téléphone: {value}",
+    "@detailsPhoneIpLine": {
+        "description": "Ligne IP du téléphone",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "detailsEquipmentIpLine": "Équipement: {value}",
+    "@detailsEquipmentIpLine": {
+        "description": "Ligne IP de l'équipement",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "detailsStatusLine": "Statut: {value}",
+    "@detailsStatusLine": {
+        "description": "Ligne statut réseau",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "netGrantWifiAccess": "Autoriser l'accès Wi-Fi",
+    "@netGrantWifiAccess": {
+        "description": "Bouton demandant l'autorisation Wi-Fi/Localisation"
+    },
+    "netWifiPermissionRequired": "Permission requise pour lire le Wi-Fi (SSID/IP)",
+    "@netWifiPermissionRequired": {
+        "description": "Statut affiché quand la permission Wi-Fi/Localisation manque"
+    },
+    "netWifiPermissionRequiredPrefix": "Permission requise",
+    "@netWifiPermissionRequiredPrefix": {
+        "description": "Préfixe utilisé pour bloquer les appels RPC quand la permission manque"
+    },
+    "netStatusOnline": "En ligne",
+    "@netStatusOnline": {
+        "description": "Statut: équipement joignable"
+    },
+    "netStatusOffline": "Hors ligne",
+    "@netStatusOffline": {
+        "description": "Statut: équipement non joignable"
+    },
+    "netStatusNotOnWifi": "Pas en Wi-Fi (ou Wi-Fi non détectable)",
+    "@netStatusNotOnWifi": {
+        "description": "Statut: téléphone pas en Wi-Fi"
+    },
+    "netStatusNotOnWifiPrefix": "Pas en Wi-Fi",
+    "@netStatusNotOnWifiPrefix": {
+        "description": "Préfixe utilisé pour bloquer les appels RPC quand pas en Wi-Fi"
+    },
+    "netStatusWrongWifi": "Mauvais Wi-Fi (réseau différent)",
+    "@netStatusWrongWifi": {
+        "description": "Statut: téléphone sur un autre réseau"
+    },
+    "netStatusWrongWifiPrefix": "Mauvais Wi-Fi",
+    "@netStatusWrongWifiPrefix": {
+        "description": "Préfixe utilisé pour bloquer les appels RPC quand mauvais Wi-Fi"
+    },
+    "detailsDeviceInfoTitle": "Infos appareil",
+    "@detailsDeviceInfoTitle": {
+        "description": "Titre de la carte device info"
+    },
+    "detailsDeviceModelLine": "Modèle: {value}",
+    "@detailsDeviceModelLine": {
+        "description": "Ligne modèle",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "detailsDeviceGenLine": "Génération: {value}",
+    "@detailsDeviceGenLine": {
+        "description": "Ligne génération",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "detailsDeviceFwLine": "Firmware: {value}",
+    "@detailsDeviceFwLine": {
+        "description": "Ligne version firmware",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "detailsDeviceMacLine": "MAC: {value}",
+    "@detailsDeviceMacLine": {
+        "description": "Ligne MAC",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "detailsLiveDataTitle": "Données live",
+    "@detailsLiveDataTitle": {
+        "description": "Titre de la carte données live"
+    },
+    "detailsOnOffLine": "On/Off: {value}",
+    "@detailsOnOffLine": {
+        "description": "Ligne On/Off",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "detailsPowerLine": "Puissance: {value}",
+    "@detailsPowerLine": {
+        "description": "Ligne puissance",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "detailsEnergyLine": "Énergie: {value}",
+    "@detailsEnergyLine": {
+        "description": "Ligne énergie",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "detailsRssiLine": "RSSI: {value}",
+    "@detailsRssiLine": {
+        "description": "Ligne RSSI",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "detailsLastUpdatedLine": "Dernière maj: {value}",
+    "@detailsLastUpdatedLine": {
+        "description": "Ligne dernière mise à jour",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "valueUnknown": "—",
+    "@valueUnknown": {
+        "description": "Valeur inconnue / non disponible"
+    },
+    "valueOn": "ON",
+    "@valueOn": {
+        "description": "État on (interrupteur)"
+    },
+    "valueOff": "OFF",
+    "@valueOff": {
+        "description": "État off (interrupteur)"
+    },
+    "actionTurnOn": "Allumer",
+    "@actionTurnOn": {
+        "description": "Action: allumer l'équipement"
+    },
+    "actionTurnOff": "Éteindre",
+    "@actionTurnOff": {
+        "description": "Action: éteindre l'équipement"
+    },
+    "areas": "Pièces",
+    "@areas": {
+        "description": "Titre de la section affichant les pièces de la maison"
+    },
+    "noRoomsYet": "Aucune pièce pour le moment.",
+    "@noRoomsYet": {
+        "description": "Message affiché lorsqu'il n'y a encore aucune pièce enregistrée"
+    },
+    "seeAll": "Voir tout",
+    "@seeAll": {
+        "description": "Bouton pour afficher toutes les pièces lorsque la liste est réduite"
+    },
+    "seeLess": "Voir moins",
+    "@seeLess": {
+        "description": "Bouton pour réduire la liste des pièces affichées"
+    },
+    "addRoomTitle": "Ajouter une pièce",
+    "@addRoomTitle": {
+        "description": "Titre de la feuille modale permettant d'ajouter une pièce"
+    },
+    "roomNameLabel": "Nom de la pièce",
+    "@roomNameLabel": {
+        "description": "Label du champ de saisie du nom de la pièce"
+    },
+    "roomNameHint": "ex: Salon",
+    "@roomNameHint": {
+        "description": "Exemple affiché dans le champ de nom de la pièce"
+    },
+    "validationRoomNameRequired": "Nom requis",
+    "@validationRoomNameRequired": {
+        "description": "Message d'erreur affiché lorsque le nom de la pièce est vide"
+    },
+    "noEquipments": "Aucun équipement",
+    "@noEquipments": {
+        "description": "Message affiché lorsqu'une pièce ne contient aucun équipement"
+    },
+    "profileAccountSecurity": "Compte et sécurité",
+    "@profileAccountSecurity": {
+        "description": "Entrée du menu profil pour gérer le compte et la sécurité."
+    },
+    "profileRemoteAccess": "Accès distant (reverse proxy, état connexion)",
+    "@profileRemoteAccess": {
+        "description": "Entrée du menu profil pour la configuration de l'accès distant."
+    },
+    "profileLanguage": "Langue",
+    "@profileLanguage": {
+        "description": "Entrée du menu profil pour changer la langue de l'application."
+    },
+    "profileAppearance": "Apparence",
+    "@profileAppearance": {
+        "description": "Entrée du menu profil pour personnaliser le thème et l'affichage."
+    },
+    "profileBackupRestore": "Sauvegarde / Restauration configuration",
+    "@profileBackupRestore": {
+        "description": "Entrée du menu profil pour sauvegarder ou restaurer la configuration."
+    },
+    "profileLogout": "Déconnexion",
+    "@profileLogout": {
+        "description": "Bouton permettant de se déconnecter."
+    },
+    "valueSystemDefault": "Langue du système",
+    "@valueSystemDefault": {
+        "description": "Option de langue utilisant la langue du système du téléphone."
+    },
+    "profileTitle": "Profil",
+    "@profileTitle": {
+        "description": "Titre de l'onglet Profil."
+    },
+    "languageFrench": "Français",
+    "@languageFrench": {
+        "description": "Libellé de langue: français."
+    },
+    "languageEnglish": "Anglais",
+    "@languageEnglish": {
+        "description": "Libellé de langue: anglais."
+    }
+}

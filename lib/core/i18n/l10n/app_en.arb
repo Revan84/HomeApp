@@ -1,0 +1,449 @@
+{
+    "@@locale": "en",
+    "tabHome": "Home",
+    "@tabHome": {
+        "description": "Bottom navigation label: Home tab"
+    },
+    "tabData": "Statistics",
+    "@tabData": {
+        "description": "Bottom navigation label: Statistics tab"
+    },
+    "tabEquipments": "Devices",
+    "@tabEquipments": {
+        "description": "Bottom navigation label: Devices/Equipments tab"
+    },
+    "tabAutomation": "Automations",
+    "@tabAutomation": {
+        "description": "Bottom navigation label: Automations tab"
+    },
+    "tabProfile": "Profile",
+    "@tabProfile": {
+        "description": "Bottom navigation label: Profile tab"
+    },
+    "add": "Add",
+    "@add": {
+        "description": "Generic action label: add"
+    },
+    "save": "Save",
+    "@save": {
+        "description": "Generic action label: save"
+    },
+    "cancel": "Cancel",
+    "@cancel": {
+        "description": "Generic action label: cancel"
+    },
+    "delete": "Delete",
+    "@delete": {
+        "description": "Generic action label: delete"
+    },
+    "edit": "Edit",
+    "@edit": {
+        "description": "Generic action label: edit"
+    },
+    "refresh": "Refresh",
+    "@refresh": {
+        "description": "Generic action label: refresh"
+    },
+    "favorites": "Favorites",
+    "@favorites": {
+        "description": "Section title: favorites"
+    },
+    "noFavorites": "No favorites yet",
+    "@noFavorites": {
+        "description": "Empty state message when favorites list is empty"
+    },
+    "addEquipmentTitle": "Add a device",
+    "@addEquipmentTitle": {
+        "description": "Title of the add equipment bottom sheet"
+    },
+    "editEquipmentTitle": "Edit device",
+    "@editEquipmentTitle": {
+        "description": "Title of the edit equipment bottom sheet"
+    },
+    "ipLocalLabel": "Local IP",
+    "@ipLocalLabel": {
+        "description": "Label for the local IP field"
+    },
+    "ipLocalHint": "e.g. 192.168.1.37",
+    "@ipLocalHint": {
+        "description": "Hint/example for the local IP field"
+    },
+    "nameLabel": "Name",
+    "@nameLabel": {
+        "description": "Label for the name field"
+    },
+    "roomLabel": "Room",
+    "@roomLabel": {
+        "description": "Label for the room selector"
+    },
+    "none": "None",
+    "@none": {
+        "description": "Generic option: none"
+    },
+    "showDataTitle": "Displayed data",
+    "@showDataTitle": {
+        "description": "Section title for displayed data toggles"
+    },
+    "showOnOff": "On/Off",
+    "@showOnOff": {
+        "description": "Displayed data option: On/Off toggle"
+    },
+    "showPower": "Power (W)",
+    "@showPower": {
+        "description": "Displayed data option: power in watts"
+    },
+    "showEnergy": "Energy (Wh/kWh)",
+    "@showEnergy": {
+        "description": "Displayed data option: energy (Wh/kWh)"
+    },
+    "showRssi": "RSSI / Wi-Fi",
+    "@showRssi": {
+        "description": "Displayed data option: RSSI / Wi-Fi quality"
+    },
+    "favorite": "Favorite",
+    "@favorite": {
+        "description": "Switch label: mark as favorite"
+    },
+    "test": "Test",
+    "@test": {
+        "description": "Button label: test connection / detection"
+    },
+    "testOk": "Test OK",
+    "@testOk": {
+        "description": "Button label when test succeeded"
+    },
+    "deleteEquipmentConfirmTitle": "Delete device?",
+    "@deleteEquipmentConfirmTitle": {
+        "description": "Delete confirmation dialog title"
+    },
+    "deleteEquipmentConfirmBody": "“{name}” will be deleted.",
+    "@deleteEquipmentConfirmBody": {
+        "description": "Delete confirmation dialog body, includes the device name",
+        "placeholders": {
+            "name": {}
+        }
+    },
+    "close": "Close",
+    "@close": {
+        "description": "Tooltip/label: close"
+    },
+    "nameHintExample": "e.g. Desk plug",
+    "@nameHintExample": {
+        "description": "Hint/example for the name field"
+    },
+    "channelLabel": "Channel",
+    "@channelLabel": {
+        "description": "Label for the channel field (relay/output index)"
+    },
+    "channelHint": "0",
+    "@channelHint": {
+        "description": "Hint/example for the channel field"
+    },
+    "typeLabel": "Type",
+    "@typeLabel": {
+        "description": "Label for equipment type field"
+    },
+    "equipmentTypeShellyPlusPlugS": "Smart plug (Shelly Plus)",
+    "@equipmentTypeShellyPlusPlugS": {
+        "description": "Equipment type label: Shelly Plus Plug S"
+    },
+    "equipmentTypeShellyPlugS": "Smart plug (Shelly Plug S)",
+    "@equipmentTypeShellyPlugS": {
+        "description": "Equipment type label: Shelly Plug S"
+    },
+    "equipmentTypeOther": "Other (test)",
+    "@equipmentTypeOther": {
+        "description": "Equipment type label: other/test device"
+    },
+    "validationIpRequired": "IP required",
+    "@validationIpRequired": {
+        "description": "Validation error: IP is required"
+    },
+    "validationIpInvalidFormat": "Invalid IP format",
+    "@validationIpInvalidFormat": {
+        "description": "Validation error: invalid IP format"
+    },
+    "validationIpInvalid": "Invalid IP",
+    "@validationIpInvalid": {
+        "description": "Validation error: IP out of range"
+    },
+    "validationNumberInvalid": "Invalid number",
+    "@validationNumberInvalid": {
+        "description": "Validation error: invalid numeric value"
+    },
+    "validationChannelInvalid": "Invalid channel",
+    "@validationChannelInvalid": {
+        "description": "Validation error: channel out of range"
+    },
+    "testFailed": "Test failed: {error}",
+    "@testFailed": {
+        "description": "Error message when connection test fails",
+        "placeholders": {
+            "error": {}
+        }
+    },
+    "defaultEquipmentName": "Device",
+    "@defaultEquipmentName": {
+        "description": "Default equipment name when user leaves it empty"
+    },
+    "detectedInfoTitle": "Detected info",
+    "@detectedInfoTitle": {
+        "description": "Title for the detected device info block"
+    },
+    "deviceInfoName": "Name: {value}",
+    "@deviceInfoName": {
+        "description": "Device info line: name",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "deviceInfoModel": "Model: {value}",
+    "@deviceInfoModel": {
+        "description": "Device info line: model",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "deviceInfoMac": "MAC: {value}",
+    "@deviceInfoMac": {
+        "description": "Device info line: MAC address",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "detailsNetworkTitle": "Network",
+    "@detailsNetworkTitle": {
+        "description": "Network card title on equipment details page"
+    },
+    "detailsWifiLine": "Wi-Fi: {value}",
+    "@detailsWifiLine": {
+        "description": "Wi-Fi SSID line",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "detailsPhoneIpLine": "Phone IP: {value}",
+    "@detailsPhoneIpLine": {
+        "description": "Phone IP address line",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "detailsEquipmentIpLine": "Device: {value}",
+    "@detailsEquipmentIpLine": {
+        "description": "Device IP address line",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "detailsStatusLine": "Status: {value}",
+    "@detailsStatusLine": {
+        "description": "Network status line",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "netGrantWifiAccess": "Allow Wi-Fi access",
+    "@netGrantWifiAccess": {
+        "description": "Button to request Wi-Fi/Location permission"
+    },
+    "netWifiPermissionRequired": "Permission required to read Wi-Fi (SSID/IP)",
+    "@netWifiPermissionRequired": {
+        "description": "Status shown when Wi-Fi/Location permission is missing"
+    },
+    "netWifiPermissionRequiredPrefix": "Permission required",
+    "@netWifiPermissionRequiredPrefix": {
+        "description": "Prefix used to block RPC calls when permission is missing"
+    },
+    "netStatusOnline": "Online",
+    "@netStatusOnline": {
+        "description": "Status: device reachable"
+    },
+    "netStatusOffline": "Offline",
+    "@netStatusOffline": {
+        "description": "Status: device not reachable"
+    },
+    "netStatusNotOnWifi": "Not on Wi-Fi (or Wi-Fi not detectable)",
+    "@netStatusNotOnWifi": {
+        "description": "Status: phone not on Wi-Fi"
+    },
+    "netStatusNotOnWifiPrefix": "Not on Wi-Fi",
+    "@netStatusNotOnWifiPrefix": {
+        "description": "Prefix used to block RPC calls when not on Wi-Fi"
+    },
+    "netStatusWrongWifi": "Wrong Wi-Fi (different network)",
+    "@netStatusWrongWifi": {
+        "description": "Status: phone is on a different network"
+    },
+    "netStatusWrongWifiPrefix": "Wrong Wi-Fi",
+    "@netStatusWrongWifiPrefix": {
+        "description": "Prefix used to block RPC calls when wrong Wi-Fi"
+    },
+    "detailsDeviceInfoTitle": "Device info",
+    "@detailsDeviceInfoTitle": {
+        "description": "Device info card title"
+    },
+    "detailsDeviceModelLine": "Model: {value}",
+    "@detailsDeviceModelLine": {
+        "description": "Model line",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "detailsDeviceGenLine": "Gen: {value}",
+    "@detailsDeviceGenLine": {
+        "description": "Generation line",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "detailsDeviceFwLine": "FW: {value}",
+    "@detailsDeviceFwLine": {
+        "description": "Firmware version line",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "detailsDeviceMacLine": "MAC: {value}",
+    "@detailsDeviceMacLine": {
+        "description": "MAC address line",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "detailsLiveDataTitle": "Live data",
+    "@detailsLiveDataTitle": {
+        "description": "Live data card title"
+    },
+    "detailsOnOffLine": "On/Off: {value}",
+    "@detailsOnOffLine": {
+        "description": "On/Off line",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "detailsPowerLine": "Power: {value}",
+    "@detailsPowerLine": {
+        "description": "Power line",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "detailsEnergyLine": "Energy: {value}",
+    "@detailsEnergyLine": {
+        "description": "Energy line",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "detailsRssiLine": "RSSI: {value}",
+    "@detailsRssiLine": {
+        "description": "RSSI line",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "detailsLastUpdatedLine": "Last update: {value}",
+    "@detailsLastUpdatedLine": {
+        "description": "Last updated line",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "valueUnknown": "—",
+    "@valueUnknown": {
+        "description": "Unknown / not available value"
+    },
+    "valueOn": "ON",
+    "@valueOn": {
+        "description": "On state"
+    },
+    "valueOff": "OFF",
+    "@valueOff": {
+        "description": "Off state"
+    },
+    "actionTurnOn": "Turn on",
+    "@actionTurnOn": {
+        "description": "Action: turn device on"
+    },
+    "actionTurnOff": "Turn off",
+    "@actionTurnOff": {
+        "description": "Action: turn device off"
+    },
+    "areas": "Rooms",
+    "@areas": {
+        "description": "Title of the section displaying home rooms"
+    },
+    "noRoomsYet": "No rooms yet.",
+    "@noRoomsYet": {
+        "description": "Message displayed when there are no rooms saved yet"
+    },
+    "seeAll": "See all",
+    "@seeAll": {
+        "description": "Button to expand and show all rooms when list is collapsed"
+    },
+    "seeLess": "See less",
+    "@seeLess": {
+        "description": "Button to collapse the list of displayed rooms"
+    },
+    "addRoomTitle": "Add a room",
+    "@addRoomTitle": {
+        "description": "Title of the modal sheet used to add a new room"
+    },
+    "roomNameLabel": "Room name",
+    "@roomNameLabel": {
+        "description": "Label for the room name input field"
+    },
+    "roomNameHint": "e.g. Living room",
+    "@roomNameHint": {
+        "description": "Example placeholder for the room name field"
+    },
+    "validationRoomNameRequired": "Name required",
+    "@validationRoomNameRequired": {
+        "description": "Error message shown when the room name is empty"
+    },
+    "noEquipments": "No devices",
+    "@noEquipments": {
+        "description": "Message shown when a room has no devices"
+    },
+    "profileAccountSecurity": "Account & Security",
+    "@profileAccountSecurity": {
+        "description": "Profile menu item to manage account and security."
+    },
+    "profileRemoteAccess": "Remote access (reverse proxy, connection status)",
+    "@profileRemoteAccess": {
+        "description": "Profile menu item for remote access configuration."
+    },
+    "profileLanguage": "Language",
+    "@profileLanguage": {
+        "description": "Profile menu item to change the app language."
+    },
+    "profileAppearance": "Appearance",
+    "@profileAppearance": {
+        "description": "Profile menu item to customize theme and UI appearance."
+    },
+    "profileBackupRestore": "Backup / Restore configuration",
+    "@profileBackupRestore": {
+        "description": "Profile menu item to backup or restore configuration."
+    },
+    "profileLogout": "Logout",
+    "@profileLogout": {
+        "description": "Button used to sign out."
+    },
+    "valueSystemDefault": "System default",
+    "@valueSystemDefault": {
+        "description": "Language option that follows the phone system language."
+    },
+    "profileTitle": "Profile",
+    "@profileTitle": {
+        "description": "Title of the Profile tab."
+    },
+    "languageFrench": "French",
+    "@languageFrench": {
+        "description": "Language label: French."
+    },
+    "languageEnglish": "English",
+    "@languageEnglish": {
+        "description": "Language label: English."
+    }
+}
