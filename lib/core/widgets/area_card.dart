@@ -6,9 +6,15 @@ class AreaCard extends StatelessWidget {
   const AreaCard({
     super.key,
     required this.title,
+    required this.devices,
+    this.onSettings,
+    this.onDeviceTap,
   });
 
   final String title;
+  final List<AreaDeviceItem> devices;
+  final VoidCallback? onSettings;
+  final void Function(String deviceId)? onDeviceTap;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +23,7 @@ class AreaCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.stroke.withOpacity(0.35)),
+        border: Border.all(color: AppColors.stroke.withValues(alpha: 0.35)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -27,56 +33,135 @@ class AreaCard extends StatelessWidget {
               Text(
                 title,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: AppColors.textPrimary,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               const Spacer(),
-              Icon(Icons.settings, color: AppColors.textSecondary, size: 18),
+              if (onSettings != null)
+                IconButton(
+                  onPressed: onSettings,
+                  icon: Icon(
+                    Icons.more_horiz,
+                    color: AppColors.textSecondary,
+                    size: 20,
+                  ),
+                ),
             ],
           ),
           const SizedBox(height: 10),
-          Row(
-            children: const [
-              _MiniDeviceCard(),
-              SizedBox(width: 10),
-              _MiniDeviceCard(),
-              SizedBox(width: 10),
-              _MiniDeviceCard(),
-            ],
-          ),
+
+          if (devices.isEmpty)
+            const SecondaryText("Aucun équipement")
+          else
+            SizedBox(
+              height: 95, // hauteur fixe pour mini cards
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                itemCount: devices.length,
+                separatorBuilder: (_, _) => const SizedBox(width: 12),
+                itemBuilder: (_, i) {
+                  final d = devices[i];
+
+                  return _MiniDeviceCard(
+                    item: d,
+                    onTap: onDeviceTap == null
+                        ? null
+                        : () => onDeviceTap!(d.id),
+                  );
+                },
+              ),
+            ),
         ],
       ),
     );
   }
 }
 
+class AreaDeviceItem {
+  final String id;
+  final String value;
+  final String label;
+  final bool? isOn;
+  final int trend;
+  final String updatedLabel;
+
+  AreaDeviceItem({
+    required this.id,
+    required this.value,
+    required this.label,
+    required this.isOn,
+    this.trend = 0,
+    this.updatedLabel = '',
+  });
+}
+
 class _MiniDeviceCard extends StatelessWidget {
-  const _MiniDeviceCard();
+  const _MiniDeviceCard({required this.item, this.onTap});
+
+  final AreaDeviceItem item;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    return InkWell(
+      borderRadius: BorderRadius.circular(16),
+      onTap: onTap,
       child: Container(
-        height: 70,
-        padding: const EdgeInsets.all(10),
+        width: 110, // largeur fixe comme favoris
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: AppColors.bg,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.stroke.withOpacity(0.25)),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.stroke.withValues(alpha: 0.25)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            Text(
-              '21 °C',
-              style: TextStyle(
-                color: AppColors.textPrimary,
-                fontWeight: FontWeight.w600,
-              ),
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    item.value,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(width: 6),
+
+                // pastille ON/OFF
+                Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: item.isOn == null
+                        ? Colors.grey
+                        : (item.isOn == true ? Colors.green : Colors.red),
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 2),
-            SecondaryText('Thermomètre'),
+
+            const SizedBox(height: 4),
+
+            SecondaryText(item.label),
+            if (item.updatedLabel.isNotEmpty) ...[
+              const SizedBox(height: 2),
+              Text(
+                item.updatedLabel,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: AppColors.textSecondary,
+                  fontSize: 10,
+                ),
+              ),
+            ],
           ],
         ),
       ),

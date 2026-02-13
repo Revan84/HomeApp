@@ -9,6 +9,6 @@ class AppColors {
   static const textSecondary = Color(0xFF969696); // 969696
 
   // Accents
-  static const success = Color(0xFF48D965);   // 48D965
+  static const success = Color.fromARGB(255, 7, 133, 32);   // 48D965
   static const danger = Color(0xFFD76F5D);    // D76F5D
 }
