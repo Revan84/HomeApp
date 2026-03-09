@@ -143,7 +143,7 @@
     "@typeLabel": {
         "description": "Label for equipment type field"
     },
-    "equipmentTypeShellyPlusPlugS": "Smart plug (Shelly Plus)",
+    "equipmentTypeShellyPlusPlugS": "Smart plug",
     "@equipmentTypeShellyPlusPlugS": {
         "description": "Equipment type label: Shelly Plus Plug S"
     },
@@ -445,5 +445,223 @@
     "languageEnglish": "English",
     "@languageEnglish": {
         "description": "Language label: English."
+    },
+    "detailsConnectionLabel": "Connection",
+    "@detailsConnectionLabel": {
+        "description": "Label for the connection status row in favorite details."
+    },
+    "detailsConnectedWifi": "Connected (Wi-Fi)",
+    "@detailsConnectedWifi": {
+        "description": "Connection status label when device is connected over Wi-Fi."
+    },
+    "detailsChartPlaceholder": "Chart (placeholder)",
+    "@detailsChartPlaceholder": {
+        "description": "Temporary placeholder text displayed where the chart will be."
+    },
+    "detailsUpdatedAt": "Updated: {value}",
+    "@detailsUpdatedAt": {
+        "description": "Last update label with a date/time string.",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "powerWatts": "{value} W",
+    "@powerWatts": {
+        "description": "Power label in watts.",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "valueYes": "Yes",
+    "@valueYes": {
+        "description": "Generic yes value."
+    },
+    "valueNo": "No",
+    "@valueNo": {
+        "description": "Generic no value."
+    },
+    "detailsKeyValueLine": "{key}: {value}",
+    "@detailsKeyValueLine": {
+        "description": "Generic 'key: value' rendering in details info rows.",
+        "placeholders": {
+            "key": {},
+            "value": {}
+        }
+    },
+    "energyWh": "{value} Wh",
+    "@energyWh": {
+        "description": "Energy display in Wh.",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "detailsHistoryWindow2h": "Last 2 hours",
+    "@detailsHistoryWindow2h": {
+        "description": "History window label (chart) on the details page."
+    },
+    "detailsHistoryWindow24h": "Last 24 hours",
+    "@detailsHistoryWindow24h": {
+        "description": "History window label (chart) on the details page."
+    },
+    "detailsHistoryWindow7d": "Last 7 days",
+    "@detailsHistoryWindow7d": {
+        "description": "History window label (chart) on the details page."
+    },
+    "detailsUpdatedAgo": "Updated {ago} ago",
+    "@detailsUpdatedAgo": {
+        "description": "Shows how long ago the device was last updated (e.g. 3 min).",
+        "placeholders": {
+            "ago": {}
+        }
+    },
+    "detailsUpdatedJustNow": "Updated just now",
+    "@detailsUpdatedJustNow": {
+        "description": "Shown when the last update is very recent."
+    },
+    "detailsTrendUp": "Rising",
+    "@detailsTrendUp": {
+        "description": "Trend label when power is going up (accessibility)."
+    },
+    "detailsTrendDown": "Falling",
+    "@detailsTrendDown": {
+        "description": "Trend label when power is going down (accessibility)."
+    },
+    "detailsTrendFlat": "Stable",
+    "@detailsTrendFlat": {
+        "description": "Trend label when power is stable (accessibility)."
+    },
+    "detailsDeviceModelRightLabel": "Model",
+    "@detailsDeviceModelRightLabel": {
+        "description": "Right-side label for device model/hardware name (e.g. Shelly Plug S Gen3)."
+    },
+    "detailsEditNameTooltip": "Edit name",
+    "@detailsEditNameTooltip": {
+        "description": "Tooltip for the edit name icon."
+    },
+    "detailsEditIpTooltip": "Edit local IP",
+    "@detailsEditIpTooltip": {
+        "description": "Tooltip for the pencil icon next to local IP."
+    },
+    "detailsSelectTypeTooltip": "Select type",
+    "@detailsSelectTypeTooltip": {
+        "description": "Tooltip for the dropdown icon used to select device type."
+    },
+    "detailsToggleFavoriteTooltip": "Toggle favorite",
+    "@detailsToggleFavoriteTooltip": {
+        "description": "Tooltip for the favorite (heart) button on details page."
+    },
+    "detailsConnectionStatusLabel": "Network status",
+    "@detailsConnectionStatusLabel": {
+        "description": "Info row label for connection/network status."
+    },
+    "detailsConnectedWifiShort": "Connected (Wi-Fi)",
+    "@detailsConnectedWifiShort": {
+        "description": "Short text meaning the device is connected over Wi-Fi."
+    },
+    "detailsDisconnectedShort": "Disconnected",
+    "@detailsDisconnectedShort": {
+        "description": "Short text meaning the device is offline."
+    },
+    "detailsRoomDropdownTooltip": "Select room",
+    "@detailsRoomDropdownTooltip": {
+        "description": "Tooltip for the room dropdown (bottom of the card)."
+    },
+    "detailsActionDelete": "Delete",
+    "@detailsActionDelete": {
+        "description": "Delete button label on details page (if you want a details-specific label)."
+    },
+    "detailsEditNameDialogTitle": "Edit device name",
+    "@detailsEditNameDialogTitle": {
+        "description": "Title of the dialog used to edit the user-defined device name on the details page."
+    },
+    "detailsEditNameHint": "e.g. Plug",
+    "@detailsEditNameHint": {
+        "description": "Hint/example shown in the text field when editing the device name."
+    },
+    "detailsEditIpDialogTitle": "Edit local IP",
+    "@detailsEditIpDialogTitle": {
+        "description": "Title of the dialog used to edit the device local IP address on the details page."
+    },
+    "detailsEditIpHint": "e.g. 192.168.1.37",
+    "@detailsEditIpHint": {
+        "description": "Hint/example shown in the text field when editing the device local IP."
+    },
+    "detailsRoomUnknown": "Unknown room",
+    "@detailsRoomUnknown": {
+        "description": "Displayed when the device is not assigned to any room or the room cannot be resolved."
+    },
+    "detailsDeviceModelUnknown": "Unknown model",
+    "@detailsDeviceModelUnknown": {
+        "description": "Displayed when the device hardware model label is not available."
+    },
+    "detailsChartNoData": "No data",
+    "@detailsChartNoData": {
+        "description": "Label displayed when the history chart has not enough points to render."
+    },
+    "detailsTimelineTickNow": "Now",
+    "@detailsTimelineTickNow": {
+        "description": "Timeline label for the latest tick on the chart."
+    },
+    "historyRange1d": "1D",
+    "@historyRange1d": {
+        "description": "History range chip label: 1 day"
+    },
+    "historyRange1w": "1W",
+    "@historyRange1w": {
+        "description": "History range chip label: 1 week"
+    },
+    "historyRange1m": "1M",
+    "@historyRange1m": {
+        "description": "History range chip label: 1 month"
+    },
+    "historyRange1y": "1Y",
+    "@historyRange1y": {
+        "description": "History range chip label: 1 year"
+    },
+    "historyRangeMax": "Max",
+    "@historyRangeMax": {
+        "description": "History range chip label: maximum range"
+    },
+    "unitWattShort": "W",
+    "@unitWattShort": {
+        "description": "Short unit label for watts"
+    },
+    "confirmDeleteEquipment": "Delete this equipment? This action cannot be undone.",
+    "@confirmDeleteEquipment": {
+        "description": "Message to confirm removing the equipment"
+    },
+    "updatedJustNow": "Updated just now",
+    "@updatedJustNow": {
+        "description": "Displayed when a device was updated less than 10 seconds ago."
+    },
+    "updatedSecondsAgo": "Updated {seconds}s ago",
+    "@updatedSecondsAgo": {
+        "description": "Displayed when a device was updated seconds ago.",
+        "placeholders": {
+            "seconds": {
+                "type": "int",
+                "example": "12"
+            }
+        }
+    },
+    "updatedMinutesAgo": "Updated {minutes} min ago",
+    "@updatedMinutesAgo": {
+        "description": "Displayed when a device was updated minutes ago.",
+        "placeholders": {
+            "minutes": {
+                "type": "int",
+                "example": "5"
+            }
+        }
+    },
+    "updatedHoursAgo": "Updated {hours} h ago",
+    "@updatedHoursAgo": {
+        "description": "Displayed when a device was updated hours ago.",
+        "placeholders": {
+            "hours": {
+                "type": "int",
+                "example": "2"
+            }
+        }
     }
 }

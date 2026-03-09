@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/section_header.dart';
-import '../../../core/widgets/area_card.dart';
+import 'widgets/area_card.dart';
 
 import '../../../features/live/controller/live_polling_controller.dart';
 

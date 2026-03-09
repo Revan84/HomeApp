@@ -3,7 +3,7 @@ import 'package:front_end/core/i18n/loc.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/widgets/section_header.dart';
-import '../../../core/widgets/favorite_card.dart';
+import 'widgets/favorite_card.dart';
 import '../../../core/utils/time_label.dart';
 import '../../../core/utils/iterable_ext.dart';
 
@@ -14,8 +14,8 @@ import '../../equipments/model/equipment_mappers.dart';
 import '../../live/controller/live_polling_controller.dart';
 
 import '../../equipments/model/equipment.dart';
-import '../../equipments/view/equipment_details_page.dart';
 import '../../equipments/view/edit_equipment_sheet.dart';
+import '../../equipments/view/equipment_details_page.dart';
 
 import '../model/room.dart';
 import 'areas_section.dart';
@@ -97,17 +97,12 @@ class _HomeTabState extends State<HomeTab> {
 
   String _roomName(String? roomId) => roomId == null
       ? context.l10n.valueUnknown
-      : (_rooms
-              .where((r) => r.id == roomId)
-              .map((r) => r.name)
-              .firstOrNull ??
-          context.l10n.valueUnknown);
+      : (_rooms.where((r) => r.id == roomId).map((r) => r.name).firstOrNull ??
+            context.l10n.valueUnknown);
 
   Future<void> _openDetails(Equipment e) async {
     final changed = await Navigator.of(context).push<bool>(
-      MaterialPageRoute(
-        builder: (_) => EquipmentDetailsPage(equipmentId: e.id),
-      ),
+      MaterialPageRoute(builder: (_) => EquipmentDetailsPage(equipmentId: e.id)),
     );
     if (changed == true) await _load();
   }
@@ -171,10 +166,10 @@ class _HomeTabState extends State<HomeTab> {
 
                       final value = supported
                           ? (e.showPower
-                              ? '${(st?.powerW ?? 0).toStringAsFixed(0)} W'
-                              : (st?.output == true
-                                  ? context.l10n.valueOn
-                                  : context.l10n.valueOff))
+                                ? '${(st?.powerW ?? 0).toStringAsFixed(0)} W'
+                                : (st?.output == true
+                                      ? context.l10n.valueOn
+                                      : context.l10n.valueOff))
                           : context.l10n.valueUnknown;
 
                       return FavoriteCard(
@@ -188,10 +183,11 @@ class _HomeTabState extends State<HomeTab> {
                         showPowerButton: supported,
                         powerLoading: st?.toggling ?? false,
                         powerEnabled: st?.online ?? false,
-                        onPowerPressed:
-                            supported ? () => _toggleFavoritePlug(e) : null,
+                        onPowerPressed: supported
+                            ? () => _toggleFavoritePlug(e)
+                            : null,
                         trend: st?.trendPower ?? 0,
-                        updatedLabel: ageLabel(st?.lastUpdatedAt),
+                        updatedLabel: ageLabel(context, st?.lastUpdatedAt),
                         onOpenDetails: () => _openDetails(e),
                         onToggleFavorite: () => _removeFromFavorites(e),
                         onEdit: () => _editEquipment(e),

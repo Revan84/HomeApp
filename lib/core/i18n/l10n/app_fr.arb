@@ -143,7 +143,7 @@
     "@typeLabel": {
         "description": "Label du champ Type d'équipement"
     },
-    "equipmentTypeShellyPlusPlugS": "Prise connectée (Shelly Plus)",
+    "equipmentTypeShellyPlusPlugS": "Prise connectée",
     "@equipmentTypeShellyPlusPlugS": {
         "description": "Libellé de type : Shelly Plus Plug S"
     },
@@ -445,5 +445,223 @@
     "languageEnglish": "Anglais",
     "@languageEnglish": {
         "description": "Libellé de langue: anglais."
+    },
+    "detailsConnectionLabel": "Connexion",
+    "@detailsConnectionLabel": {
+        "description": "Label for the connection status row in favorite details."
+    },
+    "detailsConnectedWifi": "Connecté (Wi-Fi)",
+    "@detailsConnectedWifi": {
+        "description": "Connection status label when device is connected over Wi-Fi."
+    },
+    "detailsChartPlaceholder": "Graphique (placeholder)",
+    "@detailsChartPlaceholder": {
+        "description": "Temporary placeholder text displayed where the chart will be."
+    },
+    "detailsUpdatedAt": "Mis à jour : {value}",
+    "@detailsUpdatedAt": {
+        "description": "Last update label with a date/time string.",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "powerWatts": "{value} W",
+    "@powerWatts": {
+        "description": "Power label in watts.",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "valueYes": "Oui",
+    "@valueYes": {
+        "description": "Generic yes value."
+    },
+    "valueNo": "Non",
+    "@valueNo": {
+        "description": "Generic no value."
+    },
+    "detailsKeyValueLine": "{key} : {value}",
+    "@detailsKeyValueLine": {
+        "description": "Affichage générique 'clé : valeur' dans les lignes d'infos d'une page détail.",
+        "placeholders": {
+            "key": {},
+            "value": {}
+        }
+    },
+    "energyWh": "{value} Wh",
+    "@energyWh": {
+        "description": "Affichage d'énergie en Wh.",
+        "placeholders": {
+            "value": {}
+        }
+    },
+    "detailsHistoryWindow2h": "Dernières 2 heures",
+    "@detailsHistoryWindow2h": {
+        "description": "Libellé de fenêtre d'historique (graphique) sur la page détails."
+    },
+    "detailsHistoryWindow24h": "Dernières 24 heures",
+    "@detailsHistoryWindow24h": {
+        "description": "Libellé de fenêtre d'historique (graphique) sur la page détails."
+    },
+    "detailsHistoryWindow7d": "7 derniers jours",
+    "@detailsHistoryWindow7d": {
+        "description": "Libellé de fenêtre d'historique (graphique) sur la page détails."
+    },
+    "detailsUpdatedAgo": "Mis à jour il y a {ago}",
+    "@detailsUpdatedAgo": {
+        "description": "Indique le temps écoulé depuis la dernière mise à jour (ex: 3 min).",
+        "placeholders": {
+            "ago": {}
+        }
+    },
+    "detailsUpdatedJustNow": "Mis à jour à l'instant",
+    "@detailsUpdatedJustNow": {
+        "description": "Affiché quand la dernière mise à jour est très récente."
+    },
+    "detailsTrendUp": "En hausse",
+    "@detailsTrendUp": {
+        "description": "Libellé tendance lorsque la puissance augmente (accessibilité)."
+    },
+    "detailsTrendDown": "En baisse",
+    "@detailsTrendDown": {
+        "description": "Libellé tendance lorsque la puissance diminue (accessibilité)."
+    },
+    "detailsTrendFlat": "Stable",
+    "@detailsTrendFlat": {
+        "description": "Libellé tendance lorsque la puissance est stable (accessibilité)."
+    },
+    "detailsDeviceModelRightLabel": "Modèle",
+    "@detailsDeviceModelRightLabel": {
+        "description": "Libellé affiché à droite pour le modèle/nom matériel (ex: Shelly Plug S Gen3)."
+    },
+    "detailsEditNameTooltip": "Modifier le nom",
+    "@detailsEditNameTooltip": {
+        "description": "Tooltip de l'icône pour modifier le nom de l'équipement."
+    },
+    "detailsEditIpTooltip": "Modifier l'IP locale",
+    "@detailsEditIpTooltip": {
+        "description": "Tooltip de l'icône crayon à côté de l'IP locale."
+    },
+    "detailsSelectTypeTooltip": "Choisir le type",
+    "@detailsSelectTypeTooltip": {
+        "description": "Tooltip de l'icône dropdown pour le type d'équipement."
+    },
+    "detailsToggleFavoriteTooltip": "Basculer en favori",
+    "@detailsToggleFavoriteTooltip": {
+        "description": "Tooltip du bouton favori (coeur) sur la page détails."
+    },
+    "detailsConnectionStatusLabel": "Statut réseau",
+    "@detailsConnectionStatusLabel": {
+        "description": "Libellé de ligne pour le statut réseau/connexion dans la zone infos."
+    },
+    "detailsConnectedWifiShort": "Connecté (Wi-Fi)",
+    "@detailsConnectedWifiShort": {
+        "description": "Texte court indiquant une connexion Wi-Fi active."
+    },
+    "detailsDisconnectedShort": "Déconnecté",
+    "@detailsDisconnectedShort": {
+        "description": "Texte court indiquant que l'équipement est hors ligne."
+    },
+    "detailsRoomDropdownTooltip": "Choisir la pièce",
+    "@detailsRoomDropdownTooltip": {
+        "description": "Tooltip du dropdown pièce (bas de carte)."
+    },
+    "detailsActionDelete": "Supprimer",
+    "@detailsActionDelete": {
+        "description": "Libellé du bouton supprimer sur la page détails (si tu veux un libellé spécifique à cette page)."
+    },
+    "detailsEditNameDialogTitle": "Modifier le nom de l'équipement",
+    "@detailsEditNameDialogTitle": {
+        "description": "Titre de la boîte de dialogue permettant de modifier le nom donné par l'utilisateur sur la page détails."
+    },
+    "detailsEditNameHint": "ex : Plug",
+    "@detailsEditNameHint": {
+        "description": "Exemple affiché dans le champ de saisie lors de la modification du nom de l'équipement."
+    },
+    "detailsEditIpDialogTitle": "Modifier l'IP locale",
+    "@detailsEditIpDialogTitle": {
+        "description": "Titre de la boîte de dialogue permettant de modifier l'adresse IP locale de l'équipement sur la page détails."
+    },
+    "detailsEditIpHint": "ex : 192.168.1.37",
+    "@detailsEditIpHint": {
+        "description": "Exemple affiché dans le champ de saisie lors de la modification de l'IP locale."
+    },
+    "detailsRoomUnknown": "Pièce inconnue",
+    "@detailsRoomUnknown": {
+        "description": "Affiché quand l'équipement n'est associé à aucune pièce ou que la pièce n'est pas résolue."
+    },
+    "detailsDeviceModelUnknown": "Modèle inconnu",
+    "@detailsDeviceModelUnknown": {
+        "description": "Affiché quand le libellé du modèle matériel n'est pas disponible."
+    },
+    "detailsChartNoData": "Aucune donnée",
+    "@detailsChartNoData": {
+        "description": "Libellé affiché quand le graphique d'historique n'a pas assez de points pour être tracé."
+    },
+    "detailsTimelineTickNow": "Maintenant",
+    "@detailsTimelineTickNow": {
+        "description": "Libellé de la timeline pour le dernier repère du graphique."
+    },
+    "historyRange1d": "1J",
+    "@historyRange1d": {
+        "description": "Libellé du chip de plage historique : 1 jour"
+    },
+    "historyRange1w": "1S",
+    "@historyRange1w": {
+        "description": "Libellé du chip de plage historique : 1 semaine"
+    },
+    "historyRange1m": "1M",
+    "@historyRange1m": {
+        "description": "Libellé du chip de plage historique : 1 mois"
+    },
+    "historyRange1y": "1A",
+    "@historyRange1y": {
+        "description": "Libellé du chip de plage historique : 1 an"
+    },
+    "historyRangeMax": "Max",
+    "@historyRangeMax": {
+        "description": "Libellé du chip de plage historique : plage maximale"
+    },
+    "unitWattShort": "W",
+    "@unitWattShort": {
+        "description": "Unité courte pour les watts"
+    },
+    "confirmDeleteEquipment": "Supprimer cet équipement ? Cette action est irréversible.",
+    "@confirmDeleteEquipment": {
+        "description": "Message de confirmation pour supprimer l'équipement"
+    },
+    "updatedJustNow": "Mis à jour à l’instant",
+    "@updatedJustNow": {
+        "description": "Displayed when a device was updated less than 10 seconds ago."
+    },
+    "updatedSecondsAgo": "Mis à jour il y a {seconds}s",
+    "@updatedSecondsAgo": {
+        "description": "Message informant de la dernière mise à jour en secondes de l'équipement.",
+        "placeholders": {
+            "seconds": {
+                "type": "int",
+                "example": "12"
+            }
+        }
+    },
+    "updatedMinutesAgo": "Mis à jour il y a {minutes} min",
+    "@updatedMinutesAgo": {
+        "description": "Message informant de la dernière mise à jour en minutes de l'équipement.",
+        "placeholders": {
+            "minutes": {
+                "type": "int",
+                "example": "5"
+            }
+        }
+    },
+    "updatedHoursAgo": "Mis à jour il y a {hours} h",
+    "@updatedHoursAgo": {
+        "description": "Message informant de la dernière mise à jour en heures de l'équipement.",
+        "placeholders": {
+            "hours": {
+                "type": "int",
+                "example": "2"
+            }
+        }
     }
 }

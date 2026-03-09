@@ -311,7 +311,7 @@ abstract class AppLocalizations {
   /// Libellé de type : Shelly Plus Plug S
   ///
   /// In fr, this message translates to:
-  /// **'Prise connectée (Shelly Plus)'**
+  /// **'Prise connectée'**
   String get equipmentTypeShellyPlusPlugS;
 
   /// Libellé de type : Shelly Plug S
@@ -685,6 +685,282 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Anglais'**
   String get languageEnglish;
+
+  /// Label for the connection status row in favorite details.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connexion'**
+  String get detailsConnectionLabel;
+
+  /// Connection status label when device is connected over Wi-Fi.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connecté (Wi-Fi)'**
+  String get detailsConnectedWifi;
+
+  /// Temporary placeholder text displayed where the chart will be.
+  ///
+  /// In fr, this message translates to:
+  /// **'Graphique (placeholder)'**
+  String get detailsChartPlaceholder;
+
+  /// Last update label with a date/time string.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mis à jour : {value}'**
+  String detailsUpdatedAt(Object value);
+
+  /// Power label in watts.
+  ///
+  /// In fr, this message translates to:
+  /// **'{value} W'**
+  String powerWatts(Object value);
+
+  /// Generic yes value.
+  ///
+  /// In fr, this message translates to:
+  /// **'Oui'**
+  String get valueYes;
+
+  /// Generic no value.
+  ///
+  /// In fr, this message translates to:
+  /// **'Non'**
+  String get valueNo;
+
+  /// Affichage générique 'clé : valeur' dans les lignes d'infos d'une page détail.
+  ///
+  /// In fr, this message translates to:
+  /// **'{key} : {value}'**
+  String detailsKeyValueLine(Object key, Object value);
+
+  /// Affichage d'énergie en Wh.
+  ///
+  /// In fr, this message translates to:
+  /// **'{value} Wh'**
+  String energyWh(Object value);
+
+  /// Libellé de fenêtre d'historique (graphique) sur la page détails.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dernières 2 heures'**
+  String get detailsHistoryWindow2h;
+
+  /// Libellé de fenêtre d'historique (graphique) sur la page détails.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dernières 24 heures'**
+  String get detailsHistoryWindow24h;
+
+  /// Libellé de fenêtre d'historique (graphique) sur la page détails.
+  ///
+  /// In fr, this message translates to:
+  /// **'7 derniers jours'**
+  String get detailsHistoryWindow7d;
+
+  /// Indique le temps écoulé depuis la dernière mise à jour (ex: 3 min).
+  ///
+  /// In fr, this message translates to:
+  /// **'Mis à jour il y a {ago}'**
+  String detailsUpdatedAgo(Object ago);
+
+  /// Affiché quand la dernière mise à jour est très récente.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mis à jour à l\'instant'**
+  String get detailsUpdatedJustNow;
+
+  /// Libellé tendance lorsque la puissance augmente (accessibilité).
+  ///
+  /// In fr, this message translates to:
+  /// **'En hausse'**
+  String get detailsTrendUp;
+
+  /// Libellé tendance lorsque la puissance diminue (accessibilité).
+  ///
+  /// In fr, this message translates to:
+  /// **'En baisse'**
+  String get detailsTrendDown;
+
+  /// Libellé tendance lorsque la puissance est stable (accessibilité).
+  ///
+  /// In fr, this message translates to:
+  /// **'Stable'**
+  String get detailsTrendFlat;
+
+  /// Libellé affiché à droite pour le modèle/nom matériel (ex: Shelly Plug S Gen3).
+  ///
+  /// In fr, this message translates to:
+  /// **'Modèle'**
+  String get detailsDeviceModelRightLabel;
+
+  /// Tooltip de l'icône pour modifier le nom de l'équipement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le nom'**
+  String get detailsEditNameTooltip;
+
+  /// Tooltip de l'icône crayon à côté de l'IP locale.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier l\'IP locale'**
+  String get detailsEditIpTooltip;
+
+  /// Tooltip de l'icône dropdown pour le type d'équipement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir le type'**
+  String get detailsSelectTypeTooltip;
+
+  /// Tooltip du bouton favori (coeur) sur la page détails.
+  ///
+  /// In fr, this message translates to:
+  /// **'Basculer en favori'**
+  String get detailsToggleFavoriteTooltip;
+
+  /// Libellé de ligne pour le statut réseau/connexion dans la zone infos.
+  ///
+  /// In fr, this message translates to:
+  /// **'Statut réseau'**
+  String get detailsConnectionStatusLabel;
+
+  /// Texte court indiquant une connexion Wi-Fi active.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connecté (Wi-Fi)'**
+  String get detailsConnectedWifiShort;
+
+  /// Texte court indiquant que l'équipement est hors ligne.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déconnecté'**
+  String get detailsDisconnectedShort;
+
+  /// Tooltip du dropdown pièce (bas de carte).
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir la pièce'**
+  String get detailsRoomDropdownTooltip;
+
+  /// Libellé du bouton supprimer sur la page détails (si tu veux un libellé spécifique à cette page).
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer'**
+  String get detailsActionDelete;
+
+  /// Titre de la boîte de dialogue permettant de modifier le nom donné par l'utilisateur sur la page détails.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le nom de l\'équipement'**
+  String get detailsEditNameDialogTitle;
+
+  /// Exemple affiché dans le champ de saisie lors de la modification du nom de l'équipement.
+  ///
+  /// In fr, this message translates to:
+  /// **'ex : Plug'**
+  String get detailsEditNameHint;
+
+  /// Titre de la boîte de dialogue permettant de modifier l'adresse IP locale de l'équipement sur la page détails.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier l\'IP locale'**
+  String get detailsEditIpDialogTitle;
+
+  /// Exemple affiché dans le champ de saisie lors de la modification de l'IP locale.
+  ///
+  /// In fr, this message translates to:
+  /// **'ex : 192.168.1.37'**
+  String get detailsEditIpHint;
+
+  /// Affiché quand l'équipement n'est associé à aucune pièce ou que la pièce n'est pas résolue.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pièce inconnue'**
+  String get detailsRoomUnknown;
+
+  /// Affiché quand le libellé du modèle matériel n'est pas disponible.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modèle inconnu'**
+  String get detailsDeviceModelUnknown;
+
+  /// Libellé affiché quand le graphique d'historique n'a pas assez de points pour être tracé.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune donnée'**
+  String get detailsChartNoData;
+
+  /// Libellé de la timeline pour le dernier repère du graphique.
+  ///
+  /// In fr, this message translates to:
+  /// **'Maintenant'**
+  String get detailsTimelineTickNow;
+
+  /// Libellé du chip de plage historique : 1 jour
+  ///
+  /// In fr, this message translates to:
+  /// **'1J'**
+  String get historyRange1d;
+
+  /// Libellé du chip de plage historique : 1 semaine
+  ///
+  /// In fr, this message translates to:
+  /// **'1S'**
+  String get historyRange1w;
+
+  /// Libellé du chip de plage historique : 1 mois
+  ///
+  /// In fr, this message translates to:
+  /// **'1M'**
+  String get historyRange1m;
+
+  /// Libellé du chip de plage historique : 1 an
+  ///
+  /// In fr, this message translates to:
+  /// **'1A'**
+  String get historyRange1y;
+
+  /// Libellé du chip de plage historique : plage maximale
+  ///
+  /// In fr, this message translates to:
+  /// **'Max'**
+  String get historyRangeMax;
+
+  /// Unité courte pour les watts
+  ///
+  /// In fr, this message translates to:
+  /// **'W'**
+  String get unitWattShort;
+
+  /// Message de confirmation pour supprimer l'équipement
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer cet équipement ? Cette action est irréversible.'**
+  String get confirmDeleteEquipment;
+
+  /// Displayed when a device was updated less than 10 seconds ago.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mis à jour à l’instant'**
+  String get updatedJustNow;
+
+  /// Message informant de la dernière mise à jour en secondes de l'équipement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mis à jour il y a {seconds}s'**
+  String updatedSecondsAgo(int seconds);
+
+  /// Message informant de la dernière mise à jour en minutes de l'équipement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mis à jour il y a {minutes} min'**
+  String updatedMinutesAgo(int minutes);
+
+  /// Message informant de la dernière mise à jour en heures de l'équipement.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mis à jour il y a {hours} h'**
+  String updatedHoursAgo(int hours);
 }
 
 class _AppLocalizationsDelegate

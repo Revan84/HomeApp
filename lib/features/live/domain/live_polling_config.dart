@@ -4,8 +4,8 @@ class LivePollingConfig {
   final int budget;
 
   const LivePollingConfig({
-    this.tickPeriod = const Duration(seconds: 1),
-    this.okInterval = const Duration(seconds: 2),
+    this.tickPeriod = const Duration(milliseconds: 50),
+    this.okInterval = const Duration(milliseconds: 200),
     this.budget = 3,
   });
 }

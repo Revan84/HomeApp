@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:front_end/core/i18n/loc.dart';
-import '../../../core/theme/app_colors.dart';
-import '../../../core/widgets/secondary_text.dart';
+import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/widgets/secondary_text.dart';
 
 class AreaCard extends StatelessWidget {
   const AreaCard({

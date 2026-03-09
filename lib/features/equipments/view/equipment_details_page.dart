@@ -1,205 +1,196 @@
 import 'package:flutter/material.dart';
-import 'package:front_end/core/i18n/loc.dart';
 import 'package:provider/provider.dart';
 
-import '../../../core/network/network_detector.dart';
-import '../../../domain/repositories/equipment_repository.dart';
-import '../../integrations/shelly/data/shelly_rpc_client.dart';
-import '../../live/controller/live_polling_controller.dart';
-import '../model/equipment.dart';
-import 'edit_equipment_sheet.dart';
-import '../../equipments/model/equipment_mappers.dart';
+import '../../../core/i18n/loc.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/time_label.dart';
 
-enum NetStatus {
-  unknown,
-  online,
-  offline,
-  notOnWifi,
-  wrongWifi,
-  permissionRequired,
-}
+import '../../../domain/models/history_window.dart';
+import '../../../domain/models/live_point.dart';
+import '../../../domain/repositories/equipment_repository.dart';
+import '../../../domain/repositories/room_repository.dart';
+
+import '../../../core/widgets/line_chart/chart_bounds.dart';
+import '../../../core/widgets/line_chart/history_range_chips.dart';
+import '../../../core/widgets/line_chart/interactive_line_chart.dart';
+
+import '../../home/model/room.dart';
+import '../../live/controller/live_polling_controller.dart';
+
+import '../model/equipment.dart';
+import '../model/equipment_mappers.dart';
+import 'widgets/equipment_edit_dialogs.dart';
+import 'widgets/equipment_header.dart';
+import 'widgets/equipment_info_grid.dart';
+import 'widgets/prototype_card.dart';
+import 'widgets/room_toggle_row.dart';
 
 class EquipmentDetailsPage extends StatefulWidget {
   final String equipmentId;
-  const EquipmentDetailsPage({super.key, required this.equipmentId});
+
+  const EquipmentDetailsPage({
+    super.key,
+    required this.equipmentId,
+  });
 
   @override
   State<EquipmentDetailsPage> createState() => _EquipmentDetailsPageState();
 }
 
 class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
-  Equipment? _eq;
+  late final EquipmentRepository _equipmentRepo;
+  late final RoomRepository _roomRepo;
+  late final LivePollingController _live;
+
+  Equipment? _equipment;
+  List<Room> _rooms = const [];
+
+  HistoryWindow _window = HistoryWindow.d1;
+
   bool _loading = true;
-  bool _dirty = false;
-
-  late EquipmentRepository _equipmentRepo;
-  late ShellyRpcClient _shellyRpc;
-  late LivePollingController _liveCtl;
-
   bool _depsReady = false;
 
-  NetworkSnapshot? _net;
-
-  NetStatus _netStatus = NetStatus.unknown;
-
-  String _netStatusLabel(BuildContext context, NetStatus s) {
-    switch (s) {
-      case NetStatus.online:
-        return context.l10n.netStatusOnline;
-      case NetStatus.offline:
-        return context.l10n.netStatusOffline;
-      case NetStatus.notOnWifi:
-        return context.l10n.netStatusNotOnWifi;
-      case NetStatus.wrongWifi:
-        return context.l10n.netStatusWrongWifi;
-      case NetStatus.permissionRequired:
-        return context.l10n.netWifiPermissionRequired;
-      case NetStatus.unknown:
-        return context.l10n.valueUnknown;
-    }
-  }
-
-  Map<String, dynamic>? _deviceInfo;
-
-  final _detector = NetworkDetector();
+  LivePoint? _hoverPoint;
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _loadAll());
-  }
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
-  Future<void> _loadAll() async {
-    setState(() => _loading = true);
-    _deviceInfo = null;
-    _net = null;
-    _netStatus = NetStatus.unknown;
+    if (_depsReady) return;
 
-    final nav = Navigator.of(context);
+    _equipmentRepo = context.read<EquipmentRepository>();
+    _roomRepo = context.read<RoomRepository>();
+    _live = context.read<LivePollingController>();
 
-    final all = await _equipmentRepo.loadAll();
-    if (!mounted) return;
+    _depsReady = true;
 
-    final eq = all
-        .where((e) => e.id == widget.equipmentId)
-        .cast<Equipment?>()
-        .firstWhere((e) => e != null, orElse: () => null);
-
-    if (eq == null) {
-      nav.pop(false);
-      return;
-    }
-
-    _eq = eq;
-
-    await _refreshNetworkAndStatus();
-    await _refreshDeviceInfoWith(_shellyRpc);
-
-    if (!mounted) return;
-    setState(() => _loading = false);
-  }
-
-  Future<void> _refreshNetworkAndStatus() async {
-    final eq = _eq;
-    if (eq == null) return;
-
-    final snap = await _detector.getSnapshot(requestPermissionIfNeeded: true);
-
-    // Wi-Fi mais permission non accordée -> STOP
-    if (snap.isWifi && !snap.permissionGranted) {
-      if (!mounted) return;
-      setState(() {
-        _net = snap;
-        _netStatus = NetStatus.permissionRequired;
-      });
-      return;
-    }
-
-    final sameSubnet = _detector.isSameSubnet24(
-      deviceIp: eq.ip,
-      wifiIp: snap.wifiIP,
-    );
-    final reachable = await _detector.isReachable(eq.ip);
-
-    final NetStatus status;
-    if (reachable) {
-      status = NetStatus.online;
-    } else if (!snap.isWifi) {
-      status = NetStatus.notOnWifi;
-    } else if (!sameSubnet) {
-      status = NetStatus.wrongWifi;
-    } else {
-      status = NetStatus.offline;
-    }
-
-    if (!mounted) return;
-    setState(() {
-      _net = snap;
-      _netStatus = status;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _load();
     });
   }
 
-  Future<void> _onRefreshPressed() async {
-    await _refreshNetworkAndStatus();
+  Future<void> _load() async {
+    setState(() {
+      _loading = true;
+    });
+
+    final equipments = await _equipmentRepo.loadAll();
+    final rooms = await _roomRepo.loadAll();
+
     if (!mounted) return;
-    await _refreshDeviceInfoWith(_shellyRpc);
-  }
 
-  Future<void> _refreshDeviceInfoWith(ShellyRpcClient rpc) async {
-    if (_eq == null) return;
+    final equipment = equipments.cast<Equipment?>().firstWhere(
+          (item) => item?.id == widget.equipmentId,
+          orElse: () => null,
+        );
 
-    // Ne pas spammer si mauvais wifi / pas wifi
-    if (_netStatus == NetStatus.wrongWifi ||
-        _netStatus == NetStatus.notOnWifi ||
-        _netStatus == NetStatus.permissionRequired) {
+    if (equipment == null) {
+      Navigator.of(context).pop(false);
       return;
     }
 
-    // Only Shelly types
-    if (!(_eq!.type == EquipmentType.shellyPlusPlugS ||
-        _eq!.type == EquipmentType.shellyPlugS)) {
-      return;
-    }
+    _live.syncFollowed([equipment.toEndpoint()], forcePollNow: true);
 
-    try {
-      final data = await rpc.getDeviceInfo(_eq!.ip);
-      if (!mounted) return;
-      setState(() => _deviceInfo = data);
-    } catch (_) {
-      // ignore
-    }
+    setState(() {
+      _equipment = equipment;
+      _rooms = rooms;
+      _loading = false;
+    });
   }
 
-  Future<void> _edit() async {
-    final eq = _eq;
-    if (eq == null) return;
+  Future<void> _editName() async {
+    final equipment = _equipment;
+    if (equipment == null) return;
 
-    final changed = await showModalBottomSheet<bool>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      builder: (_) => EditEquipmentSheet(initial: eq),
+    final nextName = await EquipmentEditDialogs.editName(
+      context,
+      currentName: equipment.name,
+    );
+    if (nextName == null) return;
+
+    await _equipmentRepo.update(
+      equipment.copyWith(name: nextName),
     );
 
-    if (!mounted) return;
-
-    if (changed == true) {
-      _dirty = true;
-      await _loadAll();
-    }
+    await _load();
   }
 
-  Future<void> _delete() async {
-    final eq = _eq;
-    if (eq == null) return;
+  Future<void> _editLocalIp() async {
+    final equipment = _equipment;
+    if (equipment == null) return;
 
-    final nav = Navigator.of(context);
+    final nextIp = await EquipmentEditDialogs.editLocalIp(
+      context,
+      currentIp: equipment.ip,
+    );
+    if (nextIp == null) return;
 
-    final ok = await showDialog<bool>(
+    await _equipmentRepo.update(
+      equipment.copyWith(ip: nextIp),
+    );
+
+    await _load();
+  }
+
+  Future<void> _toggleFavorite() async {
+    final equipment = _equipment;
+    if (equipment == null) return;
+
+    await _equipmentRepo.update(
+      equipment.copyWith(isFavorite: !equipment.isFavorite),
+    );
+
+    await _load();
+  }
+
+  Future<void> _selectType() async {
+    final equipment = _equipment;
+    if (equipment == null) return;
+
+    final nextType = await EquipmentEditDialogs.pickType(
+      context,
+      current: equipment.type,
+      labelOf: (type) => _typeLabel(context, type),
+    );
+
+    if (nextType == null || nextType == equipment.type) return;
+
+    await _equipmentRepo.update(
+      equipment.copyWith(type: nextType),
+    );
+
+    await _load();
+  }
+
+  Future<void> _selectRoom() async {
+    final equipment = _equipment;
+    if (equipment == null) return;
+
+    final nextRoomId = await EquipmentEditDialogs.pickRoom(
+      context,
+      currentRoomId: equipment.roomId,
+      rooms: _rooms,
+      noneLabel: context.l10n.none,
+    );
+
+    if (nextRoomId == equipment.roomId) return;
+
+    await _equipmentRepo.update(
+      equipment.copyWith(roomId: nextRoomId),
+    );
+
+    await _load();
+  }
+
+  Future<void> _deleteEquipment() async {
+    final equipment = _equipment;
+    if (equipment == null) return;
+
+    final isConfirmed = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: Text(context.l10n.deleteEquipmentConfirmTitle),
-        content: Text(context.l10n.deleteEquipmentConfirmBody(eq.name)),
+        title: Text(context.l10n.delete),
+        content: Text(context.l10n.confirmDeleteEquipment),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -213,209 +204,191 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
       ),
     );
 
-    if (ok != true) return;
+    if (isConfirmed != true) return;
 
-    await _equipmentRepo.deleteById(eq.id);
+    await _equipmentRepo.deleteById(equipment.id);
+
+    // Remove the deleted device from live tracking and local history.
+    _live.unfollowDevice(equipment.id);
+    await _live.deleteHistoryForDevice(equipment.id);
+
     if (!mounted) return;
 
-    nav.pop(true);
+    Navigator.of(context).pop(true);
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (_depsReady) return;
+  void _handleWindowChanged(HistoryWindow nextWindow) {
+    if (_window == nextWindow) return;
 
-    _equipmentRepo = context.read<EquipmentRepository>();
-    _shellyRpc = context.read<ShellyRpcClient>();
-    _liveCtl = context.read<LivePollingController>();
-
-    _depsReady = true;
+    setState(() {
+      _window = nextWindow;
+      _hoverPoint = null;
+    });
   }
 
-  String _dash(String? v) => (v == null || v.isEmpty) ? '—' : v;
+  String _typeLabel(BuildContext context, EquipmentType type) {
+    switch (type) {
+      case EquipmentType.shellyPlusPlugS:
+        return context.l10n.equipmentTypeShellyPlusPlugS;
+      case EquipmentType.shellyPlugS:
+        return context.l10n.equipmentTypeShellyPlugS;
+      case EquipmentType.other:
+        return context.l10n.equipmentTypeOther;
+    }
+  }
 
-  String _onOffLabel(bool? on) {
-    if (on == null) return context.l10n.valueUnknown;
-    return on ? context.l10n.valueOn : context.l10n.valueOff;
+  String _roomName(BuildContext context, String? roomId) {
+    if (roomId == null) return context.l10n.none;
+
+    final matchingRooms = _rooms.where((room) => room.id == roomId).toList(
+          growable: false,
+        );
+
+    return matchingRooms.isEmpty ? context.l10n.none : matchingRooms.first.name;
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_loading || _eq == null) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    if (_loading || _equipment == null) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
     }
 
-    final eq = _eq!;
-    final liveCtlWatch = context.watch<LivePollingController>();
-    final st = liveCtlWatch.live[eq.id];
+    final equipment = _equipment!;
+    final liveController = context.watch<LivePollingController>();
+    final liveState = liveController.live[equipment.id];
 
-    final ssid = _dash(_net?.ssid);
-    final phoneIp = _dash(_net?.wifiIP);
+    final history = liveController.historyFor(equipment.id, _window).toList(
+          growable: true,
+        )
+      ..sort((a, b) => a.at.compareTo(b.at));
 
-    final on = st?.output;
-    final powerW = st?.powerW;
-    final energyWh = st?.energyWh;
-    final rssi = st?.rssi;
+    final bounds = computeNicePowerBounds(history);
 
-    final showWifiPermissionCta = _netStatus == NetStatus.permissionRequired;
+    final powerW = liveState?.powerW;
+    final energyWh = liveState?.energyWh;
+    final online = liveState?.online ?? false;
+    final toggling = liveState?.toggling ?? false;
+    final isOn = liveState?.output == true;
 
-    return PopScope(
-      canPop: true,
-      onPopInvokedWithResult: (didPop, result) {
-        if (didPop) return;
-        Navigator.of(context).pop(_dirty);
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(eq.name),
-          leading: BackButton(
-            onPressed: () => Navigator.of(context).pop(_dirty),
+    final updatedLabel = ageLabel(context, liveState?.lastUpdatedAt);
+    final trend = liveState?.trendPower ?? 0;
+
+    final displayedPowerW = _hoverPoint?.powerW ?? powerW;
+
+    final modelLabel = switch (equipment.type) {
+      EquipmentType.shellyPlusPlugS =>
+        context.l10n.equipmentTypeShellyPlusPlugS,
+      EquipmentType.shellyPlugS => context.l10n.equipmentTypeShellyPlugS,
+      EquipmentType.other => context.l10n.valueUnknown,
+    };
+
+    final energyLabel = energyWh == null
+        ? context.l10n.valueUnknown
+        : context.l10n.energyWh(energyWh.toStringAsFixed(0));
+
+    final connectionLabel = online
+        ? context.l10n.detailsConnectedWifi
+        : context.l10n.netStatusOffline;
+
+    return Scaffold(
+      appBar: AppBar(
+        leading: const BackButton(),
+        actions: [
+          IconButton(
+            tooltip: context.l10n.refresh,
+            onPressed: _load,
+            icon: const Icon(Icons.refresh),
           ),
-          actions: [
-            IconButton(
-              tooltip: context.l10n.refresh,
-              onPressed: _onRefreshPressed,
-              icon: const Icon(Icons.refresh),
-            ),
-            IconButton(
-              tooltip: context.l10n.edit,
-              onPressed: _edit,
-              icon: const Icon(Icons.edit),
-            ),
-            IconButton(
-              tooltip: context.l10n.delete,
-              onPressed: _delete,
-              icon: const Icon(Icons.delete_outline),
-            ),
-          ],
-        ),
-        body: ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            _InfoCard(
-              title: context.l10n.detailsNetworkTitle,
-              lines: [
-                context.l10n.detailsWifiLine(ssid),
-                context.l10n.detailsPhoneIpLine(phoneIp),
-                context.l10n.detailsEquipmentIpLine(eq.ip),
-                context.l10n.detailsStatusLine(
-                  _netStatusLabel(context, _netStatus),
-                ),
-              ],
-            ),
-            const SizedBox(height: 4),
-
-            if (showWifiPermissionCta)
-              Padding(
-                padding: const EdgeInsets.only(top: 12),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: () async {
-                      await _refreshNetworkAndStatus(); // redemande la permission
-                      if (!mounted) return;
-                      await _onRefreshPressed();
-                    },
-                    icon: const Icon(Icons.lock_open),
-                    label: Text(context.l10n.netGrantWifiAccess),
-                  ),
-                ),
-              ),
-
-            const SizedBox(height: 12),
-
-            if (_deviceInfo != null)
-              _InfoCard(
-                title: context.l10n.detailsDeviceInfoTitle,
-                lines: [
-                  context.l10n.detailsDeviceModelLine(
-                    '${_deviceInfo!['model'] ?? '—'}',
-                  ),
-                  context.l10n.detailsDeviceGenLine(
-                    '${_deviceInfo!['gen'] ?? '—'}',
-                  ),
-                  context.l10n.detailsDeviceFwLine(
-                    '${_deviceInfo!['ver'] ?? '—'}',
-                  ),
-                  context.l10n.detailsDeviceMacLine(
-                    '${_deviceInfo!['mac'] ?? '—'}',
-                  ),
-                ],
-              ),
-
-            const SizedBox(height: 12),
-
-            _InfoCard(
-              title: context.l10n.detailsLiveDataTitle,
-              lines: [
-                if (eq.showToggle)
-                  context.l10n.detailsOnOffLine(_onOffLabel(on)),
-                if (eq.showPower)
-                  context.l10n.detailsPowerLine(
-                    powerW == null
-                        ? context.l10n.valueUnknown
-                        : '${powerW.toStringAsFixed(0)} W',
-                  ),
-                if (eq.showEnergy)
-                  context.l10n.detailsEnergyLine(
-                    energyWh == null
-                        ? context.l10n.valueUnknown
-                        : '${energyWh.toStringAsFixed(0)} Wh',
-                  ),
-                if (eq.showRssi)
-                  context.l10n.detailsRssiLine(
-                    rssi == null ? context.l10n.valueUnknown : '$rssi dBm',
-                  ),
-                context.l10n.detailsLastUpdatedLine(
-                  st?.lastUpdatedAt?.toLocal().toString() ??
-                      context.l10n.valueUnknown,
-                ),
-              ],
-            ),
-          ],
-        ),
-        floatingActionButton: (eq.showToggle == true)
-            ? FloatingActionButton.extended(
-                onPressed: (st == null || st.toggling || !(st.online))
-                    ? null
-                    : () => _liveCtl.toggle(eq.toEndpoint()),
-                icon: const Icon(Icons.power),
-                label: Text(
-                  on == true
-                      ? context.l10n.actionTurnOff
-                      : context.l10n.actionTurnOn,
-                ),
-              )
-            : null,
+        ],
       ),
-    );
-  }
-}
-
-class _InfoCard extends StatelessWidget {
-  final String title;
-  final List<String> lines;
-
-  const _InfoCard({required this.title, required this.lines});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(title, style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 8),
-            for (final l in lines)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 4),
-                child: Text(l),
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+        children: [
+          PrototypeCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                EquipmentHeader(
+                  powerW: displayedPowerW?.toDouble(),
+                  updatedLabel: updatedLabel,
+                  trend: trend,
+                  name: equipment.name,
+                  onEditName: _editName,
+                  onRefresh: _load,
+                ),
+                const SizedBox(height: 14),
+                HistoryRangeChips(
+                  value: _window,
+                  onChanged: _handleWindowChanged,
+                ),
+                const SizedBox(height: 10),
+                InteractiveLineChart(
+                  points: history,
+                  window: _window,
+                  minY: bounds.minY,
+                  maxY: bounds.maxY,
+                  height: 180,
+                  powerUnitLabel: context.l10n.unitWattShort,
+                  onHoverPoint: (point) {
+                    setState(() {
+                      _hoverPoint = point;
+                    });
+                  },
+                ),
+                const SizedBox(height: 14),
+                EquipmentInfoGrid(
+                  ipLabel: context.l10n.ipLocalLabel,
+                  ip: equipment.ip,
+                  onEditIp: _editLocalIp,
+                  typeLabelText: context.l10n.typeLabel,
+                  typeValue: _typeLabel(context, equipment.type),
+                  onSelectType: _selectType,
+                  favoriteLabel: context.l10n.favorite,
+                  favoriteValue: equipment.isFavorite
+                      ? context.l10n.valueYes
+                      : context.l10n.valueNo,
+                  isFavorite: equipment.isFavorite,
+                  onToggleFavorite: _toggleFavorite,
+                  energyLabel: energyLabel,
+                  modelLabel: modelLabel,
+                  online: online,
+                  connectionLabel: connectionLabel,
+                ),
+                const SizedBox(height: 18),
+                RoomToggleRow(
+                  roomName: _roomName(context, equipment.roomId),
+                  onSelectRoom: _selectRoom,
+                  value: isOn,
+                  onChanged: (online && !toggling && equipment.showToggle)
+                      ? (_) => _live.toggle(equipment.toEndpoint())
+                      : null,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          Center(
+            child: TextButton(
+              onPressed: _deleteEquipment,
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
-          ],
-        ),
+              child: Text(
+                context.l10n.delete,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: AppColors.textSecondary,
+                      decoration: TextDecoration.underline,
+                      decorationColor: AppColors.textSecondary,
+                    ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

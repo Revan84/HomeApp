@@ -116,7 +116,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get typeLabel => 'Type';
 
   @override
-  String get equipmentTypeShellyPlusPlugS => 'Smart plug (Shelly Plus)';
+  String get equipmentTypeShellyPlusPlugS => 'Smart plug';
 
   @override
   String get equipmentTypeShellyPlugS => 'Smart plug (Shelly Plug S)';
@@ -339,4 +339,159 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get languageEnglish => 'English';
+
+  @override
+  String get detailsConnectionLabel => 'Connection';
+
+  @override
+  String get detailsConnectedWifi => 'Connected (Wi-Fi)';
+
+  @override
+  String get detailsChartPlaceholder => 'Chart (placeholder)';
+
+  @override
+  String detailsUpdatedAt(Object value) {
+    return 'Updated: $value';
+  }
+
+  @override
+  String powerWatts(Object value) {
+    return '$value W';
+  }
+
+  @override
+  String get valueYes => 'Yes';
+
+  @override
+  String get valueNo => 'No';
+
+  @override
+  String detailsKeyValueLine(Object key, Object value) {
+    return '$key: $value';
+  }
+
+  @override
+  String energyWh(Object value) {
+    return '$value Wh';
+  }
+
+  @override
+  String get detailsHistoryWindow2h => 'Last 2 hours';
+
+  @override
+  String get detailsHistoryWindow24h => 'Last 24 hours';
+
+  @override
+  String get detailsHistoryWindow7d => 'Last 7 days';
+
+  @override
+  String detailsUpdatedAgo(Object ago) {
+    return 'Updated $ago ago';
+  }
+
+  @override
+  String get detailsUpdatedJustNow => 'Updated just now';
+
+  @override
+  String get detailsTrendUp => 'Rising';
+
+  @override
+  String get detailsTrendDown => 'Falling';
+
+  @override
+  String get detailsTrendFlat => 'Stable';
+
+  @override
+  String get detailsDeviceModelRightLabel => 'Model';
+
+  @override
+  String get detailsEditNameTooltip => 'Edit name';
+
+  @override
+  String get detailsEditIpTooltip => 'Edit local IP';
+
+  @override
+  String get detailsSelectTypeTooltip => 'Select type';
+
+  @override
+  String get detailsToggleFavoriteTooltip => 'Toggle favorite';
+
+  @override
+  String get detailsConnectionStatusLabel => 'Network status';
+
+  @override
+  String get detailsConnectedWifiShort => 'Connected (Wi-Fi)';
+
+  @override
+  String get detailsDisconnectedShort => 'Disconnected';
+
+  @override
+  String get detailsRoomDropdownTooltip => 'Select room';
+
+  @override
+  String get detailsActionDelete => 'Delete';
+
+  @override
+  String get detailsEditNameDialogTitle => 'Edit device name';
+
+  @override
+  String get detailsEditNameHint => 'e.g. Plug';
+
+  @override
+  String get detailsEditIpDialogTitle => 'Edit local IP';
+
+  @override
+  String get detailsEditIpHint => 'e.g. 192.168.1.37';
+
+  @override
+  String get detailsRoomUnknown => 'Unknown room';
+
+  @override
+  String get detailsDeviceModelUnknown => 'Unknown model';
+
+  @override
+  String get detailsChartNoData => 'No data';
+
+  @override
+  String get detailsTimelineTickNow => 'Now';
+
+  @override
+  String get historyRange1d => '1D';
+
+  @override
+  String get historyRange1w => '1W';
+
+  @override
+  String get historyRange1m => '1M';
+
+  @override
+  String get historyRange1y => '1Y';
+
+  @override
+  String get historyRangeMax => 'Max';
+
+  @override
+  String get unitWattShort => 'W';
+
+  @override
+  String get confirmDeleteEquipment =>
+      'Delete this equipment? This action cannot be undone.';
+
+  @override
+  String get updatedJustNow => 'Updated just now';
+
+  @override
+  String updatedSecondsAgo(int seconds) {
+    return 'Updated ${seconds}s ago';
+  }
+
+  @override
+  String updatedMinutesAgo(int minutes) {
+    return 'Updated $minutes min ago';
+  }
+
+  @override
+  String updatedHoursAgo(int hours) {
+    return 'Updated $hours h ago';
+  }
 }

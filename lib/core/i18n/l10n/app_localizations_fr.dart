@@ -116,7 +116,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get typeLabel => 'Type';
 
   @override
-  String get equipmentTypeShellyPlusPlugS => 'Prise connectée (Shelly Plus)';
+  String get equipmentTypeShellyPlusPlugS => 'Prise connectée';
 
   @override
   String get equipmentTypeShellyPlugS => 'Prise connectée (Shelly Plug S)';
@@ -339,4 +339,159 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get languageEnglish => 'Anglais';
+
+  @override
+  String get detailsConnectionLabel => 'Connexion';
+
+  @override
+  String get detailsConnectedWifi => 'Connecté (Wi-Fi)';
+
+  @override
+  String get detailsChartPlaceholder => 'Graphique (placeholder)';
+
+  @override
+  String detailsUpdatedAt(Object value) {
+    return 'Mis à jour : $value';
+  }
+
+  @override
+  String powerWatts(Object value) {
+    return '$value W';
+  }
+
+  @override
+  String get valueYes => 'Oui';
+
+  @override
+  String get valueNo => 'Non';
+
+  @override
+  String detailsKeyValueLine(Object key, Object value) {
+    return '$key : $value';
+  }
+
+  @override
+  String energyWh(Object value) {
+    return '$value Wh';
+  }
+
+  @override
+  String get detailsHistoryWindow2h => 'Dernières 2 heures';
+
+  @override
+  String get detailsHistoryWindow24h => 'Dernières 24 heures';
+
+  @override
+  String get detailsHistoryWindow7d => '7 derniers jours';
+
+  @override
+  String detailsUpdatedAgo(Object ago) {
+    return 'Mis à jour il y a $ago';
+  }
+
+  @override
+  String get detailsUpdatedJustNow => 'Mis à jour à l\'instant';
+
+  @override
+  String get detailsTrendUp => 'En hausse';
+
+  @override
+  String get detailsTrendDown => 'En baisse';
+
+  @override
+  String get detailsTrendFlat => 'Stable';
+
+  @override
+  String get detailsDeviceModelRightLabel => 'Modèle';
+
+  @override
+  String get detailsEditNameTooltip => 'Modifier le nom';
+
+  @override
+  String get detailsEditIpTooltip => 'Modifier l\'IP locale';
+
+  @override
+  String get detailsSelectTypeTooltip => 'Choisir le type';
+
+  @override
+  String get detailsToggleFavoriteTooltip => 'Basculer en favori';
+
+  @override
+  String get detailsConnectionStatusLabel => 'Statut réseau';
+
+  @override
+  String get detailsConnectedWifiShort => 'Connecté (Wi-Fi)';
+
+  @override
+  String get detailsDisconnectedShort => 'Déconnecté';
+
+  @override
+  String get detailsRoomDropdownTooltip => 'Choisir la pièce';
+
+  @override
+  String get detailsActionDelete => 'Supprimer';
+
+  @override
+  String get detailsEditNameDialogTitle => 'Modifier le nom de l\'équipement';
+
+  @override
+  String get detailsEditNameHint => 'ex : Plug';
+
+  @override
+  String get detailsEditIpDialogTitle => 'Modifier l\'IP locale';
+
+  @override
+  String get detailsEditIpHint => 'ex : 192.168.1.37';
+
+  @override
+  String get detailsRoomUnknown => 'Pièce inconnue';
+
+  @override
+  String get detailsDeviceModelUnknown => 'Modèle inconnu';
+
+  @override
+  String get detailsChartNoData => 'Aucune donnée';
+
+  @override
+  String get detailsTimelineTickNow => 'Maintenant';
+
+  @override
+  String get historyRange1d => '1J';
+
+  @override
+  String get historyRange1w => '1S';
+
+  @override
+  String get historyRange1m => '1M';
+
+  @override
+  String get historyRange1y => '1A';
+
+  @override
+  String get historyRangeMax => 'Max';
+
+  @override
+  String get unitWattShort => 'W';
+
+  @override
+  String get confirmDeleteEquipment =>
+      'Supprimer cet équipement ? Cette action est irréversible.';
+
+  @override
+  String get updatedJustNow => 'Mis à jour à l’instant';
+
+  @override
+  String updatedSecondsAgo(int seconds) {
+    return 'Mis à jour il y a ${seconds}s';
+  }
+
+  @override
+  String updatedMinutesAgo(int minutes) {
+    return 'Mis à jour il y a $minutes min';
+  }
+
+  @override
+  String updatedHoursAgo(int hours) {
+    return 'Mis à jour il y a $hours h';
+  }
 }
