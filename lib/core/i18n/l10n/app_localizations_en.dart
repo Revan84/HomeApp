@@ -494,4 +494,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String updatedHoursAgo(int hours) {
     return 'Updated $hours h ago';
   }
+
+  @override
+  String get homeWelcomeTitle => 'Welcome';
+
+  @override
+  String get homeDefaultAreaGroupName => 'House #1';
+
+  @override
+  String homeConnectionSummary(int onlineCount, int offlineCount) {
+    return '$onlineCount connected devices · $offlineCount offline';
+  }
+
+  @override
+  String get favoritesPageTitle => 'Favorites list';
+
+  @override
+  String get favoriteRemoveTooltip => 'Remove from favorites';
+
+  @override
+  String get favoritesActiveFilterLabel => 'Active: All';
+
+  @override
+  String get favoritesFilterTooltip => 'Open favorites filters';
+
+  @override
+  String get favoritesAddTooltip => 'Add a favorite';
 }

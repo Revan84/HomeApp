@@ -494,4 +494,30 @@ class AppLocalizationsFr extends AppLocalizations {
   String updatedHoursAgo(int hours) {
     return 'Mis à jour il y a $hours h';
   }
+
+  @override
+  String get homeWelcomeTitle => 'Bienvenue';
+
+  @override
+  String get homeDefaultAreaGroupName => 'Maison #1';
+
+  @override
+  String homeConnectionSummary(int onlineCount, int offlineCount) {
+    return '$onlineCount équipements connectés · $offlineCount hors ligne';
+  }
+
+  @override
+  String get favoritesPageTitle => 'Liste des favoris';
+
+  @override
+  String get favoriteRemoveTooltip => 'Retirer des favoris';
+
+  @override
+  String get favoritesActiveFilterLabel => 'Actif(s) : Tous';
+
+  @override
+  String get favoritesFilterTooltip => 'Ouvrir les filtres des favoris';
+
+  @override
+  String get favoritesAddTooltip => 'Ajouter un favori';
 }

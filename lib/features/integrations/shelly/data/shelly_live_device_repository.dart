@@ -1,25 +1,36 @@
 import 'package:flutter/foundation.dart';
+
+import '../../../../core/network/http_client.dart';
+
 import '../../../../domain/models/device_endpoint.dart';
 import '../../../../domain/models/live_state.dart';
 import '../../../../domain/repositories/live_device_repository.dart';
+
 import 'dto/shelly_switch_status_dto.dart';
 import 'shelly_rpc_client.dart';
 
 class ShellyLiveDeviceRepository implements LiveDeviceRepository {
   final ShellyRpcClient _rpc;
+
   ShellyLiveDeviceRepository(this._rpc);
 
   @override
   Future<LiveState> fetch(DeviceEndpoint endpoint, LiveState previous) async {
     try {
-      final json = await _rpc.getSwitchStatus(endpoint.ip, id: endpoint.channel);
+      final json = await _rpc.getSwitchStatus(
+        endpoint.ip,
+        id: endpoint.channel,
+      );
+
       final dto = ShellySwitchStatusDto.fromJson(json);
 
-      final prevPower = previous.powerW;
+      final previousPower = previous.powerW;
       final nextPower = dto.apower;
 
-      final trend = (prevPower != null && nextPower != null)
-          ? (nextPower > prevPower ? 1 : (nextPower < prevPower ? -1 : 0))
+      final trend = (previousPower != null && nextPower != null)
+          ? (nextPower > previousPower
+              ? 1
+              : (nextPower < previousPower ? -1 : 0))
           : 0;
 
       return previous.copyWith(
@@ -32,10 +43,23 @@ class ShellyLiveDeviceRepository implements LiveDeviceRepository {
         trendPower: trend,
         lastUpdatedAt: DateTime.now(),
       );
-    } catch (e) {
+    } on HttpStatusException catch (error) {
       if (kDebugMode) {
-        print('Shelly fetch failed: $e');
+        debugPrint(
+          'Shelly fetch failed for ${endpoint.ip} '
+          '(status ${error.statusCode}) body=${error.body}',
+        );
       }
+
+      return previous.copyWith(
+        online: false,
+        failCount: previous.failCount + 1,
+      );
+    } catch (error) {
+      if (kDebugMode) {
+        debugPrint('Shelly fetch failed for ${endpoint.ip}: $error');
+      }
+
       return previous.copyWith(
         online: false,
         failCount: previous.failCount + 1,
@@ -45,6 +69,10 @@ class ShellyLiveDeviceRepository implements LiveDeviceRepository {
 
   @override
   Future<void> setOutput(DeviceEndpoint endpoint, bool on) async {
-    await _rpc.setSwitch(endpoint.ip, id: endpoint.channel, on: on);
+    await _rpc.setSwitch(
+      endpoint.ip,
+      id: endpoint.channel,
+      on: on,
+    );
   }
 }

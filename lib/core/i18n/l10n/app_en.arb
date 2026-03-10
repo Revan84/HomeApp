@@ -663,5 +663,47 @@
                 "example": "2"
             }
         }
+    },
+    "homeWelcomeTitle": "Welcome",
+    "@homeWelcomeTitle": {
+        "description": "Welcome title displayed in the Home page header"
+    },
+    "homeDefaultAreaGroupName": "House #1",
+    "@homeDefaultAreaGroupName": {
+        "description": "Default room-group name displayed in the Home page header"
+    },
+    "homeConnectionSummary": "{onlineCount} connected devices · {offlineCount} offline",
+    "@homeConnectionSummary": {
+        "description": "Connectivity summary displayed in the Home page header",
+        "placeholders": {
+            "onlineCount": {
+                "type": "int",
+                "example": "12"
+            },
+            "offlineCount": {
+                "type": "int",
+                "example": "1"
+            }
+        }
+    },
+    "favoritesPageTitle": "Favorites list",
+    "@favoritesPageTitle": {
+        "description": "Title of the page listing favorite devices"
+    },
+    "favoriteRemoveTooltip": "Remove from favorites",
+    "@favoriteRemoveTooltip": {
+        "description": "Tooltip of the button used to remove a device from favorites"
+    },
+    "favoritesActiveFilterLabel": "Active: All",
+    "@favoritesActiveFilterLabel": {
+        "description": "Label displayed at the top-right of the favorites page for the current active filter state"
+    },
+    "favoritesFilterTooltip": "Open favorites filters",
+    "@favoritesFilterTooltip": {
+        "description": "Tooltip of the button used to open filters on the favorites page"
+    },
+    "favoritesAddTooltip": "Add a favorite",
+    "@favoritesAddTooltip": {
+        "description": "Tooltip of the round button used to add a favorite on the favorites page"
     }
 }

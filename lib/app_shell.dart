@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:front_end/core/i18n/loc.dart';
-import 'package:front_end/features/home/view/add_room_sheet.dart';
+import 'package:front_end/features/home/widgets/add_room_sheet.dart';
 
 import 'core/widgets/curved_bottom_bar.dart';
 import 'core/theme/app_colors.dart';
 
-import 'features/home/view/home_tab.dart';
-import 'features/stats/view/stats_tab.dart';
-import 'features/equipments/view/equipments_tab.dart';
-import 'features/automation/view/automation_tab.dart';
-import 'features/profile/view/profile_tab.dart';
-import 'features/equipments/view/add_equipment_sheet.dart';
+import 'features/home/pages/home_tab.dart';
+import 'features/stats/pages/stats_tab.dart';
+import 'features/equipments/pages/equipments_tab.dart';
+import 'features/automation/pages/automation_tab.dart';
+import 'features/profile/pages/profile_tab.dart';
+import 'features/equipments/widgets/add_equipment_sheet.dart';
 
 enum _FabAction { addEquipment, addRoom }
 

@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:http/http.dart' as http;
 
 import 'app_shell.dart';
+
 import 'core/theme/app_theme.dart';
 import 'core/i18n/app_strings.dart';
 import 'core/i18n/l10n/app_localizations.dart';
@@ -15,13 +16,13 @@ import 'core/storage/local_storage.dart';
 import 'domain/repositories/equipment_repository.dart';
 import 'domain/repositories/room_repository.dart';
 
-import 'features/equipments/data/equipment_repository_local.dart';
-import 'features/home/data/room_repository_local.dart';
+import 'data/repositories/equipment_repository_local.dart';
+import 'data/repositories/room_repository_local.dart';
 
 import 'features/integrations/shelly/data/shelly_rpc_client.dart';
 import 'features/integrations/shelly/data/shelly_live_device_repository.dart';
 
-import 'features/live/controller/live_polling_controller.dart';
+import 'features/live/controllers/live_polling_controller.dart';
 import 'features/live/domain/live_polling_config.dart';
 
 Future<void> main() async {

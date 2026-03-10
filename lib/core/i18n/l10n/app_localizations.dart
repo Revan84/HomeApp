@@ -961,6 +961,54 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Mis à jour il y a {hours} h'**
   String updatedHoursAgo(int hours);
+
+  /// Titre de bienvenue affiché dans l'en-tête de la page d'accueil
+  ///
+  /// In fr, this message translates to:
+  /// **'Bienvenue'**
+  String get homeWelcomeTitle;
+
+  /// Nom par défaut du groupe de pièces affiché dans l'en-tête d'accueil
+  ///
+  /// In fr, this message translates to:
+  /// **'Maison #1'**
+  String get homeDefaultAreaGroupName;
+
+  /// Résumé de connectivité affiché dans l'en-tête d'accueil
+  ///
+  /// In fr, this message translates to:
+  /// **'{onlineCount} équipements connectés · {offlineCount} hors ligne'**
+  String homeConnectionSummary(int onlineCount, int offlineCount);
+
+  /// Titre de la page listant les équipements favoris
+  ///
+  /// In fr, this message translates to:
+  /// **'Liste des favoris'**
+  String get favoritesPageTitle;
+
+  /// Tooltip du bouton pour retirer un équipement des favoris
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirer des favoris'**
+  String get favoriteRemoveTooltip;
+
+  /// Libellé affiché en haut à droite de la page favoris pour l'état du filtre actif
+  ///
+  /// In fr, this message translates to:
+  /// **'Actif(s) : Tous'**
+  String get favoritesActiveFilterLabel;
+
+  /// Tooltip du bouton d'ouverture des filtres sur la page favoris
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvrir les filtres des favoris'**
+  String get favoritesFilterTooltip;
+
+  /// Tooltip du bouton rond permettant d'ajouter un favori sur la page favoris
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un favori'**
+  String get favoritesAddTooltip;
 }
 
 class _AppLocalizationsDelegate

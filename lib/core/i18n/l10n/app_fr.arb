@@ -663,5 +663,47 @@
                 "example": "2"
             }
         }
+    },
+    "homeWelcomeTitle": "Bienvenue",
+    "@homeWelcomeTitle": {
+        "description": "Titre de bienvenue affiché dans l'en-tête de la page d'accueil"
+    },
+    "homeDefaultAreaGroupName": "Maison #1",
+    "@homeDefaultAreaGroupName": {
+        "description": "Nom par défaut du groupe de pièces affiché dans l'en-tête d'accueil"
+    },
+    "homeConnectionSummary": "{onlineCount} équipements connectés · {offlineCount} hors ligne",
+    "@homeConnectionSummary": {
+        "description": "Résumé de connectivité affiché dans l'en-tête d'accueil",
+        "placeholders": {
+            "onlineCount": {
+                "type": "int",
+                "example": "12"
+            },
+            "offlineCount": {
+                "type": "int",
+                "example": "1"
+            }
+        }
+    },
+    "favoritesPageTitle": "Liste des favoris",
+    "@favoritesPageTitle": {
+        "description": "Titre de la page listant les équipements favoris"
+    },
+    "favoriteRemoveTooltip": "Retirer des favoris",
+    "@favoriteRemoveTooltip": {
+        "description": "Tooltip du bouton pour retirer un équipement des favoris"
+    },
+    "favoritesActiveFilterLabel": "Actif(s) : Tous",
+    "@favoritesActiveFilterLabel": {
+        "description": "Libellé affiché en haut à droite de la page favoris pour l'état du filtre actif"
+    },
+    "favoritesFilterTooltip": "Ouvrir les filtres des favoris",
+    "@favoritesFilterTooltip": {
+        "description": "Tooltip du bouton d'ouverture des filtres sur la page favoris"
+    },
+    "favoritesAddTooltip": "Ajouter un favori",
+    "@favoritesAddTooltip": {
+        "description": "Tooltip du bouton rond permettant d'ajouter un favori sur la page favoris"
     }
 }

@@ -1,4 +1,4 @@
-import '../../features/home/model/room.dart';
+import '../models/room.dart';
 
 abstract class RoomRepository {
   Future<List<Room>> loadAll();
