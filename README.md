@@ -1,16 +1,113 @@
-# front_end
+# HomeApp
 
-A new Flutter project.
+HomeApp is a **Flutter mobile application** designed to monitor and control smart home devices.
+
+The application communicates with the HomeApp backend API written in Go.
+
+---
+
+## Features
+
+* Manage connected devices
+* Monitor power consumption
+* View historical device metrics
+* Control smart plugs
+* Organize devices by home and room
+* Automation rules (planned)
+
+---
+
+## Tech Stack
+
+* **Flutter**
+* **Dart**
+* **REST API**
+* **Material UI**
+
+Backend API:
+
+https://github.com/Revan84/HomeApp-backend
+
+---
+
+## Screens
+
+Planned interface sections:
+
+* Home dashboard
+* Rooms and devices
+* Equipment details
+* Statistics
+* Automations
+* User profile
+
+---
+
+## Project Structure
+
+```
+lib/
+ ├─ core/
+ │   ├─ theme
+ │   ├─ widgets
+ │   └─ utils
+ │
+ ├─ features/
+ │   ├─ home
+ │   ├─ equipments
+ │   ├─ stats
+ │   ├─ automation
+ │   └─ profile
+ │
+ └─ main.dart
+```
+
+---
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+### Requirements
 
-A few resources to get you started if this is your first Flutter project:
+* Flutter ≥ 3.x
+* Dart ≥ 3.x
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Install dependencies
+
+```
+flutter pub get
+```
+
+---
+
+### Run the application
+
+```
+flutter run
+```
+
+---
+
+## Backend
+
+This app communicates with the HomeApp backend:
+
+https://github.com/Revan84/HomeApp-backend
+
+---
+
+## Project Status
+
+🚧 **Work in progress**
+
+The application is currently under development.
+
+The goal is to build a complete home automation platform capable of managing multiple IoT devices.
+
+---
+
+## Author
+
+Quentin Ellt
+
