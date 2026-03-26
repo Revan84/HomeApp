@@ -14,13 +14,15 @@ import 'core/network/http_client.dart';
 import 'core/storage/local_storage.dart';
 
 import 'domain/repositories/equipment_repository.dart';
+import 'domain/repositories/room_group_repository.dart';
 import 'domain/repositories/room_repository.dart';
 
 import 'data/repositories/equipment_repository_local.dart';
+import 'data/repositories/room_group_repository_local.dart';
 import 'data/repositories/room_repository_local.dart';
 
-import 'features/integrations/shelly/data/shelly_rpc_client.dart';
 import 'features/integrations/shelly/data/shelly_live_device_repository.dart';
+import 'features/integrations/shelly/data/shelly_rpc_client.dart';
 
 import 'features/live/controllers/live_polling_controller.dart';
 import 'features/live/domain/live_polling_config.dart';
@@ -33,6 +35,7 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   final SharedPreferences prefs;
+
   const MyApp({super.key, required this.prefs});
 
   @override
@@ -42,45 +45,44 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider<LocalStorage>.value(value: storage),
-
         ChangeNotifierProvider<LocaleController>(
           create: (_) => LocaleController(prefs),
         ),
-
         Provider<EquipmentRepository>(
           create: (_) => EquipmentRepositoryLocal(storage),
         ),
-        Provider<RoomRepository>(
-          create: (_) => RoomRepositoryLocal(storage),
+        Provider<RoomGroupRepository>(
+          create: (_) => RoomGroupRepositoryLocal(storage),
         ),
-
+        Provider<RoomRepository>(create: (_) => RoomRepositoryLocal(storage)),
         Provider<http.Client>(
           create: (_) => http.Client(),
-          dispose: (_, c) => c.close(),
+          dispose: (_, client) => client.close(),
         ),
-
         Provider<HttpClient>(
-          create: (ctx) => HttpClient(ctx.read<http.Client>()),
+          create: (context) => HttpClient(context.read<http.Client>()),
         ),
-
         Provider<ShellyRpcClient>(
-          create: (ctx) => ShellyRpcClient(ctx.read<HttpClient>()),
+          create: (context) => ShellyRpcClient(context.read<HttpClient>()),
         ),
         Provider<ShellyLiveDeviceRepository>(
-          create: (ctx) => ShellyLiveDeviceRepository(ctx.read<ShellyRpcClient>()),
+          create: (context) =>
+              ShellyLiveDeviceRepository(context.read<ShellyRpcClient>()),
         ),
-
         ChangeNotifierProvider<LivePollingController>(
-          create: (ctx) {
-            final repo = ctx.read<ShellyLiveDeviceRepository>();
-            final ctl = LivePollingController(repo, const LivePollingConfig());
-            ctl.start();
-            return ctl;
+          create: (context) {
+            final repo = context.read<ShellyLiveDeviceRepository>();
+            final controller = LivePollingController(
+              repo,
+              const LivePollingConfig(),
+            );
+            controller.start();
+            return controller;
           },
         ),
       ],
       child: Consumer<LocaleController>(
-        builder: (context, localeCtl, _) {
+        builder: (context, localeController, _) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             title: AppStrings.appName,
@@ -93,7 +95,7 @@ class MyApp extends StatelessWidget {
               GlobalCupertinoLocalizations.delegate,
             ],
             supportedLocales: const [Locale('fr'), Locale('en')],
-            locale: localeCtl.locale,
+            locale: localeController.locale,
           );
         },
       ),

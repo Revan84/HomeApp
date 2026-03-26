@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_colors.dart';
-import '../../../core/design_system/layout/app_section_header.dart';
 import '../../../core/i18n/loc.dart';
 
 import '../../live/controllers/live_polling_controller.dart';
@@ -53,8 +52,6 @@ class _AreasSectionState extends State<AreasSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SectionHeader(title: context.l10n.areas),
-        const SizedBox(height: 10),
 
         if (rooms.isEmpty)
           Padding(

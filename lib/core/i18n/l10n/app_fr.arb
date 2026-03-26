@@ -630,7 +630,7 @@
     "@confirmDeleteEquipment": {
         "description": "Message de confirmation pour supprimer l'équipement"
     },
-    "updatedJustNow": "Mis à jour à l’instant",
+    "updatedJustNow": "Mis à jour à l'instant",
     "@updatedJustNow": {
         "description": "Displayed when a device was updated less than 10 seconds ago."
     },
@@ -705,5 +705,183 @@
     "favoritesAddTooltip": "Ajouter un favori",
     "@favoritesAddTooltip": {
         "description": "Tooltip du bouton rond permettant d'ajouter un favori sur la page favoris"
+    },
+    "roomsSectionTitle": "Areas",
+    "@roomsSectionTitle": {
+        "description": "Titre de section de la liste des pièces affichée sur la page d'accueil"
+    },
+    "roomsPageTitle": "Liste des pièces",
+    "@roomsPageTitle": {
+        "description": "Titre de la page listant les ensembles de pièces et leurs pièces"
+    },
+    "roomsActiveFilterLabel": "Actif(s) : Tous",
+    "@roomsActiveFilterLabel": {
+        "description": "Libellé affiché en haut à droite de la page des pièces pour l'état du filtre actif"
+    },
+    "roomsFilterTooltip": "Ouvrir les filtres des pièces",
+    "@roomsFilterTooltip": {
+        "description": "Tooltip du bouton d'ouverture des filtres sur la page des pièces"
+    },
+    "roomsEmptyState": "Aucun ensemble de pièces pour le moment",
+    "@roomsEmptyState": {
+        "description": "Texte affiché quand aucun ensemble de pièces n'existe encore"
+    },
+    "roomsAddGroupTitle": "Ajouter un ensemble",
+    "@roomsAddGroupTitle": {
+        "description": "Titre du dialogue d'ajout d'un ensemble de pièces"
+    },
+    "roomsRenameGroupTitle": "Renommer l'ensemble",
+    "@roomsRenameGroupTitle": {
+        "description": "Titre du dialogue de renommage d'un ensemble de pièces"
+    },
+    "roomsGroupNameHint": "Ex. Maison, Appartement",
+    "@roomsGroupNameHint": {
+        "description": "Placeholder du champ de saisie du nom d'un ensemble de pièces"
+    },
+    "roomsAddRoomTitle": "Ajouter une pièce",
+    "@roomsAddRoomTitle": {
+        "description": "Titre du dialogue d'ajout d'une pièce"
+    },
+    "roomsRenameRoomTitle": "Renommer la pièce",
+    "@roomsRenameRoomTitle": {
+        "description": "Titre du dialogue de renommage d'une pièce"
+    },
+    "roomsRoomNameHint": "Ex. Salon, Cuisine",
+    "@roomsRoomNameHint": {
+        "description": "Placeholder du champ de saisie du nom d'une pièce"
+    },
+    "roomsAddGroupTooltip": "Ajouter un ensemble de pièces",
+    "@roomsAddGroupTooltip": {
+        "description": "Tooltip du bouton permettant d'ajouter un ensemble de pièces"
+    },
+    "roomsAddRoomTooltip": "Ajouter une pièce",
+    "@roomsAddRoomTooltip": {
+        "description": "Tooltip du bouton permettant d'ajouter une pièce dans un ensemble"
+    },
+    "roomsRenameGroupTooltip": "Renommer l'ensemble",
+    "@roomsRenameGroupTooltip": {
+        "description": "Tooltip du bouton permettant de renommer un ensemble de pièces"
+    },
+    "roomsDeleteGroupTooltip": "Supprimer l'ensemble",
+    "@roomsDeleteGroupTooltip": {
+        "description": "Tooltip du bouton permettant de supprimer un ensemble de pièces"
+    },
+    "roomsDeleteRoomTooltip": "Supprimer la pièce",
+    "@roomsDeleteRoomTooltip": {
+        "description": "Tooltip du bouton permettant de supprimer une pièce"
+    },
+    "roomsDeleteGroupTitle": "Supprimer l'ensemble",
+    "@roomsDeleteGroupTitle": {
+        "description": "Titre du dialogue de confirmation de suppression d'un ensemble de pièces"
+    },
+    "roomsDeleteEmptyGroupMessage": "Supprimer l'ensemble « {groupName} » ?",
+    "@roomsDeleteEmptyGroupMessage": {
+        "description": "Message de confirmation pour supprimer un ensemble vide",
+        "placeholders": {
+            "groupName": {
+                "type": "String",
+                "example": "Maison"
+            }
+        }
+    },
+    "roomsDeleteGroupWithRoomsMessage": "Supprimer l'ensemble « {groupName} » et ses {roomCount} pièce(s) ?",
+    "@roomsDeleteGroupWithRoomsMessage": {
+        "description": "Message de confirmation pour supprimer un ensemble contenant des pièces",
+        "placeholders": {
+            "groupName": {
+                "type": "String",
+                "example": "Maison"
+            },
+            "roomCount": {
+                "type": "int",
+                "example": "3"
+            }
+        }
+    },
+    "roomsDeleteRoomTitle": "Supprimer la pièce",
+    "@roomsDeleteRoomTitle": {
+        "description": "Titre du dialogue de confirmation de suppression d'une pièce"
+    },
+    "roomsDeleteRoomMessage": "Supprimer la pièce « {roomName} » ?",
+    "@roomsDeleteRoomMessage": {
+        "description": "Message de confirmation pour supprimer une pièce",
+        "placeholders": {
+            "roomName": {
+                "type": "String",
+                "example": "Salon"
+            }
+        }
+    },
+    "roomsNoGroupForQuickAdd": "Vous devez d'abord créer un ensemble de pièces avant d'ajouter une pièce.",
+    "@roomsNoGroupForQuickAdd": {
+        "description": "Message affiché dans le quick add de pièce quand aucun ensemble de pièces n'existe encore"
+    },
+    "roomsFirstGroupLabel": "Premier ensemble",
+    "@roomsFirstGroupLabel": {
+        "description": "Label du champ de saisie pour créer un premier ensemble de pièces depuis le quick add"
+    },
+    "roomsCreateFirstGroup": "Créer le premier ensemble",
+    "@roomsCreateFirstGroup": {
+        "description": "Texte du bouton permettant de créer le premier ensemble de pièces depuis le quick add"
+    },
+    "roomsTargetGroupLabel": "Ensemble cible",
+    "@roomsTargetGroupLabel": {
+        "description": "Label du sélecteur du groupe cible quand on ajoute une pièce"
+    },
+    "roomsTargetGroupRequired": "Sélectionnez un ensemble de pièces",
+    "@roomsTargetGroupRequired": {
+        "description": "Message d'erreur affiché quand aucun groupe cible n'est sélectionné pour ajouter une pièce"
+    },
+    "homeNoActiveRoomGroup": "Aucun ensemble",
+    "@homeNoActiveRoomGroup": {
+        "description": "Libellé affiché dans l'en-tête de la home quand aucun ensemble de pièces n'est sélectionné"
+    },
+    "homeSelectRoomGroupTitle": "Choisir un ensemble",
+    "@homeSelectRoomGroupTitle": {
+        "description": "Titre du bottom sheet permettant de choisir l'ensemble de pièces actif sur la home"
+    },
+    "roomsNoActiveGroupSelected": "Aucun ensemble de pièces actif. Sélectionnez-en un depuis l'accueil.",
+    "@roomsNoActiveGroupSelected": {
+        "description": "Message affiché dans la page des pièces lorsqu'aucun ensemble actif n'est sélectionné"
+    },
+    "roomsEmptyForGroup": "Aucune pièce pour l'ensemble « {groupName} ».",
+    "@roomsEmptyForGroup": {
+        "description": "Message affiché dans la page des pièces lorsque l'ensemble actif ne contient encore aucune pièce",
+        "placeholders": {
+            "groupName": {
+                "type": "String",
+                "example": "Maison"
+            }
+        }
+    },
+    "roomsGroupNameFieldLabel": "Nom de l'ensemble",
+    "@roomsGroupNameFieldLabel": {
+        "description": "Label du champ de saisie du nom d'un ensemble de pièces"
+    },
+    "validationRoomGroupNameRequired": "Saisissez un nom d'ensemble",
+    "@validationRoomGroupNameRequired": {
+        "description": "Message d'erreur affiché quand le nom d'un ensemble de pièces est vide"
+    },
+    "roomsAddRoomSheetTitle": "Ajouter une pièce",
+    "@roomsAddRoomSheetTitle": {
+        "description": "Titre du bottom sheet listant les pièces existantes à ajouter à un ensemble"
+    },
+    "roomsCreateNewRoom": "Créer une nouvelle pièce",
+    "@roomsCreateNewRoom": {
+        "description": "Libellé de la ligne d'action pour créer une nouvelle pièce depuis le sheet d'ajout"
+    },
+    "roomsNoAvailableRooms": "Aucune autre pièce disponible",
+    "@roomsNoAvailableRooms": {
+        "description": "Message affiché dans le sheet d'ajout quand il n'y a pas de pièces d'autres ensembles à ajouter"
+    },
+    "roomsEquipmentCount": "({count} équipements)",
+    "@roomsEquipmentCount": {
+        "description": "Nombre d'équipements affiché dans la pilule d'une pièce sur la page des pièces",
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "example": "3"
+            }
+        }
     }
 }

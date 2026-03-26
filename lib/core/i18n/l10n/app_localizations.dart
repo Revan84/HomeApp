@@ -941,7 +941,7 @@ abstract class AppLocalizations {
   /// Displayed when a device was updated less than 10 seconds ago.
   ///
   /// In fr, this message translates to:
-  /// **'Mis à jour à l’instant'**
+  /// **'Mis à jour à l\'instant'**
   String get updatedJustNow;
 
   /// Message informant de la dernière mise à jour en secondes de l'équipement.
@@ -1009,6 +1009,222 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Ajouter un favori'**
   String get favoritesAddTooltip;
+
+  /// Titre de section de la liste des pièces affichée sur la page d'accueil
+  ///
+  /// In fr, this message translates to:
+  /// **'Areas'**
+  String get roomsSectionTitle;
+
+  /// Titre de la page listant les ensembles de pièces et leurs pièces
+  ///
+  /// In fr, this message translates to:
+  /// **'Liste des pièces'**
+  String get roomsPageTitle;
+
+  /// Libellé affiché en haut à droite de la page des pièces pour l'état du filtre actif
+  ///
+  /// In fr, this message translates to:
+  /// **'Actif(s) : Tous'**
+  String get roomsActiveFilterLabel;
+
+  /// Tooltip du bouton d'ouverture des filtres sur la page des pièces
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvrir les filtres des pièces'**
+  String get roomsFilterTooltip;
+
+  /// Texte affiché quand aucun ensemble de pièces n'existe encore
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun ensemble de pièces pour le moment'**
+  String get roomsEmptyState;
+
+  /// Titre du dialogue d'ajout d'un ensemble de pièces
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un ensemble'**
+  String get roomsAddGroupTitle;
+
+  /// Titre du dialogue de renommage d'un ensemble de pièces
+  ///
+  /// In fr, this message translates to:
+  /// **'Renommer l\'ensemble'**
+  String get roomsRenameGroupTitle;
+
+  /// Placeholder du champ de saisie du nom d'un ensemble de pièces
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. Maison, Appartement'**
+  String get roomsGroupNameHint;
+
+  /// Titre du dialogue d'ajout d'une pièce
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter une pièce'**
+  String get roomsAddRoomTitle;
+
+  /// Titre du dialogue de renommage d'une pièce
+  ///
+  /// In fr, this message translates to:
+  /// **'Renommer la pièce'**
+  String get roomsRenameRoomTitle;
+
+  /// Placeholder du champ de saisie du nom d'une pièce
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex. Salon, Cuisine'**
+  String get roomsRoomNameHint;
+
+  /// Tooltip du bouton permettant d'ajouter un ensemble de pièces
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un ensemble de pièces'**
+  String get roomsAddGroupTooltip;
+
+  /// Tooltip du bouton permettant d'ajouter une pièce dans un ensemble
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter une pièce'**
+  String get roomsAddRoomTooltip;
+
+  /// Tooltip du bouton permettant de renommer un ensemble de pièces
+  ///
+  /// In fr, this message translates to:
+  /// **'Renommer l\'ensemble'**
+  String get roomsRenameGroupTooltip;
+
+  /// Tooltip du bouton permettant de supprimer un ensemble de pièces
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer l\'ensemble'**
+  String get roomsDeleteGroupTooltip;
+
+  /// Tooltip du bouton permettant de supprimer une pièce
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer la pièce'**
+  String get roomsDeleteRoomTooltip;
+
+  /// Titre du dialogue de confirmation de suppression d'un ensemble de pièces
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer l\'ensemble'**
+  String get roomsDeleteGroupTitle;
+
+  /// Message de confirmation pour supprimer un ensemble vide
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer l\'ensemble « {groupName} » ?'**
+  String roomsDeleteEmptyGroupMessage(String groupName);
+
+  /// Message de confirmation pour supprimer un ensemble contenant des pièces
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer l\'ensemble « {groupName} » et ses {roomCount} pièce(s) ?'**
+  String roomsDeleteGroupWithRoomsMessage(String groupName, int roomCount);
+
+  /// Titre du dialogue de confirmation de suppression d'une pièce
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer la pièce'**
+  String get roomsDeleteRoomTitle;
+
+  /// Message de confirmation pour supprimer une pièce
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer la pièce « {roomName} » ?'**
+  String roomsDeleteRoomMessage(String roomName);
+
+  /// Message affiché dans le quick add de pièce quand aucun ensemble de pièces n'existe encore
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous devez d\'abord créer un ensemble de pièces avant d\'ajouter une pièce.'**
+  String get roomsNoGroupForQuickAdd;
+
+  /// Label du champ de saisie pour créer un premier ensemble de pièces depuis le quick add
+  ///
+  /// In fr, this message translates to:
+  /// **'Premier ensemble'**
+  String get roomsFirstGroupLabel;
+
+  /// Texte du bouton permettant de créer le premier ensemble de pièces depuis le quick add
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer le premier ensemble'**
+  String get roomsCreateFirstGroup;
+
+  /// Label du sélecteur du groupe cible quand on ajoute une pièce
+  ///
+  /// In fr, this message translates to:
+  /// **'Ensemble cible'**
+  String get roomsTargetGroupLabel;
+
+  /// Message d'erreur affiché quand aucun groupe cible n'est sélectionné pour ajouter une pièce
+  ///
+  /// In fr, this message translates to:
+  /// **'Sélectionnez un ensemble de pièces'**
+  String get roomsTargetGroupRequired;
+
+  /// Libellé affiché dans l'en-tête de la home quand aucun ensemble de pièces n'est sélectionné
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun ensemble'**
+  String get homeNoActiveRoomGroup;
+
+  /// Titre du bottom sheet permettant de choisir l'ensemble de pièces actif sur la home
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir un ensemble'**
+  String get homeSelectRoomGroupTitle;
+
+  /// Message affiché dans la page des pièces lorsqu'aucun ensemble actif n'est sélectionné
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun ensemble de pièces actif. Sélectionnez-en un depuis l\'accueil.'**
+  String get roomsNoActiveGroupSelected;
+
+  /// Message affiché dans la page des pièces lorsque l'ensemble actif ne contient encore aucune pièce
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune pièce pour l\'ensemble « {groupName} ».'**
+  String roomsEmptyForGroup(String groupName);
+
+  /// Label du champ de saisie du nom d'un ensemble de pièces
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom de l\'ensemble'**
+  String get roomsGroupNameFieldLabel;
+
+  /// Message d'erreur affiché quand le nom d'un ensemble de pièces est vide
+  ///
+  /// In fr, this message translates to:
+  /// **'Saisissez un nom d\'ensemble'**
+  String get validationRoomGroupNameRequired;
+
+  /// Titre du bottom sheet listant les pièces existantes à ajouter à un ensemble
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter une pièce'**
+  String get roomsAddRoomSheetTitle;
+
+  /// Libellé de la ligne d'action pour créer une nouvelle pièce depuis le sheet d'ajout
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer une nouvelle pièce'**
+  String get roomsCreateNewRoom;
+
+  /// Message affiché dans le sheet d'ajout quand il n'y a pas de pièces d'autres ensembles à ajouter
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune autre pièce disponible'**
+  String get roomsNoAvailableRooms;
+
+  /// Nombre d'équipements affiché dans la pilule d'une pièce sur la page des pièces
+  ///
+  /// In fr, this message translates to:
+  /// **'({count} équipements)'**
+  String roomsEquipmentCount(int count);
 }
 
 class _AppLocalizationsDelegate

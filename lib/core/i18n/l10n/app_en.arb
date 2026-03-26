@@ -705,5 +705,183 @@
     "favoritesAddTooltip": "Add a favorite",
     "@favoritesAddTooltip": {
         "description": "Tooltip of the round button used to add a favorite on the favorites page"
+    },
+    "roomsSectionTitle": "Areas",
+    "@roomsSectionTitle": {
+        "description": "Section title of the rooms list displayed on the Home page"
+    },
+    "roomsPageTitle": "Rooms list",
+    "@roomsPageTitle": {
+        "description": "Title of the page listing room groups and rooms"
+    },
+    "roomsActiveFilterLabel": "Active: All",
+    "@roomsActiveFilterLabel": {
+        "description": "Label displayed at the top-right of the rooms page for the active filter state"
+    },
+    "roomsFilterTooltip": "Open room filters",
+    "@roomsFilterTooltip": {
+        "description": "Tooltip of the filter button on the rooms page"
+    },
+    "roomsEmptyState": "No room groups yet",
+    "@roomsEmptyState": {
+        "description": "Text displayed when no room group exists yet"
+    },
+    "roomsAddGroupTitle": "Add a group",
+    "@roomsAddGroupTitle": {
+        "description": "Title of the dialog used to add a room group"
+    },
+    "roomsRenameGroupTitle": "Rename group",
+    "@roomsRenameGroupTitle": {
+        "description": "Title of the dialog used to rename a room group"
+    },
+    "roomsGroupNameHint": "Ex. House, Apartment",
+    "@roomsGroupNameHint": {
+        "description": "Placeholder of the room-group name input"
+    },
+    "roomsAddRoomTitle": "Add a room",
+    "@roomsAddRoomTitle": {
+        "description": "Title of the dialog used to add a room"
+    },
+    "roomsRenameRoomTitle": "Rename room",
+    "@roomsRenameRoomTitle": {
+        "description": "Title of the dialog used to rename a room"
+    },
+    "roomsRoomNameHint": "Ex. Living room, Kitchen",
+    "@roomsRoomNameHint": {
+        "description": "Placeholder of the room name input"
+    },
+    "roomsAddGroupTooltip": "Add a room group",
+    "@roomsAddGroupTooltip": {
+        "description": "Tooltip of the button used to add a room group"
+    },
+    "roomsAddRoomTooltip": "Add a room",
+    "@roomsAddRoomTooltip": {
+        "description": "Tooltip of the button used to add a room inside a group"
+    },
+    "roomsRenameGroupTooltip": "Rename group",
+    "@roomsRenameGroupTooltip": {
+        "description": "Tooltip of the button used to rename a room group"
+    },
+    "roomsDeleteGroupTooltip": "Delete group",
+    "@roomsDeleteGroupTooltip": {
+        "description": "Tooltip of the button used to delete a room group"
+    },
+    "roomsDeleteRoomTooltip": "Delete room",
+    "@roomsDeleteRoomTooltip": {
+        "description": "Tooltip of the button used to delete a room"
+    },
+    "roomsDeleteGroupTitle": "Delete group",
+    "@roomsDeleteGroupTitle": {
+        "description": "Title of the confirmation dialog used to delete a room group"
+    },
+    "roomsDeleteEmptyGroupMessage": "Delete the group “{groupName}”?",
+    "@roomsDeleteEmptyGroupMessage": {
+        "description": "Confirmation message for deleting an empty room group",
+        "placeholders": {
+            "groupName": {
+                "type": "String",
+                "example": "House"
+            }
+        }
+    },
+    "roomsDeleteGroupWithRoomsMessage": "Delete the group “{groupName}” and its {roomCount} room(s)?",
+    "@roomsDeleteGroupWithRoomsMessage": {
+        "description": "Confirmation message for deleting a room group containing rooms",
+        "placeholders": {
+            "groupName": {
+                "type": "String",
+                "example": "House"
+            },
+            "roomCount": {
+                "type": "int",
+                "example": "3"
+            }
+        }
+    },
+    "roomsDeleteRoomTitle": "Delete room",
+    "@roomsDeleteRoomTitle": {
+        "description": "Title of the confirmation dialog used to delete a room"
+    },
+    "roomsDeleteRoomMessage": "Delete the room “{roomName}”?",
+    "@roomsDeleteRoomMessage": {
+        "description": "Confirmation message for deleting a room",
+        "placeholders": {
+            "roomName": {
+                "type": "String",
+                "example": "Living room"
+            }
+        }
+    },
+    "roomsNoGroupForQuickAdd": "You must create a room group before adding a room.",
+    "@roomsNoGroupForQuickAdd": {
+        "description": "Message displayed in the quick room add flow when no room group exists yet"
+    },
+    "roomsFirstGroupLabel": "First group",
+    "@roomsFirstGroupLabel": {
+        "description": "Label of the input used to create the first room group from the quick add flow"
+    },
+    "roomsCreateFirstGroup": "Create first group",
+    "@roomsCreateFirstGroup": {
+        "description": "Button text used to create the first room group from the quick add flow"
+    },
+    "roomsTargetGroupLabel": "Target group",
+    "@roomsTargetGroupLabel": {
+        "description": "Label of the target group selector when adding a room"
+    },
+    "roomsTargetGroupRequired": "Select a room group",
+    "@roomsTargetGroupRequired": {
+        "description": "Validation error displayed when no target group is selected while adding a room"
+    },
+    "homeNoActiveRoomGroup": "No group",
+    "@homeNoActiveRoomGroup": {
+        "description": "Label displayed in the Home header when no room group is selected"
+    },
+    "homeSelectRoomGroupTitle": "Select a group",
+    "@homeSelectRoomGroupTitle": {
+        "description": "Title of the bottom sheet used to select the active room group on Home"
+    },
+    "roomsNoActiveGroupSelected": "No active room group. Select one from the Home page.",
+    "@roomsNoActiveGroupSelected": {
+        "description": "Message displayed on the rooms page when no active group is selected"
+    },
+    "roomsEmptyForGroup": "No rooms yet for the group “{groupName}”.",
+    "@roomsEmptyForGroup": {
+        "description": "Message displayed on the rooms page when the active room group has no rooms yet",
+        "placeholders": {
+            "groupName": {
+                "type": "String",
+                "example": "House"
+            }
+        }
+    },
+    "roomsGroupNameFieldLabel": "Group name",
+    "@roomsGroupNameFieldLabel": {
+        "description": "Label of the room-group name input field"
+    },
+    "validationRoomGroupNameRequired": "Enter a group name",
+    "@validationRoomGroupNameRequired": {
+        "description": "Validation error displayed when the room-group name is empty"
+    },
+    "roomsAddRoomSheetTitle": "Add a room",
+    "@roomsAddRoomSheetTitle": {
+        "description": "Title of the bottom sheet listing existing rooms to add to a group"
+    },
+    "roomsCreateNewRoom": "Create a new room",
+    "@roomsCreateNewRoom": {
+        "description": "Label of the action row to create a brand-new room from the add-room sheet"
+    },
+    "roomsNoAvailableRooms": "No other rooms available",
+    "@roomsNoAvailableRooms": {
+        "description": "Message displayed in the add-room sheet when there are no rooms from other groups to add"
+    },
+    "roomsEquipmentCount": "({count} devices)",
+    "@roomsEquipmentCount": {
+        "description": "Equipment count displayed inside a room pill on the rooms page",
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "example": "3"
+            }
+        }
     }
 }

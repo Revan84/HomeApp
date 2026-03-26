@@ -520,4 +520,124 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get favoritesAddTooltip => 'Add a favorite';
+
+  @override
+  String get roomsSectionTitle => 'Areas';
+
+  @override
+  String get roomsPageTitle => 'Rooms list';
+
+  @override
+  String get roomsActiveFilterLabel => 'Active: All';
+
+  @override
+  String get roomsFilterTooltip => 'Open room filters';
+
+  @override
+  String get roomsEmptyState => 'No room groups yet';
+
+  @override
+  String get roomsAddGroupTitle => 'Add a group';
+
+  @override
+  String get roomsRenameGroupTitle => 'Rename group';
+
+  @override
+  String get roomsGroupNameHint => 'Ex. House, Apartment';
+
+  @override
+  String get roomsAddRoomTitle => 'Add a room';
+
+  @override
+  String get roomsRenameRoomTitle => 'Rename room';
+
+  @override
+  String get roomsRoomNameHint => 'Ex. Living room, Kitchen';
+
+  @override
+  String get roomsAddGroupTooltip => 'Add a room group';
+
+  @override
+  String get roomsAddRoomTooltip => 'Add a room';
+
+  @override
+  String get roomsRenameGroupTooltip => 'Rename group';
+
+  @override
+  String get roomsDeleteGroupTooltip => 'Delete group';
+
+  @override
+  String get roomsDeleteRoomTooltip => 'Delete room';
+
+  @override
+  String get roomsDeleteGroupTitle => 'Delete group';
+
+  @override
+  String roomsDeleteEmptyGroupMessage(String groupName) {
+    return 'Delete the group “$groupName”?';
+  }
+
+  @override
+  String roomsDeleteGroupWithRoomsMessage(String groupName, int roomCount) {
+    return 'Delete the group “$groupName” and its $roomCount room(s)?';
+  }
+
+  @override
+  String get roomsDeleteRoomTitle => 'Delete room';
+
+  @override
+  String roomsDeleteRoomMessage(String roomName) {
+    return 'Delete the room “$roomName”?';
+  }
+
+  @override
+  String get roomsNoGroupForQuickAdd =>
+      'You must create a room group before adding a room.';
+
+  @override
+  String get roomsFirstGroupLabel => 'First group';
+
+  @override
+  String get roomsCreateFirstGroup => 'Create first group';
+
+  @override
+  String get roomsTargetGroupLabel => 'Target group';
+
+  @override
+  String get roomsTargetGroupRequired => 'Select a room group';
+
+  @override
+  String get homeNoActiveRoomGroup => 'No group';
+
+  @override
+  String get homeSelectRoomGroupTitle => 'Select a group';
+
+  @override
+  String get roomsNoActiveGroupSelected =>
+      'No active room group. Select one from the Home page.';
+
+  @override
+  String roomsEmptyForGroup(String groupName) {
+    return 'No rooms yet for the group “$groupName”.';
+  }
+
+  @override
+  String get roomsGroupNameFieldLabel => 'Group name';
+
+  @override
+  String get validationRoomGroupNameRequired => 'Enter a group name';
+
+  @override
+  String get roomsAddRoomSheetTitle => 'Add a room';
+
+  @override
+  String get roomsCreateNewRoom => 'Create a new room';
+
+  @override
+  String get roomsNoAvailableRooms => 'No other rooms available';
+
+  @override
+  String roomsEquipmentCount(int count) {
+    return '($count devices)';
+  }
 }

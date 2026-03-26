@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/repositories/equipment_repository.dart';
+import '../../../domain/repositories/room_repository.dart';
 import '../../../domain/models/equipment.dart';
+import '../../../domain/models/room.dart';
 import '../../../data/mappers/equipment_mappers.dart';
 import '../../live/controllers/live_polling_controller.dart';
 
@@ -10,7 +12,12 @@ import 'equipment_details_page.dart';
 
 class EquipmentsTab extends StatefulWidget {
   final ValueNotifier<int> refreshNotifier;
-  const EquipmentsTab({super.key, required this.refreshNotifier});
+  final ValueNotifier<String?> selectedGroupIdNotifier;
+  const EquipmentsTab({
+    super.key,
+    required this.refreshNotifier,
+    required this.selectedGroupIdNotifier,
+  });
 
   @override
   State<EquipmentsTab> createState() => _EquipmentsTabState();
@@ -18,35 +25,62 @@ class EquipmentsTab extends StatefulWidget {
 
 class _EquipmentsTabState extends State<EquipmentsTab> {
   bool _loading = true;
-  List<Equipment> _equipments = [];
+  List<Equipment> _allEquipments = [];
+  List<Room> _rooms = [];
 
   @override
   void initState() {
     super.initState();
     _load();
     widget.refreshNotifier.addListener(_onRefreshRequested);
+    widget.selectedGroupIdNotifier.addListener(_onGroupChanged);
   }
 
   @override
   void dispose() {
     widget.refreshNotifier.removeListener(_onRefreshRequested);
+    widget.selectedGroupIdNotifier.removeListener(_onGroupChanged);
     super.dispose();
   }
 
   void _onRefreshRequested() => _load();
 
+  void _onGroupChanged() {
+    if (mounted) setState(() {});
+  }
+
   bool _isSupported(Equipment e) => e.type == EquipmentType.shellyPlusPlugS;
+
+  Set<String> get _visibleRoomIds {
+    final groupId = widget.selectedGroupIdNotifier.value;
+    if (groupId == null) return const {};
+    return _rooms.where((r) => r.groupId == groupId).map((r) => r.id).toSet();
+  }
+
+  List<Equipment> get _equipments {
+    final groupId = widget.selectedGroupIdNotifier.value;
+    if (groupId == null) return _allEquipments;
+    final roomIds = _visibleRoomIds;
+    return _allEquipments
+        .where((e) => roomIds.contains(e.roomId))
+        .toList(growable: false);
+  }
 
   Future<void> _load() async {
     setState(() => _loading = true);
 
-    final items = await context.read<EquipmentRepository>().loadAll();
+    final equipmentRepo = context.read<EquipmentRepository>();
+    final roomRepo = context.read<RoomRepository>();
+
+    final items = await equipmentRepo.loadAll();
+    final rooms = await roomRepo.loadAll();
     if (!mounted) return;
 
-    _equipments = items;
+    _allEquipments = items;
+    _rooms = rooms;
 
     final liveCtl = context.read<LivePollingController>();
-    final endpoints = _equipments
+    final endpoints = _allEquipments
         .where(_isSupported)
         .map((e) => e.toEndpoint())
         .toList();

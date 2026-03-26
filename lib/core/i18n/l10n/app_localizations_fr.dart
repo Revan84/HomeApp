@@ -478,7 +478,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Supprimer cet équipement ? Cette action est irréversible.';
 
   @override
-  String get updatedJustNow => 'Mis à jour à l’instant';
+  String get updatedJustNow => 'Mis à jour à l\'instant';
 
   @override
   String updatedSecondsAgo(int seconds) {
@@ -520,4 +520,124 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get favoritesAddTooltip => 'Ajouter un favori';
+
+  @override
+  String get roomsSectionTitle => 'Areas';
+
+  @override
+  String get roomsPageTitle => 'Liste des pièces';
+
+  @override
+  String get roomsActiveFilterLabel => 'Actif(s) : Tous';
+
+  @override
+  String get roomsFilterTooltip => 'Ouvrir les filtres des pièces';
+
+  @override
+  String get roomsEmptyState => 'Aucun ensemble de pièces pour le moment';
+
+  @override
+  String get roomsAddGroupTitle => 'Ajouter un ensemble';
+
+  @override
+  String get roomsRenameGroupTitle => 'Renommer l\'ensemble';
+
+  @override
+  String get roomsGroupNameHint => 'Ex. Maison, Appartement';
+
+  @override
+  String get roomsAddRoomTitle => 'Ajouter une pièce';
+
+  @override
+  String get roomsRenameRoomTitle => 'Renommer la pièce';
+
+  @override
+  String get roomsRoomNameHint => 'Ex. Salon, Cuisine';
+
+  @override
+  String get roomsAddGroupTooltip => 'Ajouter un ensemble de pièces';
+
+  @override
+  String get roomsAddRoomTooltip => 'Ajouter une pièce';
+
+  @override
+  String get roomsRenameGroupTooltip => 'Renommer l\'ensemble';
+
+  @override
+  String get roomsDeleteGroupTooltip => 'Supprimer l\'ensemble';
+
+  @override
+  String get roomsDeleteRoomTooltip => 'Supprimer la pièce';
+
+  @override
+  String get roomsDeleteGroupTitle => 'Supprimer l\'ensemble';
+
+  @override
+  String roomsDeleteEmptyGroupMessage(String groupName) {
+    return 'Supprimer l\'ensemble « $groupName » ?';
+  }
+
+  @override
+  String roomsDeleteGroupWithRoomsMessage(String groupName, int roomCount) {
+    return 'Supprimer l\'ensemble « $groupName » et ses $roomCount pièce(s) ?';
+  }
+
+  @override
+  String get roomsDeleteRoomTitle => 'Supprimer la pièce';
+
+  @override
+  String roomsDeleteRoomMessage(String roomName) {
+    return 'Supprimer la pièce « $roomName » ?';
+  }
+
+  @override
+  String get roomsNoGroupForQuickAdd =>
+      'Vous devez d\'abord créer un ensemble de pièces avant d\'ajouter une pièce.';
+
+  @override
+  String get roomsFirstGroupLabel => 'Premier ensemble';
+
+  @override
+  String get roomsCreateFirstGroup => 'Créer le premier ensemble';
+
+  @override
+  String get roomsTargetGroupLabel => 'Ensemble cible';
+
+  @override
+  String get roomsTargetGroupRequired => 'Sélectionnez un ensemble de pièces';
+
+  @override
+  String get homeNoActiveRoomGroup => 'Aucun ensemble';
+
+  @override
+  String get homeSelectRoomGroupTitle => 'Choisir un ensemble';
+
+  @override
+  String get roomsNoActiveGroupSelected =>
+      'Aucun ensemble de pièces actif. Sélectionnez-en un depuis l\'accueil.';
+
+  @override
+  String roomsEmptyForGroup(String groupName) {
+    return 'Aucune pièce pour l\'ensemble « $groupName ».';
+  }
+
+  @override
+  String get roomsGroupNameFieldLabel => 'Nom de l\'ensemble';
+
+  @override
+  String get validationRoomGroupNameRequired => 'Saisissez un nom d\'ensemble';
+
+  @override
+  String get roomsAddRoomSheetTitle => 'Ajouter une pièce';
+
+  @override
+  String get roomsCreateNewRoom => 'Créer une nouvelle pièce';
+
+  @override
+  String get roomsNoAvailableRooms => 'Aucune autre pièce disponible';
+
+  @override
+  String roomsEquipmentCount(int count) {
+    return '($count équipements)';
+  }
 }
