@@ -640,4 +640,70 @@ class AppLocalizationsEn extends AppLocalizations {
   String roomsEquipmentCount(int count) {
     return '($count devices)';
   }
+
+  @override
+  String get statsAddWidgetTitle => 'Add widget';
+
+  @override
+  String get statsAddChart => 'Chart';
+
+  @override
+  String get statsAddTable => 'Table';
+
+  @override
+  String get statsAddHistory => 'History';
+
+  @override
+  String get statsAddKpi => 'KPI';
+
+  @override
+  String get statsNoWidgets => 'No widgets yet. Add one to get started.';
+
+  @override
+  String get statsConfigTitle => 'Configure widget';
+
+  @override
+  String get statsMetricLabel => 'Metric';
+
+  @override
+  String get statsTimeRangeLabel => 'Time range';
+
+  @override
+  String get statsChartTypeLabel => 'Chart type';
+
+  @override
+  String get statsTimeRangeDay => '1 Day';
+
+  @override
+  String get statsTimeRangeWeek => '1 Week';
+
+  @override
+  String get statsTimeRangeMonth => '1 Month';
+
+  @override
+  String get statsTimeRangeYear => '1 Year';
+
+  @override
+  String get statsTimeRangeMax => 'Max';
+
+  @override
+  String get statsNoData => 'No data';
+
+  @override
+  String get statsDeviceLabel => 'Device';
+
+  @override
+  String get statsNoDevicesInRoom => 'No devices in this room';
+
+  @override
+  String get statsEditWidget => 'Edit widget';
+
+  @override
+  String get statsDeleteWidget => 'Delete widget';
+
+  @override
+  String get statsDeleteConfirm => 'Delete this widget?';
+
+  @override
+  String get statsEmptyHint => 'Tap + to add your first widget';
 }

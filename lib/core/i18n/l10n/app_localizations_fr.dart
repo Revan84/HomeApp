@@ -640,4 +640,71 @@ class AppLocalizationsFr extends AppLocalizations {
   String roomsEquipmentCount(int count) {
     return '($count équipements)';
   }
+
+  @override
+  String get statsAddWidgetTitle => 'Ajouter un widget';
+
+  @override
+  String get statsAddChart => 'Graphique';
+
+  @override
+  String get statsAddTable => 'Tableau';
+
+  @override
+  String get statsAddHistory => 'Historique';
+
+  @override
+  String get statsAddKpi => 'KPI';
+
+  @override
+  String get statsNoWidgets => 'Aucun widget. Ajoutez-en un pour commencer.';
+
+  @override
+  String get statsConfigTitle => 'Configurer le widget';
+
+  @override
+  String get statsMetricLabel => 'Métrique';
+
+  @override
+  String get statsTimeRangeLabel => 'Période';
+
+  @override
+  String get statsChartTypeLabel => 'Type de graphique';
+
+  @override
+  String get statsTimeRangeDay => '1 Jour';
+
+  @override
+  String get statsTimeRangeWeek => '1 Semaine';
+
+  @override
+  String get statsTimeRangeMonth => '1 Mois';
+
+  @override
+  String get statsTimeRangeYear => '1 An';
+
+  @override
+  String get statsTimeRangeMax => 'Max';
+
+  @override
+  String get statsNoData => 'Aucune donnée';
+
+  @override
+  String get statsDeviceLabel => 'Équipement';
+
+  @override
+  String get statsNoDevicesInRoom => 'Aucun équipement dans cette pièce';
+
+  @override
+  String get statsEditWidget => 'Modifier le widget';
+
+  @override
+  String get statsDeleteWidget => 'Supprimer le widget';
+
+  @override
+  String get statsDeleteConfirm => 'Supprimer ce widget ?';
+
+  @override
+  String get statsEmptyHint =>
+      'Appuyez sur + pour ajouter votre premier widget';
 }

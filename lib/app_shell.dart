@@ -6,6 +6,7 @@ import 'core/theme/app_colors.dart';
 import 'core/i18n/loc.dart';
 
 import 'domain/models/room_group.dart';
+import 'domain/models/stat_widget.dart';
 import 'domain/repositories/room_group_repository.dart';
 
 import 'features/home/pages/home_tab.dart';
@@ -23,6 +24,18 @@ enum _FabAction {
   addEquipment,
   addRoom,
   addRoomGroup,
+  addChart,
+  addTable,
+  addHistory,
+  addKpi,
+}
+
+/// A single option in the FAB popup menu.
+class _FabMenuOption {
+  final IconData icon;
+  final String label;
+  final _FabAction action;
+  const _FabMenuOption(this.icon, this.label, this.action);
 }
 
 class AppShell extends StatefulWidget {
@@ -41,8 +54,10 @@ class _AppShellState extends State<AppShell> {
   final ValueNotifier<int> _equipmentsRefresh = ValueNotifier<int>(0);
   final ValueNotifier<int> _homeRefresh = ValueNotifier<int>(0);
   final ValueNotifier<int> _roomsRefresh = ValueNotifier<int>(0);
+  final ValueNotifier<StatWidgetType?> _statsAddWidget =
+      ValueNotifier<StatWidgetType?>(null);
 
-  /// Used to anchor the popup menu to the FAB.
+  /// Used to anchor the popup menu above the FAB.
   final GlobalKey _fabKey = GlobalKey();
 
   // ---------------------------------------------------------------------------
@@ -56,7 +71,10 @@ class _AppShellState extends State<AppShell> {
       refreshNotifier: _homeRefresh,
       selectedGroupIdNotifier: _selectedGroupId,
     ),
-    const StatsTab(),
+    StatsTab(
+      selectedGroupIdNotifier: _selectedGroupId,
+      addWidgetNotifier: _statsAddWidget,
+    ),
     EquipmentsTab(
       refreshNotifier: _equipmentsRefresh,
       selectedGroupIdNotifier: _selectedGroupId,
@@ -197,80 +215,79 @@ class _AppShellState extends State<AppShell> {
   // FAB menu
   // ---------------------------------------------------------------------------
 
+  /// Computes the position rectangle of the FAB for anchoring popup menus.
   RelativeRect? _fabMenuPosition() {
-    final overlayBox = Overlay.of(context).context.findRenderObject() as RenderBox?;
-    final fabContext = _fabKey.currentContext;
-    if (fabContext == null || overlayBox == null) return null;
+    final overlay =
+        Overlay.of(context).context.findRenderObject() as RenderBox?;
+    final fabCtx = _fabKey.currentContext;
+    if (fabCtx == null || overlay == null) return null;
 
-    final fabBox = fabContext.findRenderObject() as RenderBox?;
+    final fabBox = fabCtx.findRenderObject() as RenderBox?;
     if (fabBox == null) return null;
 
-    final fabPosition = fabBox.localToGlobal(Offset.zero);
-    final fabSize = fabBox.size;
+    final pos = fabBox.localToGlobal(Offset.zero);
+    final size = fabBox.size;
 
     return RelativeRect.fromRect(
-      Rect.fromLTWH(
-        fabPosition.dx,
-        fabPosition.dy,
-        fabSize.width,
-        fabSize.height,
-      ),
-      Offset.zero & overlayBox.size,
+      Rect.fromLTWH(pos.dx, pos.dy, size.width, size.height),
+      Offset.zero & overlay.size,
     );
   }
 
-  Future<_FabAction?> _showFabMenuForEquipments() async {
+  /// Shows a dark popup menu anchored above the FAB.
+  Future<_FabAction?> _showFabPopup(List<_FabMenuOption> options) {
     final position = _fabMenuPosition();
-    if (position == null) return null;
+    if (position == null) return Future.value(null);
 
     return showMenu<_FabAction>(
       context: context,
       position: position,
-      items: [
-        PopupMenuItem<_FabAction>(
-          value: _FabAction.addEquipment,
-          child: Row(
-            children: [
-              const Icon(Icons.add),
-              const SizedBox(width: 10),
-              Text(context.l10n.addEquipmentTitle),
-            ],
-          ),
-        ),
-      ],
+      color: AppColors.surface,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      items: options
+          .map((o) => PopupMenuItem<_FabAction>(
+                value: o.action,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(o.icon, color: AppColors.textPrimary, size: 20),
+                    const SizedBox(width: 10),
+                    Text(o.label,
+                        style: const TextStyle(
+                            color: AppColors.textPrimary, fontSize: 13)),
+                  ],
+                ),
+              ))
+          .toList(),
     );
   }
 
-  Future<_FabAction?> _showFabMenuForHome() async {
-    final position = _fabMenuPosition();
-    if (position == null) return null;
+  Future<_FabAction?> _showFabMenuForHome() {
+    return _showFabPopup([
+      _FabMenuOption(Icons.meeting_room_outlined, context.l10n.addRoomTitle,
+          _FabAction.addRoom),
+      _FabMenuOption(Icons.home_work_outlined,
+          context.l10n.roomsAddGroupTitle, _FabAction.addRoomGroup),
+    ]);
+  }
 
-    return showMenu<_FabAction>(
-      context: context,
-      position: position,
-      items: [
-        PopupMenuItem<_FabAction>(
-          value: _FabAction.addRoom,
-          child: Row(
-            children: [
-              const Icon(Icons.meeting_room_outlined),
-              const SizedBox(width: 10),
-              Text(context.l10n.addRoomTitle),
-            ],
-          ),
-        ),
-        PopupMenuItem<_FabAction>(
-          value: _FabAction.addRoomGroup,
-          child: Row(
-            children: [
-              const Icon(Icons.home_work_outlined),
-              const SizedBox(width: 10),
-              Text(context.l10n.roomsAddGroupTitle),
-            ],
-          ),
-        ),
-      ],
-    );
+  Future<_FabAction?> _showFabMenuForStats() {
+    final l10n = context.l10n;
+    return _showFabPopup([
+      _FabMenuOption(Icons.show_chart, l10n.statsAddChart, _FabAction.addChart),
+      _FabMenuOption(
+          Icons.table_chart_outlined, l10n.statsAddTable, _FabAction.addTable),
+      _FabMenuOption(Icons.history, l10n.statsAddHistory, _FabAction.addHistory),
+      _FabMenuOption(
+          Icons.bookmark_outline, l10n.statsAddKpi, _FabAction.addKpi),
+    ]);
+  }
+
+  Future<_FabAction?> _showFabMenuForEquipments() {
+    return _showFabPopup([
+      _FabMenuOption(
+          Icons.add, context.l10n.addEquipmentTitle, _FabAction.addEquipment),
+    ]);
   }
 
   Future<void> _onFabPressed() async {
@@ -310,6 +327,18 @@ class _AppShellState extends State<AppShell> {
             _roomsRefresh.value++;
           }
         }
+        break;
+
+      case 1:
+        final statsAction = await _showFabMenuForStats();
+        if (!mounted || statsAction == null) return;
+        final typeMap = {
+          _FabAction.addChart: StatWidgetType.chart,
+          _FabAction.addTable: StatWidgetType.table,
+          _FabAction.addHistory: StatWidgetType.history,
+          _FabAction.addKpi: StatWidgetType.kpi,
+        };
+        _statsAddWidget.value = typeMap[statsAction];
         break;
 
       case 2:
@@ -354,7 +383,7 @@ class _AppShellState extends State<AppShell> {
 
     return Scaffold(
       extendBody: true,
-      floatingActionButton: _index == 4
+      floatingActionButton: (_index == 3 || _index == 4)
           ? null
           : Padding(
               padding: const EdgeInsets.only(bottom: 48),

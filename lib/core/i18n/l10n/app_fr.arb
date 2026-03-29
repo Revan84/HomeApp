@@ -883,5 +883,94 @@
                 "example": "3"
             }
         }
+    },
+
+    "statsAddWidgetTitle": "Ajouter un widget",
+    "@statsAddWidgetTitle": {
+        "description": "Titre du bottom sheet pour ajouter un widget de statistiques"
+    },
+    "statsAddChart": "Graphique",
+    "@statsAddChart": {
+        "description": "Option pour ajouter un widget graphique"
+    },
+    "statsAddTable": "Tableau",
+    "@statsAddTable": {
+        "description": "Option pour ajouter un widget tableau"
+    },
+    "statsAddHistory": "Historique",
+    "@statsAddHistory": {
+        "description": "Option pour ajouter un widget historique"
+    },
+    "statsAddKpi": "KPI",
+    "@statsAddKpi": {
+        "description": "Option pour ajouter un widget KPI"
+    },
+    "statsNoWidgets": "Aucun widget. Ajoutez-en un pour commencer.",
+    "@statsNoWidgets": {
+        "description": "Message affiché quand le dashboard de stats est vide"
+    },
+    "statsConfigTitle": "Configurer le widget",
+    "@statsConfigTitle": {
+        "description": "Titre du dialogue de configuration du widget"
+    },
+    "statsMetricLabel": "Métrique",
+    "@statsMetricLabel": {
+        "description": "Libellé du sélecteur de métrique dans la config du widget"
+    },
+    "statsTimeRangeLabel": "Période",
+    "@statsTimeRangeLabel": {
+        "description": "Libellé du sélecteur de période dans la config du widget"
+    },
+    "statsChartTypeLabel": "Type de graphique",
+    "@statsChartTypeLabel": {
+        "description": "Libellé du sélecteur de type de graphique dans la config du widget"
+    },
+    "statsTimeRangeDay": "1 Jour",
+    "@statsTimeRangeDay": {
+        "description": "Libellé de période : 1 jour"
+    },
+    "statsTimeRangeWeek": "1 Semaine",
+    "@statsTimeRangeWeek": {
+        "description": "Libellé de période : 1 semaine"
+    },
+    "statsTimeRangeMonth": "1 Mois",
+    "@statsTimeRangeMonth": {
+        "description": "Libellé de période : 1 mois"
+    },
+    "statsTimeRangeYear": "1 An",
+    "@statsTimeRangeYear": {
+        "description": "Libellé de période : 1 an"
+    },
+    "statsTimeRangeMax": "Max",
+    "@statsTimeRangeMax": {
+        "description": "Libellé de période : maximum"
+    },
+    "statsNoData": "Aucune donnée",
+    "@statsNoData": {
+        "description": "Affiché quand il n'y a pas de données à montrer"
+    },
+    "statsDeviceLabel": "Équipement",
+    "@statsDeviceLabel": {
+        "description": "Libellé du menu déroulant de l'équipement dans le dialogue de configuration"
+    },
+    "statsNoDevicesInRoom": "Aucun équipement dans cette pièce",
+    "@statsNoDevicesInRoom": {
+        "description": "Message snackbar quand l'utilisateur essaie d'ajouter un widget mais la pièce sélectionnée n'a aucun équipement"
+    },
+    "statsEditWidget": "Modifier le widget",
+    "@statsEditWidget": {
+        "description": "Titre du dialogue de modification du widget"
+    },
+    "statsDeleteWidget": "Supprimer le widget",
+    "@statsDeleteWidget": {
+        "description": "Bouton pour supprimer un widget"
+    },
+    "statsDeleteConfirm": "Supprimer ce widget ?",
+    "@statsDeleteConfirm": {
+        "description": "Message de confirmation avant suppression d'un widget"
+    },
+    "statsEmptyHint": "Appuyez sur + pour ajouter votre premier widget",
+    "@statsEmptyHint": {
+        "description": "Texte d'indication sous l'icône d'état vide"
     }
 }

@@ -883,5 +883,94 @@
                 "example": "3"
             }
         }
+    },
+
+    "statsAddWidgetTitle": "Add widget",
+    "@statsAddWidgetTitle": {
+        "description": "Title of the bottom sheet for adding a stat widget"
+    },
+    "statsAddChart": "Chart",
+    "@statsAddChart": {
+        "description": "Option to add a chart widget"
+    },
+    "statsAddTable": "Table",
+    "@statsAddTable": {
+        "description": "Option to add a table widget"
+    },
+    "statsAddHistory": "History",
+    "@statsAddHistory": {
+        "description": "Option to add a history widget"
+    },
+    "statsAddKpi": "KPI",
+    "@statsAddKpi": {
+        "description": "Option to add a KPI widget"
+    },
+    "statsNoWidgets": "No widgets yet. Add one to get started.",
+    "@statsNoWidgets": {
+        "description": "Empty state message when the stats dashboard has no widgets"
+    },
+    "statsConfigTitle": "Configure widget",
+    "@statsConfigTitle": {
+        "description": "Title of the widget configuration dialog"
+    },
+    "statsMetricLabel": "Metric",
+    "@statsMetricLabel": {
+        "description": "Label for the metric picker in widget config"
+    },
+    "statsTimeRangeLabel": "Time range",
+    "@statsTimeRangeLabel": {
+        "description": "Label for the time range picker in widget config"
+    },
+    "statsChartTypeLabel": "Chart type",
+    "@statsChartTypeLabel": {
+        "description": "Label for the chart type picker in widget config"
+    },
+    "statsTimeRangeDay": "1 Day",
+    "@statsTimeRangeDay": {
+        "description": "Time range label: 1 day"
+    },
+    "statsTimeRangeWeek": "1 Week",
+    "@statsTimeRangeWeek": {
+        "description": "Time range label: 1 week"
+    },
+    "statsTimeRangeMonth": "1 Month",
+    "@statsTimeRangeMonth": {
+        "description": "Time range label: 1 month"
+    },
+    "statsTimeRangeYear": "1 Year",
+    "@statsTimeRangeYear": {
+        "description": "Time range label: 1 year"
+    },
+    "statsTimeRangeMax": "Max",
+    "@statsTimeRangeMax": {
+        "description": "Time range label: maximum"
+    },
+    "statsNoData": "No data",
+    "@statsNoData": {
+        "description": "Displayed when there is no data to show"
+    },
+    "statsDeviceLabel": "Device",
+    "@statsDeviceLabel": {
+        "description": "Label for the device dropdown in widget config dialog"
+    },
+    "statsNoDevicesInRoom": "No devices in this room",
+    "@statsNoDevicesInRoom": {
+        "description": "Snackbar message when user tries to add a widget but the selected room has no devices"
+    },
+    "statsEditWidget": "Edit widget",
+    "@statsEditWidget": {
+        "description": "Title of the widget edit dialog"
+    },
+    "statsDeleteWidget": "Delete widget",
+    "@statsDeleteWidget": {
+        "description": "Button to delete a widget"
+    },
+    "statsDeleteConfirm": "Delete this widget?",
+    "@statsDeleteConfirm": {
+        "description": "Confirmation message before deleting a widget"
+    },
+    "statsEmptyHint": "Tap + to add your first widget",
+    "@statsEmptyHint": {
+        "description": "Hint text below the empty state icon"
     }
 }

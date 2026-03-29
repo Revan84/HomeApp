@@ -27,6 +27,10 @@ import 'features/integrations/shelly/data/shelly_rpc_client.dart';
 import 'features/live/controllers/live_polling_controller.dart';
 import 'features/live/domain/live_polling_config.dart';
 
+import 'domain/repositories/stats_repository.dart';
+import 'data/repositories/mock_stats_repository.dart';
+import 'features/stats/controller/stats_controller.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
@@ -79,6 +83,13 @@ class MyApp extends StatelessWidget {
             controller.start();
             return controller;
           },
+        ),
+        Provider<StatsRepository>(
+          create: (_) => MockStatsRepository(storage),
+        ),
+        ChangeNotifierProvider<StatsController>(
+          create: (context) =>
+              StatsController(context.read<StatsRepository>()),
         ),
       ],
       child: Consumer<LocaleController>(

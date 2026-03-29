@@ -1225,6 +1225,138 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'({count} équipements)'**
   String roomsEquipmentCount(int count);
+
+  /// Titre du bottom sheet pour ajouter un widget de statistiques
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un widget'**
+  String get statsAddWidgetTitle;
+
+  /// Option pour ajouter un widget graphique
+  ///
+  /// In fr, this message translates to:
+  /// **'Graphique'**
+  String get statsAddChart;
+
+  /// Option pour ajouter un widget tableau
+  ///
+  /// In fr, this message translates to:
+  /// **'Tableau'**
+  String get statsAddTable;
+
+  /// Option pour ajouter un widget historique
+  ///
+  /// In fr, this message translates to:
+  /// **'Historique'**
+  String get statsAddHistory;
+
+  /// Option pour ajouter un widget KPI
+  ///
+  /// In fr, this message translates to:
+  /// **'KPI'**
+  String get statsAddKpi;
+
+  /// Message affiché quand le dashboard de stats est vide
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun widget. Ajoutez-en un pour commencer.'**
+  String get statsNoWidgets;
+
+  /// Titre du dialogue de configuration du widget
+  ///
+  /// In fr, this message translates to:
+  /// **'Configurer le widget'**
+  String get statsConfigTitle;
+
+  /// Libellé du sélecteur de métrique dans la config du widget
+  ///
+  /// In fr, this message translates to:
+  /// **'Métrique'**
+  String get statsMetricLabel;
+
+  /// Libellé du sélecteur de période dans la config du widget
+  ///
+  /// In fr, this message translates to:
+  /// **'Période'**
+  String get statsTimeRangeLabel;
+
+  /// Libellé du sélecteur de type de graphique dans la config du widget
+  ///
+  /// In fr, this message translates to:
+  /// **'Type de graphique'**
+  String get statsChartTypeLabel;
+
+  /// Libellé de période : 1 jour
+  ///
+  /// In fr, this message translates to:
+  /// **'1 Jour'**
+  String get statsTimeRangeDay;
+
+  /// Libellé de période : 1 semaine
+  ///
+  /// In fr, this message translates to:
+  /// **'1 Semaine'**
+  String get statsTimeRangeWeek;
+
+  /// Libellé de période : 1 mois
+  ///
+  /// In fr, this message translates to:
+  /// **'1 Mois'**
+  String get statsTimeRangeMonth;
+
+  /// Libellé de période : 1 an
+  ///
+  /// In fr, this message translates to:
+  /// **'1 An'**
+  String get statsTimeRangeYear;
+
+  /// Libellé de période : maximum
+  ///
+  /// In fr, this message translates to:
+  /// **'Max'**
+  String get statsTimeRangeMax;
+
+  /// Affiché quand il n'y a pas de données à montrer
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune donnée'**
+  String get statsNoData;
+
+  /// Libellé du menu déroulant de l'équipement dans le dialogue de configuration
+  ///
+  /// In fr, this message translates to:
+  /// **'Équipement'**
+  String get statsDeviceLabel;
+
+  /// Message snackbar quand l'utilisateur essaie d'ajouter un widget mais la pièce sélectionnée n'a aucun équipement
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun équipement dans cette pièce'**
+  String get statsNoDevicesInRoom;
+
+  /// Titre du dialogue de modification du widget
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le widget'**
+  String get statsEditWidget;
+
+  /// Bouton pour supprimer un widget
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer le widget'**
+  String get statsDeleteWidget;
+
+  /// Message de confirmation avant suppression d'un widget
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer ce widget ?'**
+  String get statsDeleteConfirm;
+
+  /// Texte d'indication sous l'icône d'état vide
+  ///
+  /// In fr, this message translates to:
+  /// **'Appuyez sur + pour ajouter votre premier widget'**
+  String get statsEmptyHint;
 }
 
 class _AppLocalizationsDelegate
