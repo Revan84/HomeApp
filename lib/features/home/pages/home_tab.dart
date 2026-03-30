@@ -9,14 +9,17 @@ import '../../../core/design_system/layout/app_section_header.dart';
 import '../../../domain/repositories/equipment_repository.dart';
 import '../../../domain/repositories/room_group_repository.dart';
 import '../../../domain/repositories/room_repository.dart';
+import '../../../domain/repositories/tv_repository.dart';
 import '../../../domain/models/equipment.dart';
 import '../../../domain/models/room.dart';
 import '../../../domain/models/room_group.dart';
+import '../../../domain/models/tv_device.dart';
 
 import '../../../data/mappers/equipment_mappers.dart';
 import '../../live/controllers/live_polling_controller.dart';
 
 import '../../equipments/pages/equipment_details_page.dart';
+import '../../tv/pages/tv_details_page.dart';
 
 import '../../equipments/widgets/edit_equipment_sheet.dart';
 import '../widgets/areas_section.dart';
@@ -45,6 +48,7 @@ class _HomeTabState extends State<HomeTab> {
   List<RoomGroup> _roomGroups = const [];
   List<Room> _rooms = const [];
   List<Equipment> _equipments = const [];
+  List<TvDevice> _tvDevices = const [];
 
   void _onRefreshRequested() => _load();
 
@@ -67,9 +71,15 @@ class _HomeTabState extends State<HomeTab> {
   Set<String> get _visibleRoomIds =>
       _visibleRooms.map((room) => room.id).toSet();
 
-  List<Equipment> get _favorites => _equipments
+  /// Favorite plug equipments visible in the selected group.
+  List<Equipment> get _favoriteEquipments => _equipments
       .where((equipment) =>
           equipment.isFavorite && _visibleRoomIds.contains(equipment.roomId))
+      .toList();
+
+  /// Favorite TV devices visible in the selected group.
+  List<TvDevice> get _favoriteTvs => _tvDevices
+      .where((tv) => tv.isFavorite && _visibleRoomIds.contains(tv.roomId))
       .toList();
 
   RoomGroup? get _activeRoomGroup {
@@ -143,11 +153,13 @@ class _HomeTabState extends State<HomeTab> {
     final roomGroupRepository = context.read<RoomGroupRepository>();
     final roomRepository = context.read<RoomRepository>();
     final equipmentRepository = context.read<EquipmentRepository>();
+    final tvRepository = context.read<TvRepository>();
     final liveController = context.read<LivePollingController>();
 
     final roomGroups = await roomGroupRepository.loadAll();
     final rooms = await roomRepository.loadAll();
     final equipments = await equipmentRepository.loadAll();
+    final tvDevices = await tvRepository.loadAll();
 
     if (!mounted) return;
 
@@ -158,6 +170,7 @@ class _HomeTabState extends State<HomeTab> {
       });
     _rooms = rooms;
     _equipments = equipments;
+    _tvDevices = tvDevices;
 
     // Initialise the shared selected group if needed.
     final currentId = widget.selectedGroupIdNotifier.value;
@@ -192,6 +205,22 @@ class _HomeTabState extends State<HomeTab> {
     if (changed == true) {
       widget.refreshNotifier.value++;
     }
+  }
+
+  Future<void> _openTvDetails(TvDevice tv) async {
+    await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => TvDetailsPage(deviceId: tv.id),
+      ),
+    );
+    // Reload to pick up any favorite changes made inside details
+    await _load();
+  }
+
+  Future<void> _removeTvFromFavorites(TvDevice tv) async {
+    final updated = tv.copyWith(isFavorite: false);
+    await context.read<TvRepository>().update(updated);
+    widget.refreshNotifier.value++;
   }
 
   Future<void> _openFavoritesPage() async {
@@ -251,7 +280,9 @@ class _HomeTabState extends State<HomeTab> {
   @override
   Widget build(BuildContext context) {
     final liveController = context.watch<LivePollingController>();
-    final favorites = _favorites;
+    final favoriteEquipments = _favoriteEquipments;
+    final favoriteTvs = _favoriteTvs;
+    final hasFavorites = favoriteEquipments.isNotEmpty || favoriteTvs.isNotEmpty;
 
     return Scaffold(
       body: RefreshIndicator(
@@ -272,7 +303,7 @@ class _HomeTabState extends State<HomeTab> {
                   child: CircularProgressIndicator(),
                 ),
               )
-            else if (favorites.isEmpty)
+            else if (!hasFavorites)
               SizedBox(
                 height: 150,
                 child: Center(
@@ -282,46 +313,71 @@ class _HomeTabState extends State<HomeTab> {
             else
               SizedBox(
                 height: 150,
-                child: ListView.separated(
+                child: ListView(
                   scrollDirection: Axis.horizontal,
-                  itemCount: favorites.length,
-                  separatorBuilder: (_, _) => const SizedBox(width: 12),
-                  itemBuilder: (_, index) {
-                    final equipment = favorites[index];
-                    final supported = _isFavoriteSupported(equipment);
-                    final state = supported
-                        ? liveController.live[equipment.id]
-                        : null;
+                  children: [
+                    // Equipment (plug) favorites
+                    ...favoriteEquipments.map((equipment) {
+                      final supported = _isFavoriteSupported(equipment);
+                      final state = supported
+                          ? liveController.live[equipment.id]
+                          : null;
 
-                    final value = supported
-                        ? (equipment.showPower
-                            ? '${(state?.powerW ?? 0).toStringAsFixed(0)} ${context.l10n.unitWattShort}'
-                            : (state?.output == true
-                                ? context.l10n.valueOn
-                                : context.l10n.valueOff))
-                        : context.l10n.valueUnknown;
+                      final value = supported
+                          ? (equipment.showPower
+                              ? '${(state?.powerW ?? 0).toStringAsFixed(0)} ${context.l10n.unitWattShort}'
+                              : (state?.output == true
+                                  ? context.l10n.valueOn
+                                  : context.l10n.valueOff))
+                          : context.l10n.valueUnknown;
 
-                    return FavoriteCard(
-                      value: value,
-                      label: equipment.name,
-                      room: _roomName(equipment.roomId),
-                      icon: supported
-                          ? Icons.power_rounded
-                          : Icons.devices_other,
-                      isOn: state?.output == true,
-                      showPowerButton: supported,
-                      powerLoading: state?.toggling ?? false,
-                      powerEnabled: true,
-                      onPowerPressed: supported
-                          ? () => _toggleFavoritePlug(equipment)
-                          : null,
-                      trend: state?.trendPower ?? 0,
-                      updatedLabel: ageLabel(context, state?.lastUpdatedAt),
-                      onOpenDetails: () => _openDetails(equipment),
-                      onToggleFavorite: () => _removeFromFavorites(equipment),
-                      onEdit: () => _editEquipment(equipment),
-                    );
-                  },
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 12),
+                        child: FavoriteCard(
+                          value: value,
+                          label: equipment.name,
+                          room: _roomName(equipment.roomId),
+                          icon: supported
+                              ? Icons.power_rounded
+                              : Icons.devices_other,
+                          isOn: state?.output == true,
+                          showPowerButton: supported,
+                          powerLoading: state?.toggling ?? false,
+                          powerEnabled: true,
+                          onPowerPressed: supported
+                              ? () => _toggleFavoritePlug(equipment)
+                              : null,
+                          trend: state?.trendPower ?? 0,
+                          updatedLabel:
+                              ageLabel(context, state?.lastUpdatedAt),
+                          onOpenDetails: () => _openDetails(equipment),
+                          onToggleFavorite: () =>
+                              _removeFromFavorites(equipment),
+                          onEdit: () => _editEquipment(equipment),
+                        ),
+                      );
+                    }),
+
+                    // TV device favorites
+                    ...favoriteTvs.map((tv) {
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 12),
+                        child: FavoriteCard(
+                          value: tv.source,
+                          label: tv.name,
+                          room: _roomName(tv.roomId),
+                          icon: Icons.tv_rounded,
+                          isOn: true,
+                          showPowerButton: false,
+                          powerEnabled: false,
+                          trend: 0,
+                          updatedLabel: '',
+                          onOpenDetails: () => _openTvDetails(tv),
+                          onToggleFavorite: () => _removeTvFromFavorites(tv),
+                        ),
+                      );
+                    }),
+                  ],
                 ),
               ),
             const SizedBox(height: 18),

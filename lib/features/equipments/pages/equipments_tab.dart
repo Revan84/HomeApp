@@ -3,10 +3,13 @@ import 'package:provider/provider.dart';
 
 import '../../../domain/repositories/equipment_repository.dart';
 import '../../../domain/repositories/room_repository.dart';
+import '../../../domain/repositories/tv_repository.dart';
 import '../../../domain/models/equipment.dart';
 import '../../../domain/models/room.dart';
+import '../../../domain/models/tv_device.dart';
 import '../../../data/mappers/equipment_mappers.dart';
 import '../../live/controllers/live_polling_controller.dart';
+import '../../tv/pages/tv_details_page.dart';
 
 import 'equipment_details_page.dart';
 
@@ -27,6 +30,7 @@ class _EquipmentsTabState extends State<EquipmentsTab> {
   bool _loading = true;
   List<Equipment> _allEquipments = [];
   List<Room> _rooms = [];
+  List<TvDevice> _tvDevices = [];
 
   @override
   void initState() {
@@ -71,13 +75,16 @@ class _EquipmentsTabState extends State<EquipmentsTab> {
 
     final equipmentRepo = context.read<EquipmentRepository>();
     final roomRepo = context.read<RoomRepository>();
+    final tvRepo = context.read<TvRepository>();
 
     final items = await equipmentRepo.loadAll();
     final rooms = await roomRepo.loadAll();
+    final tvs = await tvRepo.loadAll();
     if (!mounted) return;
 
     _allEquipments = items;
     _rooms = rooms;
+    _tvDevices = tvs;
 
     final liveCtl = context.read<LivePollingController>();
     final endpoints = _allEquipments
@@ -126,24 +133,42 @@ class _EquipmentsTabState extends State<EquipmentsTab> {
           Expanded(
             child: ListView.separated(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-              itemCount: _equipments.length,
+              itemCount: _equipments.length + _tvDevices.length,
               separatorBuilder: (_, _) => const SizedBox(height: 10),
               itemBuilder: (_, i) {
-                final e = _equipments[i];
+                // Equipment items
+                if (i < _equipments.length) {
+                  final e = _equipments[i];
+                  final st = _isSupported(e) ? liveCtl.live[e.id] : null;
+                  final dotColor =
+                      (st?.online ?? false) ? Colors.green : Colors.orange;
 
-                final st = _isSupported(e) ? liveCtl.live[e.id] : null;
-                final dotColor = (st?.online ?? false)
-                    ? Colors.green
-                    : Colors.orange;
+                  return _EquipmentPill(
+                    title: e.name,
+                    icon: _iconForType(e.type),
+                    dotColor: dotColor,
+                    onTap: () async {
+                      final changed = await Navigator.of(context).push<bool>(
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              EquipmentDetailsPage(equipmentId: e.id),
+                        ),
+                      );
+                      if (changed == true) _load();
+                    },
+                  );
+                }
 
+                // TV items
+                final tv = _tvDevices[i - _equipments.length];
                 return _EquipmentPill(
-                  title: e.name,
-                  icon: _iconForType(e.type),
-                  dotColor: dotColor,
+                  title: tv.name,
+                  icon: Icons.tv,
+                  dotColor: Colors.blueGrey,
                   onTap: () async {
                     final changed = await Navigator.of(context).push<bool>(
                       MaterialPageRoute(
-                        builder: (_) => EquipmentDetailsPage(equipmentId: e.id),
+                        builder: (_) => TvDetailsPage(deviceId: tv.id),
                       ),
                     );
                     if (changed == true) _load();

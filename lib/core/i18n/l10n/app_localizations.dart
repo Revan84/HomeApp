@@ -1357,6 +1357,228 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Appuyez sur + pour ajouter votre premier widget'**
   String get statsEmptyHint;
+
+  /// Titre de la bottom sheet d'ajout TV
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter une TV'**
+  String get tvAddTitle;
+
+  /// Nom par défaut d'une TV
+  ///
+  /// In fr, this message translates to:
+  /// **'Smart TV'**
+  String get tvDefaultName;
+
+  /// Exemple de nom pour la TV
+  ///
+  /// In fr, this message translates to:
+  /// **'ex : Samsung Salon'**
+  String get tvNameHint;
+
+  /// Message d'erreur si le test WS échoue
+  ///
+  /// In fr, this message translates to:
+  /// **'Connexion échouée'**
+  String get tvTestFailed;
+
+  /// Confirmation de suppression TV
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer cette TV ?'**
+  String get tvDeleteConfirm;
+
+  /// Bouton de reconnexion TV
+  ///
+  /// In fr, this message translates to:
+  /// **'Reconnecter'**
+  String get tvReconnect;
+
+  /// État TV : connecté
+  ///
+  /// In fr, this message translates to:
+  /// **'Connecté'**
+  String get tvStatusConnected;
+
+  /// État TV : en cours de connexion
+  ///
+  /// In fr, this message translates to:
+  /// **'Connexion…'**
+  String get tvStatusConnecting;
+
+  /// État TV : déconnecté
+  ///
+  /// In fr, this message translates to:
+  /// **'Déconnecté'**
+  String get tvStatusDisconnected;
+
+  /// Touche télécommande : éteindre
+  ///
+  /// In fr, this message translates to:
+  /// **'Éteindre'**
+  String get tvKeyPower;
+
+  /// Touche télécommande : volume haut
+  ///
+  /// In fr, this message translates to:
+  /// **'Volume +'**
+  String get tvKeyVolUp;
+
+  /// Touche télécommande : volume bas
+  ///
+  /// In fr, this message translates to:
+  /// **'Volume −'**
+  String get tvKeyVolDown;
+
+  /// Touche télécommande : muet
+  ///
+  /// In fr, this message translates to:
+  /// **'Muet'**
+  String get tvKeyMute;
+
+  /// Touche télécommande : haut
+  ///
+  /// In fr, this message translates to:
+  /// **'Haut'**
+  String get tvKeyUp;
+
+  /// Touche télécommande : bas
+  ///
+  /// In fr, this message translates to:
+  /// **'Bas'**
+  String get tvKeyDown;
+
+  /// Touche télécommande : gauche
+  ///
+  /// In fr, this message translates to:
+  /// **'Gauche'**
+  String get tvKeyLeft;
+
+  /// Touche télécommande : droite
+  ///
+  /// In fr, this message translates to:
+  /// **'Droite'**
+  String get tvKeyRight;
+
+  /// Touche télécommande : retour
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour'**
+  String get tvKeyBack;
+
+  /// Touche télécommande : accueil
+  ///
+  /// In fr, this message translates to:
+  /// **'Accueil'**
+  String get tvKeyHome;
+
+  /// Touche télécommande : menu
+  ///
+  /// In fr, this message translates to:
+  /// **'Menu'**
+  String get tvKeyMenu;
+
+  /// Touche télécommande : clavier
+  ///
+  /// In fr, this message translates to:
+  /// **'Clavier'**
+  String get tvKeyKeyboard;
+
+  /// Touche télécommande : changer source
+  ///
+  /// In fr, this message translates to:
+  /// **'Source'**
+  String get tvKeySource;
+
+  /// Titre de la section applications TV
+  ///
+  /// In fr, this message translates to:
+  /// **'Applications :'**
+  String get tvAppsTitle;
+
+  /// Type d'équipement : TV connectée
+  ///
+  /// In fr, this message translates to:
+  /// **'TV Connectée'**
+  String get tvTypeSmartTv;
+
+  /// Modèle TV par défaut
+  ///
+  /// In fr, this message translates to:
+  /// **'Samsung'**
+  String get tvDefaultModel;
+
+  /// État TV connecté en wifi
+  ///
+  /// In fr, this message translates to:
+  /// **'Connected (wi-fi)'**
+  String get tvStatusConnectedWifi;
+
+  /// Label champ modèle TV
+  ///
+  /// In fr, this message translates to:
+  /// **'Modèle'**
+  String get tvModelLabel;
+
+  /// Exemple de modèle TV
+  ///
+  /// In fr, this message translates to:
+  /// **'ex : Samsung 55Q80B'**
+  String get tvModelHint;
+
+  /// Saisie vocale : en écoute
+  ///
+  /// In fr, this message translates to:
+  /// **'À l\'écoute…'**
+  String get tvVoiceListening;
+
+  /// Saisie vocale : appuyer pour démarrer
+  ///
+  /// In fr, this message translates to:
+  /// **'Appuyez sur le micro pour réessayer'**
+  String get tvVoiceTap;
+
+  /// Erreur saisie vocale
+  ///
+  /// In fr, this message translates to:
+  /// **'Microphone indisponible'**
+  String get tvVoiceError;
+
+  /// Touche télécommande : paramètres / menu
+  ///
+  /// In fr, this message translates to:
+  /// **'Paramètres'**
+  String get tvKeySettings;
+
+  /// Indication champ clavier
+  ///
+  /// In fr, this message translates to:
+  /// **'Texte à envoyer à la TV…'**
+  String get tvKeyboardHint;
+
+  /// Bouton envoi clavier
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoyer'**
+  String get tvKeyboardSend;
+
+  /// Titre du sélecteur de type d'appareil
+  ///
+  /// In fr, this message translates to:
+  /// **'Type d\'appareil'**
+  String get addDeviceTypeTitle;
+
+  /// Type d'appareil : prise connectée
+  ///
+  /// In fr, this message translates to:
+  /// **'Prise connectée'**
+  String get deviceTypePlug;
+
+  /// Type d'appareil : TV connectée
+  ///
+  /// In fr, this message translates to:
+  /// **'TV connectée'**
+  String get deviceTypeTv;
 }
 
 class _AppLocalizationsDelegate

@@ -707,4 +707,115 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get statsEmptyHint =>
       'Appuyez sur + pour ajouter votre premier widget';
+
+  @override
+  String get tvAddTitle => 'Ajouter une TV';
+
+  @override
+  String get tvDefaultName => 'Smart TV';
+
+  @override
+  String get tvNameHint => 'ex : Samsung Salon';
+
+  @override
+  String get tvTestFailed => 'Connexion échouée';
+
+  @override
+  String get tvDeleteConfirm => 'Supprimer cette TV ?';
+
+  @override
+  String get tvReconnect => 'Reconnecter';
+
+  @override
+  String get tvStatusConnected => 'Connecté';
+
+  @override
+  String get tvStatusConnecting => 'Connexion…';
+
+  @override
+  String get tvStatusDisconnected => 'Déconnecté';
+
+  @override
+  String get tvKeyPower => 'Éteindre';
+
+  @override
+  String get tvKeyVolUp => 'Volume +';
+
+  @override
+  String get tvKeyVolDown => 'Volume −';
+
+  @override
+  String get tvKeyMute => 'Muet';
+
+  @override
+  String get tvKeyUp => 'Haut';
+
+  @override
+  String get tvKeyDown => 'Bas';
+
+  @override
+  String get tvKeyLeft => 'Gauche';
+
+  @override
+  String get tvKeyRight => 'Droite';
+
+  @override
+  String get tvKeyBack => 'Retour';
+
+  @override
+  String get tvKeyHome => 'Accueil';
+
+  @override
+  String get tvKeyMenu => 'Menu';
+
+  @override
+  String get tvKeyKeyboard => 'Clavier';
+
+  @override
+  String get tvKeySource => 'Source';
+
+  @override
+  String get tvAppsTitle => 'Applications :';
+
+  @override
+  String get tvTypeSmartTv => 'TV Connectée';
+
+  @override
+  String get tvDefaultModel => 'Samsung';
+
+  @override
+  String get tvStatusConnectedWifi => 'Connected (wi-fi)';
+
+  @override
+  String get tvModelLabel => 'Modèle';
+
+  @override
+  String get tvModelHint => 'ex : Samsung 55Q80B';
+
+  @override
+  String get tvVoiceListening => 'À l\'écoute…';
+
+  @override
+  String get tvVoiceTap => 'Appuyez sur le micro pour réessayer';
+
+  @override
+  String get tvVoiceError => 'Microphone indisponible';
+
+  @override
+  String get tvKeySettings => 'Paramètres';
+
+  @override
+  String get tvKeyboardHint => 'Texte à envoyer à la TV…';
+
+  @override
+  String get tvKeyboardSend => 'Envoyer';
+
+  @override
+  String get addDeviceTypeTitle => 'Type d\'appareil';
+
+  @override
+  String get deviceTypePlug => 'Prise connectée';
+
+  @override
+  String get deviceTypeTv => 'TV connectée';
 }

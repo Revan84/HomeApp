@@ -15,13 +15,14 @@ import 'features/equipments/pages/equipments_tab.dart';
 import 'features/automation/pages/automation_tab.dart';
 import 'features/profile/pages/profile_tab.dart';
 import 'features/equipments/widgets/add_equipment_sheet.dart';
+import 'features/tv/widgets/add_tv_sheet.dart';
 import 'features/home/widgets/add_room_sheet.dart';
 import 'features/home/widgets/add_room_group_sheet.dart';
 import 'features/home/widgets/home_summary_header.dart';
 import 'features/live/controllers/live_polling_controller.dart';
 
 enum _FabAction {
-  addEquipment,
+  addDevice,
   addRoom,
   addRoomGroup,
   addChart,
@@ -29,6 +30,9 @@ enum _FabAction {
   addHistory,
   addKpi,
 }
+
+/// Device type selection when adding a new device.
+enum _DeviceType { connectedPlug, tv }
 
 /// A single option in the FAB popup menu.
 class _FabMenuOption {
@@ -283,11 +287,57 @@ class _AppShellState extends State<AppShell> {
     ]);
   }
 
+  /// Shows a single "Add device" option; then a second popup for device type.
   Future<_FabAction?> _showFabMenuForEquipments() {
     return _showFabPopup([
       _FabMenuOption(
-          Icons.add, context.l10n.addEquipmentTitle, _FabAction.addEquipment),
+          Icons.add, context.l10n.addEquipmentTitle, _FabAction.addDevice),
     ]);
+  }
+
+  /// Shows a device type picker bottom sheet.
+  Future<_DeviceType?> _pickDeviceType() {
+    final l = context.l10n;
+    return showModalBottomSheet<_DeviceType>(
+      context: context,
+      useSafeArea: true,
+      builder: (_) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  l.addDeviceTypeTitle,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+                const SizedBox(height: 12),
+                ListTile(
+                  leading: const Icon(Icons.power),
+                  title: Text(l.deviceTypePlug),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  onTap: () =>
+                      Navigator.of(context).pop(_DeviceType.connectedPlug),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.tv),
+                  title: Text(l.deviceTypeTv),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  onTap: () => Navigator.of(context).pop(_DeviceType.tv),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Future<void> _onFabPressed() async {
@@ -343,24 +393,38 @@ class _AppShellState extends State<AppShell> {
 
       case 2:
         final action = await _showFabMenuForEquipments();
+        if (!mounted || action != _FabAction.addDevice) return;
+
+        // Show device type picker
+        final deviceType = await _pickDeviceType();
+        if (!mounted || deviceType == null) return;
+
+        bool? added;
+        switch (deviceType) {
+          case _DeviceType.connectedPlug:
+            added = await showModalBottomSheet<bool>(
+              context: context,
+              isScrollControlled: true,
+              useSafeArea: true,
+              builder: (_) => AddEquipmentSheet(
+                roomsRefreshNotifier: _roomsRefresh,
+              ),
+            );
+            break;
+          case _DeviceType.tv:
+            added = await showModalBottomSheet<bool>(
+              context: context,
+              isScrollControlled: true,
+              useSafeArea: true,
+              builder: (_) => const AddTvSheet(),
+            );
+            break;
+        }
+
         if (!mounted) return;
-
-        if (action == _FabAction.addEquipment) {
-          final added = await showModalBottomSheet<bool>(
-            context: context,
-            isScrollControlled: true,
-            useSafeArea: true,
-            builder: (_) => AddEquipmentSheet(
-              roomsRefreshNotifier: _roomsRefresh,
-            ),
-          );
-
-          if (!mounted) return;
-
-          if (added == true) {
-            _equipmentsRefresh.value++;
-            _homeRefresh.value++;
-          }
+        if (added == true) {
+          _equipmentsRefresh.value++;
+          _homeRefresh.value++;
         }
         break;
 
