@@ -818,4 +818,43 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get deviceTypeTv => 'TV connectée';
+
+  @override
+  String get deviceTypeWled => 'Bandeau LED WLED';
+
+  @override
+  String get wledAddTitle => 'Ajouter un appareil WLED';
+
+  @override
+  String get wledDefaultName => 'Bandeau LED';
+
+  @override
+  String get wledNameHint => 'ex : LEDs Salon';
+
+  @override
+  String get wledModelHint => 'ex : WLED v0.14';
+
+  @override
+  String get wledTestFailed => 'Connexion échouée';
+
+  @override
+  String get wledDeleteConfirm => 'Supprimer cet appareil ?';
+
+  @override
+  String get wledBrightnessLabel => 'Luminosité';
+
+  @override
+  String get wledSpeedLabel => 'Vitesse';
+
+  @override
+  String get wledIntensityLabel => 'Intensité';
+
+  @override
+  String get wledColorsTab => 'Couleurs';
+
+  @override
+  String get wledEffectsTab => 'Effets';
+
+  @override
+  String get wledScenesLabel => 'Scènes';
 }

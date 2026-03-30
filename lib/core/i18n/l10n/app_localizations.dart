@@ -1579,6 +1579,84 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'TV connectée'**
   String get deviceTypeTv;
+
+  /// Type d'appareil : bandeau LED WLED
+  ///
+  /// In fr, this message translates to:
+  /// **'Bandeau LED WLED'**
+  String get deviceTypeWled;
+
+  /// Titre du bottom sheet d'ajout WLED
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un appareil WLED'**
+  String get wledAddTitle;
+
+  /// Nom par défaut d'un appareil WLED
+  ///
+  /// In fr, this message translates to:
+  /// **'Bandeau LED'**
+  String get wledDefaultName;
+
+  /// Exemple de nom d'appareil WLED
+  ///
+  /// In fr, this message translates to:
+  /// **'ex : LEDs Salon'**
+  String get wledNameHint;
+
+  /// Exemple de modèle WLED
+  ///
+  /// In fr, this message translates to:
+  /// **'ex : WLED v0.14'**
+  String get wledModelHint;
+
+  /// Échec du test de connexion WLED
+  ///
+  /// In fr, this message translates to:
+  /// **'Connexion échouée'**
+  String get wledTestFailed;
+
+  /// Confirmation de suppression d'un appareil WLED
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer cet appareil ?'**
+  String get wledDeleteConfirm;
+
+  /// Label du curseur de luminosité
+  ///
+  /// In fr, this message translates to:
+  /// **'Luminosité'**
+  String get wledBrightnessLabel;
+
+  /// Label du curseur de vitesse d'effet
+  ///
+  /// In fr, this message translates to:
+  /// **'Vitesse'**
+  String get wledSpeedLabel;
+
+  /// Label du curseur d'intensité d'effet
+  ///
+  /// In fr, this message translates to:
+  /// **'Intensité'**
+  String get wledIntensityLabel;
+
+  /// Onglet Couleurs
+  ///
+  /// In fr, this message translates to:
+  /// **'Couleurs'**
+  String get wledColorsTab;
+
+  /// Onglet Effets
+  ///
+  /// In fr, this message translates to:
+  /// **'Effets'**
+  String get wledEffectsTab;
+
+  /// Label de la section scènes
+  ///
+  /// In fr, this message translates to:
+  /// **'Scènes'**
+  String get wledScenesLabel;
 }
 
 class _AppLocalizationsDelegate

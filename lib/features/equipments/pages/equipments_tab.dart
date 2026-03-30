@@ -4,12 +4,15 @@ import 'package:provider/provider.dart';
 import '../../../domain/repositories/equipment_repository.dart';
 import '../../../domain/repositories/room_repository.dart';
 import '../../../domain/repositories/tv_repository.dart';
+import '../../../domain/repositories/wled_repository.dart';
 import '../../../domain/models/equipment.dart';
 import '../../../domain/models/room.dart';
 import '../../../domain/models/tv_device.dart';
+import '../../../domain/models/wled_device.dart';
 import '../../../data/mappers/equipment_mappers.dart';
 import '../../live/controllers/live_polling_controller.dart';
 import '../../tv/pages/tv_details_page.dart';
+import '../../wled/pages/wled_details_page.dart';
 
 import 'equipment_details_page.dart';
 
@@ -31,6 +34,7 @@ class _EquipmentsTabState extends State<EquipmentsTab> {
   List<Equipment> _allEquipments = [];
   List<Room> _rooms = [];
   List<TvDevice> _tvDevices = [];
+  List<WledDevice> _wledDevices = [];
 
   @override
   void initState() {
@@ -76,15 +80,21 @@ class _EquipmentsTabState extends State<EquipmentsTab> {
     final equipmentRepo = context.read<EquipmentRepository>();
     final roomRepo = context.read<RoomRepository>();
     final tvRepo = context.read<TvRepository>();
+    final wledRepo = context.read<WledRepository>();
 
-    final items = await equipmentRepo.loadAll();
-    final rooms = await roomRepo.loadAll();
-    final tvs = await tvRepo.loadAll();
+    final results = await Future.wait([
+      equipmentRepo.loadAll(),
+      roomRepo.loadAll(),
+      tvRepo.loadAll(),
+      wledRepo.loadAll(),
+    ]);
+
     if (!mounted) return;
 
-    _allEquipments = items;
-    _rooms = rooms;
-    _tvDevices = tvs;
+    _allEquipments = results[0] as List<Equipment>;
+    _rooms = results[1] as List<Room>;
+    _tvDevices = results[2] as List<TvDevice>;
+    _wledDevices = results[3] as List<WledDevice>;
 
     final liveCtl = context.read<LivePollingController>();
     final endpoints = _allEquipments
@@ -133,7 +143,7 @@ class _EquipmentsTabState extends State<EquipmentsTab> {
           Expanded(
             child: ListView.separated(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-              itemCount: _equipments.length + _tvDevices.length,
+              itemCount: _equipments.length + _tvDevices.length + _wledDevices.length,
               separatorBuilder: (_, _) => const SizedBox(height: 10),
               itemBuilder: (_, i) {
                 // Equipment items
@@ -160,15 +170,33 @@ class _EquipmentsTabState extends State<EquipmentsTab> {
                 }
 
                 // TV items
-                final tv = _tvDevices[i - _equipments.length];
+                if (i < _equipments.length + _tvDevices.length) {
+                  final tv = _tvDevices[i - _equipments.length];
+                  return _EquipmentPill(
+                    title: tv.name,
+                    icon: Icons.tv,
+                    dotColor: Colors.blueGrey,
+                    onTap: () async {
+                      final changed = await Navigator.of(context).push<bool>(
+                        MaterialPageRoute(
+                          builder: (_) => TvDetailsPage(deviceId: tv.id),
+                        ),
+                      );
+                      if (changed == true) _load();
+                    },
+                  );
+                }
+
+                // WLED items
+                final wled = _wledDevices[i - _equipments.length - _tvDevices.length];
                 return _EquipmentPill(
-                  title: tv.name,
-                  icon: Icons.tv,
-                  dotColor: Colors.blueGrey,
+                  title: wled.name,
+                  icon: Icons.lightbulb_outline_rounded,
+                  dotColor: Colors.amber.shade600,
                   onTap: () async {
                     final changed = await Navigator.of(context).push<bool>(
                       MaterialPageRoute(
-                        builder: (_) => TvDetailsPage(deviceId: tv.id),
+                        builder: (_) => WledDetailsPage(deviceId: wled.id),
                       ),
                     );
                     if (changed == true) _load();

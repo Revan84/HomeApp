@@ -17,11 +17,13 @@ import 'domain/repositories/equipment_repository.dart';
 import 'domain/repositories/room_group_repository.dart';
 import 'domain/repositories/room_repository.dart';
 import 'domain/repositories/tv_repository.dart';
+import 'domain/repositories/wled_repository.dart';
 
 import 'data/repositories/equipment_repository_local.dart';
 import 'data/repositories/room_group_repository_local.dart';
 import 'data/repositories/room_repository_local.dart';
 import 'features/integrations/samsung/data/samsung_tv_repository.dart';
+import 'features/integrations/wled/data/wled_local_repository.dart';
 
 import 'features/integrations/shelly/data/shelly_live_device_repository.dart';
 import 'features/integrations/shelly/data/shelly_rpc_client.dart';
@@ -63,6 +65,9 @@ class MyApp extends StatelessWidget {
         Provider<RoomRepository>(create: (_) => RoomRepositoryLocal(storage)),
         Provider<TvRepository>(
           create: (_) => SamsungTvRepository(storage),
+        ),
+        Provider<WledRepository>(
+          create: (_) => WledLocalRepository(storage),
         ),
         Provider<http.Client>(
           create: (_) => http.Client(),

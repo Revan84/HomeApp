@@ -817,4 +817,43 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deviceTypeTv => 'Smart TV';
+
+  @override
+  String get deviceTypeWled => 'WLED LED Strip';
+
+  @override
+  String get wledAddTitle => 'Add WLED device';
+
+  @override
+  String get wledDefaultName => 'LED Strip';
+
+  @override
+  String get wledNameHint => 'e.g. Living Room LEDs';
+
+  @override
+  String get wledModelHint => 'e.g. WLED v0.14';
+
+  @override
+  String get wledTestFailed => 'Connection failed';
+
+  @override
+  String get wledDeleteConfirm => 'Delete this device?';
+
+  @override
+  String get wledBrightnessLabel => 'Brightness';
+
+  @override
+  String get wledSpeedLabel => 'Speed';
+
+  @override
+  String get wledIntensityLabel => 'Intensity';
+
+  @override
+  String get wledColorsTab => 'Colors';
+
+  @override
+  String get wledEffectsTab => 'Effects';
+
+  @override
+  String get wledScenesLabel => 'Scenes';
 }

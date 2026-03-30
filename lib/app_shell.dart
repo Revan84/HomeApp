@@ -16,6 +16,7 @@ import 'features/automation/pages/automation_tab.dart';
 import 'features/profile/pages/profile_tab.dart';
 import 'features/equipments/widgets/add_equipment_sheet.dart';
 import 'features/tv/widgets/add_tv_sheet.dart';
+import 'features/wled/widgets/add_wled_sheet.dart';
 import 'features/home/widgets/add_room_sheet.dart';
 import 'features/home/widgets/add_room_group_sheet.dart';
 import 'features/home/widgets/home_summary_header.dart';
@@ -32,7 +33,7 @@ enum _FabAction {
 }
 
 /// Device type selection when adding a new device.
-enum _DeviceType { connectedPlug, tv }
+enum _DeviceType { connectedPlug, tv, wled }
 
 /// A single option in the FAB popup menu.
 class _FabMenuOption {
@@ -332,6 +333,14 @@ class _AppShellState extends State<AppShell> {
                   ),
                   onTap: () => Navigator.of(context).pop(_DeviceType.tv),
                 ),
+                ListTile(
+                  leading: const Icon(Icons.lightbulb_outline_rounded),
+                  title: Text(l.deviceTypeWled),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  onTap: () => Navigator.of(context).pop(_DeviceType.wled),
+                ),
               ],
             ),
           ),
@@ -417,6 +426,14 @@ class _AppShellState extends State<AppShell> {
               isScrollControlled: true,
               useSafeArea: true,
               builder: (_) => const AddTvSheet(),
+            );
+            break;
+          case _DeviceType.wled:
+            added = await showModalBottomSheet<bool>(
+              context: context,
+              isScrollControlled: true,
+              useSafeArea: true,
+              builder: (_) => const AddWledSheet(),
             );
             break;
         }
