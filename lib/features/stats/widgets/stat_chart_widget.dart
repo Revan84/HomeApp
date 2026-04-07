@@ -2,11 +2,12 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
-import '../../../domain/models/history_window.dart';
-import '../../../domain/models/live_point.dart';
-import '../../../domain/models/metric_series.dart';
-import '../../../domain/models/metric_type.dart';
-import '../../../domain/models/time_range.dart';
+import '../domain/chart_type.dart';
+import '../../../domain/entities/history_window.dart';
+import '../../../domain/entities/live_point.dart';
+import '../domain/metric_series.dart';
+import '../domain/metric_type.dart';
+import '../domain/time_range.dart';
 import '../../live/widgets/charts/line_chart/interactive_line_chart.dart';
 
 /// Renders a chart (line, bar, or pie) for a [MetricSeries].
@@ -16,14 +17,14 @@ import '../../live/widgets/charts/line_chart/interactive_line_chart.dart';
 class StatChartWidget extends StatefulWidget {
   final MetricSeries series;
   final TimeRange selectedRange;
-  final String chartType;
+  final ChartType chartType;
   final ValueChanged<TimeRange>? onRangeChanged;
 
   const StatChartWidget({
     super.key,
     required this.series,
     required this.selectedRange,
-    this.chartType = 'line',
+    this.chartType = ChartType.line,
     this.onRangeChanged,
   });
 
@@ -60,7 +61,6 @@ class _StatChartWidgetState extends State<StatChartWidget> {
       return const SizedBox(
         height: 120,
         child: Center(
-          // TODO(l10n)
           child: Text('No data',
               style: TextStyle(color: AppColors.textSecondary)),
         ),
@@ -134,11 +134,11 @@ class _StatChartWidgetState extends State<StatChartWidget> {
 
   Widget _buildChart() {
     switch (widget.chartType) {
-      case 'bar':
+      case ChartType.bar:
         return _buildBarChart();
-      case 'pie':
+      case ChartType.pie:
         return _buildPieChart();
-      default:
+      case ChartType.line:
         return _buildLineChart();
     }
   }
@@ -230,7 +230,6 @@ class _StatChartWidgetState extends State<StatChartWidget> {
       if (series.min != null)
         PieChartSectionData(
           value: series.min!,
-          // TODO(l10n)
           title: 'Min',
           color: AppColors.danger,
           titleStyle: const TextStyle(fontSize: 10, color: Colors.white),
@@ -239,7 +238,6 @@ class _StatChartWidgetState extends State<StatChartWidget> {
       if (series.avg != null)
         PieChartSectionData(
           value: series.avg!,
-          // TODO(l10n)
           title: 'Avg',
           color: AppColors.success,
           titleStyle: const TextStyle(fontSize: 10, color: Colors.white),
@@ -248,7 +246,6 @@ class _StatChartWidgetState extends State<StatChartWidget> {
       if (series.max != null)
         PieChartSectionData(
           value: series.max!,
-          // TODO(l10n)
           title: 'Max',
           color: const Color(0xFF4FC3F7),
           titleStyle: const TextStyle(fontSize: 10, color: Colors.white),

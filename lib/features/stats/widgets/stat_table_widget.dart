@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/i18n/loc.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../domain/models/metric_series.dart';
-import '../../../domain/models/metric_type.dart';
+import '../domain/metric_series.dart';
+import '../domain/metric_type.dart';
 
 /// Renders a scrollable list of date/value rows for a [MetricSeries].
 ///
@@ -18,12 +19,11 @@ class StatTableWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final points = series.points;
     if (points.isEmpty) {
-      return const SizedBox(
+      return SizedBox(
         height: 80,
         child: Center(
-          // TODO(l10n)
-          child: Text('No data',
-              style: TextStyle(color: AppColors.textSecondary)),
+          child: Text(context.l10n.statsNoData,
+              style: const TextStyle(color: AppColors.textSecondary)),
         ),
       );
     }
@@ -43,7 +43,7 @@ class StatTableWidget extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 6),
             child: Row(
               children: [
-                // TODO(l10n)
+                // "Date" is a universal abbreviation kept as-is.
                 const Text('Date',
                     style: TextStyle(
                         fontSize: 11,

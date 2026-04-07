@@ -1,4 +1,4 @@
-import '../models/wled_device.dart';
+import '../entities/wled_device.dart';
 
 abstract class WledRepository {
   Future<List<WledDevice>> loadAll();

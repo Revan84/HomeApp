@@ -1,4 +1,4 @@
-import '../models/room_group.dart';
+import '../entities/room_group.dart';
 
 abstract class RoomGroupRepository {
   Future<List<RoomGroup>> loadAll();

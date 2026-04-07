@@ -974,6 +974,28 @@
         "description": "Hint text below the empty state icon"
     },
 
+    "statsNoCompatibleDevice": "No compatible device for this widget type",
+    "@statsNoCompatibleDevice": {
+        "description": "Snackbar message when no device supports the selected widget type"
+    },
+    "statsDeviceTypeSmartPlug": "Smart Plug",
+    "@statsDeviceTypeSmartPlug": {
+        "description": "Label for smart plug equipment type"
+    },
+    "statsDeviceTypeGeneric": "Device",
+    "@statsDeviceTypeGeneric": {
+        "description": "Label for generic equipment type"
+    },
+    "statsWidgetCount": "{count, plural, =1{1 widget} other{{count} widgets}}",
+    "@statsWidgetCount": {
+        "description": "Number of widgets in a device group",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+
     "tvAddTitle": "Add a TV",
     "@tvAddTitle": { "description": "Title of the add TV bottom sheet" },
     "tvDefaultName": "Smart TV",

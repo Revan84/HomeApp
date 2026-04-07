@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_colors.dart';
-import '../../../domain/models/metric_series.dart';
-import '../../../domain/models/metric_type.dart';
+import '../domain/metric_series.dart';
+import '../domain/metric_type.dart';
 
 /// Compact chronological list showing each data point with an event icon,
 /// timestamp, and value in green.
@@ -21,7 +21,6 @@ class StatHistoryWidget extends StatelessWidget {
       return const SizedBox(
         height: 80,
         child: Center(
-          // TODO(l10n)
           child: Text('No data',
               style: TextStyle(color: AppColors.textSecondary)),
         ),

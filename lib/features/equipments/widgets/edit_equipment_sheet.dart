@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:front_end/core/i18n/loc.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/repositories/equipment_repository.dart';
-import '../../../domain/repositories/room_repository.dart';
-import '../../../domain/models/room.dart';
-import '../../../domain/models/equipment.dart';
+import '../../../domain/entities/equipment.dart';
+import '../controllers/equipments_controller.dart';
 
 class EditEquipmentSheet extends StatefulWidget {
   final Equipment initial;
@@ -27,7 +25,6 @@ class _EditEquipmentSheetState extends State<EditEquipmentSheet> {
   late bool _showRssi;
   late int _channel;
 
-  List<Room> _rooms = [];
   String? _selectedRoomId;
   bool _isFavorite = false;
 
@@ -48,27 +45,6 @@ class _EditEquipmentSheetState extends State<EditEquipmentSheet> {
     _selectedRoomId = e.roomId;
     _isFavorite = e.isFavorite;
     _channel = e.channel;
-
-    _loadRooms();
-  }
-
-  Future<void> _loadRooms() async {
-    final rooms = await context.read<RoomRepository>().loadAll();
-    if (!mounted) return;
-
-    final byId = <String, Room>{};
-    for (final r in rooms) {
-      byId[r.id] = r;
-    }
-    final uniqueRooms = byId.values.toList();
-
-    final selected = _selectedRoomId;
-    final exists = selected != null && byId.containsKey(selected);
-
-    setState(() {
-      _rooms = uniqueRooms;
-      if (!exists) _selectedRoomId = null;
-    });
   }
 
   @override
@@ -112,8 +88,11 @@ class _EditEquipmentSheetState extends State<EditEquipmentSheet> {
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
 
+    final controller = context.read<EquipmentsController>();
     final updated = widget.initial.copyWith(
-      name: _nameCtrl.text.trim().isEmpty ? context.l10n.defaultEquipmentName : _nameCtrl.text.trim(),
+      name: _nameCtrl.text.trim().isEmpty
+          ? context.l10n.defaultEquipmentName
+          : _nameCtrl.text.trim(),
       ip: _ipCtrl.text.trim(),
       type: _type,
       roomId: _selectedRoomId,
@@ -125,7 +104,7 @@ class _EditEquipmentSheetState extends State<EditEquipmentSheet> {
       channel: _channel,
     );
 
-    await context.read<EquipmentRepository>().update(updated);
+    await controller.updateEquipment(updated);
 
     if (!mounted) return;
     Navigator.of(context).pop(true);
@@ -133,10 +112,9 @@ class _EditEquipmentSheetState extends State<EditEquipmentSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final rooms = context.watch<EquipmentsController>().rooms;
+    final safeRoomId = rooms.any((r) => r.id == _selectedRoomId) ? _selectedRoomId : null;
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
-
-    final roomIds = _rooms.map((r) => r.id).toSet();
-    final safeRoomId = (_selectedRoomId != null && roomIds.contains(_selectedRoomId)) ? _selectedRoomId : null;
 
     return Padding(
       padding: EdgeInsets.only(bottom: bottomInset),
@@ -215,7 +193,7 @@ class _EditEquipmentSheetState extends State<EditEquipmentSheet> {
                       value: null,
                       child: Text(context.l10n.none),
                     ),
-                    ..._rooms.map(
+                    ...rooms.map(
                       (r) => DropdownMenuItem<String?>(
                         value: r.id,
                         child: Text(r.name),

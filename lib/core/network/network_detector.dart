@@ -87,8 +87,8 @@ class NetworkDetector {
   Future<bool> _ensureWifiPermission({required bool requestIfNeeded}) async {
     if (!Platform.isAndroid) return true;
 
-    // ✅ Simple et fiable : Location (marche sur la majorité des devices pour SSID via network_info_plus)
-    // Si tu veux Android 13+ "nearby wifi devices", on le fera ensuite proprement.
+    // Simple and reliable: Location permission (works on most devices for SSID via network_info_plus).
+    // Android 13+ "nearby wifi devices" permission can be added later if needed.
     final status = await Permission.locationWhenInUse.status;
     if (status.isGranted) return true;
 

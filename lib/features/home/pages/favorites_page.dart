@@ -3,11 +3,12 @@ import 'package:provider/provider.dart';
 
 import '../../../core/i18n/loc.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../domain/repositories/equipment_repository.dart';
-import '../../../domain/models/equipment.dart';
+import '../../../domain/entities/equipment.dart';
 import '../../../features/equipments/pages/equipment_details_page.dart';
 import '../../../features/live/controllers/live_polling_controller.dart';
-import '../../../domain/models/room.dart';
+import '../../../domain/entities/room.dart';
+import '../controllers/home_controller.dart';
+import '../widgets/favorite_pill_tile.dart';
 
 /// Dedicated page for the favorites list.
 ///
@@ -53,9 +54,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
   }
 
   Future<void> _removeFavorite(Equipment equipment) async {
-    await context.read<EquipmentRepository>().update(
-          equipment.copyWith(isFavorite: false),
-        );
+    await context.read<HomeController>().removeEquipmentFromFavorites(equipment);
 
     if (!mounted) return;
 
@@ -65,7 +64,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
   }
 
   void _onAddPressed() {
-    // TODO: Hook this button to the future "add favorite" flow.
+    // No-op: the "add favorite" flow is not yet implemented.
   }
 
   IconData _leadingIconFor(Equipment equipment) {
@@ -133,7 +132,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                         final liveState = liveController.live[equipment.id];
                         final isOnline = liveState?.online ?? false;
 
-                        return _FavoritePillTile(
+                        return FavoritePillTile(
                           icon: _leadingIconFor(equipment),
                           title: equipment.name,
                           statusColor: _statusColorFor(isOnline),
@@ -185,7 +184,7 @@ class _FavoritesPageHeader extends StatelessWidget {
               IconButton(
                 tooltip: context.l10n.favoritesFilterTooltip,
                 onPressed: () {
-                  // TODO: Hook this icon to a future filter sheet.
+                  // No-op: the filter sheet is not yet implemented.
                 },
                 icon: const Icon(Icons.tune_rounded, size: 18),
               ),
@@ -204,109 +203,6 @@ class _FavoritesPageHeader extends StatelessWidget {
           const SizedBox(height: 12),
         ],
       ),
-    );
-  }
-}
-
-/// Pill-shaped list item for a favorite device.
-class _FavoritePillTile extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final Color statusColor;
-  final String removeTooltip;
-  final VoidCallback onTap;
-  final VoidCallback onRemove;
-
-  const _FavoritePillTile({
-    required this.icon,
-    required this.title,
-    required this.statusColor,
-    required this.removeTooltip,
-    required this.onTap,
-    required this.onRemove,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
-    return Row(
-      children: [
-        Expanded(
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(25),
-              onTap: onTap,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                decoration: BoxDecoration(
-                  color: AppColors.bg,
-                  borderRadius: BorderRadius.circular(999),
-                  border: Border.all(
-                    width: 0.7,
-                    color: AppColors.stroke.withValues(alpha: 0.90),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.22),
-                      blurRadius: 3,
-                      spreadRadius: 1,
-                      offset: const Offset(1, 5),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      icon,
-                      color: AppColors.textPrimary,
-                      size: 21,
-                    ),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: Text(
-                        title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: textTheme.bodyMedium?.copyWith(
-                          color: AppColors.textPrimary,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Container(
-                      width: 11,
-                      height: 11,
-                      decoration: BoxDecoration(
-                        color: statusColor,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    const SizedBox(width: 24),
-                    Icon(
-                      Icons.chevron_right_rounded,
-                      color: AppColors.textPrimary,
-                      size: 24,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(width: 8),
-        IconButton(
-          tooltip: removeTooltip,
-          onPressed: onRemove,
-          icon: Icon(
-            Icons.remove,
-            color: AppColors.textSecondary,
-            size: 20,
-          ),
-        ),
-      ],
     );
   }
 }

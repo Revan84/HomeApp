@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
 
 import '../../../core/i18n/loc.dart';
-import '../../../domain/models/room.dart';
-import '../../../domain/models/wled_device.dart';
-import '../../../domain/repositories/room_repository.dart';
-import '../../../domain/repositories/wled_repository.dart';
-import '../../integrations/wled/data/wled_api_client.dart';
+import '../../../domain/entities/wled_device.dart';
+import '../../equipments/controllers/equipments_controller.dart';
 
 class AddWledSheet extends StatefulWidget {
   const AddWledSheet({super.key});
@@ -22,7 +18,6 @@ class _AddWledSheetState extends State<AddWledSheet> {
   final _ipCtrl = TextEditingController();
   final _modelCtrl = TextEditingController();
 
-  List<Room> _rooms = [];
   String? _selectedRoomId;
   bool _isFavorite = false;
 
@@ -31,23 +26,11 @@ class _AddWledSheetState extends State<AddWledSheet> {
   String? _testError;
 
   @override
-  void initState() {
-    super.initState();
-    _loadRooms();
-  }
-
-  @override
   void dispose() {
     _nameCtrl.dispose();
     _ipCtrl.dispose();
     _modelCtrl.dispose();
     super.dispose();
-  }
-
-  Future<void> _loadRooms() async {
-    final rooms = await context.read<RoomRepository>().loadAll();
-    if (!mounted) return;
-    setState(() => _rooms = rooms);
   }
 
   String? _validateIp(String? v) {
@@ -64,17 +47,10 @@ class _AddWledSheetState extends State<AddWledSheet> {
 
   Future<void> _testConnection() async {
     if (!_formKey.currentState!.validate()) return;
-    setState(() {
-      _testing = true;
-      _testOk = false;
-      _testError = null;
-    });
-
-    final ip = _ipCtrl.text.trim();
-    final api = WledApiClient(context.read<http.Client>());
-
+    final controller = context.read<EquipmentsController>();
+    setState(() { _testing = true; _testOk = false; _testError = null; });
     try {
-      final ok = await api.testConnection(ip);
+      final ok = await controller.testWledConnection(_ipCtrl.text.trim());
       if (!mounted) return;
       setState(() {
         _testOk = ok;
@@ -90,7 +66,7 @@ class _AddWledSheetState extends State<AddWledSheet> {
 
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
-
+    final controller = context.read<EquipmentsController>();
     final device = WledDevice(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       name: _nameCtrl.text.trim().isEmpty
@@ -101,9 +77,7 @@ class _AddWledSheetState extends State<AddWledSheet> {
       isFavorite: _isFavorite,
       modelName: _modelCtrl.text.trim(),
     );
-
-    await context.read<WledRepository>().add(device);
-
+    await controller.addWledDevice(device);
     if (!mounted) return;
     Navigator.of(context).pop(true);
   }
@@ -111,6 +85,7 @@ class _AddWledSheetState extends State<AddWledSheet> {
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
+    final rooms = context.watch<EquipmentsController>().rooms;
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
     return Padding(
@@ -193,7 +168,7 @@ class _AddWledSheetState extends State<AddWledSheet> {
                           value: null,
                           child: Text(l.none),
                         ),
-                        ..._rooms.map(
+                        ...rooms.map(
                           (r) => DropdownMenuItem<String?>(
                             value: r.id,
                             child: Text(r.name),

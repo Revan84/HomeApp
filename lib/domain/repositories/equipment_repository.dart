@@ -1,4 +1,4 @@
-import '../models/equipment.dart';
+import '../entities/equipment.dart';
 
 abstract class EquipmentRepository {
   Future<List<Equipment>> loadAll();

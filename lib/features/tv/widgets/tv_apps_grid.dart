@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
-import '../../../domain/models/tv_app.dart';
+import '../domain/tv_app.dart';
 
 /// Grid of TV application shortcut buttons styled like brand logos (B&W).
 class TvAppsGrid extends StatelessWidget {

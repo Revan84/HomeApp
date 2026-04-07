@@ -7,8 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../../core/theme/app_colors.dart';
-import '../../../../../../domain/models/history_window.dart';
-import '../../../../../../domain/models/live_point.dart';
+import '../../../../../../domain/entities/history_window.dart';
+import '../../../../../../domain/entities/live_point.dart';
 
 /// Interactive power history chart with a finance-like minimalist style.
 ///

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/i18n/loc.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../domain/models/room.dart';
-import '../../../../domain/models/room_group.dart';
+import '../../../../domain/entities/room.dart';
+import '../../../../domain/entities/room_group.dart';
 
 class RoomGroupSection extends StatelessWidget {
   final RoomGroup group;

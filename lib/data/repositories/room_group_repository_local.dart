@@ -1,78 +1,77 @@
 import 'dart:convert';
+import 'dart:developer' as dev;
 
 import '../../core/storage/local_storage.dart';
-import '../../domain/models/room_group.dart';
+import '../../core/storage/storage_keys.dart';
+import '../../core/utils/id_generator.dart';
+import '../../domain/entities/room_group.dart';
 import '../../domain/repositories/room_group_repository.dart';
+import '../dto/room_group_dto.dart';
+import '../mappers/room_group_mapper.dart';
 
 class RoomGroupRepositoryLocal implements RoomGroupRepository {
-  static const String _key = 'room_groups_v1';
-
   final LocalStorage _storage;
+  final IdGenerator _idGenerator;
 
-  RoomGroupRepositoryLocal(this._storage);
+  RoomGroupRepositoryLocal(this._storage, {IdGenerator? idGenerator})
+      : _idGenerator = idGenerator ?? const TimestampIdGenerator();
 
   @override
   Future<List<RoomGroup>> loadAll() async {
-    final raw = await _storage.getString(_key);
-    if (raw == null || raw.isEmpty) {
-      return <RoomGroup>[];
+    final raw = await _storage.getString(StorageKeys.roomGroups);
+    if (raw == null || raw.isEmpty) return [];
+
+    try {
+      final list = jsonDecode(raw) as List<dynamic>;
+      return list
+          .map((e) => RoomGroupMapper.toDomain(
+                RoomGroupDto.fromMap(e as Map<String, dynamic>),
+              ))
+          .toList();
+    } on FormatException catch (e, st) {
+      dev.log('Failed to parse room groups', error: e, stackTrace: st);
+      return [];
     }
-
-    final decoded = jsonDecode(raw) as List<dynamic>;
-
-    final groups = decoded
-        .whereType<Map<String, dynamic>>()
-        .map(RoomGroup.fromMap)
-        .toList(growable: true);
-
-    groups.sort((a, b) {
-      final sortComparison = a.sortOrder.compareTo(b.sortOrder);
-      if (sortComparison != 0) return sortComparison;
-      return a.name.toLowerCase().compareTo(b.name.toLowerCase());
-    });
-
-    return groups;
   }
 
   @override
-  Future<void> saveAll(List<RoomGroup> groups) async {
-    final raw = jsonEncode(
-      groups.map((group) => group.toMap()).toList(growable: false),
+  Future<void> saveAll(List<RoomGroup> items) async {
+    final json = jsonEncode(
+      items.map((g) => RoomGroupMapper.fromDomain(g).toMap()).toList(),
     );
-
-    await _storage.setString(_key, raw);
+    await _storage.setString(StorageKeys.roomGroups, json);
   }
 
   @override
   Future<RoomGroup> add(String name) async {
-    final groups = await loadAll();
+    final all = await loadAll();
+    final maxSort = all.isEmpty
+        ? 0
+        : all.map((g) => g.sortOrder).reduce((a, b) => a > b ? a : b);
 
-    final nextGroup = RoomGroup(
-      id: DateTime.now().microsecondsSinceEpoch.toString(),
+    final group = RoomGroup(
+      id: _idGenerator.generate(),
       name: name.trim(),
-      sortOrder: groups.length,
+      sortOrder: maxSort + 1,
     );
-
-    groups.add(nextGroup);
-    await saveAll(groups);
-
-    return nextGroup;
+    all.add(group);
+    await saveAll(all);
+    return group;
   }
 
   @override
   Future<void> update(RoomGroup group) async {
-    final groups = await loadAll();
-    final index = groups.indexWhere((item) => item.id == group.id);
+    final all = await loadAll();
+    final index = all.indexWhere((g) => g.id == group.id);
     if (index == -1) return;
-
-    groups[index] = group;
-    await saveAll(groups);
+    all[index] = group;
+    await saveAll(all);
   }
 
   @override
   Future<void> deleteById(String id) async {
-    final groups = await loadAll();
-    groups.removeWhere((group) => group.id == id);
-    await saveAll(groups);
+    final all = await loadAll();
+    all.removeWhere((g) => g.id == id);
+    await saveAll(all);
   }
 }

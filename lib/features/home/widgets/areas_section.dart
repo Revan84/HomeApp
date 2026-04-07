@@ -6,21 +6,19 @@ import '../../../core/i18n/loc.dart';
 
 import '../../live/controllers/live_polling_controller.dart';
 
-import '../../../domain/models/room.dart';
-import '../../../domain/models/equipment.dart';
+import '../../../domain/entities/room.dart';
 
+import '../controllers/home_controller.dart';
 import 'area_card.dart';
 
 class AreasSection extends StatefulWidget {
   const AreasSection({
     super.key,
     required this.rooms,
-    required this.equipments,
     required this.onOpenEquipment,
   });
 
   final List<Room> rooms;
-  final List<Equipment> equipments;
   final void Function(String equipmentId) onOpenEquipment;
 
   @override
@@ -29,8 +27,6 @@ class AreasSection extends StatefulWidget {
 
 class _AreasSectionState extends State<AreasSection> {
   bool _expanded = false;
-
-  bool _isPlug(Equipment e) => e.type == EquipmentType.shellyPlusPlugS;
 
   String _dash(BuildContext context, String? v) =>
       (v == null || v.isEmpty) ? context.l10n.valueUnknown : v;
@@ -43,6 +39,7 @@ class _AreasSectionState extends State<AreasSection> {
   @override
   Widget build(BuildContext context) {
     final liveCtl = context.watch<LivePollingController>();
+    final homeCtl = context.watch<HomeController>();
 
     final rooms = widget.rooms;
     final hasToggle = rooms.length > 2;
@@ -60,9 +57,7 @@ class _AreasSectionState extends State<AreasSection> {
           )
         else ...[
           ...visibleRooms.map((r) {
-            final plugs = widget.equipments
-                .where((e) => _isPlug(e) && e.roomId == r.id)
-                .toList();
+            final plugs = homeCtl.plugsForRoom(r.id);
 
             final items = plugs.map((e) {
               final st = liveCtl.live[e.id];

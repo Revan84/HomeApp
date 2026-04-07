@@ -1,4 +1,4 @@
-import '../models/tv_device.dart';
+import '../entities/tv_device.dart';
 
 abstract class TvRepository {
   Future<List<TvDevice>> loadAll();

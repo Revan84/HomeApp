@@ -974,6 +974,28 @@
         "description": "Texte d'indication sous l'icône d'état vide"
     },
 
+    "statsNoCompatibleDevice": "Aucun appareil compatible pour ce type de widget",
+    "@statsNoCompatibleDevice": {
+        "description": "Message snackbar quand aucun appareil ne supporte le type de widget"
+    },
+    "statsDeviceTypeSmartPlug": "Prise connectée",
+    "@statsDeviceTypeSmartPlug": {
+        "description": "Libellé pour le type prise connectée"
+    },
+    "statsDeviceTypeGeneric": "Appareil",
+    "@statsDeviceTypeGeneric": {
+        "description": "Libellé pour le type appareil générique"
+    },
+    "statsWidgetCount": "{count, plural, =1{1 widget} other{{count} widgets}}",
+    "@statsWidgetCount": {
+        "description": "Nombre de widgets dans un groupe d'appareils",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+
     "tvAddTitle": "Ajouter une TV",
     "@tvAddTitle": { "description": "Titre de la bottom sheet d'ajout TV" },
     "tvDefaultName": "Smart TV",

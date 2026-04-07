@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import '../../../../../domain/models/live_point.dart';
+import '../../../../../domain/entities/live_point.dart';
 
 /// Computes readable Y-axis bounds for power charts.
 ///

@@ -5,23 +5,19 @@ import '../../../core/i18n/loc.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/time_label.dart';
 
-import '../../../domain/models/history_window.dart';
-import '../../../domain/models/live_point.dart';
-import '../../../domain/models/room.dart';
-import '../../../domain/models/equipment.dart';
-
+import '../../../domain/entities/equipment.dart';
+import '../../../domain/entities/history_window.dart';
+import '../../../domain/entities/live_point.dart';
 import '../../../domain/repositories/equipment_repository.dart';
 import '../../../domain/repositories/room_repository.dart';
 
+import '../../live/controllers/live_polling_controller.dart';
 import '../../live/widgets/charts/line_chart/chart_bounds.dart';
 import '../../live/widgets/charts/line_chart/history_range_chips.dart';
 import '../../live/widgets/charts/line_chart/interactive_line_chart.dart';
 
-import '../../live/controllers/live_polling_controller.dart';
-
-import '../../../data/mappers/equipment_mappers.dart';
+import '../controllers/equipment_details_controller.dart';
 import '../dialogs/equipment_edit_dialogs.dart';
-
 import '../widgets/equipment_header.dart';
 import '../widgets/equipment_info_grid.dart';
 import '../widgets/prototype_card.dart';
@@ -37,146 +33,91 @@ class EquipmentDetailsPage extends StatefulWidget {
 }
 
 class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
-  late final EquipmentRepository _equipmentRepo;
-  late final RoomRepository _roomRepo;
-  late final LivePollingController _live;
+  late final EquipmentDetailsController _controller;
 
-  Equipment? _equipment;
-  List<Room> _rooms = const [];
-
+  // Pure UI state: not part of the domain or business logic.
   HistoryWindow _window = HistoryWindow.d1;
-
-  bool _loading = true;
-  bool _depsReady = false;
-
   LivePoint? _hoverPoint;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    if (_depsReady) return;
-
-    _equipmentRepo = context.read<EquipmentRepository>();
-    _roomRepo = context.read<RoomRepository>();
-    _live = context.read<LivePollingController>();
-
-    _depsReady = true;
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _load();
-    });
-  }
-
-  Future<void> _load() async {
-    setState(() {
-      _loading = true;
-    });
-
-    final equipments = await _equipmentRepo.loadAll();
-    final rooms = await _roomRepo.loadAll();
-
-    if (!mounted) return;
-
-    final equipment = equipments.cast<Equipment?>().firstWhere(
-      (item) => item?.id == widget.equipmentId,
-      orElse: () => null,
+  void initState() {
+    super.initState();
+    _controller = EquipmentDetailsController(
+      equipmentRepo: context.read<EquipmentRepository>(),
+      roomRepo: context.read<RoomRepository>(),
+      live: context.read<LivePollingController>(),
     );
-
-    if (equipment == null) {
-      Navigator.of(context).pop(false);
-      return;
-    }
-
-    _live.syncFollowed([equipment.toEndpoint()], forcePollNow: true);
-
-    setState(() {
-      _equipment = equipment;
-      _rooms = rooms;
-      _loading = false;
-    });
+    _controller.addListener(_onControllerUpdate);
+    _reload();
   }
+
+  @override
+  void dispose() {
+    _controller.removeListener(_onControllerUpdate);
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onControllerUpdate() {
+    if (mounted) setState(() {});
+  }
+
+  Future<void> _reload() async {
+    final found = await _controller.load(widget.equipmentId);
+    if (!found && mounted) Navigator.of(context).pop(false);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Actions — dialog orchestration only; logic lives in the controller
+  // ---------------------------------------------------------------------------
 
   Future<void> _editName() async {
-    final equipment = _equipment;
+    final equipment = _controller.equipment;
     if (equipment == null) return;
-
     final nextName = await EquipmentEditDialogs.editName(
       context,
       currentName: equipment.name,
     );
     if (nextName == null) return;
-
-    await _equipmentRepo.update(equipment.copyWith(name: nextName));
-
-    await _load();
+    await _controller.updateName(nextName);
   }
 
   Future<void> _editLocalIp() async {
-    final equipment = _equipment;
+    final equipment = _controller.equipment;
     if (equipment == null) return;
-
     final nextIp = await EquipmentEditDialogs.editLocalIp(
       context,
       currentIp: equipment.ip,
     );
     if (nextIp == null) return;
-
-    await _equipmentRepo.update(equipment.copyWith(ip: nextIp));
-
-    await _load();
-  }
-
-  Future<void> _toggleFavorite() async {
-    final equipment = _equipment;
-    if (equipment == null) return;
-
-    await _equipmentRepo.update(
-      equipment.copyWith(isFavorite: !equipment.isFavorite),
-    );
-
-    await _load();
+    await _controller.updateIp(nextIp);
   }
 
   Future<void> _selectType() async {
-    final equipment = _equipment;
+    final equipment = _controller.equipment;
     if (equipment == null) return;
-
     final nextType = await EquipmentEditDialogs.pickType(
       context,
       current: equipment.type,
       labelOf: (type) => _typeLabel(context, type),
     );
-
-    if (nextType == null || nextType == equipment.type) return;
-
-    await _equipmentRepo.update(equipment.copyWith(type: nextType));
-
-    await _load();
+    if (nextType == null) return;
+    await _controller.updateType(nextType);
   }
 
   Future<void> _selectRoom() async {
-    final equipment = _equipment;
+    final equipment = _controller.equipment;
     if (equipment == null) return;
-
     final nextRoomId = await EquipmentEditDialogs.pickRoom(
       context,
       currentRoomId: equipment.roomId,
-      rooms: _rooms,
+      rooms: _controller.rooms,
       noneLabel: context.l10n.none,
     );
-
-    if (nextRoomId == equipment.roomId) return;
-
-    await _equipmentRepo.update(equipment.copyWith(roomId: nextRoomId));
-
-    await _load();
+    await _controller.updateRoom(nextRoomId);
   }
 
   Future<void> _deleteEquipment() async {
-    final equipment = _equipment;
-    if (equipment == null) return;
-
     final isConfirmed = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
@@ -194,28 +135,23 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
         ],
       ),
     );
-
     if (isConfirmed != true) return;
-
-    await _equipmentRepo.deleteById(equipment.id);
-
-    // Remove the deleted device from live tracking and local history.
-    _live.unfollowDevice(equipment.id);
-    await _live.deleteHistoryForDevice(equipment.id);
-
+    await _controller.delete();
     if (!mounted) return;
-
     Navigator.of(context).pop(true);
   }
 
   void _handleWindowChanged(HistoryWindow nextWindow) {
     if (_window == nextWindow) return;
-
     setState(() {
       _window = nextWindow;
       _hoverPoint = null;
     });
   }
+
+  // ---------------------------------------------------------------------------
+  // Presentation helpers (label formatting, no logic)
+  // ---------------------------------------------------------------------------
 
   String _typeLabel(BuildContext context, EquipmentType type) {
     switch (type) {
@@ -228,29 +164,22 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
     }
   }
 
-  String _roomName(BuildContext context, String? roomId) {
-    if (roomId == null) return context.l10n.none;
-
-    final matchingRooms = _rooms
-        .where((room) => room.id == roomId)
-        .toList(growable: false);
-
-    return matchingRooms.isEmpty ? context.l10n.none : matchingRooms.first.name;
-  }
+  // ---------------------------------------------------------------------------
+  // Build
+  // ---------------------------------------------------------------------------
 
   @override
   Widget build(BuildContext context) {
-    if (_loading || _equipment == null) {
+    if (_controller.isLoading || _controller.equipment == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    final equipment = _equipment!;
+    final equipment = _controller.equipment!;
     final liveController = context.watch<LivePollingController>();
     final liveState = liveController.live[equipment.id];
 
     final history =
-        liveController.historyFor(equipment.id, _window).toList(growable: true)
-          ..sort((a, b) => a.at.compareTo(b.at));
+        liveController.historyFor(equipment.id, _window).toList(growable: false);
 
     final bounds = computeNicePowerBounds(history);
 
@@ -262,7 +191,6 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
 
     final updatedLabel = ageLabel(context, liveState?.lastUpdatedAt);
     final trend = liveState?.trendPower ?? 0;
-
     final displayedPowerW = _hoverPoint?.powerW ?? powerW;
 
     final modelLabel = switch (equipment.type) {
@@ -276,9 +204,8 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
         ? context.l10n.valueUnknown
         : context.l10n.energyWh(energyWh.toStringAsFixed(0));
 
-    final connectionLabel = online
-        ? context.l10n.detailsConnectedWifi
-        : context.l10n.netStatusOffline;
+    final connectionLabel =
+        online ? context.l10n.detailsConnectedWifi : context.l10n.netStatusOffline;
 
     return Scaffold(
       appBar: AppBar(
@@ -286,7 +213,7 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
         actions: [
           IconButton(
             tooltip: context.l10n.refresh,
-            onPressed: _load,
+            onPressed: _reload,
             icon: const Icon(Icons.refresh),
           ),
         ],
@@ -304,7 +231,7 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
                   trend: trend,
                   name: equipment.name,
                   onEditName: _editName,
-                  onRefresh: _load,
+                  onRefresh: _reload,
                 ),
                 const SizedBox(height: 14),
                 HistoryRangeChips(
@@ -320,9 +247,7 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
                   height: 180,
                   powerUnitLabel: context.l10n.unitWattShort,
                   onHoverPoint: (point) {
-                    setState(() {
-                      _hoverPoint = point;
-                    });
+                    setState(() => _hoverPoint = point);
                   },
                 ),
                 const SizedBox(height: 14),
@@ -338,7 +263,7 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
                       ? context.l10n.valueYes
                       : context.l10n.valueNo,
                   isFavorite: equipment.isFavorite,
-                  onToggleFavorite: _toggleFavorite,
+                  onToggleFavorite: _controller.toggleFavorite,
                   energyLabel: energyLabel,
                   modelLabel: modelLabel,
                   online: online,
@@ -346,11 +271,12 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
                 ),
                 const SizedBox(height: 18),
                 RoomToggleRow(
-                  roomName: _roomName(context, equipment.roomId),
+                  roomName: _controller.roomName(
+                      equipment.roomId, context.l10n.none),
                   onSelectRoom: _selectRoom,
                   value: isOn,
                   onChanged: (!toggling && equipment.showToggle)
-                      ? (_) => _live.toggle(equipment.toEndpoint())
+                      ? (_) => _controller.toggleOutput()
                       : null,
                 ),
               ],
@@ -367,10 +293,10 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
               child: Text(
                 context.l10n.delete,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.textSecondary,
-                  decoration: TextDecoration.underline,
-                  decorationColor: AppColors.textSecondary,
-                ),
+                      color: AppColors.textSecondary,
+                      decoration: TextDecoration.underline,
+                      decorationColor: AppColors.textSecondary,
+                    ),
               ),
             ),
           ),

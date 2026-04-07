@@ -4,11 +4,13 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../domain/models/device_endpoint.dart';
-import '../../../domain/models/history_window.dart';
-import '../../../domain/models/live_point.dart';
-import '../../../domain/models/live_state.dart';
+import '../../../domain/entities/device_endpoint.dart';
+import '../../../domain/entities/history_window.dart';
+import '../../../domain/entities/live_point.dart';
+import '../../../domain/entities/live_state.dart';
 import '../../../domain/repositories/live_device_repository.dart';
+import '../data/live_point_dto.dart';
+import '../data/live_point_mapper.dart';
 import '../domain/live_polling_config.dart';
 
 class LivePollingController extends ChangeNotifier {
@@ -30,6 +32,9 @@ class LivePollingController extends ChangeNotifier {
 
   /// Public live states by device id.
   final Map<String, LiveState> live = {};
+
+  int get onlineCount => live.values.where((s) => s.online == true).length;
+  int get offlineCount => live.values.where((s) => s.online == false).length;
 
   /// Prevent duplicate concurrent fetches per device.
   final Map<String, bool> _inFlight = {};
@@ -157,24 +162,13 @@ class LivePollingController extends ChangeNotifier {
       decoded.forEach((deviceId, rawPoints) {
         if (rawPoints is! List) return;
 
-        final points = <LivePoint>[];
-
-        for (final item in rawPoints) {
-          if (item is! Map) continue;
-
-          final timestamp = item['at'];
-          final power = item['powerW'];
-
-          if (timestamp is! int || power is! num) continue;
-          if (timestamp <= 0) continue;
-
-          points.add(
-            LivePoint(
-              at: DateTime.fromMillisecondsSinceEpoch(timestamp),
-              powerW: power.toDouble(),
-            ),
-          );
-        }
+        final points = rawPoints
+            .map((item) {
+              final dto = LivePointDto.tryFromMap(item);
+              return dto != null ? LivePointMapper.toDomain(dto) : null;
+            })
+            .whereType<LivePoint>()
+            .toList();
 
         points.sort((a, b) => a.at.compareTo(b.at));
 
@@ -209,12 +203,7 @@ class LivePollingController extends ChangeNotifier {
 
       _history.forEach((deviceId, points) {
         encoded[deviceId] = points
-            .map(
-              (point) => <String, dynamic>{
-                'at': point.at.millisecondsSinceEpoch,
-                'powerW': point.powerW,
-              },
-            )
+            .map((p) => LivePointMapper.fromDomain(p).toMap())
             .toList(growable: false);
       });
 
@@ -384,7 +373,10 @@ class LivePollingController extends ChangeNotifier {
           ? DateTime.now().add(_config.okInterval)
           : DateTime.now().add(fetched.backoff);
 
-      final nextState = fetched.copyWith(nextPollAt: nextPollAt);
+      final nextState = fetched.copyWith(
+        nextPollAt: nextPollAt,
+        trendPower: _computeTrend(current.powerW, fetched.powerW),
+      );
 
       return _applyLive(endpoint.deviceId, nextState);
     } catch (_) {
@@ -393,6 +385,13 @@ class LivePollingController extends ChangeNotifier {
     } finally {
       _inFlight[endpoint.deviceId] = false;
     }
+  }
+
+  int _computeTrend(num? previous, num? next) {
+    if (previous == null || next == null) return 0;
+    if (next > previous) return 1;
+    if (next < previous) return -1;
+    return 0;
   }
 
   // ---------------------------------------------------------------------------

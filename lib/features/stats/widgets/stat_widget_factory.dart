@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../domain/models/metric_series.dart';
-import '../../../domain/models/stat_widget.dart';
-import '../../../domain/models/time_range.dart';
+import '../domain/chart_type.dart';
+import '../domain/metric_series.dart';
+import '../domain/stat_widget.dart';
+import '../domain/time_range.dart';
 import 'stat_chart_widget.dart';
 import 'stat_history_widget.dart';
 import 'stat_kpi_widget.dart';
@@ -38,7 +39,7 @@ class StatWidgetFactory {
         return StatChartWidget(
           series: series,
           selectedRange: config.range,
-          chartType: (config.extra?['chartType'] as String?) ?? 'line',
+          chartType: config.chartType ?? ChartType.line,
           onRangeChanged: onRangeChanged,
         );
 

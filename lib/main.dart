@@ -12,6 +12,7 @@ import 'core/i18n/l10n/app_localizations.dart';
 import 'core/i18n/locale_controller.dart';
 import 'core/network/http_client.dart';
 import 'core/storage/local_storage.dart';
+import 'core/utils/id_generator.dart';
 
 import 'domain/repositories/equipment_repository.dart';
 import 'domain/repositories/room_group_repository.dart';
@@ -31,9 +32,13 @@ import 'features/integrations/shelly/data/shelly_rpc_client.dart';
 import 'features/live/controllers/live_polling_controller.dart';
 import 'features/live/domain/live_polling_config.dart';
 
-import 'domain/repositories/stats_repository.dart';
-import 'data/repositories/mock_stats_repository.dart';
+import 'features/stats/domain/stats_repository.dart';
+import 'features/stats/data/mock_stats_repository.dart';
 import 'features/stats/controller/stats_controller.dart';
+
+import 'features/shell/controllers/shell_controller.dart';
+import 'features/home/controllers/home_controller.dart';
+import 'features/equipments/controllers/equipments_controller.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,6 +61,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<LocaleController>(
           create: (_) => LocaleController(prefs),
         ),
+        Provider<IdGenerator>(create: (_) => const TimestampIdGenerator()),
         Provider<EquipmentRepository>(
           create: (_) => EquipmentRepositoryLocal(storage),
         ),
@@ -98,8 +104,36 @@ class MyApp extends StatelessWidget {
           create: (_) => MockStatsRepository(storage),
         ),
         ChangeNotifierProvider<StatsController>(
-          create: (context) =>
-              StatsController(context.read<StatsRepository>()),
+          create: (context) => StatsController(
+            context.read<StatsRepository>(),
+            roomRepo: context.read<RoomRepository>(),
+            equipmentRepo: context.read<EquipmentRepository>(),
+          ),
+        ),
+        ChangeNotifierProvider<ShellController>(
+          create: (context) => ShellController(
+            roomGroupRepo: context.read<RoomGroupRepository>(),
+          ),
+        ),
+        ChangeNotifierProvider<HomeController>(
+          create: (context) => HomeController(
+            roomGroupRepo: context.read<RoomGroupRepository>(),
+            roomRepo: context.read<RoomRepository>(),
+            equipmentRepo: context.read<EquipmentRepository>(),
+            tvRepo: context.read<TvRepository>(),
+            liveController: context.read<LivePollingController>(),
+          ),
+        ),
+        ChangeNotifierProvider<EquipmentsController>(
+          create: (context) => EquipmentsController(
+            equipmentRepo: context.read<EquipmentRepository>(),
+            roomRepo: context.read<RoomRepository>(),
+            tvRepo: context.read<TvRepository>(),
+            wledRepo: context.read<WledRepository>(),
+            liveController: context.read<LivePollingController>(),
+            rpc: context.read<ShellyRpcClient>(),
+            httpClient: context.read<http.Client>(),
+          ),
         ),
       ],
       child: Consumer<LocaleController>(

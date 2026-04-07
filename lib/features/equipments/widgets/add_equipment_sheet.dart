@@ -2,12 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:front_end/core/i18n/loc.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/repositories/equipment_repository.dart';
-import '../../../domain/repositories/room_repository.dart';
-import '../../../domain/models/room.dart';
-import '../../../domain/models/equipment.dart';
-
-import '../../integrations/shelly/data/shelly_rpc_client.dart';
+import '../../../domain/entities/equipment.dart';
+import '../../integrations/shelly/data/dto/shelly_device_info_dto.dart';
+import '../controllers/equipments_controller.dart';
 
 class AddEquipmentSheet extends StatefulWidget {
   final ValueNotifier<int> roomsRefreshNotifier;
@@ -32,43 +29,19 @@ class _AddEquipmentSheetState extends State<AddEquipmentSheet> {
   bool _showEnergy = false;
   bool _showRssi = false;
 
-  List<Room> _rooms = [];
   String? _selectedRoomId;
   bool _isFavorite = false;
 
   bool _testing = false;
   bool _testOk = false;
   String? _testError;
-  Map<String, dynamic>? _deviceInfo;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadRooms();
-    widget.roomsRefreshNotifier.addListener(_onRoomsRefresh);
-  }
-
-  void _onRoomsRefresh() => _loadRooms();
+  ShellyDeviceInfoDto? _deviceInfo;
 
   @override
   void dispose() {
-    widget.roomsRefreshNotifier.removeListener(_onRoomsRefresh);
     _nameCtrl.dispose();
     _ipCtrl.dispose();
     super.dispose();
-  }
-
-  Future<void> _loadRooms() async {
-    final rooms = await context.read<RoomRepository>().loadAll();
-    if (!mounted) return;
-
-    // déduplique par id (si storage foire)
-    final byId = <String, Room>{};
-    for (final r in rooms) {
-      byId[r.id] = r;
-    }
-
-    setState(() => _rooms = byId.values.toList());
   }
 
   String? _validateIp(String? v) {
@@ -94,6 +67,7 @@ class _AddEquipmentSheetState extends State<AddEquipmentSheet> {
   Future<void> _testConnection() async {
     if (!_formKey.currentState!.validate()) return;
 
+    final controller = context.read<EquipmentsController>();
     setState(() {
       _testing = true;
       _testOk = false;
@@ -101,12 +75,8 @@ class _AddEquipmentSheetState extends State<AddEquipmentSheet> {
       _deviceInfo = null;
     });
 
-    final ip = _ipCtrl.text.trim();
-
     try {
-      final rpc = context.read<ShellyRpcClient>();
-      final data = await rpc.getDeviceInfo(ip);
-
+      final data = await controller.testShellyConnection(_ipCtrl.text.trim());
       if (!mounted) return;
       setState(() {
         _testOk = true;
@@ -116,18 +86,19 @@ class _AddEquipmentSheetState extends State<AddEquipmentSheet> {
       if (!mounted) return;
       setState(() => _testError = context.l10n.testFailed(e.toString()));
     } finally {
-      if (mounted) {
-        setState(() => _testing = false);
-      }
+      if (mounted) setState(() => _testing = false);
     }
   }
 
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
 
+    final controller = context.read<EquipmentsController>();
     final eq = Equipment(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
-      name: _nameCtrl.text.trim().isEmpty ? context.l10n.defaultEquipmentName : _nameCtrl.text.trim(),
+      name: _nameCtrl.text.trim().isEmpty
+          ? context.l10n.defaultEquipmentName
+          : _nameCtrl.text.trim(),
       ip: _ipCtrl.text.trim(),
       type: _type,
       roomId: _selectedRoomId,
@@ -139,7 +110,7 @@ class _AddEquipmentSheetState extends State<AddEquipmentSheet> {
       channel: _channel,
     );
 
-    await context.read<EquipmentRepository>().add(eq);
+    await controller.addEquipment(eq);
 
     if (!mounted) return;
     Navigator.of(context).pop(true);
@@ -158,6 +129,7 @@ class _AddEquipmentSheetState extends State<AddEquipmentSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final rooms = context.watch<EquipmentsController>().rooms;
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
     return Padding(
@@ -252,7 +224,7 @@ class _AddEquipmentSheetState extends State<AddEquipmentSheet> {
                           value: null,
                           child: Text(context.l10n.none),
                         ),
-                        ..._rooms.map(
+                        ...rooms.map(
                           (r) => DropdownMenuItem<String?>(
                             value: r.id,
                             child: Text(r.name),
@@ -353,14 +325,14 @@ class _AddEquipmentSheetState extends State<AddEquipmentSheet> {
 }
 
 class _DeviceInfoPreview extends StatelessWidget {
-  final Map<String, dynamic> data;
+  final ShellyDeviceInfoDto data;
   const _DeviceInfoPreview({required this.data});
 
   @override
   Widget build(BuildContext context) {
-    final name = data['name']?.toString() ?? '';
-    final model = data['model']?.toString() ?? '';
-    final mac = data['mac']?.toString() ?? '';
+    final name = data.name;
+    final model = data.model;
+    final mac = data.mac;
 
     return Container(
       width: double.infinity,

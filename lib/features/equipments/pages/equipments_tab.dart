@@ -1,24 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/repositories/equipment_repository.dart';
-import '../../../domain/repositories/room_repository.dart';
-import '../../../domain/repositories/tv_repository.dart';
-import '../../../domain/repositories/wled_repository.dart';
-import '../../../domain/models/equipment.dart';
-import '../../../domain/models/room.dart';
-import '../../../domain/models/tv_device.dart';
-import '../../../domain/models/wled_device.dart';
-import '../../../data/mappers/equipment_mappers.dart';
+import '../../../domain/entities/equipment.dart';
+
 import '../../live/controllers/live_polling_controller.dart';
 import '../../tv/pages/tv_details_page.dart';
 import '../../wled/pages/wled_details_page.dart';
-
+import '../controllers/equipments_controller.dart';
 import 'equipment_details_page.dart';
 
 class EquipmentsTab extends StatefulWidget {
   final ValueNotifier<int> refreshNotifier;
   final ValueNotifier<String?> selectedGroupIdNotifier;
+
   const EquipmentsTab({
     super.key,
     required this.refreshNotifier,
@@ -30,80 +24,55 @@ class EquipmentsTab extends StatefulWidget {
 }
 
 class _EquipmentsTabState extends State<EquipmentsTab> {
-  bool _loading = true;
-  List<Equipment> _allEquipments = [];
-  List<Room> _rooms = [];
-  List<TvDevice> _tvDevices = [];
-  List<WledDevice> _wledDevices = [];
-
   @override
   void initState() {
     super.initState();
-    _load();
-    widget.refreshNotifier.addListener(_onRefreshRequested);
+    _reload();
+    widget.refreshNotifier.addListener(_reload);
     widget.selectedGroupIdNotifier.addListener(_onGroupChanged);
   }
 
   @override
   void dispose() {
-    widget.refreshNotifier.removeListener(_onRefreshRequested);
+    widget.refreshNotifier.removeListener(_reload);
     widget.selectedGroupIdNotifier.removeListener(_onGroupChanged);
     super.dispose();
   }
 
-  void _onRefreshRequested() => _load();
+  void _reload() {
+    if (!mounted) return;
+    context.read<EquipmentsController>().loadAll();
+  }
 
   void _onGroupChanged() {
     if (mounted) setState(() {});
   }
 
-  bool _isSupported(Equipment e) => e.type == EquipmentType.shellyPlusPlugS;
-
-  Set<String> get _visibleRoomIds {
-    final groupId = widget.selectedGroupIdNotifier.value;
-    if (groupId == null) return const {};
-    return _rooms.where((r) => r.groupId == groupId).map((r) => r.id).toSet();
+  Future<void> _onEquipmentTap(String equipmentId) async {
+    final changed = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => EquipmentDetailsPage(equipmentId: equipmentId),
+      ),
+    );
+    if (changed == true) _reload();
   }
 
-  List<Equipment> get _equipments {
-    final groupId = widget.selectedGroupIdNotifier.value;
-    if (groupId == null) return _allEquipments;
-    final roomIds = _visibleRoomIds;
-    return _allEquipments
-        .where((e) => roomIds.contains(e.roomId))
-        .toList(growable: false);
+  Future<void> _onTvTap(String tvId) async {
+    final changed = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => TvDetailsPage(deviceId: tvId),
+      ),
+    );
+    if (changed == true) _reload();
   }
 
-  Future<void> _load() async {
-    setState(() => _loading = true);
-
-    final equipmentRepo = context.read<EquipmentRepository>();
-    final roomRepo = context.read<RoomRepository>();
-    final tvRepo = context.read<TvRepository>();
-    final wledRepo = context.read<WledRepository>();
-
-    final results = await Future.wait([
-      equipmentRepo.loadAll(),
-      roomRepo.loadAll(),
-      tvRepo.loadAll(),
-      wledRepo.loadAll(),
-    ]);
-
-    if (!mounted) return;
-
-    _allEquipments = results[0] as List<Equipment>;
-    _rooms = results[1] as List<Room>;
-    _tvDevices = results[2] as List<TvDevice>;
-    _wledDevices = results[3] as List<WledDevice>;
-
-    final liveCtl = context.read<LivePollingController>();
-    final endpoints = _allEquipments
-        .where(_isSupported)
-        .map((e) => e.toEndpoint())
-        .toList();
-    liveCtl.syncFollowed(endpoints, forcePollNow: true);
-
-    setState(() => _loading = false);
+  Future<void> _onWledTap(String wledId) async {
+    final changed = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => WledDetailsPage(deviceId: wledId),
+      ),
+    );
+    if (changed == true) _reload();
   }
 
   IconData _iconForType(EquipmentType type) {
@@ -116,91 +85,57 @@ class _EquipmentsTabState extends State<EquipmentsTab> {
 
   @override
   Widget build(BuildContext context) {
+    final controller = context.watch<EquipmentsController>();
     final liveCtl = context.watch<LivePollingController>();
+    final groupId = widget.selectedGroupIdNotifier.value;
 
-    if (_loading) {
+    if (controller.isLoading) {
       return const SafeArea(child: Center(child: CircularProgressIndicator()));
     }
+
+    final equipments = controller.equipmentsForGroup(groupId);
+    final tvDevices = controller.tvDevices;
+    final wledDevices = controller.wledDevices;
+    final totalCount = equipments.length + tvDevices.length + wledDevices.length;
 
     return SafeArea(
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-            child: Row(
-              children: [
-                Text("Filtres", style: Theme.of(context).textTheme.titleMedium),
-                const Spacer(),
-                Text(
-                  "Actif(s) : Tous",
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                const SizedBox(width: 8),
-                IconButton(onPressed: () {}, icon: const Icon(Icons.tune)),
-              ],
-            ),
-          ),
           Expanded(
             child: ListView.separated(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-              itemCount: _equipments.length + _tvDevices.length + _wledDevices.length,
+              itemCount: totalCount,
               separatorBuilder: (_, _) => const SizedBox(height: 10),
               itemBuilder: (_, i) {
-                // Equipment items
-                if (i < _equipments.length) {
-                  final e = _equipments[i];
-                  final st = _isSupported(e) ? liveCtl.live[e.id] : null;
+                if (i < equipments.length) {
+                  final e = equipments[i];
+                  final st =
+                      controller.isSupported(e) ? liveCtl.live[e.id] : null;
                   final dotColor =
                       (st?.online ?? false) ? Colors.green : Colors.orange;
-
                   return _EquipmentPill(
                     title: e.name,
                     icon: _iconForType(e.type),
                     dotColor: dotColor,
-                    onTap: () async {
-                      final changed = await Navigator.of(context).push<bool>(
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              EquipmentDetailsPage(equipmentId: e.id),
-                        ),
-                      );
-                      if (changed == true) _load();
-                    },
+                    onTap: () => _onEquipmentTap(e.id),
                   );
                 }
-
-                // TV items
-                if (i < _equipments.length + _tvDevices.length) {
-                  final tv = _tvDevices[i - _equipments.length];
+                if (i < equipments.length + tvDevices.length) {
+                  final tv = tvDevices[i - equipments.length];
                   return _EquipmentPill(
                     title: tv.name,
                     icon: Icons.tv,
                     dotColor: Colors.blueGrey,
-                    onTap: () async {
-                      final changed = await Navigator.of(context).push<bool>(
-                        MaterialPageRoute(
-                          builder: (_) => TvDetailsPage(deviceId: tv.id),
-                        ),
-                      );
-                      if (changed == true) _load();
-                    },
+                    onTap: () => _onTvTap(tv.id),
                   );
                 }
-
-                // WLED items
-                final wled = _wledDevices[i - _equipments.length - _tvDevices.length];
+                final wled =
+                    wledDevices[i - equipments.length - tvDevices.length];
                 return _EquipmentPill(
                   title: wled.name,
                   icon: Icons.lightbulb_outline_rounded,
                   dotColor: Colors.amber.shade600,
-                  onTap: () async {
-                    final changed = await Navigator.of(context).push<bool>(
-                      MaterialPageRoute(
-                        builder: (_) => WledDetailsPage(deviceId: wled.id),
-                      ),
-                    );
-                    if (changed == true) _load();
-                  },
+                  onTap: () => _onWledTap(wled.id),
                 );
               },
             ),

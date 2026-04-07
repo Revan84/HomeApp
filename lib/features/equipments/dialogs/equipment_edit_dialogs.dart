@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../core/i18n/loc.dart';
 
-import '../../../domain/models/room.dart';
-import '../../../domain/models/equipment.dart';
+import '../../../domain/entities/room.dart';
+import '../../../domain/entities/equipment.dart';
 
 class EquipmentEditDialogs {
   /// Edit the user-facing name.

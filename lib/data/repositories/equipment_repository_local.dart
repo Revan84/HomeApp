@@ -1,47 +1,70 @@
 import 'dart:convert';
+import 'dart:developer' as dev;
+
 import '../../core/storage/local_storage.dart';
+import '../../core/storage/storage_keys.dart';
+import '../../core/utils/id_generator.dart';
+import '../../domain/entities/equipment.dart';
 import '../../domain/repositories/equipment_repository.dart';
-import '../../domain/models/equipment.dart';
+import '../dto/equipment_dto.dart';
+import '../mappers/equipment_mapper.dart';
 
 class EquipmentRepositoryLocal implements EquipmentRepository {
-  static const _key = 'equipments_v1';
   final LocalStorage _storage;
-  EquipmentRepositoryLocal(this._storage);
+  final IdGenerator _idGenerator;
+
+  EquipmentRepositoryLocal(this._storage, {IdGenerator? idGenerator})
+      : _idGenerator = idGenerator ?? const TimestampIdGenerator();
 
   @override
   Future<List<Equipment>> loadAll() async {
-    final raw = await _storage.getString(_key);
+    final raw = await _storage.getString(StorageKeys.equipments);
     if (raw == null || raw.isEmpty) return [];
-    final list = (jsonDecode(raw) as List).cast<Map<String, dynamic>>();
-    return list.map(Equipment.fromMap).toList();
+
+    try {
+      final list = jsonDecode(raw) as List<dynamic>;
+      return list
+          .map((e) => EquipmentMapper.toDomain(
+                EquipmentDto.fromMap(e as Map<String, dynamic>),
+              ))
+          .toList();
+    } on FormatException catch (e, st) {
+      dev.log('Failed to parse equipments', error: e, stackTrace: st);
+      return [];
+    }
   }
 
   @override
   Future<void> saveAll(List<Equipment> items) async {
-    final raw = jsonEncode(items.map((e) => e.toMap()).toList());
-    await _storage.setString(_key, raw);
+    final json = jsonEncode(
+      items.map((e) => EquipmentMapper.fromDomain(e).toMap()).toList(),
+    );
+    await _storage.setString(StorageKeys.equipments, json);
   }
 
   @override
   Future<void> add(Equipment equipment) async {
-    final items = await loadAll();
-    items.add(equipment);
-    await saveAll(items);
+    final all = await loadAll();
+    final withId = equipment.copyWith(
+      id: equipment.id.isEmpty ? _idGenerator.generate() : null,
+    );
+    all.add(withId);
+    await saveAll(all);
   }
 
   @override
-  Future<void> update(Equipment updated) async {
-    final items = await loadAll();
-    final idx = items.indexWhere((e) => e.id == updated.id);
-    if (idx == -1) return;
-    items[idx] = updated;
-    await saveAll(items);
+  Future<void> update(Equipment equipment) async {
+    final all = await loadAll();
+    final index = all.indexWhere((e) => e.id == equipment.id);
+    if (index == -1) return;
+    all[index] = equipment;
+    await saveAll(all);
   }
 
   @override
   Future<void> deleteById(String id) async {
-    final items = await loadAll();
-    items.removeWhere((e) => e.id == id);
-    await saveAll(items);
+    final all = await loadAll();
+    all.removeWhere((e) => e.id == id);
+    await saveAll(all);
   }
 }

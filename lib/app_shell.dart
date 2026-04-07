@@ -5,10 +5,9 @@ import 'core/widgets/curved_bottom_bar.dart';
 import 'core/theme/app_colors.dart';
 import 'core/i18n/loc.dart';
 
-import 'domain/models/room_group.dart';
-import 'domain/models/stat_widget.dart';
-import 'domain/repositories/room_group_repository.dart';
+import 'features/stats/domain/stat_widget.dart';
 
+import 'features/shell/controllers/shell_controller.dart';
 import 'features/home/pages/home_tab.dart';
 import 'features/stats/pages/stats_tab.dart';
 import 'features/equipments/pages/equipments_tab.dart';
@@ -21,6 +20,8 @@ import 'features/home/widgets/add_room_sheet.dart';
 import 'features/home/widgets/add_room_group_sheet.dart';
 import 'features/home/widgets/home_summary_header.dart';
 import 'features/live/controllers/live_polling_controller.dart';
+import 'features/shell/widgets/room_group_picker_sheet.dart';
+import 'features/shell/widgets/device_type_picker_sheet.dart';
 
 enum _FabAction {
   addDevice,
@@ -32,10 +33,6 @@ enum _FabAction {
   addKpi,
 }
 
-/// Device type selection when adding a new device.
-enum _DeviceType { connectedPlug, tv, wled }
-
-/// A single option in the FAB popup menu.
 class _FabMenuOption {
   final IconData icon;
   final String label;
@@ -51,8 +48,7 @@ class AppShell extends StatefulWidget {
 }
 
 class _AppShellState extends State<AppShell> {
-  int _index = 0;
-
+  int _tabIndex = 0;
   final PageController _pageController = PageController();
   bool _isProgrammaticJump = false;
 
@@ -62,14 +58,11 @@ class _AppShellState extends State<AppShell> {
   final ValueNotifier<StatWidgetType?> _statsAddWidget =
       ValueNotifier<StatWidgetType?>(null);
 
-  /// Used to anchor the popup menu above the FAB.
-  final GlobalKey _fabKey = GlobalKey();
-
-  // ---------------------------------------------------------------------------
-  // Shared state: selected room group (used by header + HomeTab)
-  // ---------------------------------------------------------------------------
+  /// Bridge notifier: kept so child tabs (HomeTab, StatsTab, EquipmentsTab)
+  /// can still listen via `ValueNotifier<String?>`. Synced from ShellController.
   final ValueNotifier<String?> _selectedGroupId = ValueNotifier<String?>(null);
-  List<RoomGroup> _roomGroups = const [];
+
+  final GlobalKey _fabKey = GlobalKey();
 
   late final List<Widget> _tabs = <Widget>[
     HomeTab(
@@ -88,111 +81,52 @@ class _AppShellState extends State<AppShell> {
     const ProfileTab(),
   ];
 
-  // ---------------------------------------------------------------------------
-  // Lifecycle
-  // ---------------------------------------------------------------------------
-
   @override
   void initState() {
     super.initState();
-    _loadRoomGroups();
-    _homeRefresh.addListener(_loadRoomGroups);
-    _roomsRefresh.addListener(_loadRoomGroups);
-    _selectedGroupId.addListener(_onGroupChanged);
+    final shell = context.read<ShellController>();
+    shell.addListener(_syncGroupIdFromController);
+    _homeRefresh.addListener(() => shell.loadRoomGroups());
+    _roomsRefresh.addListener(() => shell.loadRoomGroups());
+    shell.loadRoomGroups();
   }
 
   @override
   void dispose() {
-    _homeRefresh.removeListener(_loadRoomGroups);
-    _roomsRefresh.removeListener(_loadRoomGroups);
-    _selectedGroupId.removeListener(_onGroupChanged);
+    context.read<ShellController>().removeListener(_syncGroupIdFromController);
     _pageController.dispose();
     _selectedGroupId.dispose();
+    _equipmentsRefresh.dispose();
+    _homeRefresh.dispose();
+    _roomsRefresh.dispose();
+    _statsAddWidget.dispose();
     super.dispose();
   }
 
-  void _onGroupChanged() {
-    if (mounted) setState(() {});
-  }
-
-  Future<void> _loadRoomGroups() async {
-    final repo = context.read<RoomGroupRepository>();
-    final groups = await repo.loadAll();
-
-    if (!mounted) return;
-
-    final sorted = [...groups]..sort((a, b) {
-        final s = a.sortOrder.compareTo(b.sortOrder);
-        return s != 0 ? s : a.name.toLowerCase().compareTo(b.name.toLowerCase());
-      });
-
-    final currentId = _selectedGroupId.value;
-    if (!sorted.any((g) => g.id == currentId)) {
-      _selectedGroupId.value =
-          sorted.isNotEmpty ? sorted.first.id : null;
+  /// Keeps the bridge [_selectedGroupId] notifier in sync with the controller.
+  void _syncGroupIdFromController() {
+    final shell = context.read<ShellController>();
+    if (_selectedGroupId.value != shell.selectedGroupId) {
+      _selectedGroupId.value = shell.selectedGroupId;
     }
-
-    setState(() {
-      _roomGroups = sorted;
-    });
   }
 
   // ---------------------------------------------------------------------------
-  // Header helpers
+  // Room-group picker
   // ---------------------------------------------------------------------------
-
-  String get _activeRoomGroupLabel {
-    final selectedId = _selectedGroupId.value;
-    if (selectedId == null) return context.l10n.homeNoActiveRoomGroup;
-    final group = _roomGroups.cast<RoomGroup?>().firstWhere(
-          (g) => g?.id == selectedId,
-          orElse: () => null,
-        );
-    return group?.name ?? context.l10n.homeNoActiveRoomGroup;
-  }
 
   Future<void> _pickRoomGroup() async {
-    if (_roomGroups.isEmpty) return;
+    final shell = context.read<ShellController>();
+    if (shell.roomGroups.isEmpty) return;
 
     final nextGroupId = await showModalBottomSheet<String>(
       context: context,
       useSafeArea: true,
-      builder: (_) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  context.l10n.homeSelectRoomGroupTitle,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                ),
-                const SizedBox(height: 12),
-                ..._roomGroups.map(
-                  (group) => ListTile(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    title: Text(group.name),
-                    trailing: group.id == _selectedGroupId.value
-                        ? const Icon(Icons.check)
-                        : null,
-                    onTap: () => Navigator.of(context).pop(group.id),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+      builder: (_) => const RoomGroupPickerSheet(),
     );
 
-    if (nextGroupId == null || nextGroupId == _selectedGroupId.value) return;
-
-    _selectedGroupId.value = nextGroupId;
+    if (nextGroupId == null || nextGroupId == shell.selectedGroupId) return;
+    shell.selectedGroupId = nextGroupId;
   }
 
   // ---------------------------------------------------------------------------
@@ -200,10 +134,8 @@ class _AppShellState extends State<AppShell> {
   // ---------------------------------------------------------------------------
 
   Future<void> _goTo(int index) async {
-    if (index == _index) return;
-
-    setState(() => _index = index);
-
+    if (index == _tabIndex) return;
+    setState(() => _tabIndex = index);
     _isProgrammaticJump = true;
     try {
       await _pageController.animateToPage(
@@ -220,30 +152,24 @@ class _AppShellState extends State<AppShell> {
   // FAB menu
   // ---------------------------------------------------------------------------
 
-  /// Computes the position rectangle of the FAB for anchoring popup menus.
   RelativeRect? _fabMenuPosition() {
     final overlay =
         Overlay.of(context).context.findRenderObject() as RenderBox?;
     final fabCtx = _fabKey.currentContext;
     if (fabCtx == null || overlay == null) return null;
-
     final fabBox = fabCtx.findRenderObject() as RenderBox?;
     if (fabBox == null) return null;
-
     final pos = fabBox.localToGlobal(Offset.zero);
     final size = fabBox.size;
-
     return RelativeRect.fromRect(
       Rect.fromLTWH(pos.dx, pos.dy, size.width, size.height),
       Offset.zero & overlay.size,
     );
   }
 
-  /// Shows a dark popup menu anchored above the FAB.
   Future<_FabAction?> _showFabPopup(List<_FabMenuOption> options) {
     final position = _fabMenuPosition();
     if (position == null) return Future.value(null);
-
     return showMenu<_FabAction>(
       context: context,
       position: position,
@@ -288,7 +214,6 @@ class _AppShellState extends State<AppShell> {
     ]);
   }
 
-  /// Shows a single "Add device" option; then a second popup for device type.
   Future<_FabAction?> _showFabMenuForEquipments() {
     return _showFabPopup([
       _FabMenuOption(
@@ -296,65 +221,19 @@ class _AppShellState extends State<AppShell> {
     ]);
   }
 
-  /// Shows a device type picker bottom sheet.
-  Future<_DeviceType?> _pickDeviceType() {
-    final l = context.l10n;
-    return showModalBottomSheet<_DeviceType>(
+  Future<DeviceType?> _pickDeviceType() {
+    return showModalBottomSheet<DeviceType>(
       context: context,
       useSafeArea: true,
-      builder: (_) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  l.addDeviceTypeTitle,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                ),
-                const SizedBox(height: 12),
-                ListTile(
-                  leading: const Icon(Icons.power),
-                  title: Text(l.deviceTypePlug),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  onTap: () =>
-                      Navigator.of(context).pop(_DeviceType.connectedPlug),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.tv),
-                  title: Text(l.deviceTypeTv),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  onTap: () => Navigator.of(context).pop(_DeviceType.tv),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.lightbulb_outline_rounded),
-                  title: Text(l.deviceTypeWled),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  onTap: () => Navigator.of(context).pop(_DeviceType.wled),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+      builder: (_) => const DeviceTypePickerSheet(),
     );
   }
 
   Future<void> _onFabPressed() async {
-    switch (_index) {
+    switch (_tabIndex) {
       case 0:
         final action = await _showFabMenuForHome();
         if (!mounted) return;
-
         if (action == _FabAction.addRoom) {
           final added = await showModalBottomSheet<bool>(
             context: context,
@@ -362,15 +241,12 @@ class _AppShellState extends State<AppShell> {
             useSafeArea: true,
             builder: (_) => const AddRoomSheet(),
           );
-
           if (!mounted) return;
-
           if (added == true) {
             _homeRefresh.value++;
             _roomsRefresh.value++;
           }
         }
-
         if (action == _FabAction.addRoomGroup) {
           final added = await showModalBottomSheet<bool>(
             context: context,
@@ -378,16 +254,13 @@ class _AppShellState extends State<AppShell> {
             useSafeArea: true,
             builder: (_) => const AddRoomGroupSheet(),
           );
-
           if (!mounted) return;
-
           if (added == true) {
             _homeRefresh.value++;
             _roomsRefresh.value++;
           }
         }
         break;
-
       case 1:
         final statsAction = await _showFabMenuForStats();
         if (!mounted || statsAction == null) return;
@@ -399,18 +272,14 @@ class _AppShellState extends State<AppShell> {
         };
         _statsAddWidget.value = typeMap[statsAction];
         break;
-
       case 2:
         final action = await _showFabMenuForEquipments();
         if (!mounted || action != _FabAction.addDevice) return;
-
-        // Show device type picker
         final deviceType = await _pickDeviceType();
         if (!mounted || deviceType == null) return;
-
         bool? added;
         switch (deviceType) {
-          case _DeviceType.connectedPlug:
+          case DeviceType.connectedPlug:
             added = await showModalBottomSheet<bool>(
               context: context,
               isScrollControlled: true,
@@ -420,7 +289,7 @@ class _AppShellState extends State<AppShell> {
               ),
             );
             break;
-          case _DeviceType.tv:
+          case DeviceType.tv:
             added = await showModalBottomSheet<bool>(
               context: context,
               isScrollControlled: true,
@@ -428,7 +297,7 @@ class _AppShellState extends State<AppShell> {
               builder: (_) => const AddTvSheet(),
             );
             break;
-          case _DeviceType.wled:
+          case DeviceType.wled:
             added = await showModalBottomSheet<bool>(
               context: context,
               isScrollControlled: true,
@@ -437,14 +306,12 @@ class _AppShellState extends State<AppShell> {
             );
             break;
         }
-
         if (!mounted) return;
         if (added == true) {
           _equipmentsRefresh.value++;
           _homeRefresh.value++;
         }
         break;
-
       default:
         break;
     }
@@ -456,15 +323,14 @@ class _AppShellState extends State<AppShell> {
 
   @override
   Widget build(BuildContext context) {
+    final shell = context.watch<ShellController>();
     final liveController = context.watch<LivePollingController>();
-    final onlineCount =
-        liveController.live.values.where((s) => s.online == true).length;
-    final offlineCount =
-        liveController.live.values.where((s) => s.online == false).length;
+    final onlineCount = liveController.onlineCount;
+    final offlineCount = liveController.offlineCount;
 
     return Scaffold(
       extendBody: true,
-      floatingActionButton: (_index == 3 || _index == 4)
+      floatingActionButton: (_tabIndex == 3 || _tabIndex == 4)
           ? null
           : Padding(
               padding: const EdgeInsets.only(bottom: 48),
@@ -482,24 +348,24 @@ class _AppShellState extends State<AppShell> {
         bottom: false,
         child: Column(
           children: [
-            // Fixed header visible across all tabs
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
               child: HomeSummaryHeader(
-                areaGroupLabel: _activeRoomGroupLabel,
+                areaGroupLabel: shell.activeRoomGroupLabel(
+                  context.l10n.homeNoActiveRoomGroup,
+                ),
                 onlineCount: onlineCount,
                 offlineCount: offlineCount,
                 onTapAreaGroup: _pickRoomGroup,
               ),
             ),
-            // Tab content
             Expanded(
               child: PageView(
                 controller: _pageController,
                 physics: const BouncingScrollPhysics(),
                 onPageChanged: (index) {
                   if (_isProgrammaticJump) return;
-                  setState(() => _index = index);
+                  setState(() => _tabIndex = index);
                 },
                 children: _tabs,
               ),
@@ -508,7 +374,7 @@ class _AppShellState extends State<AppShell> {
         ),
       ),
       bottomNavigationBar: CurvedBottomBar(
-        index: _index,
+        index: _tabIndex,
         onTap: (index) => _goTo(index),
         labels: [
           context.l10n.tabHome,

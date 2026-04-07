@@ -708,6 +708,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statsEmptyHint => 'Tap + to add your first widget';
 
   @override
+  String get statsNoCompatibleDevice =>
+      'No compatible device for this widget type';
+
+  @override
+  String get statsDeviceTypeSmartPlug => 'Smart Plug';
+
+  @override
+  String get statsDeviceTypeGeneric => 'Device';
+
+  @override
+  String statsWidgetCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count widgets',
+      one: '1 widget',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get tvAddTitle => 'Add a TV';
 
   @override

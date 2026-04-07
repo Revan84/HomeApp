@@ -1,4 +1,5 @@
 import '../../../../core/network/http_client.dart';
+import 'dto/shelly_device_info_dto.dart';
 
 class ShellyRpcClient {
   final HttpClient _http;
@@ -14,8 +15,9 @@ class ShellyRpcClient {
     await _http.getJson(uri, timeout: const Duration(seconds: 2));
   }
 
-  Future<Map<String, dynamic>> getDeviceInfo(String ip) async {
+  Future<ShellyDeviceInfoDto> getDeviceInfo(String ip) async {
     final uri = Uri.parse('http://$ip/rpc/Shelly.GetDeviceInfo');
-    return _http.getJson(uri, timeout: const Duration(seconds: 2));
+    final json = await _http.getJson(uri, timeout: const Duration(seconds: 2));
+    return ShellyDeviceInfoDto.fromJson(json);
   }
 }

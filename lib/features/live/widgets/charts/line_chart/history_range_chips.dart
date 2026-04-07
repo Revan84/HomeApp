@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/i18n/loc.dart';
 import '../../../../../core/theme/app_colors.dart';
-import '../../../../../domain/models/history_window.dart';
+import '../../../../../domain/entities/history_window.dart';
 
 /// Compact range chips used above the history chart.
 ///

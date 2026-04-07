@@ -1,7 +1,7 @@
-import '../../../domain/models/enums.dart';
-import '../../../domain/models/equipment.dart';
-import '../../../domain/models/metric_type.dart';
-import '../../../domain/models/stat_widget.dart';
+import '../../../domain/entities/enums.dart';
+import '../../../domain/entities/equipment.dart';
+import '../domain/metric_type.dart';
+import '../domain/stat_widget.dart';
 
 /// Maps [EquipmentType] to the logical [DeviceType] used for filtering.
 DeviceType deviceTypeForEquipment(Equipment eq) {

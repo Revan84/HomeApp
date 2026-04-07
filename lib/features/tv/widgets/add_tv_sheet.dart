@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/i18n/loc.dart';
-import '../../../domain/models/room.dart';
-import '../../../domain/models/tv_device.dart';
-import '../../../domain/repositories/room_repository.dart';
-import '../../../domain/repositories/tv_repository.dart';
-import '../../integrations/samsung/data/samsung_ws_client.dart';
+import '../../../domain/entities/tv_device.dart';
+import '../../equipments/controllers/equipments_controller.dart';
 
 class AddTvSheet extends StatefulWidget {
   const AddTvSheet({super.key});
@@ -21,7 +18,6 @@ class _AddTvSheetState extends State<AddTvSheet> {
   final _ipCtrl = TextEditingController();
   final _modelCtrl = TextEditingController();
 
-  List<Room> _rooms = [];
   String? _selectedRoomId;
   bool _isFavorite = false;
 
@@ -31,23 +27,11 @@ class _AddTvSheetState extends State<AddTvSheet> {
   String? _pairedToken;
 
   @override
-  void initState() {
-    super.initState();
-    _loadRooms();
-  }
-
-  @override
   void dispose() {
     _nameCtrl.dispose();
     _ipCtrl.dispose();
     _modelCtrl.dispose();
     super.dispose();
-  }
-
-  Future<void> _loadRooms() async {
-    final rooms = await context.read<RoomRepository>().loadAll();
-    if (!mounted) return;
-    setState(() => _rooms = rooms);
   }
 
   String? _validateIp(String? v) {
@@ -64,41 +48,21 @@ class _AddTvSheetState extends State<AddTvSheet> {
     return null;
   }
 
-  /// Tests WebSocket connection to the TV.
   Future<void> _testConnection() async {
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() {
-      _testing = true;
-      _testOk = false;
-      _testError = null;
-    });
-
-    final ip = _ipCtrl.text.trim();
-    final client = SamsungWsClient();
-
-    // Listen for the pairing token during the test connection
-    final tokenSub = client.onTokenReceived.listen((token) {
-      _pairedToken = token;
-    });
+    final controller = context.read<EquipmentsController>();
+    setState(() { _testing = true; _testOk = false; _testError = null; });
 
     try {
-      final ok = await client.connect(ip);
-      // Wait briefly so the TV has time to send the token
-      await Future<void>.delayed(const Duration(seconds: 2));
+      final result = await controller.testTvConnection(_ipCtrl.text.trim());
       if (!mounted) return;
-      _pairedToken ??= client.token;
       setState(() {
-        _testOk = ok;
-        if (!ok) _testError = context.l10n.tvTestFailed;
+        _testOk = result.ok;
+        _pairedToken = result.token;
+        if (!result.ok) _testError = context.l10n.tvTestFailed;
       });
-    } catch (e) {
-      if (!mounted) return;
-      setState(() => _testError = context.l10n.tvTestFailed);
     } finally {
-      await tokenSub.cancel();
-      await client.disconnect();
-      client.dispose();
       if (mounted) setState(() => _testing = false);
     }
   }
@@ -106,6 +70,7 @@ class _AddTvSheetState extends State<AddTvSheet> {
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
 
+    final controller = context.read<EquipmentsController>();
     final device = TvDevice(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       name: _nameCtrl.text.trim().isEmpty
@@ -118,7 +83,7 @@ class _AddTvSheetState extends State<AddTvSheet> {
       wsToken: _pairedToken,
     );
 
-    await context.read<TvRepository>().add(device);
+    await controller.addTvDevice(device);
 
     if (!mounted) return;
     Navigator.of(context).pop(true);
@@ -127,6 +92,7 @@ class _AddTvSheetState extends State<AddTvSheet> {
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
+    final rooms = context.watch<EquipmentsController>().rooms;
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
     return Padding(
@@ -206,7 +172,7 @@ class _AddTvSheetState extends State<AddTvSheet> {
                           value: null,
                           child: Text(l.none),
                         ),
-                        ..._rooms.map(
+                        ...rooms.map(
                           (r) => DropdownMenuItem<String?>(
                             value: r.id,
                             child: Text(r.name),

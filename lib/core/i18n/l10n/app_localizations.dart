@@ -1358,6 +1358,30 @@ abstract class AppLocalizations {
   /// **'Appuyez sur + pour ajouter votre premier widget'**
   String get statsEmptyHint;
 
+  /// Message snackbar quand aucun appareil ne supporte le type de widget
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun appareil compatible pour ce type de widget'**
+  String get statsNoCompatibleDevice;
+
+  /// Libellé pour le type prise connectée
+  ///
+  /// In fr, this message translates to:
+  /// **'Prise connectée'**
+  String get statsDeviceTypeSmartPlug;
+
+  /// Libellé pour le type appareil générique
+  ///
+  /// In fr, this message translates to:
+  /// **'Appareil'**
+  String get statsDeviceTypeGeneric;
+
+  /// Nombre de widgets dans un groupe d'appareils
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 widget} other{{count} widgets}}'**
+  String statsWidgetCount(int count);
+
   /// Titre de la bottom sheet d'ajout TV
   ///
   /// In fr, this message translates to:

@@ -4,7 +4,7 @@ import 'dart:io' show HttpClient, WebSocket;
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-import '../../../../domain/models/tv_remote_command.dart';
+import '../../../tv/domain/tv_remote_command.dart';
 import 'samsung_key_mapper.dart';
 
 /// Connection state exposed to the UI.
@@ -14,7 +14,7 @@ enum TvConnectionState { disconnected, connecting, connected }
 ///
 /// Remote keys are sent via WebSocket (ms.remote.control).
 /// App launching uses the Samsung REST API on port 8001
-/// (POST /api/v2/applications/<appId>) — the only reliable method on
+/// (`POST /api/v2/applications/{appId}`) — the only reliable method on
 /// Tizen 2022 Q-series TVs.
 ///
 /// On first pairing the TV returns a token that must be persisted and

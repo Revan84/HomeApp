@@ -1,13 +1,14 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
+import '../../../wled/domain/rgb_color.dart';
 
 /// Live state of a WLED device, fetched from the JSON API.
 class WledState {
   final bool isOn;
   final int brightness;       // 0–255
-  final Color primaryColor;
+  final RgbColor primaryColor;
   final int effectId;
   final int effectSpeed;      // 0–255
   final int effectIntensity;  // 0–255
@@ -26,7 +27,7 @@ class WledState {
   WledState copyWith({
     bool? isOn,
     int? brightness,
-    Color? primaryColor,
+    RgbColor? primaryColor,
     int? effectId,
     int? effectSpeed,
     int? effectIntensity,
@@ -46,16 +47,15 @@ class WledState {
     final segs = json['seg'] as List<dynamic>? ?? [];
     final seg = segs.isNotEmpty ? segs.first as Map<String, dynamic> : {};
 
-    Color color = Colors.white;
+    RgbColor color = const RgbColor(red: 255, green: 255, blue: 255);
     final cols = seg['col'] as List<dynamic>?;
     if (cols != null && cols.isNotEmpty) {
       final c = cols.first;
       if (c is List && c.length >= 3) {
-        color = Color.fromARGB(
-          255,
-          (c[0] as num).toInt(),
-          (c[1] as num).toInt(),
-          (c[2] as num).toInt(),
+        color = RgbColor(
+          red: (c[0] as num).toInt(),
+          green: (c[1] as num).toInt(),
+          blue: (c[2] as num).toInt(),
         );
       }
     }
@@ -74,7 +74,7 @@ class WledState {
   static WledState get defaultState => const WledState(
         isOn: true,
         brightness: 128,
-        primaryColor: Colors.white,
+        primaryColor: RgbColor(red: 255, green: 255, blue: 255),
         effectId: 0,
         effectSpeed: 128,
         effectIntensity: 128,
@@ -180,16 +180,16 @@ class WledApiClient {
   Future<void> setBrightness(String ip, int bri) =>
       patchState(ip, {'bri': bri.clamp(0, 255)});
 
-  Future<void> setColor(String ip, Color color) =>
+  Future<void> setColor(String ip, RgbColor color) =>
       patchState(ip, {
         'seg': [
           {
             'id': 0,
             'col': [
               [
-                (color.r * 255).round().clamp(0, 255),
-                (color.g * 255).round().clamp(0, 255),
-                (color.b * 255).round().clamp(0, 255),
+                color.red,
+                color.green,
+                color.blue,
               ]
             ],
           }

@@ -1,16 +1,27 @@
 import 'package:flutter/foundation.dart';
 
-import '../../../domain/models/metric_series.dart';
-import '../../../domain/models/metric_type.dart';
-import '../../../domain/models/stat_widget.dart';
-import '../../../domain/models/time_range.dart';
-import '../../../domain/repositories/stats_repository.dart';
+import '../../../domain/entities/equipment.dart';
+import '../../../domain/entities/room.dart';
+import '../../../domain/repositories/equipment_repository.dart';
+import '../../../domain/repositories/room_repository.dart';
+import '../domain/metric_series.dart';
+import '../domain/metric_type.dart';
+import '../domain/stat_widget.dart';
+import '../domain/time_range.dart';
+import '../domain/stats_repository.dart';
 
 /// Manages the stat dashboard widgets and their associated series data.
 class StatsController extends ChangeNotifier {
   final StatsRepository _repo;
+  final RoomRepository _roomRepo;
+  final EquipmentRepository _equipmentRepo;
 
-  StatsController(this._repo);
+  StatsController(
+    this._repo, {
+    required RoomRepository roomRepo,
+    required EquipmentRepository equipmentRepo,
+  })  : _roomRepo = roomRepo,
+        _equipmentRepo = equipmentRepo;
 
   // ---------------------------------------------------------------------------
   // State
@@ -32,9 +43,62 @@ class StatsController extends ChangeNotifier {
 
   String? _currentRoomId;
 
+  List<Room> _allRooms = const [];
+  List<Room> get allRooms => _allRooms;
+
+  List<Equipment> _allEquipments = const [];
+  List<Equipment> get allEquipments => _allEquipments;
+
+  String? _selectedRoomId;
+  String? get selectedRoomId => _selectedRoomId;
+
   // ---------------------------------------------------------------------------
   // Actions
   // ---------------------------------------------------------------------------
+
+  Future<void> loadRoomsAndEquipments() async {
+    try {
+      final results = await Future.wait([
+        _roomRepo.loadAll(),
+        _equipmentRepo.loadAll(),
+      ]);
+      _allRooms = results[0] as List<Room>;
+      _allEquipments = results[1] as List<Equipment>;
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  List<Room> roomsForGroup(String? groupId) {
+    if (groupId == null) return _allRooms;
+    return _allRooms.where((r) => r.groupId == groupId).toList();
+  }
+
+  List<Equipment> equipmentsForRoom(String? roomId) {
+    if (roomId == null) return const [];
+    return _allEquipments.where((e) => e.roomId == roomId).toList();
+  }
+
+  Equipment? equipmentById(String id) =>
+      _allEquipments.where((e) => e.id == id).firstOrNull;
+
+  void selectRoom(String? roomId) {
+    if (roomId == _selectedRoomId) return;
+    _selectedRoomId = roomId;
+    notifyListeners();
+    if (roomId != null) {
+      loadDashboard(roomId);
+    } else {
+      clearDashboard();
+    }
+  }
+
+  void selectFirstRoomOfGroup(String? groupId) {
+    final rooms = roomsForGroup(groupId);
+    selectRoom(rooms.isNotEmpty ? rooms.first.id : null);
+  }
 
   /// Clears the current dashboard (e.g. when there is no room selected).
   void clearDashboard() {
@@ -69,7 +133,7 @@ class StatsController extends ChangeNotifier {
   }
 
   /// Fetches (or returns cached) series for the given parameters.
-  Future<MetricSeries> loadSeries(
+  Future<MetricSeries?> loadSeries(
     String deviceId,
     MetricType metric,
     TimeRange range,
@@ -77,10 +141,16 @@ class StatsController extends ChangeNotifier {
     final key = _cacheKey(deviceId, metric, range);
     if (_seriesCache.containsKey(key)) return _seriesCache[key]!;
 
-    final series = await _repo.fetchSeries(deviceId, metric, range);
-    _seriesCache[key] = series;
-    notifyListeners();
-    return series;
+    try {
+      final series = await _repo.fetchSeries(deviceId, metric, range);
+      _seriesCache[key] = series;
+      notifyListeners();
+      return series;
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      return null;
+    }
   }
 
   /// Adds a new widget and persists the dashboard.
@@ -156,6 +226,11 @@ class StatsController extends ChangeNotifier {
   Future<void> _persist() async {
     final roomId = _currentRoomId;
     if (roomId == null) return;
-    await _repo.saveDashboard(roomId, _widgets);
+    try {
+      await _repo.saveDashboard(roomId, _widgets);
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+    }
   }
 }

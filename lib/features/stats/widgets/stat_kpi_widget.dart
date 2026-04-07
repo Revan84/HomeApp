@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/i18n/loc.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../domain/models/metric_series.dart';
-import '../../../domain/models/metric_type.dart';
+import '../domain/metric_series.dart';
+import '../domain/metric_type.dart';
 
 /// Displays the current (latest) value in large green type with
 /// min / max / avg as a summary row underneath.
@@ -19,12 +20,11 @@ class StatKpiWidget extends StatelessWidget {
     final metricType = series.type;
 
     if (points.isEmpty) {
-      return const SizedBox(
+      return SizedBox(
         height: 80,
         child: Center(
-          // TODO(l10n)
-          child: Text('No data',
-              style: TextStyle(color: AppColors.textSecondary)),
+          child: Text(context.l10n.statsNoData,
+              style: const TextStyle(color: AppColors.textSecondary)),
         ),
       );
     }
@@ -54,7 +54,7 @@ class StatKpiWidget extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            // TODO(l10n)
+            // Min / Max / Avg are universal abbreviations kept as-is.
             _kpiCell('Min', series.min, metricType),
             _kpiCell('Max', series.max, metricType),
             _kpiCell('Avg', series.avg, metricType),

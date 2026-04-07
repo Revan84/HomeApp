@@ -709,6 +709,27 @@ class AppLocalizationsFr extends AppLocalizations {
       'Appuyez sur + pour ajouter votre premier widget';
 
   @override
+  String get statsNoCompatibleDevice =>
+      'Aucun appareil compatible pour ce type de widget';
+
+  @override
+  String get statsDeviceTypeSmartPlug => 'Prise connectée';
+
+  @override
+  String get statsDeviceTypeGeneric => 'Appareil';
+
+  @override
+  String statsWidgetCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count widgets',
+      one: '1 widget',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get tvAddTitle => 'Ajouter une TV';
 
   @override

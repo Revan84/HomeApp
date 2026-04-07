@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/i18n/loc.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../domain/models/tv_remote_command.dart';
+import '../domain/tv_remote_command.dart';
 
 /// TV remote control area matching the mockup layout:
 /// - Left: D-pad (cross in a bordered box) with OK center button

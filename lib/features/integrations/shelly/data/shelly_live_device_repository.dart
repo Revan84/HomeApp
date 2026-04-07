@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 
 import '../../../../core/network/http_client.dart';
 
-import '../../../../domain/models/device_endpoint.dart';
-import '../../../../domain/models/live_state.dart';
+import '../../../../domain/entities/device_endpoint.dart';
+import '../../../../domain/entities/live_state.dart';
 import '../../../../domain/repositories/live_device_repository.dart';
 
 import 'dto/shelly_switch_status_dto.dart';
@@ -24,15 +24,6 @@ class ShellyLiveDeviceRepository implements LiveDeviceRepository {
 
       final dto = ShellySwitchStatusDto.fromJson(json);
 
-      final previousPower = previous.powerW;
-      final nextPower = dto.apower;
-
-      final trend = (previousPower != null && nextPower != null)
-          ? (nextPower > previousPower
-              ? 1
-              : (nextPower < previousPower ? -1 : 0))
-          : 0;
-
       return previous.copyWith(
         online: true,
         failCount: 0,
@@ -40,7 +31,6 @@ class ShellyLiveDeviceRepository implements LiveDeviceRepository {
         powerW: dto.apower,
         energyWh: dto.energyWh,
         rssi: dto.rssi,
-        trendPower: trend,
         lastUpdatedAt: DateTime.now(),
       );
     } on HttpStatusException catch (error) {

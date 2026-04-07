@@ -106,7 +106,7 @@ class CurvedBottomBar extends StatelessWidget {
               return Stack(
                 clipBehavior: Clip.none,
                 children: [
-                  // Fond "icônes"
+                  // Icon background
                   const Positioned.fill(
                     child: CustomPaint(
                       painter: _CurvedBarPainter(

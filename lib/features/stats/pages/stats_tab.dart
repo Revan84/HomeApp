@@ -4,17 +4,19 @@ import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/i18n/loc.dart';
 
-import '../../../domain/models/equipment.dart';
-import '../../../domain/models/metric_type.dart';
-import '../../../domain/models/room.dart';
-import '../../../domain/models/stat_widget.dart';
-import '../../../domain/models/time_range.dart';
-import '../../../domain/repositories/equipment_repository.dart';
-import '../../../domain/repositories/room_repository.dart';
+import '../domain/chart_type.dart';
+import '../../../domain/entities/equipment.dart';
+import '../domain/metric_type.dart';
+import '../domain/stat_widget.dart';
+import '../domain/time_range.dart';
 
 import '../controller/stats_controller.dart';
 import '../utils/allowed_widgets.dart';
+import '../widgets/stat_device_group_card.dart';
+import '../widgets/stat_widget_entry.dart';
 import '../widgets/stat_widget_factory.dart';
+import '../widgets/stats_empty_state.dart';
+import '../widgets/stats_room_selector.dart';
 
 /// Main statistics tab with two-level room group → room filtering
 /// and a configurable widget dashboard grouped by device.
@@ -37,15 +39,8 @@ class StatsTab extends StatefulWidget {
 }
 
 class _StatsTabState extends State<StatsTab> {
-  // ---------------------------------------------------------------------------
-  // State
-  // ---------------------------------------------------------------------------
-
-  List<Room> _allRooms = [];
-  List<Equipment> _allEquipments = [];
-
+  // Pure UI state: the group filter driven by the shell header notifier.
   String? _selectedGroupId;
-  String? _selectedRoomId;
 
   // ---------------------------------------------------------------------------
   // Lifecycle
@@ -57,7 +52,7 @@ class _StatsTabState extends State<StatsTab> {
     _selectedGroupId = widget.selectedGroupIdNotifier.value;
     widget.selectedGroupIdNotifier.addListener(_onGroupChangedExternal);
     widget.addWidgetNotifier.addListener(_onAddWidgetRequested);
-    _loadData();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _init());
   }
 
   @override
@@ -67,11 +62,23 @@ class _StatsTabState extends State<StatsTab> {
     super.dispose();
   }
 
+  Future<void> _init() async {
+    if (!mounted) return;
+    final controller = context.read<StatsController>();
+    try {
+      await controller.loadRoomsAndEquipments();
+    } catch (_) {
+      // Error state is exposed via controller.error.
+    }
+    if (!mounted) return;
+    controller.selectFirstRoomOfGroup(_selectedGroupId);
+  }
+
   void _onGroupChangedExternal() {
     final newId = widget.selectedGroupIdNotifier.value;
     if (newId == _selectedGroupId) return;
     setState(() => _selectedGroupId = newId);
-    _selectFirstRoomOfGroup(newId);
+    context.read<StatsController>().selectFirstRoomOfGroup(newId);
   }
 
   void _onAddWidgetRequested() {
@@ -80,71 +87,12 @@ class _StatsTabState extends State<StatsTab> {
   }
 
   // ---------------------------------------------------------------------------
-  // Data loading
-  // ---------------------------------------------------------------------------
-
-  Future<void> _loadData() async {
-    final roomRepo = context.read<RoomRepository>();
-    final equipRepo = context.read<EquipmentRepository>();
-
-    final results = await Future.wait([
-      roomRepo.loadAll(),
-      equipRepo.loadAll(),
-    ]);
-
-    if (!mounted) return;
-
-    setState(() {
-      _allRooms = results[0] as List<Room>;
-      _allEquipments = results[1] as List<Equipment>;
-    });
-
-    _selectFirstRoomOfGroup(_selectedGroupId);
-  }
-
-  void _selectFirstRoomOfGroup(String? groupId) {
-    final roomsInGroup = _roomsForGroup(groupId);
-    final newRoomId = roomsInGroup.isNotEmpty ? roomsInGroup.first.id : null;
-    _onRoomChanged(newRoomId);
-  }
-
-  List<Room> _roomsForGroup(String? groupId) {
-    if (groupId == null) return _allRooms;
-    return _allRooms.where((r) => r.groupId == groupId).toList();
-  }
-
-  List<Equipment> _equipmentsForRoom(String? roomId) {
-    if (roomId == null) return [];
-    return _allEquipments.where((e) => e.roomId == roomId).toList();
-  }
-
-  /// Finds an [Equipment] by id, or null.
-  Equipment? _equipmentById(String id) {
-    final matches = _allEquipments.where((e) => e.id == id);
-    return matches.isNotEmpty ? matches.first : null;
-  }
-
-  // ---------------------------------------------------------------------------
-  // Room selection
-  // ---------------------------------------------------------------------------
-
-  void _onRoomChanged(String? roomId) {
-    if (roomId == _selectedRoomId) return;
-    setState(() => _selectedRoomId = roomId);
-    final controller = context.read<StatsController>();
-    if (roomId != null) {
-      controller.loadDashboard(roomId);
-    } else {
-      controller.clearDashboard();
-    }
-  }
-
-  // ---------------------------------------------------------------------------
   // Config dialog
   // ---------------------------------------------------------------------------
 
   Future<void> _showConfigDialog(StatWidgetType widgetType) async {
-    final equipments = _equipmentsForRoom(_selectedRoomId);
+    final controller = context.read<StatsController>();
+    final equipments = controller.equipmentsForRoom(controller.selectedRoomId);
 
     if (equipments.isEmpty) {
       if (!mounted) return;
@@ -167,8 +115,7 @@ class _StatsTabState extends State<StatsTab> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          // TODO(l10n)
-          content: const Text('No compatible device for this widget type'),
+          content: Text(context.l10n.statsNoCompatibleDevice),
           behavior: SnackBarBehavior.floating,
           margin: const EdgeInsets.only(left: 16, right: 16, bottom: 100),
         ),
@@ -181,7 +128,7 @@ class _StatsTabState extends State<StatsTab> {
     MetricType selectedMetric =
         availableMetrics.isNotEmpty ? availableMetrics.first : MetricType.power;
     TimeRange selectedRange = TimeRange.day1;
-    String chartType = 'line';
+    ChartType chartType = ChartType.line;
 
     final confirmed = await showDialog<bool>(
       context: context,
@@ -243,8 +190,7 @@ class _StatsTabState extends State<StatsTab> {
       deviceId: selectedEquipment.id,
       metric: selectedMetric,
       range: selectedRange,
-      extra:
-          widgetType == StatWidgetType.chart ? {'chartType': chartType} : null,
+      chartType: widgetType == StatWidgetType.chart ? chartType : null,
     );
 
     await context.read<StatsController>().addWidget(config);
@@ -259,13 +205,13 @@ class _StatsTabState extends State<StatsTab> {
     required List<MetricType> availableMetrics,
     required MetricType selectedMetric,
     required TimeRange selectedRange,
-    required String chartType,
+    required ChartType chartType,
     required StatWidgetType widgetType,
     required void Function(Equipment eq, List<MetricType> metrics)
         onEquipmentChanged,
     required ValueChanged<MetricType> onMetricChanged,
     required ValueChanged<TimeRange> onRangeChanged,
-    required ValueChanged<String> onChartTypeChanged,
+    required ValueChanged<ChartType> onChartTypeChanged,
   }) {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -299,7 +245,8 @@ class _StatsTabState extends State<StatsTab> {
               }).toList(),
               onChanged: (id) {
                 if (id == null) return;
-                final eq = equipments.firstWhere((e) => e.id == id);
+                final eq = equipments.where((e) => e.id == id).firstOrNull;
+                if (eq == null) return;
                 final newMetrics = metricsFor(eq);
                 setDialogState(() => onEquipmentChanged(eq, newMetrics));
               },
@@ -320,7 +267,7 @@ class _StatsTabState extends State<StatsTab> {
           children: availableMetrics.map((m) {
             final selected = m == selectedMetric;
             return ChoiceChip(
-              avatar: Icon(m.icon,
+              avatar: Icon(_metricIcon(m),
                   size: 16,
                   color:
                       selected ? AppColors.bg : AppColors.textSecondary),
@@ -377,10 +324,10 @@ class _StatsTabState extends State<StatsTab> {
           const SizedBox(height: 6),
           Wrap(
             spacing: 6,
-            children: ['line', 'bar', 'pie'].map((ct) {
+            children: ChartType.values.map((ct) {
               final selected = ct == chartType;
               return ChoiceChip(
-                label: Text(ct[0].toUpperCase() + ct.substring(1),
+                label: Text('${ct.name[0].toUpperCase()}${ct.name.substring(1)}',
                     style: TextStyle(
                         fontSize: 11,
                         color: selected
@@ -407,8 +354,7 @@ class _StatsTabState extends State<StatsTab> {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<StatsController>();
-    final l10n = context.l10n;
-    final roomsInGroup = _roomsForGroup(_selectedGroupId);
+    final roomsInGroup = controller.roomsForGroup(_selectedGroupId);
 
     return Column(
       children: [
@@ -416,104 +362,22 @@ class _StatsTabState extends State<StatsTab> {
         if (roomsInGroup.isNotEmpty)
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 10, 16, 4),
-            child: _buildRoomSelector(roomsInGroup),
+            child: StatsRoomSelector(
+              rooms: roomsInGroup,
+              controller: controller,
+            ),
           ),
 
         // -- Dashboard content --
         Expanded(
           child: controller.isLoading
               ? const Center(
-                  child:
-                      CircularProgressIndicator(color: AppColors.success))
+                  child: CircularProgressIndicator(color: AppColors.success))
               : controller.widgets.isEmpty
-                  ? Center(
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 80),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                color: AppColors.surface,
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color:
-                                      AppColors.stroke.withValues(alpha: 0.3),
-                                ),
-                              ),
-                              child: const Icon(
-                                Icons.bar_chart_rounded,
-                                size: 40,
-                                color: AppColors.textSecondary,
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              l10n.statsNoWidgets,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.textPrimary,
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              l10n.statsEmptyHint,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: AppColors.textSecondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
+                  ? const StatsEmptyState()
                   : _buildGroupedWidgetList(controller),
         ),
       ],
-    );
-  }
-
-  // ---------------------------------------------------------------------------
-  // Selectors
-  // ---------------------------------------------------------------------------
-
-  Widget _buildRoomSelector(List<Room> rooms) {
-    return SizedBox(
-      height: 32,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: rooms.length,
-        separatorBuilder: (_, _) => const SizedBox(width: 6),
-        itemBuilder: (context, index) {
-          final room = rooms[index];
-          final selected = room.id == _selectedRoomId;
-
-          return ChoiceChip(
-            label: Text(
-              room.name,
-              style: TextStyle(
-                fontSize: 11,
-                color: selected ? AppColors.bg : AppColors.textSecondary,
-              ),
-            ),
-            selected: selected,
-            selectedColor: AppColors.success,
-            backgroundColor: AppColors.bg,
-            side: BorderSide(
-              color: selected
-                  ? AppColors.success
-                  : AppColors.stroke.withValues(alpha: 0.3),
-            ),
-            onSelected: (_) => _onRoomChanged(room.id),
-            visualDensity: VisualDensity.compact,
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          );
-        },
-      ),
     );
   }
 
@@ -531,23 +395,22 @@ class _StatsTabState extends State<StatsTab> {
       itemBuilder: (context, index) {
         final deviceId = deviceIds[index];
         final configs = grouped[deviceId]!;
-        final equipment = _equipmentById(deviceId);
+        final equipment = controller.equipmentById(deviceId);
         final deviceName = equipment?.name ?? deviceId;
-        // TODO(l10n)
         final deviceTypeLabel = equipment != null
-            ? _equipmentTypeLabel(equipment.type)
+            ? _equipmentTypeLabel(context, equipment.type)
             : '';
 
         return Padding(
           padding: const EdgeInsets.only(bottom: 12),
-          child: _DeviceGroupCard(
+          child: StatDeviceGroupCard(
             deviceName: deviceName,
             deviceTypeLabel: deviceTypeLabel,
             widgetCount: configs.length,
             initiallyExpanded: false,
             children: configs.map((config) {
               final series = controller.seriesFor(config);
-              return _WidgetEntry(
+              return StatWidgetEntry(
                 config: config,
                 child: StatWidgetFactory.build(
                   config,
@@ -568,15 +431,32 @@ class _StatsTabState extends State<StatsTab> {
   }
 
   /// Human-readable equipment type label.
-  // TODO(l10n)
-  String _equipmentTypeLabel(EquipmentType type) {
+  String _equipmentTypeLabel(BuildContext context, EquipmentType type) {
+    final l10n = context.l10n;
     switch (type) {
       case EquipmentType.shellyPlusPlugS:
-        return 'Smart Plug';
       case EquipmentType.shellyPlugS:
-        return 'Smart Plug';
+        return l10n.statsDeviceTypeSmartPlug;
       case EquipmentType.other:
-        return 'Device';
+        return l10n.statsDeviceTypeGeneric;
+    }
+  }
+
+  /// Returns the icon for a [MetricType] in the presentation layer.
+  IconData _metricIcon(MetricType type) {
+    switch (type) {
+      case MetricType.state:
+        return Icons.toggle_on;
+      case MetricType.temperature:
+        return Icons.thermostat;
+      case MetricType.humidity:
+        return Icons.water_drop;
+      case MetricType.power:
+        return Icons.bolt;
+      case MetricType.energy:
+        return Icons.electrical_services;
+      case MetricType.brightness:
+        return Icons.light_mode;
     }
   }
 
@@ -614,7 +494,8 @@ class _StatsTabState extends State<StatsTab> {
   // ---------------------------------------------------------------------------
 
   Future<void> _showEditConfigDialog(StatWidgetConfig config) async {
-    final equipments = _equipmentsForRoom(_selectedRoomId);
+    final controller = context.read<StatsController>();
+    final equipments = controller.equipmentsForRoom(controller.selectedRoomId);
     if (equipments.isEmpty) return;
 
     Equipment selectedEquipment = equipments.firstWhere(
@@ -628,7 +509,7 @@ class _StatsTabState extends State<StatsTab> {
             ? availableMetrics.first
             : MetricType.power);
     TimeRange selectedRange = config.range;
-    String chartType = (config.extra?['chartType'] as String?) ?? 'line';
+    ChartType chartType = config.chartType ?? ChartType.line;
 
     final confirmed = await showDialog<bool>(
       context: context,
@@ -688,148 +569,10 @@ class _StatsTabState extends State<StatsTab> {
       deviceId: selectedEquipment.id,
       metric: selectedMetric,
       range: selectedRange,
-      extra:
-          config.type == StatWidgetType.chart ? {'chartType': chartType} : null,
+      chartType: config.type == StatWidgetType.chart ? chartType : null,
     );
 
     await context.read<StatsController>().updateWidget(updated);
   }
 }
 
-// =============================================================================
-// Private widgets
-// =============================================================================
-
-/// Collapsible card that groups all stat widgets belonging to one device.
-class _DeviceGroupCard extends StatelessWidget {
-  final String deviceName;
-  final String deviceTypeLabel;
-  final int widgetCount;
-  final bool initiallyExpanded;
-  final List<Widget> children;
-
-  const _DeviceGroupCard({
-    required this.deviceName,
-    required this.deviceTypeLabel,
-    required this.widgetCount,
-    required this.initiallyExpanded,
-    required this.children,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(12),
-      child: Theme(
-        // Remove the default divider line from ExpansionTile.
-        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-        child: ExpansionTile(
-          initiallyExpanded: initiallyExpanded,
-          collapsedBackgroundColor: AppColors.surface,
-          backgroundColor: AppColors.surface,
-          tilePadding: const EdgeInsets.symmetric(horizontal: 16),
-          childrenPadding:
-              const EdgeInsets.symmetric(horizontal: 16).copyWith(bottom: 16),
-          iconColor: AppColors.textSecondary,
-          collapsedIconColor: AppColors.textSecondary,
-          title: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      deviceName,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    if (deviceTypeLabel.isNotEmpty)
-                      Text(
-                        // TODO(l10n)
-                        '$deviceTypeLabel · $widgetCount widget${widgetCount > 1 ? 's' : ''}',
-                        style: const TextStyle(
-                          fontSize: 11,
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          // Interleave dividers between widget entries.
-          children: [
-            for (int i = 0; i < children.length; i++) ...[
-              if (i > 0)
-                Divider(
-                  height: 1,
-                  color: AppColors.stroke.withValues(alpha: 0.25),
-                ),
-              children[i],
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// A single widget entry inside a device group card, with edit/delete buttons.
-class _WidgetEntry extends StatelessWidget {
-  final StatWidgetConfig config;
-  final Widget child;
-  final VoidCallback onEdit;
-  final VoidCallback onDelete;
-
-  const _WidgetEntry({
-    required this.config,
-    required this.child,
-    required this.onEdit,
-    required this.onDelete,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Action row: edit / delete (top-right)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              SizedBox(
-                height: 28,
-                width: 28,
-                child: IconButton(
-                  padding: EdgeInsets.zero,
-                  iconSize: 18,
-                  icon: const Icon(Icons.edit_outlined,
-                      color: AppColors.textSecondary),
-                  onPressed: onEdit,
-                ),
-              ),
-              SizedBox(
-                height: 28,
-                width: 28,
-                child: IconButton(
-                  padding: EdgeInsets.zero,
-                  iconSize: 18,
-                  icon:
-                      const Icon(Icons.delete_outline, color: AppColors.danger),
-                  onPressed: onDelete,
-                ),
-              ),
-            ],
-          ),
-          // Renderer
-          child,
-        ],
-      ),
-    );
-  }
-}

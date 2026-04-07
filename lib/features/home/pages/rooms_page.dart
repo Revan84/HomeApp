@@ -3,10 +3,13 @@ import 'package:provider/provider.dart';
 
 import '../../../core/i18n/loc.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../domain/models/equipment.dart';
-import '../../../domain/models/room.dart';
-import '../../../domain/models/room_group.dart';
-import '../../../domain/repositories/room_repository.dart';
+import '../../../domain/entities/equipment.dart';
+import '../../../domain/entities/room.dart';
+import '../../../domain/entities/room_group.dart';
+import '../controllers/home_controller.dart';
+import '../dialogs/room_group_dialogs.dart';
+import '../widgets/room_pill_tile.dart';
+import '../widgets/rooms_pick_sheet.dart';
 
 /// Rooms page showing only the rooms belonging to the currently active group.
 ///
@@ -36,63 +39,64 @@ class _RoomsPageState extends State<RoomsPage> {
   @override
   void initState() {
     super.initState();
-    _rooms = [...widget.rooms]..sort((a, b) {
-        final sortComparison = a.sortOrder.compareTo(b.sortOrder);
-        if (sortComparison != 0) return sortComparison;
-        return a.name.toLowerCase().compareTo(b.name.toLowerCase());
-      });
+    _rooms = [...widget.rooms];
+    _sortRooms();
   }
 
   Future<void> _addRoom() async {
     final activeGroup = widget.activeGroup;
     if (activeGroup == null) return;
 
-    final repo = context.read<RoomRepository>();
-    final allRooms = await repo.loadAll();
+    final controller = context.read<HomeController>();
     final currentGroupRoomIds = _rooms.map((r) => r.id).toSet();
-    final availableRooms = allRooms
-        .where((r) => r.groupId != activeGroup.id && !currentGroupRoomIds.contains(r.id))
-        .toList();
 
-    if (!mounted) return;
+    try {
+      final allAvailable = await controller.availableRoomsForGroup(activeGroup.id);
+      final availableRooms = allAvailable
+          .where((r) => !currentGroupRoomIds.contains(r.id))
+          .toList();
 
-    final result = await showModalBottomSheet<_AddRoomResult>(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (_) => _AddRoomSheet(
-        availableRooms: availableRooms,
-      ),
-    );
+      if (!mounted) return;
 
-    if (result == null || !mounted) return;
-
-    if (result.isCreateNew) {
-      final name = await _editRoomNameDialog(context);
-      if (name == null) return;
-
-      final createdRoom = await repo.add(
-        name: name,
-        groupId: activeGroup.id,
+      final result = await showModalBottomSheet<RoomsPickResult>(
+        context: context,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        builder: (_) => RoomsPickSheet(availableRooms: availableRooms),
       );
 
-      if (!mounted) return;
+      if (result == null || !mounted) return;
 
-      setState(() {
-        _rooms.add(createdRoom);
-        _sortRooms();
-      });
-    } else if (result.existingRoom != null) {
-      final movedRoom = result.existingRoom!.copyWith(groupId: activeGroup.id);
-      await repo.update(movedRoom);
+      if (result.isCreateNew) {
+        final name = await RoomGroupDialogs.editRoomName(context);
+        if (name == null) return;
 
-      if (!mounted) return;
+        final createdRoom = await controller.addRoom(
+          name: name,
+          groupId: activeGroup.id,
+        );
 
-      setState(() {
-        _rooms.add(movedRoom);
-        _sortRooms();
-      });
+        if (!mounted) return;
+
+        setState(() {
+          _rooms.add(createdRoom);
+          _sortRooms();
+        });
+      } else if (result.existingRoom != null) {
+        final existing = result.existingRoom!;
+        await controller.moveRoomToGroup(existing, activeGroup.id);
+
+        if (!mounted) return;
+
+        setState(() {
+          _rooms.add(existing.copyWith(groupId: activeGroup.id));
+          _sortRooms();
+        });
+      }
+    } catch (_) {
+      // Errors are surfaced by the controller; no silent swallowing.
+      rethrow;
     }
   }
 
@@ -105,16 +109,19 @@ class _RoomsPageState extends State<RoomsPage> {
   }
 
   Future<void> _renameRoom(Room room) async {
-    final repo = context.read<RoomRepository>();
-
-    final nextName = await _editRoomNameDialog(
+    final controller = context.read<HomeController>();
+    final nextName = await RoomGroupDialogs.editRoomName(
       context,
       currentName: room.name,
     );
     if (nextName == null) return;
 
     final updated = room.copyWith(name: nextName);
-    await repo.update(updated);
+    try {
+      await controller.renameRoom(room, nextName);
+    } catch (_) {
+      rethrow;
+    }
 
     if (!mounted) return;
 
@@ -127,15 +134,19 @@ class _RoomsPageState extends State<RoomsPage> {
   }
 
   Future<void> _deleteRoom(Room room) async {
-    final repo = context.read<RoomRepository>();
-
-    final confirmed = await _confirmDeleteRoomDialog(
+    final controller = context.read<HomeController>();
+    final confirmed = await RoomGroupDialogs.confirmDelete(
       context,
-      roomName: room.name,
+      title: context.l10n.roomsDeleteRoomTitle,
+      message: context.l10n.roomsDeleteRoomMessage(room.name),
     );
     if (!confirmed) return;
 
-    await repo.deleteById(room.id);
+    try {
+      await controller.deleteRoom(room);
+    } catch (_) {
+      rethrow;
+    }
 
     if (!mounted) return;
 
@@ -145,73 +156,7 @@ class _RoomsPageState extends State<RoomsPage> {
   }
 
   void _openRoom(Room room) {
-    // TODO: Later this can open a dedicated room details page.
-  }
-
-  Future<String?> _editRoomNameDialog(
-    BuildContext context, {
-    String? currentName,
-  }) async {
-    final controller = TextEditingController(text: currentName ?? '');
-
-    final isConfirmed = await showDialog<bool>(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text(
-          currentName == null
-              ? context.l10n.roomsAddRoomTitle
-              : context.l10n.roomsRenameRoomTitle,
-        ),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          textInputAction: TextInputAction.done,
-          decoration: InputDecoration(
-            hintText: context.l10n.roomsRoomNameHint,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(context.l10n.cancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(context.l10n.save),
-          ),
-        ],
-      ),
-    );
-
-    if (isConfirmed != true) return null;
-
-    final value = controller.text.trim();
-    return value.isEmpty ? null : value;
-  }
-
-  Future<bool> _confirmDeleteRoomDialog(
-    BuildContext context, {
-    required String roomName,
-  }) async {
-    final isConfirmed = await showDialog<bool>(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text(context.l10n.roomsDeleteRoomTitle),
-        content: Text(context.l10n.roomsDeleteRoomMessage(roomName)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(context.l10n.cancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(context.l10n.delete),
-          ),
-        ],
-      ),
-    );
-
-    return isConfirmed == true;
+    // No-op: a dedicated room details page is not yet implemented.
   }
 
   @override
@@ -283,7 +228,7 @@ class _RoomsPageState extends State<RoomsPage> {
                                 .where((e) => e.roomId == room.id)
                                 .length;
 
-                            return _RoomPillTile(
+                            return RoomPillTile(
                               title: room.name,
                               equipmentCount: equipCount,
                               removeTooltip: context.l10n.roomsDeleteRoomTooltip,
@@ -312,8 +257,6 @@ class _RoomsPageHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     return Padding(
       padding: const EdgeInsets.fromLTRB(10, 6, 10, 8),
       child: Column(
@@ -321,7 +264,8 @@ class _RoomsPageHeader extends StatelessWidget {
           Row(
             children: [
               IconButton(
-                tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+                tooltip:
+                    MaterialLocalizations.of(context).backButtonTooltip,
                 onPressed: onBackPressed,
                 icon: const Icon(Icons.chevron_left_rounded),
               ),
@@ -331,100 +275,15 @@ class _RoomsPageHeader extends StatelessWidget {
           Center(
             child: Text(
               title,
-              style: textTheme.titleMedium?.copyWith(
-                color: AppColors.textPrimary,
-                fontWeight: FontWeight.w600,
-              ),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w600,
+                  ),
             ),
           ),
           const SizedBox(height: 12),
         ],
       ),
-    );
-  }
-}
-
-class _RoomPillTile extends StatelessWidget {
-  final String title;
-  final int equipmentCount;
-  final String removeTooltip;
-  final VoidCallback onTap;
-  final VoidCallback onLongPress;
-  final VoidCallback onRemove;
-
-  const _RoomPillTile({
-    required this.title,
-    required this.equipmentCount,
-    required this.removeTooltip,
-    required this.onTap,
-    required this.onLongPress,
-    required this.onRemove,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(999),
-              onTap: onTap,
-              onLongPress: onLongPress,
-              child: Ink(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                decoration: BoxDecoration(
-                  color: AppColors.surface,
-                  borderRadius: BorderRadius.circular(999),
-                  border: Border.all(
-                    color: AppColors.stroke.withValues(alpha: 0.35),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.22),
-                      blurRadius: 14,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: AppColors.textPrimary,
-                              fontWeight: FontWeight.w500,
-                            ),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Text(
-                      context.l10n.roomsEquipmentCount(equipmentCount),
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppColors.textSecondary,
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(width: 8),
-        IconButton(
-          tooltip: removeTooltip,
-          onPressed: onRemove,
-          icon: Icon(
-            Icons.remove,
-            color: AppColors.textSecondary,
-            size: 20,
-          ),
-        ),
-      ],
     );
   }
 }
@@ -471,129 +330,6 @@ class _RoomsAddButton extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _AddRoomResult {
-  final bool isCreateNew;
-  final Room? existingRoom;
-
-  const _AddRoomResult.createNew()
-      : isCreateNew = true,
-        existingRoom = null;
-
-  const _AddRoomResult.existing(Room room)
-      : isCreateNew = false,
-        existingRoom = room;
-}
-
-class _AddRoomSheet extends StatelessWidget {
-  final List<Room> availableRooms;
-
-  const _AddRoomSheet({required this.availableRooms});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final textTheme = Theme.of(context).textTheme;
-
-    return SafeArea(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SizedBox(height: 12),
-          Container(
-            width: 36,
-            height: 4,
-            decoration: BoxDecoration(
-              color: AppColors.textSecondary.withValues(alpha: 0.3),
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            l10n.roomsAddRoomSheetTitle,
-            style: textTheme.titleMedium?.copyWith(
-              color: AppColors.textPrimary,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 12),
-          // "Create new room" action row
-          ListTile(
-            leading: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: AppColors.success.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(Icons.add, color: AppColors.success, size: 20),
-            ),
-            title: Text(
-              l10n.roomsCreateNewRoom,
-              style: textTheme.bodyMedium?.copyWith(
-                color: AppColors.success,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            onTap: () => Navigator.pop(context, const _AddRoomResult.createNew()),
-          ),
-          if (availableRooms.isNotEmpty) ...[
-            const Divider(height: 1),
-            Flexible(
-              child: ListView.separated(
-                shrinkWrap: true,
-                padding: const EdgeInsets.only(bottom: 8),
-                itemCount: availableRooms.length,
-                separatorBuilder: (_, _) => const SizedBox(height: 0),
-                itemBuilder: (context, index) {
-                  final room = availableRooms[index];
-                  return ListTile(
-                    leading: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: AppColors.surface,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: AppColors.stroke.withValues(alpha: 0.35),
-                        ),
-                      ),
-                      child: Icon(
-                        Icons.meeting_room_outlined,
-                        color: AppColors.textSecondary,
-                        size: 20,
-                      ),
-                    ),
-                    title: Text(
-                      room.name,
-                      style: textTheme.bodyMedium?.copyWith(
-                        color: AppColors.textPrimary,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    onTap: () => Navigator.pop(context, _AddRoomResult.existing(room)),
-                  );
-                },
-              ),
-            ),
-          ] else ...[
-            const Divider(height: 1),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-              child: Text(
-                l10n.roomsNoAvailableRooms,
-                style: textTheme.bodySmall?.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-              ),
-            ),
-          ],
-          const SizedBox(height: 8),
-        ],
       ),
     );
   }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/i18n/loc.dart';
-import '../../../domain/repositories/room_group_repository.dart';
+import '../controllers/home_controller.dart';
 
 /// Bottom sheet used to create a new room group.
 ///
@@ -37,9 +37,9 @@ class _AddRoomGroupSheetState extends State<AddRoomGroupSheet> {
       _saving = true;
     });
 
-    final repository = context.read<RoomGroupRepository>();
+    final controller = context.read<HomeController>();
 
-    await repository.add(_nameController.text.trim());
+    await controller.addRoomGroup(_nameController.text.trim());
 
     if (!mounted) return;
 
