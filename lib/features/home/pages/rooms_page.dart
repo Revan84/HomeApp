@@ -3,8 +3,13 @@ import 'package:provider/provider.dart';
 
 import '../../../core/i18n/loc.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_radius.dart';
+import '../../../core/theme/app_shadows.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../domain/entities/equipment.dart';
 import '../../../domain/entities/room.dart';
+import '../../../domain/entities/tv_device.dart';
+import '../../../domain/entities/wled_device.dart';
 import '../../../domain/entities/room_group.dart';
 import '../controllers/home_controller.dart';
 import '../dialogs/room_group_dialogs.dart';
@@ -21,12 +26,16 @@ class RoomsPage extends StatefulWidget {
   final RoomGroup? activeGroup;
   final List<Room> rooms;
   final List<Equipment> equipments;
+  final List<TvDevice> tvDevices;
+  final List<WledDevice> wledDevices;
 
   const RoomsPage({
     super.key,
     required this.activeGroup,
     required this.rooms,
     required this.equipments,
+    required this.tvDevices,
+    required this.wledDevices,
   });
 
   @override
@@ -61,7 +70,7 @@ class _RoomsPageState extends State<RoomsPage> {
       final result = await showModalBottomSheet<RoomsPickResult>(
         context: context,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          borderRadius: AppRadius.sheetTopBR,
         ),
         builder: (_) => RoomsPickSheet(availableRooms: availableRooms),
       );
@@ -199,7 +208,7 @@ class _RoomsPageState extends State<RoomsPage> {
                                     ),
                               ),
                             ),
-                            const SizedBox(height: 18),
+                            AppSpacing.gapX4l,
                             _RoomsAddButton(
                               tooltip: context.l10n.roomsAddRoomTooltip,
                               onPressed: _addRoom,
@@ -209,7 +218,7 @@ class _RoomsPageState extends State<RoomsPage> {
                       : ListView.separated(
                           padding: const EdgeInsets.fromLTRB(14, 8, 14, 24),
                           itemCount: _rooms.length + 1,
-                          separatorBuilder: (_, _) => const SizedBox(height: 14),
+                          separatorBuilder: (_, _) => AppSpacing.gapX2l,
                           itemBuilder: (context, index) {
                             if (index == _rooms.length) {
                               return Padding(
@@ -224,9 +233,10 @@ class _RoomsPageState extends State<RoomsPage> {
                             }
 
                             final room = _rooms[index];
-                            final equipCount = widget.equipments
-                                .where((e) => e.roomId == room.id)
-                                .length;
+                            final equipCount =
+                                widget.equipments.where((e) => e.roomId == room.id).length +
+                                widget.tvDevices.where((t) => t.roomId == room.id).length +
+                                widget.wledDevices.where((w) => w.roomId == room.id).length;
 
                             return RoomPillTile(
                               title: room.name,
@@ -271,7 +281,7 @@ class _RoomsPageHeader extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 4),
+          AppSpacing.gapXs,
           Center(
             child: Text(
               title,
@@ -281,7 +291,7 @@ class _RoomsPageHeader extends StatelessWidget {
                   ),
             ),
           ),
-          const SizedBox(height: 12),
+          AppSpacing.gapXl,
         ],
       ),
     );
@@ -304,7 +314,7 @@ class _RoomsAddButton extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(999),
+          borderRadius: AppRadius.pillBR,
           onTap: onPressed,
           child: Ink(
             width: 52,
@@ -313,15 +323,9 @@ class _RoomsAddButton extends StatelessWidget {
               color: AppColors.surface,
               shape: BoxShape.circle,
               border: Border.all(
-                color: AppColors.stroke.withValues(alpha: 0.35),
+                color: AppColors.border.withValues(alpha: 0.35),
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.22),
-                  blurRadius: 14,
-                  offset: const Offset(0, 5),
-                ),
-              ],
+              boxShadow: AppShadows.moderate,
             ),
             child: const Icon(
               Icons.add,

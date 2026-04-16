@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../i18n/loc.dart';
 import '../theme/app_colors.dart';
+import '../theme/app_spacing.dart';
 
 /// Small inline indicator showing trend direction + last update age.
 class TrendChip extends StatelessWidget {
@@ -28,7 +29,7 @@ class TrendChip extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(icon, size: 14, color: color),
-        const SizedBox(width: 6),
+        AppSpacing.gapHSm,
         Text(
           label.isEmpty ? context.l10n.valueUnknown : label,
           style: Theme.of(context)

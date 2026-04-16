@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_font_sizes.dart';
+import '../../../core/theme/app_radius.dart';
 import '../domain/tv_app.dart';
 
 /// Grid of TV application shortcut buttons styled like brand logos (B&W).
@@ -54,14 +56,14 @@ class _AppButton extends StatelessWidget {
     return Material(
       color: AppColors.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: AppRadius.lgBR,
         side: BorderSide(
-          color: hasBorderAccent ? AppColors.success : AppColors.stroke,
+          color: hasBorderAccent ? AppColors.primary : AppColors.border,
           width: 1,
         ),
       ),
       child: InkWell(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: AppRadius.lgBR,
         onTap: onTap,
         child: Container(
           constraints: const BoxConstraints(minWidth: 105, minHeight: 48),
@@ -79,8 +81,9 @@ class _AppButton extends StatelessWidget {
         return const Text(
           'NETFLIX',
           style: TextStyle(
+            fontFamily: 'ShareTech',
             color: Colors.white,
-            fontSize: 16,
+            fontSize: AppFontSizes.sectionTitle,
             fontWeight: FontWeight.w900,
             letterSpacing: 3.0,
           ),
@@ -93,8 +96,9 @@ class _AppButton extends StatelessWidget {
               const TextSpan(
                 text: 'CANAL',
                 style: TextStyle(
+                  fontFamily: 'ShareTech',
                   color: Colors.white,
-                  fontSize: 17,
+                  fontSize: AppFontSizes.sectionTitle,
                   fontWeight: FontWeight.w900,
                   letterSpacing: 1.5,
                 ),
@@ -106,8 +110,9 @@ class _AppButton extends StatelessWidget {
                   child: const Text(
                     '+',
                     style: TextStyle(
+                      fontFamily: 'ShareTech',
                       color: Colors.white,
-                      fontSize: 20,
+                      fontSize: AppFontSizes.display,
                       fontWeight: FontWeight.w300,
                     ),
                   ),
@@ -122,8 +127,9 @@ class _AppButton extends StatelessWidget {
         return const Text(
           'Disney+',
           style: TextStyle(
+            fontFamily: 'ShareTech',
             color: Colors.white,
-            fontSize: 16,
+            fontSize: AppFontSizes.sectionTitle,
             fontWeight: FontWeight.w700,
             fontStyle: FontStyle.italic,
             letterSpacing: 0.5,
@@ -134,8 +140,9 @@ class _AppButton extends StatelessWidget {
         return const Text(
           'YouTube',
           style: TextStyle(
+            fontFamily: 'ShareTech',
             color: Colors.white,
-            fontSize: 15,
+            fontSize: AppFontSizes.lg,
             fontWeight: FontWeight.w700,
             letterSpacing: -0.3,
           ),
@@ -145,8 +152,9 @@ class _AppButton extends StatelessWidget {
         return const Text(
           'twitch',
           style: TextStyle(
+            fontFamily: 'ShareTech',
             color: Colors.white,
-            fontSize: 16,
+            fontSize: AppFontSizes.sectionTitle,
             fontWeight: FontWeight.w900,
             fontStyle: FontStyle.italic,
             letterSpacing: -0.3,
@@ -157,8 +165,9 @@ class _AppButton extends StatelessWidget {
         return const Text(
           'prime video',
           style: TextStyle(
+            fontFamily: 'ShareTech',
             color: Colors.white,
-            fontSize: 14,
+            fontSize: AppFontSizes.md,
             fontWeight: FontWeight.w700,
             letterSpacing: 0.5,
           ),
@@ -168,8 +177,9 @@ class _AppButton extends StatelessWidget {
         return Text(
           label,
           style: const TextStyle(
+            fontFamily: 'ShareTech',
             color: AppColors.textPrimary,
-            fontSize: 14,
+            fontSize: AppFontSizes.md,
             fontWeight: FontWeight.w700,
           ),
         );

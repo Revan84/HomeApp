@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_radius.dart';
+import '../../../core/theme/app_shadows.dart';
+import '../../../core/theme/app_spacing.dart';
 
 /// Pill-shaped list item representing a favorite device.
 class FavoritePillTile extends StatelessWidget {
@@ -31,31 +34,24 @@ class FavoritePillTile extends StatelessWidget {
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              borderRadius: BorderRadius.circular(25),
+              borderRadius: AppRadius.x4lBR,
               onTap: onTap,
               child: Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 decoration: BoxDecoration(
                   color: AppColors.bg,
-                  borderRadius: BorderRadius.circular(999),
+                  borderRadius: AppRadius.pillBR,
                   border: Border.all(
                     width: 0.7,
-                    color: AppColors.stroke.withValues(alpha: 0.90),
+                    color: AppColors.border.withValues(alpha: 0.90),
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.22),
-                      blurRadius: 3,
-                      spreadRadius: 1,
-                      offset: const Offset(1, 5),
-                    ),
-                  ],
+                  boxShadow: AppShadows.subtle,
                 ),
                 child: Row(
                   children: [
                     Icon(icon, color: AppColors.textPrimary, size: 21),
-                    const SizedBox(width: 14),
+                    AppSpacing.gapHX2l,
                     Expanded(
                       child: Text(
                         title,
@@ -67,7 +63,7 @@ class FavoritePillTile extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 10),
+                    AppSpacing.gapHLg,
                     Container(
                       width: 11,
                       height: 11,
@@ -76,7 +72,7 @@ class FavoritePillTile extends StatelessWidget {
                         shape: BoxShape.circle,
                       ),
                     ),
-                    const SizedBox(width: 24),
+                    AppSpacing.gapHX6l,
                     const Icon(
                       Icons.chevron_right_rounded,
                       color: AppColors.textPrimary,
@@ -88,7 +84,7 @@ class FavoritePillTile extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: 8),
+        AppSpacing.gapHMd,
         IconButton(
           tooltip: removeTooltip,
           onPressed: onRemove,

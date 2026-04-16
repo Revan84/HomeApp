@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/theme/app_colors.dart';
+import '../../../core/design_system/chips/app_chip.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../domain/entities/room.dart';
 import '../controller/stats_controller.dart';
 
@@ -18,34 +19,18 @@ class StatsRoomSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 32,
+      height: 30,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: rooms.length,
-        separatorBuilder: (_, _) => const SizedBox(width: 6),
-        itemBuilder: (context, index) {
+        separatorBuilder: (_, _) => AppSpacing.gapHMd,
+        itemBuilder: (_, index) {
           final room = rooms[index];
-          final selected = room.id == controller.selectedRoomId;
-
-          return ChoiceChip(
-            label: Text(
-              room.name,
-              style: TextStyle(
-                fontSize: 11,
-                color: selected ? AppColors.bg : AppColors.textSecondary,
-              ),
-            ),
-            selected: selected,
-            selectedColor: AppColors.success,
-            backgroundColor: AppColors.bg,
-            side: BorderSide(
-              color: selected
-                  ? AppColors.success
-                  : AppColors.stroke.withValues(alpha: 0.3),
-            ),
-            onSelected: (_) => controller.selectRoom(room.id),
-            visualDensity: VisualDensity.compact,
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          return AppChip(
+            label: '${room.name} (${controller.equipmentsForRoom(room.id).length})',
+            selected: room.id == controller.selectedRoomId,
+            variant: AppChipVariant.outlined,
+            onTap: () => controller.selectRoom(room.id),
           );
         },
       ),

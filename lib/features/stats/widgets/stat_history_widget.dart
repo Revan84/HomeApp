@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_font_sizes.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../domain/metric_series.dart';
 import '../domain/metric_type.dart';
 
@@ -22,7 +24,7 @@ class StatHistoryWidget extends StatelessWidget {
         height: 80,
         child: Center(
           child: Text('No data',
-              style: TextStyle(color: AppColors.textSecondary)),
+              style: TextStyle(fontFamily: 'ShareTech', color: AppColors.textSecondary)),
         ),
       );
     }
@@ -40,7 +42,7 @@ class StatHistoryWidget extends StatelessWidget {
         itemCount: reversed.length,
         separatorBuilder: (_, _) => Divider(
           height: 1,
-          color: AppColors.stroke.withValues(alpha: 0.2),
+          color: AppColors.border.withValues(alpha: 0.2),
         ),
         itemBuilder: (context, index) {
           final point = reversed[index];
@@ -53,14 +55,15 @@ class StatHistoryWidget extends StatelessWidget {
                 Icon(
                   _eventIcon(metricType, point.value),
                   size: 16,
-                  color: AppColors.success,
+                  color: AppColors.primary,
                 ),
-                const SizedBox(width: 8),
+                AppSpacing.gapHMd,
                 // Timestamp
                 Text(
                   DateFormat('dd/MM HH:mm', locale).format(point.timestamp),
                   style: const TextStyle(
-                    fontSize: 11,
+                    fontFamily: 'ShareTech',
+                    fontSize: AppFontSizes.sm,
                     color: AppColors.textSecondary,
                   ),
                 ),
@@ -69,9 +72,10 @@ class StatHistoryWidget extends StatelessWidget {
                 Text(
                   metricType.formatValue(point.value),
                   style: const TextStyle(
-                    fontSize: 13,
+                    fontFamily: 'ShareTech',
+                    fontSize: AppFontSizes.body,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.success,
+                    color: AppColors.primary,
                   ),
                 ),
               ],

@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/i18n/loc.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_font_sizes.dart';
 import '../domain/metric_series.dart';
 import '../domain/metric_type.dart';
 
@@ -23,7 +24,7 @@ class StatTableWidget extends StatelessWidget {
         height: 80,
         child: Center(
           child: Text(context.l10n.statsNoData,
-              style: const TextStyle(color: AppColors.textSecondary)),
+              style: const TextStyle(fontFamily: 'ShareTech', color: AppColors.textSecondary)),
         ),
       );
     }
@@ -46,21 +47,23 @@ class StatTableWidget extends StatelessWidget {
                 // "Date" is a universal abbreviation kept as-is.
                 const Text('Date',
                     style: TextStyle(
-                        fontSize: 11,
+                        fontFamily: 'ShareTech',
+                        fontSize: AppFontSizes.sm,
                         fontWeight: FontWeight.w600,
                         color: AppColors.textSecondary)),
                 const Spacer(),
                 Text(
                   '${metricType.label} (${metricType.unit})',
                   style: const TextStyle(
-                      fontSize: 11,
+                      fontFamily: 'ShareTech',
+                      fontSize: AppFontSizes.sm,
                       fontWeight: FontWeight.w600,
                       color: AppColors.textSecondary),
                 ),
               ],
             ),
           ),
-          Divider(height: 1, color: AppColors.stroke.withValues(alpha: 0.3)),
+          Divider(height: 1, color: AppColors.border.withValues(alpha: 0.3)),
           // Scrollable rows
           Expanded(
             child: ListView.separated(
@@ -68,7 +71,7 @@ class StatTableWidget extends StatelessWidget {
               itemCount: visible.length,
               separatorBuilder: (_, _) => Divider(
                 height: 1,
-                color: AppColors.stroke.withValues(alpha: 0.2),
+                color: AppColors.border.withValues(alpha: 0.2),
               ),
               itemBuilder: (context, index) {
                 final point = visible[index];
@@ -80,13 +83,14 @@ class StatTableWidget extends StatelessWidget {
                         DateFormat('dd/MM/yy HH:mm', locale)
                             .format(point.timestamp),
                         style: const TextStyle(
-                            fontSize: 11, color: AppColors.textSecondary),
+                            fontFamily: 'ShareTech', fontSize: AppFontSizes.sm, color: AppColors.textSecondary),
                       ),
                       const Spacer(),
                       Text(
                         metricType.formatValue(point.value),
                         style: const TextStyle(
-                          fontSize: 12,
+                          fontFamily: 'ShareTech',
+                          fontSize: 12.0,
                           fontWeight: FontWeight.w600,
                           color: AppColors.success,
                         ),

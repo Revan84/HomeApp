@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
+import '../theme/app_radius.dart';
+import '../theme/app_shadows.dart';
 
 /// Custom two-layer bottom navigation bar:
 /// - an "icons" bar (background = AppColors.surface) with an animated indicator
@@ -131,15 +133,8 @@ class CurvedBottomBar extends StatelessWidget {
                         height: _indicatorH,
                         decoration: BoxDecoration(
                           color: AppColors.textPrimary.withValues(alpha: 0.9),
-                          borderRadius: BorderRadius.circular(999),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.success.withValues(alpha: 0.55),
-                              blurRadius: 18,
-                              spreadRadius: 6,
-                              offset: const Offset(0, 6),
-                            ),
-                          ],
+                          borderRadius: AppRadius.pillBR,
+                          boxShadow: AppShadows.glow(AppColors.primary),
                         ),
                       ),
                     ),
@@ -306,7 +301,7 @@ class _CurvedBarPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     final stroke = Paint()
-      ..color = AppColors.stroke.withValues(alpha: 0.35)
+      ..color = AppColors.border.withValues(alpha: 0.35)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
 

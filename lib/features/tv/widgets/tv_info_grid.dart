@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../equipments/widgets/info_row.dart';
 
 /// Info grid for TV details: IP, Type, Favorite, Model, Connection.
@@ -58,7 +59,7 @@ class TvInfoGrid extends StatelessWidget {
                 trailing:
                     const InfoRowIcon(icon: Icons.edit_rounded, size: 18),
               ),
-              const SizedBox(height: 12),
+              AppSpacing.gapXl,
               InfoRow(
                 label: '$typeLabel : ',
                 value: typeValue,
@@ -68,7 +69,7 @@ class TvInfoGrid extends StatelessWidget {
                   size: 18,
                 ),
               ),
-              const SizedBox(height: 12),
+              AppSpacing.gapXl,
               InfoRow(
                 label: '$favoriteLabel : ',
                 value: favoriteValue,
@@ -86,7 +87,7 @@ class TvInfoGrid extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(width: 16),
+        AppSpacing.gapHX3l,
         // Right column
         Expanded(
           child: Column(
@@ -102,7 +103,7 @@ class TvInfoGrid extends StatelessWidget {
                   color: AppColors.textPrimary,
                 ),
               ),
-              const SizedBox(height: 12),
+              AppSpacing.gapXl,
               InfoRow(
                 label: connectionLabel,
                 value: '',

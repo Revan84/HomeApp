@@ -2,20 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/i18n/loc.dart';
-import '../../../core/utils/time_label.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_font_sizes.dart';
 import '../../../core/design_system/layout/app_section_header.dart';
 
 import '../../../domain/entities/equipment.dart';
 import '../../../domain/entities/tv_device.dart';
+import '../../../domain/entities/wled_device.dart';
 
 import '../../live/controllers/live_polling_controller.dart';
 import '../../equipments/pages/equipment_details_page.dart';
 import '../../tv/pages/tv_details_page.dart';
+import '../../wled/pages/wled_details_page.dart';
 import '../../equipments/widgets/edit_equipment_sheet.dart';
+import '../../tv/domain/tv_remote_command.dart';
 
 import '../controllers/home_controller.dart';
 import '../widgets/areas_section.dart';
-import '../widgets/favorite_card.dart';
+import '../widgets/device_cards/plug_card.dart';
+import '../widgets/device_cards/thermometer_card.dart';
+import '../widgets/device_cards/tv_card.dart';
+import '../widgets/device_cards/wled_card.dart';
+import '../widgets/today/today_section.dart';
 import 'rooms_page.dart';
 import 'favorites_page.dart';
 
@@ -63,7 +72,11 @@ class _HomeTabState extends State<HomeTab> {
     setState(() {});
   }
 
-  Future<void> _openDetails(Equipment equipment) async {
+  // ---------------------------------------------------------------------------
+  // Navigation helpers
+  // ---------------------------------------------------------------------------
+
+  Future<void> _openEquipmentDetails(Equipment equipment) async {
     final changed = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
         builder: (_) => EquipmentDetailsPage(equipmentId: equipment.id),
@@ -74,9 +87,14 @@ class _HomeTabState extends State<HomeTab> {
 
   Future<void> _openTvDetails(TvDevice tv) async {
     await Navigator.of(context).push<bool>(
-      MaterialPageRoute(
-        builder: (_) => TvDetailsPage(deviceId: tv.id),
-      ),
+      MaterialPageRoute(builder: (_) => TvDetailsPage(deviceId: tv.id)),
+    );
+    _reload();
+  }
+
+  Future<void> _openWledDetails(WledDevice device) async {
+    await Navigator.of(context).push<bool>(
+      MaterialPageRoute(builder: (_) => WledDetailsPage(deviceId: device.id)),
     );
     _reload();
   }
@@ -97,6 +115,8 @@ class _HomeTabState extends State<HomeTab> {
       MaterialPageRoute(
         builder: (_) => FavoritesPage(
           equipments: controller.allEquipments,
+          tvDevices: controller.allTvDevices,
+          wledDevices: controller.allWledDevices,
           rooms: controller.allRooms,
         ),
       ),
@@ -112,11 +132,17 @@ class _HomeTabState extends State<HomeTab> {
           activeGroup: controller.activeRoomGroup(_selectedGroupId),
           rooms: controller.visibleRooms(_selectedGroupId),
           equipments: controller.allEquipments,
+          tvDevices: controller.allTvDevices,
+          wledDevices: controller.allWledDevices,
         ),
       ),
     );
     if (changed == true) widget.refreshNotifier.value++;
   }
+
+  // ---------------------------------------------------------------------------
+  // Build
+  // ---------------------------------------------------------------------------
 
   @override
   Widget build(BuildContext context) {
@@ -126,128 +152,258 @@ class _HomeTabState extends State<HomeTab> {
 
     final favoriteEquipments = controller.favoriteEquipments(groupId);
     final favoriteTvs = controller.favoriteTvDevices(groupId);
+    final favoriteWleds = controller.favoriteWledDevices(groupId);
     final hasFavorites =
-        favoriteEquipments.isNotEmpty || favoriteTvs.isNotEmpty;
+        favoriteEquipments.isNotEmpty ||
+        favoriteTvs.isNotEmpty ||
+        favoriteWleds.isNotEmpty;
 
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: () => controller.loadAll(groupId),
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 14, 16, 100),
+          padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
           children: [
-            const SizedBox(height: 4),
-            SectionHeader(
-              title: context.l10n.favorites,
-              onTap: _openFavoritesPage,
+            // ----------------------------------------------------------------
+            // TODAY SECTION
+            // ----------------------------------------------------------------
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 6, 16, 0),
+              child: const Text(
+                'Today',
+                style: TextStyle(
+                  fontFamily: 'ShareTech',
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.w700,
+                  fontSize: AppFontSizes.sectionTitle,
+                ),
+              ),
             ),
-            const SizedBox(height: 10),
+            AppSpacing.gapX3l,
             if (controller.isLoading)
-              const SizedBox(
-                height: 150,
-                child: Center(child: CircularProgressIndicator()),
-              )
-            else if (!hasFavorites)
-              SizedBox(
-                height: 150,
-                child: Center(
-                  child: Text(context.l10n.noFavorites),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: SizedBox(
+                  height: 60,
+                  child: Center(child: CircularProgressIndicator()),
                 ),
               )
             else
-              SizedBox(
-                height: 150,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    ...favoriteEquipments.map((equipment) {
-                      final supported =
-                          controller.isFavoriteSupported(equipment);
-                      final state = supported
-                          ? liveController.live[equipment.id]
-                          : null;
+              TodaySection(groupId: groupId),
 
-                      final value = supported
-                          ? (equipment.showPower
-                              ? '${(state?.powerW ?? 0).toStringAsFixed(0)} ${context.l10n.unitWattShort}'
-                              : (state?.output == true
-                                  ? context.l10n.valueOn
-                                  : context.l10n.valueOff))
-                          : context.l10n.valueUnknown;
+            AppSpacing.gapX5l,
 
-                      final roomLabel = controller.roomName(equipment.roomId);
+            // ----------------------------------------------------------------
+            // FAVORITES SECTION
+            // ----------------------------------------------------------------
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+              child: SectionHeader(
+                title: context.l10n.favorites,
+                onTap: _openFavoritesPage,
+              ),
+            ),
+            AppSpacing.gapX3l,
 
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 12),
-                        child: FavoriteCard(
-                          value: value,
-                          label: equipment.name,
-                          room: roomLabel.isNotEmpty
-                              ? roomLabel
-                              : context.l10n.valueUnknown,
-                          icon: supported
-                              ? Icons.power_rounded
-                              : Icons.devices_other,
-                          isOn: state?.output == true,
-                          showPowerButton: supported,
-                          powerLoading: state?.toggling ?? false,
-                          powerEnabled: true,
-                          onPowerPressed: supported
-                              ? () => controller.togglePlug(equipment)
-                              : null,
-                          trend: state?.trendPower ?? 0,
-                          updatedLabel:
-                              ageLabel(context, state?.lastUpdatedAt),
-                          onOpenDetails: () => _openDetails(equipment),
-                          onToggleFavorite: () async {
-                            await controller
-                                .removeEquipmentFromFavorites(equipment);
-                            widget.refreshNotifier.value++;
-                          },
-                          onEdit: () => _editEquipment(equipment),
-                        ),
-                      );
-                    }),
-                    ...favoriteTvs.map((tv) {
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 12),
-                        child: FavoriteCard(
-                          value: tv.source,
-                          label: tv.name,
-                          room: controller.roomName(tv.roomId).isNotEmpty
-                              ? controller.roomName(tv.roomId)
-                              : context.l10n.valueUnknown,
-                          icon: Icons.tv_rounded,
-                          isOn: true,
-                          showPowerButton: false,
-                          powerEnabled: false,
-                          trend: 0,
-                          updatedLabel: '',
-                          onOpenDetails: () => _openTvDetails(tv),
-                          onToggleFavorite: () async {
-                            await controller.removeTvFromFavorites(tv);
-                            widget.refreshNotifier.value++;
-                          },
-                        ),
-                      );
-                    }),
-                  ],
+            if (controller.isLoading)
+              const SizedBox(
+                height: 160,
+                child: Center(child: CircularProgressIndicator()),
+              )
+            else if (!hasFavorites)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: SizedBox(
+                  height: 80,
+                  child: Center(
+                    child: Text(
+                      context.l10n.noFavorites,
+                      style: const TextStyle(
+                        fontFamily: 'ShareTech',
+                        color: AppColors.textSecondary,
+                        fontSize: AppFontSizes.body,
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            else
+              _FavoritesSlider(
+                favoriteEquipments: favoriteEquipments,
+                favoriteTvs: favoriteTvs,
+                favoriteWleds: favoriteWleds,
+                controller: controller,
+                liveController: liveController,
+                onOpenEquipment: _openEquipmentDetails,
+                onOpenTv: _openTvDetails,
+                onOpenWled: _openWledDetails,
+                onEditEquipment: _editEquipment,
+                onRemoveEquipment: (e) async {
+                  await controller.removeEquipmentFromFavorites(e);
+                  widget.refreshNotifier.value++;
+                },
+                onRemoveTv: (tv) async {
+                  await controller.removeTvFromFavorites(tv);
+                  widget.refreshNotifier.value++;
+                },
+                onRemoveWled: (w) async {
+                  await controller.removeWledFromFavorites(w);
+                  widget.refreshNotifier.value++;
+                },
+              ),
+
+            // ----------------------------------------------------------------
+            // AREAS SECTION
+            // ----------------------------------------------------------------
+            AppSpacing.gapX5l,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+              child: SectionHeader(
+                title: context.l10n.roomsSectionTitle,
+                onTap: _openRoomsPage,
+              ),
+            ),
+
+            if (controller.isLoading)
+              const SizedBox(
+                height: 120,
+                child: Center(child: CircularProgressIndicator()),
+              )
+            else
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: AreasSection(
+                  rooms: controller.visibleRooms(groupId),
+                  groupId: groupId,
+                  onOpenEquipment: (id) {
+                    final eq = controller.equipmentById(id);
+                    if (eq != null) _openEquipmentDetails(eq);
+                  },
+                  onOpenTv: (id) {
+                    final tv = controller.allTvDevices
+                        .where((t) => t.id == id)
+                        .firstOrNull;
+                    if (tv != null) _openTvDetails(tv);
+                  },
+                  onOpenWled: (id) {
+                    final w = controller.allWledDevices
+                        .where((w) => w.id == id)
+                        .firstOrNull;
+                    if (w != null) _openWledDetails(w);
+                  },
                 ),
               ),
-            const SizedBox(height: 18),
-            SectionHeader(
-              title: context.l10n.roomsSectionTitle,
-              onTap: _openRoomsPage,
-            ),
-            const SizedBox(height: 10),
-            AreasSection(
-              rooms: controller.visibleRooms(groupId),
-              onOpenEquipment: (equipmentId) {
-                final equipment = controller.equipmentById(equipmentId);
-                if (equipment != null) _openDetails(equipment);
-              },
-            ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Favorites horizontal slider (single row)
+// ---------------------------------------------------------------------------
+
+class _FavoritesSlider extends StatelessWidget {
+  const _FavoritesSlider({
+    required this.favoriteEquipments,
+    required this.favoriteTvs,
+    required this.favoriteWleds,
+    required this.controller,
+    required this.liveController,
+    required this.onOpenEquipment,
+    required this.onOpenTv,
+    required this.onOpenWled,
+    required this.onEditEquipment,
+    required this.onRemoveEquipment,
+    required this.onRemoveTv,
+    required this.onRemoveWled,
+  });
+
+  final List<Equipment> favoriteEquipments;
+  final List<TvDevice> favoriteTvs;
+  final List<WledDevice> favoriteWleds;
+  final HomeController controller;
+  final LivePollingController liveController;
+  final void Function(Equipment) onOpenEquipment;
+  final void Function(TvDevice) onOpenTv;
+  final void Function(WledDevice) onOpenWled;
+  final void Function(Equipment) onEditEquipment;
+  final void Function(Equipment) onRemoveEquipment;
+  final void Function(TvDevice) onRemoveTv;
+  final void Function(WledDevice) onRemoveWled;
+
+  @override
+  Widget build(BuildContext context) {
+    final cards = <Widget>[];
+
+    for (final eq in favoriteEquipments) {
+      final state = eq.type.isPlug ? liveController.live[eq.id] : null;
+      if (eq.type.isThermometer) {
+        cards.add(
+          ThermometerCard(
+            equipment: eq,
+            liveState: liveController.live[eq.id],
+            onTap: () => onOpenEquipment(eq),
+          ),
+        );
+      } else {
+        cards.add(
+          PlugCard(
+            equipment: eq,
+            liveState: state,
+            onTap: () => onOpenEquipment(eq),
+            onToggle: eq.showToggle ? () => controller.togglePlug(eq) : null,
+          ),
+        );
+      }
+    }
+
+    for (final tv in favoriteTvs) {
+      final isOn = controller.tvIsOn(tv.id);
+      cards.add(TvCard(
+        tv: tv,
+        isOn: isOn,
+        onTap: () => onOpenTv(tv),
+        onHome: () => controller.sendTvCommand(tv, TvRemoteCommand.home),
+        onVolumeUp: () => controller.sendTvCommand(tv, TvRemoteCommand.volumeUp),
+        onVolumeDown: () => controller.sendTvCommand(tv, TvRemoteCommand.volumeDown),
+      ));
+    }
+
+    for (final wled in favoriteWleds) {
+      final state = controller.wledStateFor(wled.id);
+      final isOn = state?.isOn ?? false;
+      final brightness = ((state?.brightness ?? 128) / 255.0).clamp(0.0, 1.0);
+      final c = state?.primaryColor;
+      final color = c != null ? Color.fromARGB(255, c.red, c.green, c.blue) : Colors.amber;
+      cards.add(WledCard(
+        device: wled,
+        isOn: isOn,
+        brightness: brightness,
+        sceneName: '',
+        color: color,
+        onTap: () => onOpenWled(wled),
+        onToggle: () => controller.toggleWled(wled),
+        onBrightnessDrag: (v) => controller.setWledBrightness(wled, v),
+      ));
+    }
+
+    // Match the exact card size produced by the 2-column grid in AreasSection:
+    // width  = (screenWidth − 2×pagePadding − crossAxisSpacing) / 2
+    // height = width × (150 / 155)
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    final cardWidth = (screenWidth - 16 * 2 - 12) / 2;
+    final cardHeight = cardWidth * (150 / 155);
+
+    return SizedBox(
+      height: cardHeight,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemCount: cards.length,
+        separatorBuilder: (_, _) => const SizedBox(width: 12),
+        itemBuilder: (_, i) => SizedBox(width: cardWidth, child: cards[i]),
       ),
     );
   }

@@ -45,6 +45,8 @@ class WledDetailsController extends ChangeNotifier {
   bool _polling = false;
   bool get isPolling => _polling;
 
+  bool _disposed = false;
+
   // ---------------------------------------------------------------------------
   // Lifecycle
   // ---------------------------------------------------------------------------
@@ -56,22 +58,33 @@ class WledDetailsController extends ChangeNotifier {
     ]);
   }
 
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
+
+  /// Safe notifyListeners — no-op if the controller has already been disposed.
+  void _notify() {
+    if (!_disposed) notifyListeners();
+  }
+
   // ---------------------------------------------------------------------------
   // Data loading
   // ---------------------------------------------------------------------------
 
   Future<void> _loadDevice(String deviceId) async {
     _loadingDevice = true;
-    notifyListeners();
+    _notify();
     _device = await _wledRepo.loadById(deviceId);
     _loadingDevice = false;
-    notifyListeners();
+    _notify();
     if (_device != null) await refresh();
   }
 
   Future<void> _loadRooms() async {
     _rooms = await _roomRepo.loadAll();
-    notifyListeners();
+    _notify();
   }
 
   Future<void> refresh() async {
@@ -79,7 +92,7 @@ class WledDetailsController extends ChangeNotifier {
     if (ip == null) return;
 
     _polling = true;
-    notifyListeners();
+    _notify();
 
     final results = await Future.wait([
       _api.getState(ip),
@@ -96,7 +109,7 @@ class WledDetailsController extends ChangeNotifier {
     if (presets.isNotEmpty) _presets = presets;
 
     _polling = false;
-    notifyListeners();
+    _notify();
   }
 
   // ---------------------------------------------------------------------------
@@ -108,7 +121,7 @@ class WledDetailsController extends ChangeNotifier {
     if (ip == null) return;
     final newOn = !_wledState.isOn;
     _wledState = _wledState.copyWith(isOn: newOn);
-    notifyListeners();
+    _notify();
     await _api.setOn(ip, on: newOn);
   }
 
@@ -118,7 +131,7 @@ class WledDetailsController extends ChangeNotifier {
     final ip = _device?.ipAddress;
     if (ip == null) return;
     _wledState = _wledState.copyWith(primaryColor: color);
-    notifyListeners();
+    _notify();
     await _api.setColor(ip, color);
   }
 
@@ -128,7 +141,7 @@ class WledDetailsController extends ChangeNotifier {
     if (ip == null) return;
     final bri = (value * 255).round();
     _wledState = _wledState.copyWith(brightness: bri);
-    notifyListeners();
+    _notify();
     await _api.setBrightness(ip, bri);
   }
 
@@ -136,7 +149,7 @@ class WledDetailsController extends ChangeNotifier {
     final ip = _device?.ipAddress;
     if (ip == null) return;
     _wledState = _wledState.copyWith(effectId: effectId);
-    notifyListeners();
+    _notify();
     await _api.setEffect(
       ip,
       effectId,
@@ -151,7 +164,7 @@ class WledDetailsController extends ChangeNotifier {
     if (ip == null) return;
     final speed = (value * 255).round();
     _wledState = _wledState.copyWith(effectSpeed: speed);
-    notifyListeners();
+    _notify();
     await _api.setEffect(
       ip,
       _wledState.effectId,
@@ -166,7 +179,7 @@ class WledDetailsController extends ChangeNotifier {
     if (ip == null) return;
     final intensity = (value * 255).round();
     _wledState = _wledState.copyWith(effectIntensity: intensity);
-    notifyListeners();
+    _notify();
     await _api.setEffect(
       ip,
       _wledState.effectId,
@@ -179,7 +192,7 @@ class WledDetailsController extends ChangeNotifier {
     final ip = _device?.ipAddress;
     if (ip == null) return;
     _wledState = _wledState.copyWith(presetId: presetId);
-    notifyListeners();
+    _notify();
     await _api.loadPreset(ip, presetId);
     await Future<void>.delayed(const Duration(milliseconds: 600));
     await refresh();
@@ -195,7 +208,7 @@ class WledDetailsController extends ChangeNotifier {
     final updated = d.copyWith(roomId: roomId, clearRoomId: roomId == null);
     await _wledRepo.update(updated);
     _device = updated;
-    notifyListeners();
+    _notify();
   }
 
   Future<void> delete() async {

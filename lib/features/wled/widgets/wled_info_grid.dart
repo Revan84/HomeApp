@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/design_system/cards/app_card.dart';
 import '../../../core/i18n/loc.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../domain/entities/wled_device.dart';
 
 /// Info grid displayed at the bottom of the WLED detail page.
@@ -17,29 +19,22 @@ class WledInfoGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
-      ),
+    return AppCard(
       child: Column(
         children: [
           _InfoRow(label: 'IP', value: device.ipAddress),
           if (device.modelName.isNotEmpty) ...[
-            const Divider(height: 20, color: Colors.white12),
+            Divider(height: AppSpacing.x5l, color: AppColors.border.withValues(alpha: 0.35)),
             _InfoRow(
               label: context.l10n.tvModelLabel,
               value: device.modelName,
             ),
           ],
-          const Divider(height: 20, color: Colors.white12),
+          Divider(height: AppSpacing.x5l, color: AppColors.border.withValues(alpha: 0.35)),
           _InfoRow(
             label: 'Status',
             value: isOnline ? 'Online' : 'Offline',
-            valueColor:
-                isOnline ? AppColors.success : AppColors.danger,
+            valueColor: isOnline ? AppColors.success : AppColors.danger,
           ),
         ],
       ),
@@ -64,19 +59,18 @@ class _InfoRow extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 13,
-            color: AppColors.textSecondary,
-          ),
+          style: Theme.of(context)
+              .textTheme
+              .bodyMedium
+              ?.copyWith(color: AppColors.textSecondary),
         ),
         const Spacer(),
         Text(
           value,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w500,
-            color: valueColor ?? AppColors.textPrimary,
-          ),
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w500,
+                color: valueColor ?? AppColors.textPrimary,
+              ),
         ),
       ],
     );

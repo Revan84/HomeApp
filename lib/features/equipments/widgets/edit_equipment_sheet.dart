@@ -2,6 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:front_end/core/i18n/loc.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/design_system/buttons/app_button.dart';
+import '../../../core/design_system/inputs/app_text_field.dart';
+import '../../../core/design_system/layout/app_sheet_header.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_radius.dart';
+import '../../../core/theme/app_spacing.dart';
+
 import '../../../domain/entities/equipment.dart';
 import '../controllers/equipments_controller.dart';
 
@@ -80,6 +87,8 @@ class _EditEquipmentSheetState extends State<EditEquipmentSheet> {
         return context.l10n.equipmentTypeShellyPlusPlugS;
       case EquipmentType.shellyPlugS:
         return context.l10n.equipmentTypeShellyPlugS;
+      case EquipmentType.shellyHT:
+        return 'Shelly HT';
       case EquipmentType.other:
         return context.l10n.equipmentTypeOther;
     }
@@ -112,6 +121,7 @@ class _EditEquipmentSheetState extends State<EditEquipmentSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l = context.l10n;
     final rooms = context.watch<EquipmentsController>().rooms;
     final safeRoomId = rooms.any((r) => r.id == _selectedRoomId) ? _selectedRoomId : null;
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
@@ -120,78 +130,67 @@ class _EditEquipmentSheetState extends State<EditEquipmentSheet> {
       padding: EdgeInsets.only(bottom: bottomInset),
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+          padding: AppSpacing.sheetPadding,
           child: Form(
             key: _formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        context.l10n.editEquipmentTitle,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () => Navigator.pop(context, false),
-                      icon: const Icon(Icons.close),
-                      tooltip: context.l10n.close,
-                    ),
-                  ],
+                AppSheetHeader(
+                  title: l.editEquipmentTitle,
+                  showDragHandle: true,
+                  onClose: () => Navigator.of(context).pop(false),
                 ),
-
-                TextFormField(
+                AppTextField(
                   controller: _nameCtrl,
-                  decoration: InputDecoration(labelText: context.l10n.nameLabel),
+                  label: l.nameLabel,
                 ),
-                const SizedBox(height: 10),
-
-                TextFormField(
+                AppSpacing.gapLg,
+                AppTextField(
                   controller: _ipCtrl,
-                  decoration: InputDecoration(labelText: context.l10n.ipLocalLabel),
+                  label: l.ipLocalLabel,
                   keyboardType: TextInputType.number,
                   validator: _validateIp,
                 ),
-                const SizedBox(height: 10),
-
-                TextFormField(
+                AppSpacing.gapLg,
+                AppTextField(
                   initialValue: _channel.toString(),
+                  label: l.channelLabel,
+                  hint: l.channelHint,
                   keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: context.l10n.channelLabel,
-                    hintText: context.l10n.channelHint,
-                  ),
                   validator: _validateChannel,
                   onChanged: (v) => _channel = int.tryParse(v.trim()) ?? _channel,
                 ),
-                const SizedBox(height: 10),
-
+                AppSpacing.gapLg,
                 DropdownButtonFormField<EquipmentType>(
                   initialValue: _type,
-                  decoration: InputDecoration(labelText: context.l10n.typeLabel),
-                  items: EquipmentType.values.map((t) {
-                    return DropdownMenuItem(
-                      value: t,
-                      child: Text(_typeLabel(context, t)),
-                    );
-                  }).toList(),
+                  dropdownColor: AppColors.surface,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: AppColors.textPrimary,
+                      ),
+                  borderRadius: AppRadius.xlBR,
+                  decoration: InputDecoration(labelText: l.typeLabel),
+                  items: EquipmentType.values
+                      .map((t) => DropdownMenuItem(
+                            value: t,
+                            child: Text(_typeLabel(context, t)),
+                          ))
+                      .toList(),
                   onChanged: (v) => setState(() => _type = v ?? EquipmentType.other),
                 ),
-
-                const SizedBox(height: 10),
-
+                AppSpacing.gapLg,
                 DropdownButtonFormField<String?>(
                   initialValue: safeRoomId,
-                  decoration: InputDecoration(labelText: context.l10n.roomLabel),
+                  dropdownColor: AppColors.surface,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: AppColors.textPrimary,
+                      ),
+                  borderRadius: AppRadius.xlBR,
+                  decoration: InputDecoration(labelText: l.roomLabel),
                   items: [
                     DropdownMenuItem<String?>(
                       value: null,
-                      child: Text(context.l10n.none),
+                      child: Text(l.none),
                     ),
                     ...rooms.map(
                       (r) => DropdownMenuItem<String?>(
@@ -202,44 +201,38 @@ class _EditEquipmentSheetState extends State<EditEquipmentSheet> {
                   ],
                   onChanged: (v) => setState(() => _selectedRoomId = v),
                 ),
-
                 SwitchListTile(
                   value: _isFavorite,
                   onChanged: (v) => setState(() => _isFavorite = v),
-                  title: Text(context.l10n.favorite),
+                  title: Text(l.favorite),
                 ),
-
-                const SizedBox(height: 8),
-
+                AppSpacing.gapMd,
                 SwitchListTile(
                   value: _showToggle,
                   onChanged: (v) => setState(() => _showToggle = v),
-                  title: Text(context.l10n.showOnOff),
+                  title: Text(l.showOnOff),
                 ),
                 SwitchListTile(
                   value: _showPower,
                   onChanged: (v) => setState(() => _showPower = v),
-                  title: Text(context.l10n.showPower),
+                  title: Text(l.showPower),
                 ),
                 SwitchListTile(
                   value: _showEnergy,
                   onChanged: (v) => setState(() => _showEnergy = v),
-                  title: Text(context.l10n.showEnergy),
+                  title: Text(l.showEnergy),
                 ),
                 SwitchListTile(
                   value: _showRssi,
                   onChanged: (v) => setState(() => _showRssi = v),
-                  title: Text(context.l10n.showRssi),
+                  title: Text(l.showRssi),
                 ),
-
-                const SizedBox(height: 12),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: _save,
-                    icon: const Icon(Icons.save),
-                    label: Text(context.l10n.save),
-                  ),
+                AppSpacing.gapXl,
+                AppButton(
+                  label: l.save,
+                  leading: Icons.save,
+                  onPressed: _save,
+                  fullWidth: true,
                 ),
               ],
             ),

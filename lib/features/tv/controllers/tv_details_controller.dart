@@ -46,6 +46,8 @@ class TvDetailsController extends ChangeNotifier {
   StreamSubscription<TvConnectionState>? _connSub;
   StreamSubscription<String>? _tokenSub;
 
+  bool _disposed = false;
+
   // ---------------------------------------------------------------------------
   // Lifecycle
   // ---------------------------------------------------------------------------
@@ -55,7 +57,7 @@ class TvDetailsController extends ChangeNotifier {
       if (s == TvConnectionState.connected) {
         _lastConnectedAt = DateTime.now();
       }
-      notifyListeners();
+      _notify();
     });
 
     _tokenSub = _client.onTokenReceived.listen((token) async {
@@ -63,7 +65,7 @@ class TvDetailsController extends ChangeNotifier {
       final updated = _device!.copyWith(wsToken: token);
       await _tvRepo.update(updated);
       _device = updated;
-      notifyListeners();
+      _notify();
       await connect();
     });
 
@@ -75,10 +77,16 @@ class TvDetailsController extends ChangeNotifier {
 
   @override
   void dispose() {
+    _disposed = true;
     _connSub?.cancel();
     _tokenSub?.cancel();
     _client.dispose();
     super.dispose();
+  }
+
+  /// Safe notifyListeners — no-op if the controller has already been disposed.
+  void _notify() {
+    if (!_disposed) notifyListeners();
   }
 
   // ---------------------------------------------------------------------------
@@ -87,16 +95,16 @@ class TvDetailsController extends ChangeNotifier {
 
   Future<void> _loadDevice(String deviceId) async {
     _loadingDevice = true;
-    notifyListeners();
+    _notify();
     _device = await _tvRepo.loadById(deviceId);
     _loadingDevice = false;
-    notifyListeners();
+    _notify();
     if (_device != null) await connect();
   }
 
   Future<void> _loadRooms() async {
     _rooms = await _roomRepo.loadAll();
-    notifyListeners();
+    _notify();
   }
 
   // ---------------------------------------------------------------------------
@@ -121,7 +129,7 @@ class TvDetailsController extends ChangeNotifier {
 
   void togglePower(bool value) {
     _isOn = value;
-    notifyListeners();
+    _notify();
     _client.sendKey(value ? TvRemoteCommand.powerOn : TvRemoteCommand.powerOff);
   }
 
@@ -134,7 +142,7 @@ class TvDetailsController extends ChangeNotifier {
     final updated = _device!.copyWith(name: name);
     await _tvRepo.update(updated);
     _device = updated;
-    notifyListeners();
+    _notify();
   }
 
   Future<void> updateIp(String ip) async {
@@ -142,7 +150,7 @@ class TvDetailsController extends ChangeNotifier {
     final updated = _device!.copyWith(ipAddress: ip);
     await _tvRepo.update(updated);
     _device = updated;
-    notifyListeners();
+    _notify();
     await connect();
   }
 
@@ -151,7 +159,7 @@ class TvDetailsController extends ChangeNotifier {
     final updated = _device!.copyWith(isFavorite: !_device!.isFavorite);
     await _tvRepo.update(updated);
     _device = updated;
-    notifyListeners();
+    _notify();
   }
 
   Future<void> updateRoom(String? roomId) async {
@@ -159,7 +167,7 @@ class TvDetailsController extends ChangeNotifier {
     final updated = _device!.copyWith(roomId: roomId);
     await _tvRepo.update(updated);
     _device = updated;
-    notifyListeners();
+    _notify();
   }
 
   Future<void> delete() async {

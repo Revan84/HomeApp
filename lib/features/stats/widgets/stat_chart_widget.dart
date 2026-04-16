@@ -2,6 +2,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_font_sizes.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../domain/chart_type.dart';
 import '../../../domain/entities/history_window.dart';
 import '../../../domain/entities/live_point.dart';
@@ -62,7 +64,7 @@ class _StatChartWidgetState extends State<StatChartWidget> {
         height: 120,
         child: Center(
           child: Text('No data',
-              style: TextStyle(color: AppColors.textSecondary)),
+              style: TextStyle(fontFamily: 'ShareTech', color: AppColors.textSecondary)),
         ),
       );
     }
@@ -79,19 +81,20 @@ class _StatChartWidgetState extends State<StatChartWidget> {
             Text(
               metricType.formatValue(currentValue),
               style: const TextStyle(
-                fontSize: 20,
+                fontFamily: 'ShareTech',
+                fontSize: AppFontSizes.display,
                 fontWeight: FontWeight.w700,
-                color: AppColors.success,
+                color: AppColors.primary,
               ),
             ),
             const Spacer(),
             const Icon(Icons.open_in_full, size: 16, color: AppColors.textSecondary),
           ],
         ),
-        const SizedBox(height: 8),
+        AppSpacing.gapMd,
         // -- Time range tabs --
         _buildRangeChips(),
-        const SizedBox(height: 8),
+        AppSpacing.gapMd,
         // -- Chart --
         SizedBox(
           height: 180,
@@ -111,17 +114,18 @@ class _StatChartWidgetState extends State<StatChartWidget> {
             label: Text(
               r.shortLabel,
               style: TextStyle(
-                fontSize: 10,
+                fontFamily: 'ShareTech',
+                fontSize: AppFontSizes.xs,
                 color: selected ? AppColors.bg : AppColors.textSecondary,
               ),
             ),
             selected: selected,
-            selectedColor: AppColors.success,
+            selectedColor: AppColors.primary,
             backgroundColor: Colors.transparent,
             side: BorderSide(
               color: selected
-                  ? AppColors.success
-                  : AppColors.stroke.withValues(alpha: 0.3),
+                  ? AppColors.primary
+                  : AppColors.border.withValues(alpha: 0.3),
             ),
             onSelected: (_) => _setRange(r),
             visualDensity: VisualDensity.compact,
@@ -200,7 +204,7 @@ class _StatChartWidgetState extends State<StatChartWidget> {
             barRods: [
               BarChartRodData(
                 toY: points[e.value].value,
-                color: AppColors.success,
+                color: AppColors.primary,
                 width: 8,
                 borderRadius:
                     const BorderRadius.vertical(top: Radius.circular(3)),
@@ -232,15 +236,15 @@ class _StatChartWidgetState extends State<StatChartWidget> {
           value: series.min!,
           title: 'Min',
           color: AppColors.danger,
-          titleStyle: const TextStyle(fontSize: 10, color: Colors.white),
+          titleStyle: const TextStyle(fontFamily: 'ShareTech', fontSize: AppFontSizes.xs, color: Colors.white),
           radius: 50,
         ),
       if (series.avg != null)
         PieChartSectionData(
           value: series.avg!,
           title: 'Avg',
-          color: AppColors.success,
-          titleStyle: const TextStyle(fontSize: 10, color: Colors.white),
+          color: AppColors.primary,
+          titleStyle: const TextStyle(fontFamily: 'ShareTech', fontSize: AppFontSizes.xs, color: Colors.white),
           radius: 50,
         ),
       if (series.max != null)
@@ -248,7 +252,7 @@ class _StatChartWidgetState extends State<StatChartWidget> {
           value: series.max!,
           title: 'Max',
           color: const Color(0xFF4FC3F7),
-          titleStyle: const TextStyle(fontSize: 10, color: Colors.white),
+          titleStyle: const TextStyle(fontFamily: 'ShareTech', fontSize: AppFontSizes.xs, color: Colors.white),
           radius: 50,
         ),
     ];

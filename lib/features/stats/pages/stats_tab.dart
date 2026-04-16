@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_font_sizes.dart';
+import '../../../core/theme/app_radius.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../core/i18n/loc.dart';
 
 import '../domain/chart_type.dart';
@@ -170,7 +173,7 @@ class _StatsTabState extends State<StatsTab> {
                 ),
                 FilledButton(
                   style: FilledButton.styleFrom(
-                      backgroundColor: AppColors.success),
+                      backgroundColor: AppColors.primary),
                   onPressed: () => Navigator.of(ctx).pop(true),
                   child: Text(ctx.l10n.add),
                 ),
@@ -220,23 +223,24 @@ class _StatsTabState extends State<StatsTab> {
         // -- Equipment dropdown --
         Text(ctx.l10n.statsDeviceLabel,
             style: const TextStyle(
-                fontSize: 12, color: AppColors.textSecondary)),
-        const SizedBox(height: 6),
+                fontFamily: 'ShareTech', fontSize: 12.0, color: AppColors.textSecondary)),
+        AppSpacing.gapSm,
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12),
           decoration: BoxDecoration(
             color: AppColors.bg,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.xlBR,
             border:
-                Border.all(color: AppColors.stroke.withValues(alpha: 0.4)),
+                Border.all(color: AppColors.border.withValues(alpha: 0.4)),
           ),
           child: DropdownButtonHideUnderline(
             child: DropdownButton<String>(
               value: selectedEquipment.id,
               isExpanded: true,
+              borderRadius: AppRadius.xlBR,
               dropdownColor: AppColors.bg,
               style: const TextStyle(
-                  color: AppColors.textPrimary, fontSize: 13),
+                  fontFamily: 'ShareTech', color: AppColors.textPrimary, fontSize: AppFontSizes.body),
               items: equipments.map((eq) {
                 return DropdownMenuItem(
                   value: eq.id,
@@ -254,13 +258,13 @@ class _StatsTabState extends State<StatsTab> {
           ),
         ),
 
-        const SizedBox(height: 16),
+        AppSpacing.gapX3l,
 
         // -- Metric picker --
         Text(ctx.l10n.statsMetricLabel,
             style: const TextStyle(
-                fontSize: 12, color: AppColors.textSecondary)),
-        const SizedBox(height: 6),
+                fontFamily: 'ShareTech', fontSize: 12.0, color: AppColors.textSecondary)),
+        AppSpacing.gapSm,
         Wrap(
           spacing: 6,
           runSpacing: 6,
@@ -273,12 +277,13 @@ class _StatsTabState extends State<StatsTab> {
                       selected ? AppColors.bg : AppColors.textSecondary),
               label: Text(m.label,
                   style: TextStyle(
-                      fontSize: 11,
+                      fontFamily: 'ShareTech',
+                      fontSize: AppFontSizes.sm,
                       color: selected
                           ? AppColors.bg
                           : AppColors.textSecondary)),
               selected: selected,
-              selectedColor: AppColors.success,
+              selectedColor: AppColors.primary,
               backgroundColor: AppColors.bg,
               onSelected: (_) =>
                   setDialogState(() => onMetricChanged(m)),
@@ -287,13 +292,13 @@ class _StatsTabState extends State<StatsTab> {
           }).toList(),
         ),
 
-        const SizedBox(height: 16),
+        AppSpacing.gapX3l,
 
         // -- Time range picker --
         Text(ctx.l10n.statsTimeRangeLabel,
             style: const TextStyle(
-                fontSize: 12, color: AppColors.textSecondary)),
-        const SizedBox(height: 6),
+                fontFamily: 'ShareTech', fontSize: 12.0, color: AppColors.textSecondary)),
+        AppSpacing.gapSm,
         Wrap(
           spacing: 6,
           children: TimeRange.values.map((r) {
@@ -301,12 +306,13 @@ class _StatsTabState extends State<StatsTab> {
             return ChoiceChip(
               label: Text(r.shortLabel,
                   style: TextStyle(
-                      fontSize: 11,
+                      fontFamily: 'ShareTech',
+                      fontSize: AppFontSizes.sm,
                       color: selected
                           ? AppColors.bg
                           : AppColors.textSecondary)),
               selected: selected,
-              selectedColor: AppColors.success,
+              selectedColor: AppColors.primary,
               backgroundColor: AppColors.bg,
               onSelected: (_) =>
                   setDialogState(() => onRangeChanged(r)),
@@ -317,11 +323,11 @@ class _StatsTabState extends State<StatsTab> {
 
         // -- Chart type (only for chart widgets) --
         if (widgetType == StatWidgetType.chart) ...[
-          const SizedBox(height: 16),
+          AppSpacing.gapX3l,
           Text(ctx.l10n.statsChartTypeLabel,
               style: const TextStyle(
-                  fontSize: 12, color: AppColors.textSecondary)),
-          const SizedBox(height: 6),
+                  fontFamily: 'ShareTech', fontSize: 12.0, color: AppColors.textSecondary)),
+          AppSpacing.gapSm,
           Wrap(
             spacing: 6,
             children: ChartType.values.map((ct) {
@@ -329,12 +335,13 @@ class _StatsTabState extends State<StatsTab> {
               return ChoiceChip(
                 label: Text('${ct.name[0].toUpperCase()}${ct.name.substring(1)}',
                     style: TextStyle(
-                        fontSize: 11,
+                        fontFamily: 'ShareTech',
+                        fontSize: AppFontSizes.sm,
                         color: selected
                             ? AppColors.bg
                             : AppColors.textSecondary)),
                 selected: selected,
-                selectedColor: AppColors.success,
+                selectedColor: AppColors.primary,
                 backgroundColor: AppColors.bg,
                 onSelected: (_) =>
                     setDialogState(() => onChartTypeChanged(ct)),
@@ -372,7 +379,7 @@ class _StatsTabState extends State<StatsTab> {
         Expanded(
           child: controller.isLoading
               ? const Center(
-                  child: CircularProgressIndicator(color: AppColors.success))
+                  child: CircularProgressIndicator(color: AppColors.primary))
               : controller.widgets.isEmpty
                   ? const StatsEmptyState()
                   : _buildGroupedWidgetList(controller),
@@ -437,6 +444,8 @@ class _StatsTabState extends State<StatsTab> {
       case EquipmentType.shellyPlusPlugS:
       case EquipmentType.shellyPlugS:
         return l10n.statsDeviceTypeSmartPlug;
+      case EquipmentType.shellyHT:
+        return 'Thermometer';
       case EquipmentType.other:
         return l10n.statsDeviceTypeGeneric;
     }
@@ -551,7 +560,7 @@ class _StatsTabState extends State<StatsTab> {
                 ),
                 FilledButton(
                   style: FilledButton.styleFrom(
-                      backgroundColor: AppColors.success),
+                      backgroundColor: AppColors.primary),
                   onPressed: () => Navigator.of(ctx).pop(true),
                   child: Text(ctx.l10n.save),
                 ),

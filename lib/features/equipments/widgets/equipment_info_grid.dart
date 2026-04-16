@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_spacing.dart';
 import 'info_row.dart';
 
 /// Grid like the Figma prototype:
@@ -27,6 +28,8 @@ class EquipmentInfoGrid extends StatelessWidget {
   final bool online;
   final String connectionLabel;
 
+  final GlobalKey? typeAnchorKey;
+
   const EquipmentInfoGrid({
     super.key,
     required this.ipLabel,
@@ -43,6 +46,7 @@ class EquipmentInfoGrid extends StatelessWidget {
     required this.modelLabel,
     required this.online,
     required this.connectionLabel,
+    this.typeAnchorKey,
   });
 
   @override
@@ -61,9 +65,10 @@ class EquipmentInfoGrid extends StatelessWidget {
                 onTap: onEditIp,
                 trailing: const InfoRowIcon(icon: Icons.edit_rounded, size: 18),
               ),
-              const SizedBox(height: 12),
+              AppSpacing.gapXl,
 
               InfoRow(
+                key: typeAnchorKey,
                 label: '$typeLabelText : ',
                 value: typeValue,
                 onTap: onSelectType,
@@ -72,7 +77,7 @@ class EquipmentInfoGrid extends StatelessWidget {
                   size: 18,
                 ),
               ),
-              const SizedBox(height: 12),
+              AppSpacing.gapXl,
 
               InfoRow(
                 label: '$favoriteLabel : ',
@@ -92,7 +97,7 @@ class EquipmentInfoGrid extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(width: 16),
+        AppSpacing.gapHX3l,
 
         // RIGHT
         Expanded(
@@ -109,7 +114,7 @@ class EquipmentInfoGrid extends StatelessWidget {
                   color: AppColors.textPrimary,
                 ),
               ),
-              const SizedBox(height: 12),
+              AppSpacing.gapXl,
 
               InfoRow(
                 label: modelLabel,
@@ -121,7 +126,7 @@ class EquipmentInfoGrid extends StatelessWidget {
                   color: AppColors.textPrimary,
                 ),
               ),
-              const SizedBox(height: 12),
+              AppSpacing.gapXl,
 
               InfoRow(
                 label: connectionLabel,

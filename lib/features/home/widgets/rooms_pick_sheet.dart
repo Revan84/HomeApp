@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../core/i18n/loc.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_radius.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../domain/entities/room.dart';
 
 /// The result returned by [RoomsPickSheet].
@@ -34,16 +36,16 @@ class RoomsPickSheet extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const SizedBox(height: 12),
+          AppSpacing.gapXl,
           Container(
             width: 36,
             height: 4,
             decoration: BoxDecoration(
               color: AppColors.textSecondary.withValues(alpha: 0.3),
-              borderRadius: BorderRadius.circular(2),
+              borderRadius: AppRadius.xsBR,
             ),
           ),
-          const SizedBox(height: 16),
+          AppSpacing.gapX3l,
           Text(
             l10n.roomsAddRoomSheetTitle,
             style: textTheme.titleMedium?.copyWith(
@@ -51,22 +53,22 @@ class RoomsPickSheet extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 12),
+          AppSpacing.gapXl,
           ListTile(
             leading: Container(
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: AppColors.success.withValues(alpha: 0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child:
-                  const Icon(Icons.add, color: AppColors.success, size: 20),
+                  const Icon(Icons.add, color: AppColors.primary, size: 20),
             ),
             title: Text(
               l10n.roomsCreateNewRoom,
               style: textTheme.bodyMedium?.copyWith(
-                color: AppColors.success,
+                color: AppColors.primary,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -91,7 +93,7 @@ class RoomsPickSheet extends StatelessWidget {
                         color: AppColors.surface,
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: AppColors.stroke.withValues(alpha: 0.35),
+                          color: AppColors.border.withValues(alpha: 0.35),
                         ),
                       ),
                       child: Icon(
@@ -126,7 +128,7 @@ class RoomsPickSheet extends StatelessWidget {
               ),
             ),
           ],
-          const SizedBox(height: 8),
+          AppSpacing.gapMd,
         ],
       ),
     );

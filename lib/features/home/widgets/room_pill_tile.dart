@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../../core/i18n/loc.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_radius.dart';
+import '../../../core/theme/app_shadows.dart';
+import '../../../core/theme/app_spacing.dart';
 
 /// Pill-shaped row representing a single room with a remove action.
 class RoomPillTile extends StatelessWidget {
@@ -30,7 +33,7 @@ class RoomPillTile extends StatelessWidget {
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              borderRadius: BorderRadius.circular(999),
+              borderRadius: AppRadius.pillBR,
               onTap: onTap,
               onLongPress: onLongPress,
               child: Ink(
@@ -38,17 +41,11 @@ class RoomPillTile extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 decoration: BoxDecoration(
                   color: AppColors.surface,
-                  borderRadius: BorderRadius.circular(999),
+                  borderRadius: AppRadius.pillBR,
                   border: Border.all(
-                    color: AppColors.stroke.withValues(alpha: 0.35),
+                    color: AppColors.border.withValues(alpha: 0.35),
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.22),
-                      blurRadius: 14,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
+                  boxShadow: AppShadows.moderate,
                 ),
                 child: Row(
                   children: [
@@ -63,7 +60,7 @@ class RoomPillTile extends StatelessWidget {
                             ),
                       ),
                     ),
-                    const SizedBox(width: 10),
+                    AppSpacing.gapHLg,
                     Text(
                       context.l10n.roomsEquipmentCount(equipmentCount),
                       style:
@@ -77,7 +74,7 @@ class RoomPillTile extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: 8),
+        AppSpacing.gapHMd,
         IconButton(
           tooltip: removeTooltip,
           onPressed: onRemove,

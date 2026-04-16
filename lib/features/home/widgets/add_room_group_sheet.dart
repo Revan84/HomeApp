@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/design_system/buttons/app_button.dart';
+import '../../../core/design_system/inputs/app_text_field.dart';
+import '../../../core/design_system/layout/app_sheet_header.dart';
 import '../../../core/i18n/loc.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../controllers/home_controller.dart';
 
-/// Bottom sheet used to create a new room group.
-///
-/// Examples:
-/// - House
-/// - Apartment
-/// - Office
+/// Bottom sheet for creating a new room group (House, Apartment, Office…).
 class AddRoomGroupSheet extends StatefulWidget {
   const AddRoomGroupSheet({super.key});
 
@@ -33,91 +32,55 @@ class _AddRoomGroupSheetState extends State<AddRoomGroupSheet> {
     if (_saving) return;
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() {
-      _saving = true;
-    });
+    setState(() => _saving = true);
 
-    final controller = context.read<HomeController>();
-
-    await controller.addRoomGroup(_nameController.text.trim());
+    await context.read<HomeController>().addRoomGroup(_nameController.text.trim());
 
     if (!mounted) return;
-
     Navigator.of(context).pop(true);
   }
 
   @override
   Widget build(BuildContext context) {
+    final l = context.l10n;
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
     return Padding(
       padding: EdgeInsets.only(bottom: bottomInset),
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+          padding: AppSpacing.sheetPadding,
           child: Form(
             key: _formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        context.l10n.roomsAddGroupTitle,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () => Navigator.pop(context, false),
-                      icon: const Icon(Icons.close),
-                      tooltip: context.l10n.close,
-                    ),
-                  ],
+                AppSheetHeader(
+                  title: l.roomsAddGroupTitle,
+                  onClose: () => Navigator.pop(context, false),
                 ),
-                const SizedBox(height: 8),
-
-                /// Group name field.
-                TextFormField(
+                AppSpacing.gapMd,
+                AppTextField(
                   controller: _nameController,
+                  label: l.roomsGroupNameFieldLabel,
+                  hint: l.roomsGroupNameHint,
                   autofocus: true,
                   textInputAction: TextInputAction.done,
-                  decoration: InputDecoration(
-                    labelText: context.l10n.roomsGroupNameFieldLabel,
-                    hintText: context.l10n.roomsGroupNameHint,
-                  ),
+                  onSubmitted: (_) => _save(),
                   validator: (value) {
                     final trimmed = value?.trim() ?? '';
-                    if (trimmed.isEmpty) {
-                      return context.l10n.validationRoomGroupNameRequired;
-                    }
-                    return null;
+                    return trimmed.isEmpty
+                        ? l.validationRoomGroupNameRequired
+                        : null;
                   },
-                  onFieldSubmitted: (_) => _save(),
                 ),
-
-                const SizedBox(height: 12),
-
-                /// Primary creation action.
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: _saving ? null : _save,
-                    icon: _saving
-                        ? const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                            ),
-                          )
-                        : const Icon(Icons.save),
-                    label: Text(context.l10n.save),
-                  ),
+                AppSpacing.gapXl,
+                AppButton(
+                  label: l.save,
+                  leading: Icons.save,
+                  onPressed: _saving ? null : _save,
+                  fullWidth: true,
                 ),
               ],
             ),

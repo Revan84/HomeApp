@@ -1,8 +1,13 @@
+import 'dart:math' show cos, sin;
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'core/widgets/curved_bottom_bar.dart';
 import 'core/theme/app_colors.dart';
+import 'core/theme/app_radius.dart';
+import 'core/theme/app_spacing.dart';
+import 'core/theme/app_font_sizes.dart';
 import 'core/i18n/loc.dart';
 
 import 'features/stats/domain/stat_widget.dart';
@@ -19,8 +24,8 @@ import 'features/wled/widgets/add_wled_sheet.dart';
 import 'features/home/widgets/add_room_sheet.dart';
 import 'features/home/widgets/add_room_group_sheet.dart';
 import 'features/home/widgets/home_summary_header.dart';
+import 'features/equipments/controllers/equipments_controller.dart';
 import 'features/live/controllers/live_polling_controller.dart';
-import 'features/shell/widgets/room_group_picker_sheet.dart';
 import 'features/shell/widgets/device_type_picker_sheet.dart';
 
 enum _FabAction {
@@ -63,6 +68,7 @@ class _AppShellState extends State<AppShell> {
   final ValueNotifier<String?> _selectedGroupId = ValueNotifier<String?>(null);
 
   final GlobalKey _fabKey = GlobalKey();
+  final GlobalKey _areaGroupKey = GlobalKey();
 
   late final List<Widget> _tabs = <Widget>[
     HomeTab(
@@ -119,10 +125,41 @@ class _AppShellState extends State<AppShell> {
     final shell = context.read<ShellController>();
     if (shell.roomGroups.isEmpty) return;
 
-    final nextGroupId = await showModalBottomSheet<String>(
+    final overlay = Overlay.of(context).context.findRenderObject() as RenderBox?;
+    final keyCtx = _areaGroupKey.currentContext;
+    if (keyCtx == null || overlay == null) return;
+    final box = keyCtx.findRenderObject() as RenderBox?;
+    if (box == null) return;
+    final pos = box.localToGlobal(Offset.zero);
+    final size = box.size;
+    final position = RelativeRect.fromRect(
+      Rect.fromLTWH(pos.dx, pos.dy, size.width, size.height),
+      Offset.zero & overlay.size,
+    );
+
+    final nextGroupId = await showMenu<String>(
       context: context,
-      useSafeArea: true,
-      builder: (_) => const RoomGroupPickerSheet(),
+      position: position,
+      color: AppColors.surface,
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.xlBR),
+      items: shell.roomGroups
+          .map((g) => PopupMenuItem<String>(
+                value: g.id,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (g.id == shell.selectedGroupId)
+                      const Icon(Icons.check_rounded, color: AppColors.primary, size: 18)
+                    else
+                      const SizedBox(width: 18),
+                    AppSpacing.gapHMd,
+                    Text(g.name,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: AppColors.textPrimary)),
+                  ],
+                ),
+              ))
+          .toList(),
     );
 
     if (nextGroupId == null || nextGroupId == shell.selectedGroupId) return;
@@ -174,18 +211,18 @@ class _AppShellState extends State<AppShell> {
       context: context,
       position: position,
       color: AppColors.surface,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.xlBR),
       items: options
           .map((o) => PopupMenuItem<_FabAction>(
                 value: o.action,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(o.icon, color: AppColors.textPrimary, size: 20),
-                    const SizedBox(width: 10),
+                    Icon(o.icon, color: AppColors.textPrimary, size: AppFontSizes.display),
+                    AppSpacing.gapHLg,
                     Text(o.label,
-                        style: const TextStyle(
-                            color: AppColors.textPrimary, fontSize: 13)),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: AppColors.textPrimary)),
                   ],
                 ),
               ))
@@ -325,8 +362,18 @@ class _AppShellState extends State<AppShell> {
   Widget build(BuildContext context) {
     final shell = context.watch<ShellController>();
     final liveController = context.watch<LivePollingController>();
-    final onlineCount = liveController.onlineCount;
-    final offlineCount = liveController.offlineCount;
+    final equipCtl = context.watch<EquipmentsController>();
+
+    // Count only devices that belong to the currently selected group.
+    final groupId = shell.selectedGroupId;
+    final groupDeviceIds = equipCtl
+        .equipmentsForGroup(groupId)
+        .map((e) => e.id)
+        .toSet();
+    final groupLive = liveController.live.entries
+        .where((entry) => groupDeviceIds.contains(entry.key));
+    final onlineCount = groupLive.where((e) => e.value.online == true).length;
+    final offlineCount = groupLive.where((e) => e.value.online == false).length;
 
     return Scaffold(
       extendBody: true,
@@ -334,13 +381,9 @@ class _AppShellState extends State<AppShell> {
           ? null
           : Padding(
               padding: const EdgeInsets.only(bottom: 48),
-              child: FloatingActionButton(
+              child: _DottedFab(
                 key: _fabKey,
-                backgroundColor: AppColors.bg,
-                foregroundColor: AppColors.success,
-                elevation: 0,
                 onPressed: _onFabPressed,
-                child: const Icon(Icons.add),
               ),
             ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
@@ -351,6 +394,7 @@ class _AppShellState extends State<AppShell> {
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
               child: HomeSummaryHeader(
+                areaGroupKey: _areaGroupKey,
                 areaGroupLabel: shell.activeRoomGroupLabel(
                   context.l10n.homeNoActiveRoomGroup,
                 ),
@@ -393,4 +437,72 @@ class _AppShellState extends State<AppShell> {
       ),
     );
   }
+}
+
+// ---------------------------------------------------------------------------
+// Dotted-border FAB
+// ---------------------------------------------------------------------------
+
+class _DottedFab extends StatelessWidget {
+  const _DottedFab({super.key, required this.onPressed});
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    const double size = 64;
+    return GestureDetector(
+      onTap: onPressed,
+      child: SizedBox.square(
+        dimension: size,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: AppColors.bg.withValues(alpha: 0.98),
+            shape: BoxShape.circle,
+          ),
+          child: CustomPaint(
+            painter: _DottedCirclePainter(
+              color: AppColors.primary,
+              dotRadius: 1.0,
+              dotCount: 52,
+            ),
+            child: const Center(
+              child: Icon(Icons.add, color: AppColors.primary, size: 28),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DottedCirclePainter extends CustomPainter {
+  const _DottedCirclePainter({
+    required this.color,
+    this.dotRadius = 2.0,
+    this.dotCount = 36,
+  });
+
+  final Color color;
+  final double dotRadius;
+  final int dotCount;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()..color = color;
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width / 2 - dotRadius;
+    const twoPi = 2 * 3.141592653589793;
+
+    for (int i = 0; i < dotCount; i++) {
+      final angle = twoPi * i / dotCount;
+      final dx = center.dx + radius * cos(angle);
+      final dy = center.dy + radius * sin(angle);
+      canvas.drawCircle(Offset(dx, dy), dotRadius, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(_DottedCirclePainter old) =>
+      old.color != color || old.dotRadius != dotRadius || old.dotCount != dotCount;
 }

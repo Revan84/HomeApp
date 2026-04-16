@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_font_sizes.dart';
+import '../../../core/theme/app_radius.dart';
+import '../../../core/theme/app_spacing.dart';
 
 /// Top bar on the WLED detail page showing the current color swatch, hex value,
 /// on/off status, and a power toggle button.
@@ -35,7 +38,7 @@ class WledPowerBar extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.x2lBR,
         border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
       ),
       child: Row(
@@ -56,12 +59,12 @@ class WledPowerBar extends StatelessWidget {
               height: 40,
               decoration: BoxDecoration(
                 color: color,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: AppRadius.lgBR,
                 border: Border.all(color: Colors.white24),
               ),
             ),
           ),
-          const SizedBox(width: 14),
+          AppSpacing.gapHX2l,
           // Hex label + on/off status
           Expanded(
             child: Column(
@@ -71,16 +74,17 @@ class WledPowerBar extends StatelessWidget {
                   hex,
                   style: const TextStyle(
                     fontFamily: 'monospace',
-                    fontSize: 15,
+                    fontSize: AppFontSizes.lg,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textPrimary,
                   ),
                 ),
-                const SizedBox(height: 2),
+                AppSpacing.gapXxs,
                 Text(
                   isOn ? 'ON' : 'OFF',
                   style: TextStyle(
-                    fontSize: 12,
+                    fontFamily: 'ShareTech',
+                    fontSize: 12.0,
                     color:
                         isOn ? AppColors.success : AppColors.textSecondary,
                     fontWeight: FontWeight.w600,

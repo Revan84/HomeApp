@@ -12,6 +12,11 @@ class LiveState {
   final int failCount;
   final bool toggling;
 
+  // Thermometer / environmental sensors
+  final double? temperatureC;
+  final double? humidity;
+  final int trendTemperature; // -1 falling, 0 stable, +1 rising
+
   const LiveState({
     required this.online,
     required this.nextPollAt,
@@ -23,6 +28,9 @@ class LiveState {
     this.rssi,
     this.trendPower = 0,
     this.lastUpdatedAt,
+    this.temperatureC,
+    this.humidity,
+    this.trendTemperature = 0,
   });
 
   Duration get backoff {
@@ -42,6 +50,9 @@ class LiveState {
     DateTime? nextPollAt,
     int? failCount,
     bool? toggling,
+    double? temperatureC,
+    double? humidity,
+    int? trendTemperature,
   }) {
     return LiveState(
       online: online ?? this.online,
@@ -54,6 +65,9 @@ class LiveState {
       nextPollAt: nextPollAt ?? this.nextPollAt,
       failCount: failCount ?? this.failCount,
       toggling: toggling ?? this.toggling,
+      temperatureC: temperatureC ?? this.temperatureC,
+      humidity: humidity ?? this.humidity,
+      trendTemperature: trendTemperature ?? this.trendTemperature,
     );
   }
 }

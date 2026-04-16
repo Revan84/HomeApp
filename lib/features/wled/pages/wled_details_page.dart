@@ -3,11 +3,14 @@ import 'package:provider/provider.dart';
 
 import '../../../core/i18n/loc.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_font_sizes.dart';
+import '../../../core/theme/app_radius.dart';
+import '../../../core/theme/app_spacing.dart';
 
 import '../../../domain/repositories/room_repository.dart';
 import '../../../domain/repositories/wled_repository.dart';
 
-import '../../equipments/dialogs/equipment_edit_dialogs.dart';
+import '../../equipments/widgets/prototype_card.dart';
 import '../../equipments/widgets/room_toggle_row.dart';
 import '../controllers/wled_details_controller.dart';
 import '../domain/rgb_color.dart';
@@ -36,8 +39,12 @@ class WledDetailsPage extends StatefulWidget {
   State<WledDetailsPage> createState() => _WledDetailsPageState();
 }
 
+const _kNoRoom = '__none__';
+
 class _WledDetailsPageState extends State<WledDetailsPage> {
   late final WledDetailsController _controller;
+
+  final GlobalKey _roomKey = GlobalKey();
 
   @override
   void initState() {
@@ -69,13 +76,67 @@ class _WledDetailsPageState extends State<WledDetailsPage> {
   Future<void> _selectRoom() async {
     final device = _controller.device;
     if (device == null) return;
-    final nextRoomId = await EquipmentEditDialogs.pickRoom(
-      context,
-      currentRoomId: device.roomId,
-      rooms: _controller.rooms,
-      noneLabel: context.l10n.none,
+
+    final overlay = Overlay.of(context).context.findRenderObject() as RenderBox?;
+    final keyCtx = _roomKey.currentContext;
+    if (keyCtx == null || overlay == null) return;
+    final box = keyCtx.findRenderObject() as RenderBox?;
+    if (box == null) return;
+    final pos = box.localToGlobal(Offset.zero);
+    final position = RelativeRect.fromRect(
+      Rect.fromLTWH(pos.dx, pos.dy, box.size.width, box.size.height),
+      Offset.zero & overlay.size,
     );
-    await _controller.updateRoom(nextRoomId);
+
+    final selected = await showMenu<String>(
+      context: context,
+      position: position,
+      color: AppColors.surface,
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.xlBR),
+      items: [
+        PopupMenuItem<String>(
+          value: _kNoRoom,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (device.roomId == null)
+                const Icon(Icons.check_rounded, color: AppColors.primary, size: 18)
+              else
+                const SizedBox(width: 18),
+              AppSpacing.gapHMd,
+              Text(
+                context.l10n.none,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ],
+          ),
+        ),
+        ..._controller.rooms.map((room) => PopupMenuItem<String>(
+          value: room.id,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (room.id == device.roomId)
+                const Icon(Icons.check_rounded, color: AppColors.primary, size: 18)
+              else
+                const SizedBox(width: 18),
+              AppSpacing.gapHMd,
+              Text(
+                room.name,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ],
+          ),
+        )),
+      ],
+    );
+
+    if (selected == null) return;
+    await _controller.updateRoom(selected == _kNoRoom ? null : selected);
   }
 
   Future<void> _delete() async {
@@ -134,7 +195,7 @@ class _WledDetailsPageState extends State<WledDetailsPage> {
         elevation: 0,
         title: Text(
           device.name,
-          style: const TextStyle(fontWeight: FontWeight.w600),
+          style: const TextStyle(fontFamily: 'ShareTech', fontWeight: FontWeight.w600),
         ),
         actions: [
           if (_controller.isPolling)
@@ -163,87 +224,96 @@ class _WledDetailsPageState extends State<WledDetailsPage> {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
         children: [
-          WledPowerBar(
-            isOn: wledState.isOn,
-            color: color,
-            onToggle: _controller.togglePower,
-          ),
+          PrototypeCard(
+            accentColor: AppColors.wledAccent,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                WledPowerBar(
+                  isOn: wledState.isOn,
+                  color: color,
+                  onToggle: _controller.togglePower,
+                ),
 
-          const SizedBox(height: 20),
+                AppSpacing.gapX5l,
 
-          if (_controller.presets.isNotEmpty) ...[
-            _SectionLabel(l.wledScenesLabel),
-            const SizedBox(height: 8),
-            WledScenesBar(
-              presets: _controller.presets,
-              selectedId: wledState.presetId,
-              onSelected: _controller.loadPreset,
+                if (_controller.presets.isNotEmpty) ...[
+                  _SectionLabel(l.wledScenesLabel),
+                  AppSpacing.gapMd,
+                  WledScenesBar(
+                    presets: _controller.presets,
+                    selectedId: wledState.presetId,
+                    onSelected: _controller.loadPreset,
+                  ),
+                  AppSpacing.gapX5l,
+                ],
+
+                _SectionLabel(l.wledColorsTab),
+                AppSpacing.gapXl,
+                SizedBox(
+                  height: 220,
+                  child: WledColorWheel(
+                    color: color,
+                    onColorChanged: (c) => _controller.setColor(_flutterColorToRgb(c)),
+                  ),
+                ),
+
+                AppSpacing.gapX5l,
+
+                WledSliderRow(
+                  label: l.wledBrightnessLabel,
+                  value: wledState.brightness / 255.0,
+                  onChanged: _controller.setBrightness,
+                  activeColor: color,
+                ),
+
+                AppSpacing.gapMd,
+
+                _SectionLabel(l.wledEffectsTab),
+                AppSpacing.gapMd,
+
+                WledSliderRow(
+                  label: l.wledSpeedLabel,
+                  value: wledState.effectSpeed / 255.0,
+                  onChanged: _controller.setEffectSpeed,
+                  activeColor: AppColors.textPrimary,
+                ),
+                AppSpacing.gapMd,
+                WledSliderRow(
+                  label: l.wledIntensityLabel,
+                  value: wledState.effectIntensity / 255.0,
+                  onChanged: _controller.setEffectIntensity,
+                  activeColor: AppColors.textPrimary,
+                ),
+
+                AppSpacing.gapXl,
+
+                if (_controller.effects.isNotEmpty)
+                  SizedBox(
+                    height: 200,
+                    child: WledEffectsList(
+                      effects: _controller.effects,
+                      selectedId: wledState.effectId,
+                      onSelected: _controller.setEffect,
+                    ),
+                  ),
+
+                AppSpacing.gapX6l,
+
+                RoomToggleRow(
+                  anchorKey: _roomKey,
+                  roomName: _controller.roomName(context.l10n.none),
+                  onSelectRoom: _selectRoom,
+                  isOn: wledState.isOn,
+                  onTap: _controller.togglePower,
+                ),
+
+                AppSpacing.gapX3l,
+
+                WledInfoGrid(device: device, isOnline: !_controller.isPolling),
+              ],
             ),
-            const SizedBox(height: 20),
-          ],
-
-          _SectionLabel(l.wledColorsTab),
-          const SizedBox(height: 12),
-          SizedBox(
-            height: 220,
-            child: WledColorWheel(
-              color: color,
-              onColorChanged: (c) => _controller.setColor(_flutterColorToRgb(c)),
-            ),
           ),
-
-          const SizedBox(height: 20),
-
-          WledSliderRow(
-            label: l.wledBrightnessLabel,
-            value: wledState.brightness / 255.0,
-            onChanged: _controller.setBrightness,
-            activeColor: color,
-          ),
-
-          const SizedBox(height: 8),
-
-          _SectionLabel(l.wledEffectsTab),
-          const SizedBox(height: 8),
-
-          WledSliderRow(
-            label: l.wledSpeedLabel,
-            value: wledState.effectSpeed / 255.0,
-            onChanged: _controller.setEffectSpeed,
-            activeColor: AppColors.textPrimary,
-          ),
-          const SizedBox(height: 8),
-          WledSliderRow(
-            label: l.wledIntensityLabel,
-            value: wledState.effectIntensity / 255.0,
-            onChanged: _controller.setEffectIntensity,
-            activeColor: AppColors.textPrimary,
-          ),
-
-          const SizedBox(height: 12),
-
-          if (_controller.effects.isNotEmpty)
-            SizedBox(
-              height: 200,
-              child: WledEffectsList(
-                effects: _controller.effects,
-                selectedId: wledState.effectId,
-                onSelected: _controller.setEffect,
-              ),
-            ),
-
-          const SizedBox(height: 24),
-
-          RoomToggleRow(
-            roomName: _controller.roomName(context.l10n.none),
-            onSelectRoom: _selectRoom,
-            value: wledState.isOn,
-            onChanged: (_) => _controller.togglePower(),
-          ),
-
-          const SizedBox(height: 16),
-
-          WledInfoGrid(device: device, isOnline: !_controller.isPolling),
         ],
       ),
     );
@@ -263,7 +333,8 @@ class _SectionLabel extends StatelessWidget {
     return Text(
       text.toUpperCase(),
       style: const TextStyle(
-        fontSize: 11,
+        fontFamily: 'ShareTech',
+        fontSize: AppFontSizes.sm,
         fontWeight: FontWeight.w600,
         letterSpacing: 1.4,
         color: AppColors.textSecondary,

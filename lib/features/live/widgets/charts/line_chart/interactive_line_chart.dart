@@ -7,6 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../../core/theme/app_colors.dart';
+import '../../../../../../core/theme/app_font_sizes.dart';
+import '../../../../../../core/theme/app_radius.dart';
 import '../../../../../../domain/entities/history_window.dart';
 import '../../../../../../domain/entities/live_point.dart';
 
@@ -346,7 +348,7 @@ class _InteractiveChartPainter extends CustomPainter {
         _extractPathFraction(linePath, revealT.clamp(0.0, 1.0));
 
     final linePaint = Paint()
-      ..color = AppColors.success
+      ..color = AppColors.primary
       ..strokeWidth = 2.5
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
@@ -472,7 +474,8 @@ class _InteractiveChartPainter extends CustomPainter {
     final chartRect = _ChartLayout.chartRect(size);
 
     final textStyle = TextStyle(
-      fontSize: 7,
+      fontFamily: 'ShareTech',
+      fontSize: 7.0,
       fontWeight: FontWeight.w700,
       color: Colors.white.withValues(alpha: 0.38),
     );
@@ -507,7 +510,8 @@ class _InteractiveChartPainter extends CustomPainter {
     final start = _windowStart(now);
 
     final textStyle = TextStyle(
-      fontSize: 7,
+      fontFamily: 'ShareTech',
+      fontSize: 7.0,
       fontWeight: FontWeight.w700,
       color: Colors.white.withValues(alpha: 0.38),
     );
@@ -581,7 +585,7 @@ class _InteractiveChartPainter extends CustomPainter {
 
   void _drawEmptyLine(Canvas canvas, Rect chartRect) {
     final emptyLinePaint = Paint()
-      ..color = AppColors.success.withValues(alpha: 0.85)
+      ..color = AppColors.primary.withValues(alpha: 0.85)
       ..strokeWidth = 3.6
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
@@ -609,12 +613,12 @@ class _InteractiveChartPainter extends CustomPainter {
 
   void _drawDot(Canvas canvas, Offset point) {
     final outerPaint = Paint()
-      ..color = AppColors.success
+      ..color = AppColors.primary
       ..style = PaintingStyle.fill
       ..isAntiAlias = true;
 
     final innerPaint = Paint()
-      ..color = AppColors.success
+      ..color = AppColors.primary
       ..style = PaintingStyle.fill
       ..isAntiAlias = true;
 
@@ -628,13 +632,15 @@ class _InteractiveChartPainter extends CustomPainter {
     final timeLabel = formatTooltipTime(point.at);
 
     const valueStyle = TextStyle(
-      fontSize: 11,
+      fontFamily: 'ShareTech',
+      fontSize: AppFontSizes.sm,
       fontWeight: FontWeight.w800,
       color: Colors.white,
     );
 
     final subStyle = TextStyle(
-      fontSize: 10,
+      fontFamily: 'ShareTech',
+      fontSize: AppFontSizes.xs,
       fontWeight: FontWeight.w600,
       color: Colors.white.withValues(alpha: 0.70),
     );
@@ -657,7 +663,7 @@ class _InteractiveChartPainter extends CustomPainter {
 
     final tooltipRect = RRect.fromRectAndRadius(
       Rect.fromLTWH(10, 8, tooltipWidth, tooltipHeight),
-      const Radius.circular(12),
+      const Radius.circular(AppRadius.xl),
     );
 
     final tooltipPaint = Paint()

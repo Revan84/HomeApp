@@ -3,6 +3,8 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_radius.dart';
+import '../../../core/theme/app_spacing.dart';
 
 /// Circular HSV color-picker wheel with a vertical brightness bar.
 /// Mirrors the SmartThings / WLED app color-picker style.
@@ -76,7 +78,7 @@ class _WledColorWheelState extends State<WledColorWheel> {
                 ),
               ),
             ),
-            const SizedBox(width: 12),
+            AppSpacing.gapHXl,
             // Vertical brightness bar
             Expanded(
               child: _BrightnessBar(
@@ -200,7 +202,7 @@ class _BrightnessBar extends StatelessWidget {
                   width: 14,
                   margin: const EdgeInsets.symmetric(horizontal: 5),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(7),
+                    borderRadius: AppRadius.mdBR,
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
@@ -251,7 +253,7 @@ class WledSlider extends StatelessWidget {
     super.key,
     required this.value,
     required this.onChanged,
-    this.trackColor = AppColors.stroke,
+    this.trackColor = AppColors.border,
     this.thumbColor = AppColors.textPrimary,
   });
 
@@ -260,7 +262,7 @@ class WledSlider extends StatelessWidget {
     return SliderTheme(
       data: SliderTheme.of(context).copyWith(
         activeTrackColor: thumbColor.withValues(alpha: 0.9),
-        inactiveTrackColor: AppColors.stroke,
+        inactiveTrackColor: AppColors.border,
         thumbColor: thumbColor,
         thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 9),
         trackHeight: 4,

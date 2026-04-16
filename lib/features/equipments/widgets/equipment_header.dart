@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../core/i18n/loc.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_font_sizes.dart';
 import '../../../core/widgets/trend_chip.dart';
 
 /// Header block:
@@ -49,7 +51,7 @@ class EquipmentHeader extends StatelessWidget {
                     size: 22,
                     color: AppColors.textPrimary,
                   ),
-                  const SizedBox(width: 8),
+                  AppSpacing.gapHMd,
                   Text(
                     powerText,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
@@ -57,7 +59,7 @@ class EquipmentHeader extends StatelessWidget {
                       color: AppColors.success,
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  AppSpacing.gapHMd,
                   TrendChip(trend: trend, label: updatedLabel),
                   const Spacer(),
                   IconButton(
@@ -67,11 +69,11 @@ class EquipmentHeader extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 6),
+              AppSpacing.gapSm,
               // Name row with edit icon aligned next to name
               Row(
                 children: [
-                  SizedBox(width: 6),
+                  AppSpacing.gapHSm,
                   Text(
                     name,
                     maxLines: 1,
@@ -79,10 +81,10 @@ class EquipmentHeader extends StatelessWidget {
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: AppColors.textPrimary,
                       fontWeight: FontWeight.w600,
-                      fontSize: 18
+                      fontSize: AppFontSizes.heading
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  AppSpacing.gapHMd,
                   _ActionIcon(
                     icon: Icons.edit_rounded,
                     tooltip: context.l10n.detailsEditNameTooltip,

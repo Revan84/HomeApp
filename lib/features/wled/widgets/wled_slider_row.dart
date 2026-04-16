@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_font_sizes.dart';
 
 /// A labeled slider row with a percentage display on the right.
 class WledSliderRow extends StatelessWidget {
@@ -26,7 +27,8 @@ class WledSliderRow extends StatelessWidget {
           child: Text(
             label,
             style: const TextStyle(
-              fontSize: 12,
+              fontFamily: 'ShareTech',
+              fontSize: 12.0,
               color: AppColors.textSecondary,
             ),
           ),
@@ -35,7 +37,7 @@ class WledSliderRow extends StatelessWidget {
           child: SliderTheme(
             data: SliderTheme.of(context).copyWith(
               activeTrackColor: activeColor.withValues(alpha: 0.85),
-              inactiveTrackColor: AppColors.stroke,
+              inactiveTrackColor: AppColors.border,
               thumbColor: activeColor,
               thumbShape:
                   const RoundSliderThumbShape(enabledThumbRadius: 8),
@@ -56,7 +58,8 @@ class WledSliderRow extends StatelessWidget {
             '${(value * 100).round()}%',
             textAlign: TextAlign.right,
             style: const TextStyle(
-              fontSize: 11,
+              fontFamily: 'ShareTech',
+              fontSize: AppFontSizes.sm,
               color: AppColors.textSecondary,
             ),
           ),

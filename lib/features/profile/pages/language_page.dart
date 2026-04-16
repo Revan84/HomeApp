@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/design_system/cards/app_card.dart';
 import '../../../core/i18n/loc.dart';
 import '../../../core/i18n/locale_controller.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_spacing.dart';
 
 enum AppLang { fr, en }
 
@@ -30,38 +31,28 @@ class LanguagePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text(context.l10n.profileLanguage)),
       body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Container(
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            border: Border.all(
-              width: 1,
-              color: AppColors.stroke.withValues(alpha: 0.75),
-            ),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: RadioGroup<AppLang>(
-              groupValue: selected,
-              onChanged: (v) {
-                if (v == null) return;
-                context.read<LocaleController>().setLocale(v.locale);
-              },
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  RadioListTile<AppLang>(
-                    value: AppLang.fr,
-                    title: Text(context.l10n.languageFrench),
-                  ),
-                  const Divider(height: 1),
-                  RadioListTile<AppLang>(
-                    value: AppLang.en,
-                    title: Text(context.l10n.languageEnglish),
-                  ),
-                ],
-              ),
+        padding: const EdgeInsets.all(AppSpacing.x3l),
+        child: AppCard(
+          padding: AppSpacing.cardPaddingCompact,
+          child: RadioGroup<AppLang>(
+            groupValue: selected,
+            onChanged: (v) {
+              if (v == null) return;
+              context.read<LocaleController>().setLocale(v.locale);
+            },
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                RadioListTile<AppLang>(
+                  value: AppLang.fr,
+                  title: Text(context.l10n.languageFrench),
+                ),
+                const Divider(height: 1),
+                RadioListTile<AppLang>(
+                  value: AppLang.en,
+                  title: Text(context.l10n.languageEnglish),
+                ),
+              ],
             ),
           ),
         ),

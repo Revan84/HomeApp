@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_radius.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../integrations/wled/data/wled_api_client.dart';
 
 /// Horizontally scrollable chip bar for selecting a WLED preset/scene.
@@ -23,7 +25,7 @@ class WledScenesBar extends StatelessWidget {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: presets.length,
-        separatorBuilder: (_, _) => const SizedBox(width: 8),
+        separatorBuilder: (_, _) => AppSpacing.gapHMd,
         itemBuilder: (_, i) {
           final p = presets[i];
           final selected = p.id == selectedId;
@@ -32,30 +34,31 @@ class WledScenesBar extends StatelessWidget {
             onTap: () => onSelected(p.id),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 180),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.x3l,
+                vertical: AppSpacing.md,
+              ),
               decoration: BoxDecoration(
                 color: selected
-                    ? AppColors.success.withValues(alpha: 0.2)
+                    ? AppColors.primary.withValues(alpha: 0.2)
                     : AppColors.surface,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: AppRadius.x4lBR,
                 border: Border.all(
                   color: selected
-                      ? AppColors.success
-                      : Colors.white.withValues(alpha: 0.1),
+                      ? AppColors.primary
+                      : AppColors.border.withValues(alpha: 0.4),
                   width: selected ? 1.5 : 1,
                 ),
               ),
               child: Text(
                 p.name,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight:
-                      selected ? FontWeight.w600 : FontWeight.w400,
-                  color: selected
-                      ? AppColors.success
-                      : AppColors.textSecondary,
-                ),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      fontWeight:
+                          selected ? FontWeight.w600 : FontWeight.w400,
+                      color: selected
+                          ? AppColors.primary
+                          : AppColors.textSecondary,
+                    ),
               ),
             ),
           );

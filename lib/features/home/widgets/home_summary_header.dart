@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/i18n/loc.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_radius.dart';
+import '../../../../core/theme/app_spacing.dart';
 
 /// Home summary header shown at the top of the Home tab.
 ///
 /// The active room group is displayed under the welcome title and can be tapped
 /// to switch the current group context.
 class HomeSummaryHeader extends StatelessWidget {
+  final Key? areaGroupKey;
   final String areaGroupLabel;
   final int onlineCount;
   final int offlineCount;
@@ -15,6 +18,7 @@ class HomeSummaryHeader extends StatelessWidget {
 
   const HomeSummaryHeader({
     super.key,
+    this.areaGroupKey,
     required this.areaGroupLabel,
     required this.onlineCount,
     required this.offlineCount,
@@ -45,25 +49,26 @@ class HomeSummaryHeader extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(width: 8),
+            AppSpacing.gapHMd,
             Container(
               width: 9,
               height: 9,
               decoration: const BoxDecoration(
-                color: AppColors.success,
+                color: AppColors.primary,
                 shape: BoxShape.circle,
               ),
             ),
           ],
         ),
-        const SizedBox(height: 6),
+        AppSpacing.gapSm,
         Row(
           children: [
             Material(
+              key: areaGroupKey,
               color: Colors.transparent,
               child: InkWell(
                 onTap: onTapAreaGroup,
-                borderRadius: BorderRadius.circular(999),
+                borderRadius: AppRadius.pillBR,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 4,
@@ -78,7 +83,7 @@ class HomeSummaryHeader extends StatelessWidget {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      const SizedBox(width: 4),
+                      AppSpacing.gapHXs,
                       Icon(
                         Icons.keyboard_arrow_down_rounded,
                         color: AppColors.textSecondary,
@@ -102,9 +107,9 @@ class HomeSummaryHeader extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 12),
+        AppSpacing.gapXl,
         Divider(
-          color: AppColors.stroke.withValues(alpha: 0.35),
+          color: AppColors.border.withValues(alpha: 0.35),
           height: 1,
         ),
       ],

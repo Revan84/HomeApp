@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../core/i18n/loc.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_font_sizes.dart';
 
 /// Shown in the stats tab when no widgets have been added yet.
 class StatsEmptyState extends StatelessWidget {
@@ -21,7 +23,7 @@ class StatsEmptyState extends StatelessWidget {
                 color: AppColors.surface,
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: AppColors.stroke.withValues(alpha: 0.3),
+                  color: AppColors.border.withValues(alpha: 0.3),
                 ),
               ),
               child: const Icon(
@@ -30,22 +32,24 @@ class StatsEmptyState extends StatelessWidget {
                 color: AppColors.textSecondary,
               ),
             ),
-            const SizedBox(height: 16),
+            AppSpacing.gapX3l,
             Text(
               context.l10n.statsNoWidgets,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                fontSize: 15,
+                fontFamily: 'ShareTech',
+                fontSize: AppFontSizes.lg,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimary,
               ),
             ),
-            const SizedBox(height: 6),
+            AppSpacing.gapSm,
             Text(
               context.l10n.statsEmptyHint,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                fontSize: 12,
+                fontFamily: 'ShareTech',
+                fontSize: 12.0,
                 color: AppColors.textSecondary,
               ),
             ),

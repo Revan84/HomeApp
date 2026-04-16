@@ -8,4 +8,8 @@ abstract final class StorageKeys {
   static const liveHistory = 'live_history_v1';
   static const statsDashboardPrefix = 'stats_dashboard_';
   static const localePreference = 'app_locale';
+
+  // Today section
+  static const kwhPrice = 'today_kwh_price_v1';
+  static const todayWidgetConfig = 'today_widget_config_v1';
 }

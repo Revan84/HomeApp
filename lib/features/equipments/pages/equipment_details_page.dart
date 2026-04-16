@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 
 import '../../../core/i18n/loc.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_radius.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../core/utils/time_label.dart';
 
 import '../../../domain/entities/equipment.dart';
@@ -32,8 +34,13 @@ class EquipmentDetailsPage extends StatefulWidget {
   State<EquipmentDetailsPage> createState() => _EquipmentDetailsPageState();
 }
 
+const _kNoRoom = '__none__';
+
 class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
   late final EquipmentDetailsController _controller;
+
+  final GlobalKey _typeKey = GlobalKey();
+  final GlobalKey _roomKey = GlobalKey();
 
   // Pure UI state: not part of the domain or business logic.
   HistoryWindow _window = HistoryWindow.d1;
@@ -93,14 +100,52 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
     await _controller.updateIp(nextIp);
   }
 
+  RelativeRect? _menuPosition(GlobalKey key) {
+    final overlay = Overlay.of(context).context.findRenderObject() as RenderBox?;
+    final keyCtx = key.currentContext;
+    if (keyCtx == null || overlay == null) return null;
+    final box = keyCtx.findRenderObject() as RenderBox?;
+    if (box == null) return null;
+    final pos = box.localToGlobal(Offset.zero);
+    final size = box.size;
+    return RelativeRect.fromRect(
+      Rect.fromLTWH(pos.dx, pos.dy, size.width, size.height),
+      Offset.zero & overlay.size,
+    );
+  }
+
   Future<void> _selectType() async {
     final equipment = _controller.equipment;
     if (equipment == null) return;
-    final nextType = await EquipmentEditDialogs.pickType(
-      context,
-      current: equipment.type,
-      labelOf: (type) => _typeLabel(context, type),
+    final position = _menuPosition(_typeKey);
+    if (position == null) return;
+
+    final nextType = await showMenu<EquipmentType>(
+      context: context,
+      position: position,
+      color: AppColors.surface,
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.xlBR),
+      items: EquipmentType.values.map((type) => PopupMenuItem<EquipmentType>(
+        value: type,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (type == equipment.type)
+              const Icon(Icons.check_rounded, color: AppColors.primary, size: 18)
+            else
+              const SizedBox(width: 18),
+            AppSpacing.gapHMd,
+            Text(
+              _typeLabel(context, type),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: AppColors.textPrimary,
+              ),
+            ),
+          ],
+        ),
+      )).toList(),
     );
+
     if (nextType == null) return;
     await _controller.updateType(nextType);
   }
@@ -108,13 +153,58 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
   Future<void> _selectRoom() async {
     final equipment = _controller.equipment;
     if (equipment == null) return;
-    final nextRoomId = await EquipmentEditDialogs.pickRoom(
-      context,
-      currentRoomId: equipment.roomId,
-      rooms: _controller.rooms,
-      noneLabel: context.l10n.none,
+    final position = _menuPosition(_roomKey);
+    if (position == null) return;
+
+    final selected = await showMenu<String>(
+      context: context,
+      position: position,
+      color: AppColors.surface,
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.xlBR),
+      items: [
+        PopupMenuItem<String>(
+          value: _kNoRoom,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (equipment.roomId == null)
+                const Icon(Icons.check_rounded, color: AppColors.primary, size: 18)
+              else
+                const SizedBox(width: 18),
+              AppSpacing.gapHMd,
+              Text(
+                context.l10n.none,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ],
+          ),
+        ),
+        ..._controller.rooms.map((room) => PopupMenuItem<String>(
+          value: room.id,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (room.id == equipment.roomId)
+                const Icon(Icons.check_rounded, color: AppColors.primary, size: 18)
+              else
+                const SizedBox(width: 18),
+              AppSpacing.gapHMd,
+              Text(
+                room.name,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ],
+          ),
+        )),
+      ],
     );
-    await _controller.updateRoom(nextRoomId);
+
+    if (selected == null) return;
+    await _controller.updateRoom(selected == _kNoRoom ? null : selected);
   }
 
   Future<void> _deleteEquipment() async {
@@ -159,6 +249,8 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
         return context.l10n.equipmentTypeShellyPlusPlugS;
       case EquipmentType.shellyPlugS:
         return context.l10n.equipmentTypeShellyPlugS;
+      case EquipmentType.shellyHT:
+        return 'Shelly HT';
       case EquipmentType.other:
         return context.l10n.equipmentTypeOther;
     }
@@ -197,6 +289,7 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
       EquipmentType.shellyPlusPlugS =>
         context.l10n.equipmentTypeShellyPlusPlugS,
       EquipmentType.shellyPlugS => context.l10n.equipmentTypeShellyPlugS,
+      EquipmentType.shellyHT => 'Shelly HT',
       EquipmentType.other => context.l10n.valueUnknown,
     };
 
@@ -206,6 +299,13 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
 
     final connectionLabel =
         online ? context.l10n.detailsConnectedWifi : context.l10n.netStatusOffline;
+
+    final accentColor = switch (equipment.type) {
+      EquipmentType.shellyPlusPlugS || EquipmentType.shellyPlugS =>
+        AppColors.plugAccent,
+      EquipmentType.shellyHT => AppColors.thermometerAccent,
+      EquipmentType.other => null,
+    };
 
     return Scaffold(
       appBar: AppBar(
@@ -222,6 +322,7 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
         children: [
           PrototypeCard(
+            accentColor: accentColor,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -233,12 +334,12 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
                   onEditName: _editName,
                   onRefresh: _reload,
                 ),
-                const SizedBox(height: 14),
+                AppSpacing.gapX2l,
                 HistoryRangeChips(
                   value: _window,
                   onChanged: _handleWindowChanged,
                 ),
-                const SizedBox(height: 10),
+                AppSpacing.gapLg,
                 InteractiveLineChart(
                   points: history,
                   window: _window,
@@ -250,7 +351,7 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
                     setState(() => _hoverPoint = point);
                   },
                 ),
-                const SizedBox(height: 14),
+                AppSpacing.gapX2l,
                 EquipmentInfoGrid(
                   ipLabel: context.l10n.ipLocalLabel,
                   ip: equipment.ip,
@@ -258,6 +359,7 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
                   typeLabelText: context.l10n.typeLabel,
                   typeValue: _typeLabel(context, equipment.type),
                   onSelectType: _selectType,
+                  typeAnchorKey: _typeKey,
                   favoriteLabel: context.l10n.favorite,
                   favoriteValue: equipment.isFavorite
                       ? context.l10n.valueYes
@@ -269,20 +371,22 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
                   online: online,
                   connectionLabel: connectionLabel,
                 ),
-                const SizedBox(height: 18),
+                AppSpacing.gapX4l,
                 RoomToggleRow(
+                  anchorKey: _roomKey,
                   roomName: _controller.roomName(
                       equipment.roomId, context.l10n.none),
                   onSelectRoom: _selectRoom,
-                  value: isOn,
-                  onChanged: (!toggling && equipment.showToggle)
-                      ? (_) => _controller.toggleOutput()
+                  isOn: isOn,
+                  loading: toggling,
+                  onTap: equipment.showToggle
+                      ? () => _controller.toggleOutput()
                       : null,
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          AppSpacing.gapX3l,
           Center(
             child: TextButton(
               onPressed: _deleteEquipment,

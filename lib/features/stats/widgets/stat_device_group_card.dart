@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/i18n/loc.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_font_sizes.dart';
 
 /// Collapsible card that groups all stat widgets belonging to one device.
 class StatDeviceGroupCard extends StatelessWidget {
@@ -41,7 +42,8 @@ class StatDeviceGroupCard extends StatelessWidget {
               Text(
                 deviceName,
                 style: const TextStyle(
-                  fontSize: 14,
+                  fontFamily: 'ShareTech',
+                  fontSize: AppFontSizes.md,
                   fontWeight: FontWeight.w600,
                   color: AppColors.textPrimary,
                 ),
@@ -50,7 +52,8 @@ class StatDeviceGroupCard extends StatelessWidget {
                 Text(
                   '$deviceTypeLabel · ${context.l10n.statsWidgetCount(widgetCount)}',
                   style: const TextStyle(
-                    fontSize: 11,
+                    fontFamily: 'ShareTech',
+                    fontSize: AppFontSizes.sm,
                     color: AppColors.textSecondary,
                   ),
                 ),
@@ -61,7 +64,7 @@ class StatDeviceGroupCard extends StatelessWidget {
               if (i > 0)
                 Divider(
                   height: 1,
-                  color: AppColors.stroke.withValues(alpha: 0.25),
+                  color: AppColors.border.withValues(alpha: 0.25),
                 ),
               children[i],
             ],

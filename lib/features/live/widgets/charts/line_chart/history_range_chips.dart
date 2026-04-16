@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/i18n/loc.dart';
 import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/theme/app_radius.dart';
+import '../../../../../core/theme/app_spacing.dart';
 import '../../../../../domain/entities/history_window.dart';
 
 /// Compact range chips used above the history chart.
@@ -50,7 +52,7 @@ class HistoryRangeChips extends StatelessWidget {
             selected: value == windows[index],
             onTap: () => onChanged(windows[index]),
           ),
-          if (index < windows.length - 1) const SizedBox(width: 10),
+          if (index < windows.length - 1) AppSpacing.gapHLg,
         ],
       ],
     );
@@ -71,11 +73,11 @@ class _HistoryRangeChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final foregroundColor =
-        selected ? AppColors.success : AppColors.textSecondary;
+        selected ? AppColors.primary : AppColors.textSecondary;
 
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(999),
+      borderRadius: AppRadius.pillBR,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         child: Text(

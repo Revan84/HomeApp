@@ -121,7 +121,10 @@ class MyApp extends StatelessWidget {
             roomRepo: context.read<RoomRepository>(),
             equipmentRepo: context.read<EquipmentRepository>(),
             tvRepo: context.read<TvRepository>(),
+            wledRepo: context.read<WledRepository>(),
             liveController: context.read<LivePollingController>(),
+            storage: context.read<LocalStorage>(),
+            httpClient: context.read<http.Client>(),
           ),
         ),
         ChangeNotifierProvider<EquipmentsController>(

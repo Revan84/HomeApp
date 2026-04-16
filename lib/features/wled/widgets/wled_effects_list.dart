@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/design_system/cards/app_card.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_radius.dart';
+import '../../../core/theme/app_spacing.dart';
 
 /// Scrollable list for selecting a WLED effect by index.
 class WledEffectsList extends StatelessWidget {
@@ -17,21 +20,17 @@ class WledEffectsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
-      ),
+    return AppCard(
+      padding: EdgeInsets.zero,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.x3lBR,
         child: ListView.separated(
           padding: EdgeInsets.zero,
           physics: const ClampingScrollPhysics(),
           itemCount: effects.length,
           separatorBuilder: (_, _) => Divider(
             height: 1,
-            color: Colors.white.withValues(alpha: 0.06),
+            color: AppColors.border.withValues(alpha: 0.25),
           ),
           itemBuilder: (_, i) {
             final selected = i == selectedId;
@@ -39,7 +38,9 @@ class WledEffectsList extends StatelessWidget {
               onTap: () => onSelected(i),
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 16, vertical: 10),
+                  horizontal: AppSpacing.x3l,
+                  vertical: AppSpacing.lg,
+                ),
                 child: Row(
                   children: [
                     AnimatedContainer(
@@ -49,30 +50,29 @@ class WledEffectsList extends StatelessWidget {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: selected
-                            ? AppColors.success
+                            ? AppColors.primary
                             : Colors.transparent,
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    AppSpacing.gapHXl,
                     Expanded(
                       child: Text(
                         effects[i],
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: selected
-                              ? AppColors.textPrimary
-                              : AppColors.textSecondary,
-                          fontWeight: selected
-                              ? FontWeight.w600
-                              : FontWeight.w400,
-                        ),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: selected
+                                  ? AppColors.textPrimary
+                                  : AppColors.textSecondary,
+                              fontWeight: selected
+                                  ? FontWeight.w600
+                                  : FontWeight.w400,
+                            ),
                       ),
                     ),
                     if (selected)
                       const Icon(
                         Icons.check_rounded,
                         size: 16,
-                        color: AppColors.success,
+                        color: AppColors.primary,
                       ),
                   ],
                 ),

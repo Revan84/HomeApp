@@ -9,8 +9,9 @@ DeviceType deviceTypeForEquipment(Equipment eq) {
     case EquipmentType.shellyPlusPlugS:
     case EquipmentType.shellyPlugS:
       return DeviceType.plug;
+    case EquipmentType.shellyHT:
+      return DeviceType.thermoHygro;
     case EquipmentType.other:
-      // Fallback: treat generic devices as plugs so they get the widest set.
       return DeviceType.plug;
   }
 }

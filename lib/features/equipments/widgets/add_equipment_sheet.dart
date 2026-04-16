@@ -2,6 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:front_end/core/i18n/loc.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/design_system/buttons/app_button.dart';
+import '../../../core/design_system/inputs/app_text_field.dart';
+import '../../../core/design_system/layout/app_sheet_header.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_radius.dart';
+import '../../../core/theme/app_spacing.dart';
+
 import '../../../domain/entities/equipment.dart';
 import '../../integrations/shelly/data/dto/shelly_device_info_dto.dart';
 import '../controllers/equipments_controller.dart';
@@ -17,7 +24,6 @@ class AddEquipmentSheet extends StatefulWidget {
 
 class _AddEquipmentSheetState extends State<AddEquipmentSheet> {
   final _formKey = GlobalKey<FormState>();
-
   final _nameCtrl = TextEditingController();
   final _ipCtrl = TextEditingController();
 
@@ -47,13 +53,10 @@ class _AddEquipmentSheetState extends State<AddEquipmentSheet> {
   String? _validateIp(String? v) {
     final s = (v ?? '').trim();
     if (s.isEmpty) return context.l10n.validationIpRequired;
-
     final reg = RegExp(r'^(\d{1,3}\.){3}\d{1,3}$');
     if (!reg.hasMatch(s)) return context.l10n.validationIpInvalidFormat;
-
     final parts = s.split('.').map(int.parse).toList();
     if (parts.any((p) => p < 0 || p > 255)) return context.l10n.validationIpInvalid;
-
     return null;
   }
 
@@ -122,6 +125,8 @@ class _AddEquipmentSheetState extends State<AddEquipmentSheet> {
         return context.l10n.equipmentTypeShellyPlusPlugS;
       case EquipmentType.shellyPlugS:
         return context.l10n.equipmentTypeShellyPlugS;
+      case EquipmentType.shellyHT:
+        return 'Shelly HT';
       case EquipmentType.other:
         return context.l10n.equipmentTypeOther;
     }
@@ -129,6 +134,7 @@ class _AddEquipmentSheetState extends State<AddEquipmentSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l = context.l10n;
     final rooms = context.watch<EquipmentsController>().rooms;
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
@@ -136,179 +142,149 @@ class _AddEquipmentSheetState extends State<AddEquipmentSheet> {
       padding: EdgeInsets.only(bottom: bottomInset),
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+          padding: AppSpacing.sheetPadding,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(2),
-                  color: Colors.grey.shade600,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      context.l10n.addEquipmentTitle,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    icon: const Icon(Icons.close),
-                    tooltip: context.l10n.close,
-                  ),
-                ],
+              AppSheetHeader(
+                title: l.addEquipmentTitle,
+                showDragHandle: true,
+                onClose: () => Navigator.of(context).pop(false),
               ),
               Form(
                 key: _formKey,
                 child: Column(
                   children: [
-                    TextFormField(
+                    AppTextField(
                       controller: _nameCtrl,
-                      decoration: InputDecoration(
-                        labelText: context.l10n.nameLabel,
-                        hintText: context.l10n.nameHintExample,
-                      ),
+                      label: l.nameLabel,
+                      hint: l.nameHintExample,
                     ),
-                    const SizedBox(height: 10),
-                    TextFormField(
+                    AppSpacing.gapLg,
+                    AppTextField(
                       controller: _ipCtrl,
+                      label: l.ipLocalLabel,
+                      hint: l.ipLocalHint,
                       keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        labelText: context.l10n.ipLocalLabel,
-                        hintText: context.l10n.ipLocalHint,
-                      ),
                       validator: _validateIp,
                     ),
-                    const SizedBox(height: 10),
-
-                    TextFormField(
+                    AppSpacing.gapLg,
+                    AppTextField(
                       initialValue: _channel.toString(),
+                      label: l.channelLabel,
+                      hint: l.channelHint,
                       keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        labelText: context.l10n.channelLabel,
-                        hintText: context.l10n.channelHint,
-                      ),
                       validator: _validateChannel,
                       onChanged: (v) => _channel = int.tryParse(v.trim()) ?? 0,
                     ),
-                    const SizedBox(height: 10),
-
+                    AppSpacing.gapLg,
                     DropdownButtonFormField<EquipmentType>(
                       initialValue: _type,
-                      decoration: InputDecoration(labelText: context.l10n.typeLabel),
-                      items: EquipmentType.values.map((t) {
-                        return DropdownMenuItem(
-                          value: t,
-                          child: Text(_typeLabel(context, t)),
-                        );
-                      }).toList(),
-                      onChanged: (v) => setState(() => _type = v ?? EquipmentType.other),
+                      dropdownColor: AppColors.surface,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: AppColors.textPrimary,
+                          ),
+                      borderRadius: AppRadius.xlBR,
+                      decoration: InputDecoration(labelText: l.typeLabel),
+                      items: EquipmentType.values
+                          .map((t) => DropdownMenuItem(
+                                value: t,
+                                child: Text(_typeLabel(context, t)),
+                              ))
+                          .toList(),
+                      onChanged: (v) =>
+                          setState(() => _type = v ?? EquipmentType.other),
                     ),
-
-                    const SizedBox(height: 10),
-
+                    AppSpacing.gapLg,
                     DropdownButtonFormField<String?>(
                       initialValue: _selectedRoomId,
-                      decoration: InputDecoration(labelText: context.l10n.roomLabel),
+                      dropdownColor: AppColors.surface,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: AppColors.textPrimary,
+                          ),
+                      borderRadius: AppRadius.xlBR,
+                      decoration: InputDecoration(labelText: l.roomLabel),
                       items: [
                         DropdownMenuItem<String?>(
                           value: null,
-                          child: Text(context.l10n.none),
+                          child: Text(l.none),
                         ),
-                        ...rooms.map(
-                          (r) => DropdownMenuItem<String?>(
-                            value: r.id,
-                            child: Text(r.name),
-                          ),
-                        ),
+                        ...rooms.map((r) => DropdownMenuItem<String?>(
+                              value: r.id,
+                              child: Text(r.name),
+                            )),
                       ],
                       onChanged: (v) => setState(() => _selectedRoomId = v),
                     ),
-
                     SwitchListTile(
                       value: _isFavorite,
                       onChanged: (v) => setState(() => _isFavorite = v),
-                      title: Text(context.l10n.favorite),
+                      title: Text(l.favorite),
                     ),
-
-                    const SizedBox(height: 14),
+                    AppSpacing.gapX2l,
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        context.l10n.showDataTitle,
-                        style: const TextStyle(fontWeight: FontWeight.w600),
+                        l.showDataTitle,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyLarge
+                            ?.copyWith(fontWeight: FontWeight.w600),
                       ),
                     ),
-
                     SwitchListTile(
                       value: _showToggle,
                       onChanged: (v) => setState(() => _showToggle = v),
-                      title: Text(context.l10n.showOnOff),
+                      title: Text(l.showOnOff),
                     ),
                     SwitchListTile(
                       value: _showPower,
                       onChanged: (v) => setState(() => _showPower = v),
-                      title: Text(context.l10n.showPower),
+                      title: Text(l.showPower),
                     ),
                     SwitchListTile(
                       value: _showEnergy,
                       onChanged: (v) => setState(() => _showEnergy = v),
-                      title: Text(context.l10n.showEnergy),
+                      title: Text(l.showEnergy),
                     ),
                     SwitchListTile(
                       value: _showRssi,
                       onChanged: (v) => setState(() => _showRssi = v),
-                      title: Text(context.l10n.showRssi),
+                      title: Text(l.showRssi),
                     ),
-
-                    const SizedBox(height: 10),
-
+                    AppSpacing.gapLg,
                     if (_testError != null)
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
+                        padding: const EdgeInsets.only(bottom: AppSpacing.md),
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
                             _testError!,
-                            style: const TextStyle(color: Colors.red),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(color: AppColors.danger),
                           ),
                         ),
                       ),
-
                     if (_deviceInfo != null) _DeviceInfoPreview(data: _deviceInfo!),
-
-                    const SizedBox(height: 12),
-
+                    AppSpacing.gapXl,
                     Row(
                       children: [
                         Expanded(
-                          child: OutlinedButton.icon(
+                          child: AppButton(
+                            label: _testOk ? l.testOk : l.test,
+                            leading: _testOk ? Icons.check : Icons.wifi_tethering,
+                            variant: AppButtonVariant.secondary,
                             onPressed: _testing ? null : _testConnection,
-                            icon: _testing
-                                ? const SizedBox(
-                                    width: 16,
-                                    height: 16,
-                                    child: CircularProgressIndicator(strokeWidth: 2),
-                                  )
-                                : Icon(_testOk ? Icons.check : Icons.wifi_tethering),
-                            label: Text(_testOk ? context.l10n.testOk : context.l10n.test),
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        AppSpacing.gapHXl,
                         Expanded(
-                          child: ElevatedButton.icon(
+                          child: AppButton(
+                            label: l.save,
+                            leading: Icons.save,
                             onPressed: _save,
-                            icon: const Icon(Icons.save),
-                            label: Text(context.l10n.save),
                           ),
                         ),
                       ],
@@ -330,28 +306,28 @@ class _DeviceInfoPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final name = data.name;
-    final model = data.model;
-    final mac = data.mac;
-
+    final l = context.l10n;
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(12),
+      padding: AppSpacing.cardPaddingCompact,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade700),
+        borderRadius: AppRadius.xlBR,
+        border: Border.all(color: AppColors.border.withValues(alpha: 0.5)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            context.l10n.detectedInfoTitle,
-            style: const TextStyle(fontWeight: FontWeight.w600),
+            l.detectedInfoTitle,
+            style: Theme.of(context)
+                .textTheme
+                .bodyLarge
+                ?.copyWith(fontWeight: FontWeight.w600),
           ),
-          const SizedBox(height: 6),
-          if (name.isNotEmpty) Text(context.l10n.deviceInfoName(name)),
-          if (model.isNotEmpty) Text(context.l10n.deviceInfoModel(model)),
-          if (mac.isNotEmpty) Text(context.l10n.deviceInfoMac(mac)),
+          AppSpacing.gapSm,
+          if (data.name.isNotEmpty) Text(l.deviceInfoName(data.name)),
+          if (data.model.isNotEmpty) Text(l.deviceInfoModel(data.model)),
+          if (data.mac.isNotEmpty) Text(l.deviceInfoMac(data.mac)),
         ],
       ),
     );

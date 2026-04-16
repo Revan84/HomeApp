@@ -3,6 +3,9 @@ import 'package:speech_to_text/speech_to_text.dart';
 
 import '../../../core/i18n/loc.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_font_sizes.dart';
+import '../../../core/theme/app_radius.dart';
+import '../../../core/theme/app_spacing.dart';
 
 /// Bottom sheet that listens to the user's voice and returns the recognised
 /// text. Mirrors the SmartThings voice-search UX.
@@ -122,8 +125,8 @@ class _TvVoiceInputSheetState extends State<TvVoiceInputSheet>
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.stroke, width: 1),
+        borderRadius: AppRadius.x4lBR,
+        border: Border.all(color: AppColors.border, width: 1),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -134,8 +137,8 @@ class _TvVoiceInputSheetState extends State<TvVoiceInputSheet>
             height: 4,
             margin: const EdgeInsets.only(bottom: 24),
             decoration: BoxDecoration(
-              color: AppColors.stroke,
-              borderRadius: BorderRadius.circular(2),
+              color: AppColors.border,
+              borderRadius: AppRadius.xsBR,
             ),
           ),
 
@@ -154,14 +157,14 @@ class _TvVoiceInputSheetState extends State<TvVoiceInputSheet>
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: _listening
-                      ? AppColors.success.withValues(alpha: 0.15)
+                      ? AppColors.primary.withValues(alpha: 0.15)
                       : AppColors.bg,
                   border: Border.all(
                     color: _error.isNotEmpty
                         ? AppColors.danger
                         : _listening
-                            ? AppColors.success
-                            : AppColors.stroke,
+                            ? AppColors.primary
+                            : AppColors.border,
                     width: 2,
                   ),
                 ),
@@ -173,28 +176,29 @@ class _TvVoiceInputSheetState extends State<TvVoiceInputSheet>
                   color: _error.isNotEmpty
                       ? AppColors.danger
                       : _listening
-                          ? AppColors.success
+                          ? AppColors.primary
                           : AppColors.textSecondary,
                 ),
               ),
             ),
           ),
 
-          const SizedBox(height: 20),
+          AppSpacing.gapX5l,
 
           // Status / transcript
           if (_error.isNotEmpty)
             Text(
               l.tvVoiceError,
-              style: const TextStyle(color: AppColors.danger, fontSize: 13),
+              style: const TextStyle(fontFamily: 'ShareTech', color: AppColors.danger, fontSize: AppFontSizes.body),
               textAlign: TextAlign.center,
             )
           else if (_transcript.isNotEmpty)
             Text(
               _transcript,
               style: const TextStyle(
+                fontFamily: 'ShareTech',
                 color: AppColors.textPrimary,
-                fontSize: 18,
+                fontSize: AppFontSizes.heading,
                 fontWeight: FontWeight.w600,
               ),
               textAlign: TextAlign.center,
@@ -203,13 +207,14 @@ class _TvVoiceInputSheetState extends State<TvVoiceInputSheet>
             Text(
               _listening ? l.tvVoiceListening : l.tvVoiceTap,
               style: const TextStyle(
+                fontFamily: 'ShareTech',
                 color: AppColors.textSecondary,
-                fontSize: 14,
+                fontSize: AppFontSizes.md,
               ),
               textAlign: TextAlign.center,
             ),
 
-          const SizedBox(height: 24),
+          AppSpacing.gapX6l,
 
           // Action buttons
           Row(
@@ -219,29 +224,29 @@ class _TvVoiceInputSheetState extends State<TvVoiceInputSheet>
                 onPressed: () => Navigator.of(context).pop(),
                 child: Text(
                   l.cancel,
-                  style: const TextStyle(color: AppColors.textSecondary),
+                  style: const TextStyle(fontFamily: 'ShareTech', color: AppColors.textSecondary),
                 ),
               ),
               if (_transcript.isNotEmpty) ...[
-                const SizedBox(width: 16),
+                AppSpacing.gapHX3l,
                 FilledButton.icon(
                   onPressed: _send,
                   icon: const Icon(Icons.send_rounded, size: 16),
                   label: Text(l.tvKeyboardSend),
                   style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.success,
+                    backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
                   ),
                 ),
               ],
               if (_error.isNotEmpty && _transcript.isEmpty) ...[
-                const SizedBox(width: 16),
+                AppSpacing.gapHX3l,
                 FilledButton.icon(
                   onPressed: _retry,
                   icon: const Icon(Icons.refresh_rounded, size: 16),
                   label: Text(l.tvReconnect),
                   style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.stroke,
+                    backgroundColor: AppColors.border,
                     foregroundColor: AppColors.textPrimary,
                   ),
                 ),

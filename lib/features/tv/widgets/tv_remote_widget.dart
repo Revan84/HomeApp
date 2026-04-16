@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../../core/i18n/loc.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_font_sizes.dart';
+import '../../../core/theme/app_radius.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../domain/tv_remote_command.dart';
 
 /// TV remote control area matching the mockup layout:
@@ -27,7 +30,7 @@ class TvRemoteWidget extends StatelessWidget {
       children: [
         // D-pad
         _buildDpad(context),
-        const SizedBox(width: 14),
+        AppSpacing.gapHX2l,
 
         // Side buttons: Back / Settings / Keyboard
         Column(
@@ -38,13 +41,13 @@ class TvRemoteWidget extends StatelessWidget {
               label: l.tvKeyBack,
               onTap: () => onCommand(TvRemoteCommand.back),
             ),
-            const SizedBox(height: 10),
+            AppSpacing.gapLg,
             _SideButton(
               icon: Icons.menu_rounded,
               label: l.tvKeySettings,
               onTap: () => onCommand(TvRemoteCommand.menu),
             ),
-            const SizedBox(height: 10),
+            AppSpacing.gapLg,
             _SideButton(
               icon: Icons.keyboard_rounded,
               label: l.tvKeyKeyboard,
@@ -74,8 +77,8 @@ class TvRemoteWidget extends StatelessWidget {
       height: boxSize,
       decoration: BoxDecoration(
         color: AppColors.bg,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.stroke, width: 1),
+        borderRadius: AppRadius.x2lBR,
+        border: Border.all(color: AppColors.border, width: 1),
       ),
       child: Stack(
         alignment: Alignment.center,
@@ -131,7 +134,7 @@ class TvRemoteWidget extends StatelessWidget {
                 backgroundColor: AppColors.bg,
                 foregroundColor: AppColors.textPrimary,
                 shape: const CircleBorder(
-                  side: BorderSide(color: AppColors.stroke, width: 1.5),
+                  side: BorderSide(color: AppColors.border, width: 1.5),
                 ),
                 padding: EdgeInsets.zero,
                 elevation: 0,
@@ -139,7 +142,7 @@ class TvRemoteWidget extends StatelessWidget {
               onPressed: () => onCommand(TvRemoteCommand.enter),
               child: const Text(
                 'OK',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                style: TextStyle(fontFamily: 'ShareTech', fontWeight: FontWeight.bold, fontSize: AppFontSizes.md),
               ),
             ),
           ),
@@ -154,7 +157,7 @@ class _DpadDiagonalPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = AppColors.stroke.withValues(alpha: 0.5)
+      ..color = AppColors.border.withValues(alpha: 0.5)
       ..strokeWidth = 1
       ..style = PaintingStyle.stroke;
 
@@ -230,11 +233,11 @@ class _SideButton extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-        side: const BorderSide(color: AppColors.stroke, width: 1),
+        borderRadius: AppRadius.mdBR,
+        side: const BorderSide(color: AppColors.border, width: 1),
       ),
       child: InkWell(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: AppRadius.mdBR,
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -242,12 +245,13 @@ class _SideButton extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(icon, size: 16, color: AppColors.textSecondary),
-              const SizedBox(width: 6),
+              AppSpacing.gapHSm,
               Text(
                 label,
                 style: const TextStyle(
+                  fontFamily: 'ShareTech',
                   color: AppColors.textSecondary,
-                  fontSize: 13,
+                  fontSize: AppFontSizes.body,
                 ),
               ),
             ],
@@ -276,9 +280,9 @@ class _VolumeButtons extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         _VolBtn(icon: Icons.volume_up_rounded, onTap: onVolUp),
-        const SizedBox(height: 8),
+        AppSpacing.gapMd,
         _VolBtn(icon: Icons.volume_down_rounded, onTap: onVolDown),
-        const SizedBox(height: 8),
+        AppSpacing.gapMd,
         _VolBtn(icon: Icons.volume_off_rounded, onTap: onMute),
       ],
     );
@@ -296,7 +300,7 @@ class _VolBtn extends StatelessWidget {
     return Material(
       color: AppColors.bg,
       shape: const CircleBorder(
-        side: BorderSide(color: AppColors.stroke, width: 1),
+        side: BorderSide(color: AppColors.border, width: 1),
       ),
       child: InkWell(
         customBorder: const CircleBorder(),

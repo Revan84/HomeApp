@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/i18n/loc.dart';
+import '../../../core/theme/app_radius.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../controllers/shell_controller.dart';
 
 /// Bottom sheet that lets the user switch the active room group.
@@ -24,11 +26,11 @@ class RoomGroupPickerSheet extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
             ),
-            const SizedBox(height: 12),
+            AppSpacing.gapXl,
             ...shell.roomGroups.map(
               (group) => ListTile(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: AppRadius.x2lBR,
                 ),
                 title: Text(group.name),
                 trailing: group.id == shell.selectedGroupId

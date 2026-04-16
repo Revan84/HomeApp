@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/design_system/buttons/app_button.dart';
+import '../../../core/design_system/inputs/app_text_field.dart';
+import '../../../core/design_system/layout/app_sheet_header.dart';
 import '../../../core/i18n/loc.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_radius.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../controllers/home_controller.dart';
 
 class AddRoomSheet extends StatefulWidget {
@@ -17,7 +23,6 @@ class _AddRoomSheetState extends State<AddRoomSheet> {
   final _formKey = GlobalKey<FormState>();
 
   bool _saving = false;
-
   String? _selectedGroupId;
 
   @override
@@ -35,7 +40,6 @@ class _AddRoomSheetState extends State<AddRoomSheet> {
     final createdGroup = await controller.addRoomGroup(groupName);
 
     if (!mounted) return;
-
     _groupNameController.clear();
     setState(() => _selectedGroupId = createdGroup.id);
   }
@@ -60,6 +64,7 @@ class _AddRoomSheetState extends State<AddRoomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l = context.l10n;
     final groups = context.watch<HomeController>().roomGroups;
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
@@ -67,115 +72,79 @@ class _AddRoomSheetState extends State<AddRoomSheet> {
       padding: EdgeInsets.only(bottom: bottomInset),
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+          padding: AppSpacing.sheetPadding,
           child: Form(
             key: _formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        context.l10n.addRoomTitle,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () => Navigator.pop(context, false),
-                      icon: const Icon(Icons.close),
-                      tooltip: context.l10n.close,
-                    ),
-                  ],
+                AppSheetHeader(
+                  title: l.addRoomTitle,
+                  onClose: () => Navigator.pop(context, false),
                 ),
-                const SizedBox(height: 8),
+                AppSpacing.gapMd,
                 if (groups.isEmpty) ...[
                   Text(
-                    context.l10n.roomsNoGroupForQuickAdd,
+                    l.roomsNoGroupForQuickAdd,
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
-                  const SizedBox(height: 12),
-                  TextFormField(
+                  AppSpacing.gapXl,
+                  AppTextField(
                     controller: _groupNameController,
+                    label: l.roomsFirstGroupLabel,
+                    hint: l.roomsGroupNameHint,
                     textInputAction: TextInputAction.done,
-                    decoration: InputDecoration(
-                      labelText: context.l10n.roomsFirstGroupLabel,
-                      hintText: context.l10n.roomsGroupNameHint,
-                    ),
-                    validator: (_) => null,
                   ),
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: _createGroup,
-                      icon: const Icon(Icons.add),
-                      label: Text(context.l10n.roomsCreateFirstGroup),
-                    ),
+                  AppSpacing.gapXl,
+                  AppButton(
+                    label: l.roomsCreateFirstGroup,
+                    leading: Icons.add,
+                    onPressed: _createGroup,
+                    fullWidth: true,
+                    variant: AppButtonVariant.secondary,
                   ),
                 ] else ...[
                   DropdownButtonFormField<String>(
                     initialValue: _selectedGroupId,
-                    decoration: InputDecoration(
-                      labelText: context.l10n.roomsTargetGroupLabel,
-                    ),
+                    dropdownColor: AppColors.surface,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: AppColors.textPrimary,
+                        ),
+                    borderRadius: AppRadius.xlBR,
+                    decoration: InputDecoration(labelText: l.roomsTargetGroupLabel),
                     items: groups
-                        .map(
-                          (group) => DropdownMenuItem<String>(
-                            value: group.id,
-                            child: Text(group.name),
-                          ),
-                        )
+                        .map((g) => DropdownMenuItem<String>(
+                              value: g.id,
+                              child: Text(g.name),
+                            ))
                         .toList(growable: false),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedGroupId = value;
-                      });
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return context.l10n.roomsTargetGroupRequired;
-                      }
-                      return null;
-                    },
+                    onChanged: (v) => setState(() => _selectedGroupId = v),
+                    validator: (v) => (v == null || v.isEmpty)
+                        ? l.roomsTargetGroupRequired
+                        : null,
                   ),
-                        const SizedBox(height: 12),
-                        TextFormField(
-                          controller: _nameController,
-                          decoration: InputDecoration(
-                            labelText: context.l10n.roomNameLabel,
-                            hintText: context.l10n.roomNameHint,
-                          ),
-                          validator: (value) =>
-                              (value == null || value.trim().isEmpty)
-                                  ? context.l10n.validationRoomNameRequired
-                                  : null,
-                        ),
-                        const SizedBox(height: 12),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton.icon(
-                            onPressed: _saving ? null : _save,
-                            icon: _saving
-                                ? const SizedBox(
-                                    width: 16,
-                                    height: 16,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                    ),
-                                  )
-                                : const Icon(Icons.save),
-                            label: Text(context.l10n.save),
-                          ),
-                        ),
-                      ],
-                    ],
+                  AppSpacing.gapXl,
+                  AppTextField(
+                    controller: _nameController,
+                    label: l.roomNameLabel,
+                    hint: l.roomNameHint,
+                    validator: (v) =>
+                        (v == null || v.trim().isEmpty)
+                            ? l.validationRoomNameRequired
+                            : null,
                   ),
-                ),
+                  AppSpacing.gapXl,
+                  AppButton(
+                    label: l.save,
+                    leading: Icons.save,
+                    onPressed: _saving ? null : _save,
+                    fullWidth: true,
+                  ),
+                ],
+              ],
+            ),
+          ),
         ),
       ),
     );

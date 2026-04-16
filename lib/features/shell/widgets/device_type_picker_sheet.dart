@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/i18n/loc.dart';
+import '../../../core/theme/app_radius.dart';
+import '../../../core/theme/app_spacing.dart';
 
 /// The three device kinds a user can add.
 enum DeviceType { connectedPlug, tv, wled }
@@ -25,12 +27,12 @@ class DeviceTypePickerSheet extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
             ),
-            const SizedBox(height: 12),
+            AppSpacing.gapXl,
             ListTile(
               leading: const Icon(Icons.power),
               title: Text(l.deviceTypePlug),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: AppRadius.x2lBR,
               ),
               onTap: () =>
                   Navigator.of(context).pop(DeviceType.connectedPlug),
@@ -39,7 +41,7 @@ class DeviceTypePickerSheet extends StatelessWidget {
               leading: const Icon(Icons.tv),
               title: Text(l.deviceTypeTv),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: AppRadius.x2lBR,
               ),
               onTap: () => Navigator.of(context).pop(DeviceType.tv),
             ),
@@ -47,7 +49,7 @@ class DeviceTypePickerSheet extends StatelessWidget {
               leading: const Icon(Icons.lightbulb_outline_rounded),
               title: Text(l.deviceTypeWled),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: AppRadius.x2lBR,
               ),
               onTap: () => Navigator.of(context).pop(DeviceType.wled),
             ),

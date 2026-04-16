@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../core/i18n/loc.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_font_sizes.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../domain/metric_series.dart';
 import '../domain/metric_type.dart';
 
@@ -24,7 +26,7 @@ class StatKpiWidget extends StatelessWidget {
         height: 80,
         child: Center(
           child: Text(context.l10n.statsNoData,
-              style: const TextStyle(color: AppColors.textSecondary)),
+              style: const TextStyle(fontFamily: 'ShareTech', color: AppColors.textSecondary)),
         ),
       );
     }
@@ -34,22 +36,23 @@ class StatKpiWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const SizedBox(height: 4),
+        AppSpacing.gapXs,
         // Current value (hero) in green
         Text(
           metricType.formatValue(current),
           style: const TextStyle(
-            fontSize: 38,
+            fontFamily: 'ShareTech',
+            fontSize: AppFontSizes.kpi,
             fontWeight: FontWeight.w700,
-            color: AppColors.success,
+            color: AppColors.primary,
           ),
         ),
-        const SizedBox(height: 2),
+        AppSpacing.gapXxs,
         Text(
           metricType.label,
-          style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+          style: const TextStyle(fontFamily: 'ShareTech', fontSize: 12.0, color: AppColors.textSecondary),
         ),
-        const SizedBox(height: 12),
+        AppSpacing.gapXl,
         // Min / Max / Avg row
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -60,7 +63,7 @@ class StatKpiWidget extends StatelessWidget {
             _kpiCell('Avg', series.avg, metricType),
           ],
         ),
-        const SizedBox(height: 4),
+        AppSpacing.gapXs,
       ],
     );
   }
@@ -70,15 +73,16 @@ class StatKpiWidget extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(fontSize: 10, color: AppColors.textSecondary),
+          style: const TextStyle(fontFamily: 'ShareTech', fontSize: AppFontSizes.xs, color: AppColors.textSecondary),
         ),
-        const SizedBox(height: 2),
+        AppSpacing.gapXxs,
         Text(
           value != null ? metricType.formatValue(value) : '\u2014',
           style: const TextStyle(
-            fontSize: 14,
+            fontFamily: 'ShareTech',
+            fontSize: AppFontSizes.md,
             fontWeight: FontWeight.w600,
-            color: AppColors.success,
+            color: AppColors.primary,
           ),
         ),
       ],

@@ -38,6 +38,19 @@ class EquipmentDetailsController extends ChangeNotifier {
   String? _error;
   String? get error => _error;
 
+  bool _disposed = false;
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
+
+  /// Safe notifyListeners — no-op if the controller has already been disposed.
+  void _notify() {
+    if (!_disposed) notifyListeners();
+  }
+
   // ---------------------------------------------------------------------------
   // Loading
   // ---------------------------------------------------------------------------
@@ -69,7 +82,7 @@ class EquipmentDetailsController extends ChangeNotifier {
       _error = e.toString();
     } finally {
       _loading = false;
-      notifyListeners();
+      _notify();
     }
 
     return found;
@@ -86,10 +99,10 @@ class EquipmentDetailsController extends ChangeNotifier {
     try {
       await _equipmentRepo.update(updated);
       _equipment = updated;
-      notifyListeners();
+      _notify();
     } catch (err) {
       _error = err.toString();
-      notifyListeners();
+      _notify();
       rethrow;
     }
   }
@@ -101,10 +114,10 @@ class EquipmentDetailsController extends ChangeNotifier {
     try {
       await _equipmentRepo.update(updated);
       _equipment = updated;
-      notifyListeners();
+      _notify();
     } catch (err) {
       _error = err.toString();
-      notifyListeners();
+      _notify();
       rethrow;
     }
   }
@@ -116,10 +129,10 @@ class EquipmentDetailsController extends ChangeNotifier {
     try {
       await _equipmentRepo.update(updated);
       _equipment = updated;
-      notifyListeners();
+      _notify();
     } catch (err) {
       _error = err.toString();
-      notifyListeners();
+      _notify();
       rethrow;
     }
   }
@@ -132,10 +145,10 @@ class EquipmentDetailsController extends ChangeNotifier {
     try {
       await _equipmentRepo.update(updated);
       _equipment = updated;
-      notifyListeners();
+      _notify();
     } catch (err) {
       _error = err.toString();
-      notifyListeners();
+      _notify();
       rethrow;
     }
   }
@@ -148,10 +161,10 @@ class EquipmentDetailsController extends ChangeNotifier {
     try {
       await _equipmentRepo.update(updated);
       _equipment = updated;
-      notifyListeners();
+      _notify();
     } catch (err) {
       _error = err.toString();
-      notifyListeners();
+      _notify();
       rethrow;
     }
   }

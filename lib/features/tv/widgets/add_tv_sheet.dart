@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/design_system/buttons/app_button.dart';
+import '../../../core/design_system/inputs/app_text_field.dart';
+import '../../../core/design_system/layout/app_sheet_header.dart';
 import '../../../core/i18n/loc.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_radius.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../domain/entities/tv_device.dart';
 import '../../equipments/controllers/equipments_controller.dart';
 
@@ -52,7 +58,11 @@ class _AddTvSheetState extends State<AddTvSheet> {
     if (!_formKey.currentState!.validate()) return;
 
     final controller = context.read<EquipmentsController>();
-    setState(() { _testing = true; _testOk = false; _testError = null; });
+    setState(() {
+      _testing = true;
+      _testOk = false;
+      _testError = null;
+    });
 
     try {
       final result = await controller.testTvConnection(_ipCtrl.text.trim());
@@ -99,73 +109,46 @@ class _AddTvSheetState extends State<AddTvSheet> {
       padding: EdgeInsets.only(bottom: bottomInset),
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+          padding: AppSpacing.sheetPadding,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Drag handle
-              Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(2),
-                  color: Colors.grey.shade600,
-                ),
-              ),
-              const SizedBox(height: 12),
-              // Title row
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      l.tvAddTitle,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    icon: const Icon(Icons.close),
-                    tooltip: l.close,
-                  ),
-                ],
+              AppSheetHeader(
+                title: l.tvAddTitle,
+                showDragHandle: true,
+                onClose: () => Navigator.of(context).pop(false),
               ),
               Form(
                 key: _formKey,
                 child: Column(
                   children: [
-                    TextFormField(
+                    AppTextField(
                       controller: _nameCtrl,
-                      decoration: InputDecoration(
-                        labelText: l.nameLabel,
-                        hintText: l.tvNameHint,
-                      ),
+                      label: l.nameLabel,
+                      hint: l.tvNameHint,
                     ),
-                    const SizedBox(height: 10),
-                    TextFormField(
+                    AppSpacing.gapLg,
+                    AppTextField(
                       controller: _ipCtrl,
                       keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        labelText: l.ipLocalLabel,
-                        hintText: l.ipLocalHint,
-                      ),
+                      label: l.ipLocalLabel,
+                      hint: l.ipLocalHint,
                       validator: _validateIp,
                     ),
-                    const SizedBox(height: 10),
-                    TextFormField(
+                    AppSpacing.gapLg,
+                    AppTextField(
                       controller: _modelCtrl,
-                      decoration: InputDecoration(
-                        labelText: l.tvModelLabel,
-                        hintText: l.tvModelHint,
-                      ),
+                      label: l.tvModelLabel,
+                      hint: l.tvModelHint,
                     ),
-                    const SizedBox(height: 10),
-
-                    // Room dropdown
+                    AppSpacing.gapLg,
                     DropdownButtonFormField<String?>(
                       initialValue: _selectedRoomId,
+                      dropdownColor: AppColors.surface,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: AppColors.textPrimary,
+                          ),
+                      borderRadius: AppRadius.xlBR,
                       decoration: InputDecoration(labelText: l.roomLabel),
                       items: [
                         DropdownMenuItem<String?>(
@@ -181,59 +164,43 @@ class _AddTvSheetState extends State<AddTvSheet> {
                       ],
                       onChanged: (v) => setState(() => _selectedRoomId = v),
                     ),
-
                     SwitchListTile(
                       value: _isFavorite,
                       onChanged: (v) => setState(() => _isFavorite = v),
                       title: Text(l.favorite),
                     ),
-
-                    const SizedBox(height: 10),
-
+                    AppSpacing.gapLg,
                     if (_testError != null)
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
+                        padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
                             _testError!,
-                            style: const TextStyle(color: Colors.red),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(color: AppColors.danger),
                           ),
                         ),
                       ),
-
-                    const SizedBox(height: 12),
-
-                    // Action buttons
+                    AppSpacing.gapXl,
                     Row(
                       children: [
                         Expanded(
-                          child: OutlinedButton.icon(
+                          child: AppButton(
+                            label: _testOk ? l.testOk : l.test,
+                            leading: _testOk ? Icons.check : Icons.wifi_tethering,
+                            variant: AppButtonVariant.secondary,
                             onPressed: _testing ? null : _testConnection,
-                            icon: _testing
-                                ? const SizedBox(
-                                    width: 16,
-                                    height: 16,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                    ),
-                                  )
-                                : Icon(
-                                    _testOk
-                                        ? Icons.check
-                                        : Icons.wifi_tethering,
-                                  ),
-                            label: Text(
-                              _testOk ? l.testOk : l.test,
-                            ),
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        AppSpacing.gapHXl,
                         Expanded(
-                          child: ElevatedButton.icon(
+                          child: AppButton(
+                            label: l.save,
+                            leading: Icons.save,
                             onPressed: _save,
-                            icon: const Icon(Icons.save),
-                            label: Text(l.save),
                           ),
                         ),
                       ],

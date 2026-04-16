@@ -1,20 +1,27 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/design_system/buttons/mini_toggle.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_radius.dart';
+import '../../../core/theme/app_spacing.dart';
 
 class RoomToggleRow extends StatelessWidget {
   final String roomName;
   final VoidCallback onSelectRoom;
+  final GlobalKey? anchorKey;
 
-  final bool value;
-  final ValueChanged<bool>? onChanged;
+  final bool isOn;
+  final bool loading;
+  final VoidCallback? onTap;
 
   const RoomToggleRow({
     super.key,
     required this.roomName,
     required this.onSelectRoom,
-    required this.value,
-    required this.onChanged,
+    required this.isOn,
+    this.loading = false,
+    required this.onTap,
+    this.anchorKey,
   });
 
   @override
@@ -23,20 +30,21 @@ class RoomToggleRow extends StatelessWidget {
       children: [
         Expanded(
           child: InkWell(
-            borderRadius: BorderRadius.circular(12),
+            key: anchorKey,
+            borderRadius: AppRadius.xlBR,
             onTap: onSelectRoom,
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
               child: Row(
                 children: [
                   Text(
                     roomName,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimary,
-                    ),
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.textPrimary,
+                        ),
                   ),
-                  const SizedBox(width: 6),
+                  AppSpacing.gapHSm,
                   const Icon(
                     Icons.keyboard_arrow_down_rounded,
                     color: AppColors.textSecondary,
@@ -46,7 +54,7 @@ class RoomToggleRow extends StatelessWidget {
             ),
           ),
         ),
-        Switch(value: value, onChanged: onChanged),
+        MiniToggle(isOn: isOn, loading: loading, onTap: onTap),
       ],
     );
   }

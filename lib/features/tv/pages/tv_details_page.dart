@@ -3,6 +3,9 @@ import 'package:provider/provider.dart';
 
 import '../../../core/i18n/loc.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_font_sizes.dart';
+import '../../../core/theme/app_radius.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../core/utils/time_label.dart';
 
 import '../domain/tv_app.dart';
@@ -29,8 +32,12 @@ class TvDetailsPage extends StatefulWidget {
   State<TvDetailsPage> createState() => _TvDetailsPageState();
 }
 
+const _kNoRoom = '__none__';
+
 class _TvDetailsPageState extends State<TvDetailsPage> {
   late final TvDetailsController _controller;
+
+  final GlobalKey _roomKey = GlobalKey();
 
   @override
   void initState() {
@@ -83,13 +90,67 @@ class _TvDetailsPageState extends State<TvDetailsPage> {
   Future<void> _selectRoom() async {
     final device = _controller.device;
     if (device == null) return;
-    final nextRoomId = await EquipmentEditDialogs.pickRoom(
-      context,
-      currentRoomId: device.roomId,
-      rooms: _controller.rooms,
-      noneLabel: context.l10n.none,
+
+    final overlay = Overlay.of(context).context.findRenderObject() as RenderBox?;
+    final keyCtx = _roomKey.currentContext;
+    if (keyCtx == null || overlay == null) return;
+    final box = keyCtx.findRenderObject() as RenderBox?;
+    if (box == null) return;
+    final pos = box.localToGlobal(Offset.zero);
+    final position = RelativeRect.fromRect(
+      Rect.fromLTWH(pos.dx, pos.dy, box.size.width, box.size.height),
+      Offset.zero & overlay.size,
     );
-    await _controller.updateRoom(nextRoomId);
+
+    final selected = await showMenu<String>(
+      context: context,
+      position: position,
+      color: AppColors.surface,
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.xlBR),
+      items: [
+        PopupMenuItem<String>(
+          value: _kNoRoom,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (device.roomId == null)
+                const Icon(Icons.check_rounded, color: AppColors.primary, size: 18)
+              else
+                const SizedBox(width: 18),
+              AppSpacing.gapHMd,
+              Text(
+                context.l10n.none,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ],
+          ),
+        ),
+        ..._controller.rooms.map((room) => PopupMenuItem<String>(
+          value: room.id,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (room.id == device.roomId)
+                const Icon(Icons.check_rounded, color: AppColors.primary, size: 18)
+              else
+                const SizedBox(width: 18),
+              AppSpacing.gapHMd,
+              Text(
+                room.name,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ],
+          ),
+        )),
+      ],
+    );
+
+    if (selected == null) return;
+    await _controller.updateRoom(selected == _kNoRoom ? null : selected);
   }
 
   Future<void> _showVoiceInput() async {
@@ -114,7 +175,7 @@ class _TvDetailsPageState extends State<TvDetailsPage> {
             onPressed: () => Navigator.pop(context, true),
             child: Text(
               context.l10n.delete,
-              style: const TextStyle(color: AppColors.danger),
+              style: const TextStyle(fontFamily: 'ShareTech', color: AppColors.danger),
             ),
           ),
         ],
@@ -156,6 +217,7 @@ class _TvDetailsPageState extends State<TvDetailsPage> {
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
         children: [
           PrototypeCard(
+            accentColor: AppColors.tvAccent,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -164,17 +226,18 @@ class _TvDetailsPageState extends State<TvDetailsPage> {
                   updatedLabel: updatedLabel,
                   onRefresh: _controller.connect,
                 ),
-                const SizedBox(height: 4),
+                AppSpacing.gapXs,
                 Row(
                   children: [
                     Text(
                       d.name,
                       style: const TextStyle(
+                        fontFamily: 'ShareTech',
                         color: AppColors.textSecondary,
-                        fontSize: 13,
+                        fontSize: AppFontSizes.body,
                       ),
                     ),
-                    const SizedBox(width: 6),
+                    AppSpacing.gapHSm,
                     InkResponse(
                       onTap: _editName,
                       radius: 14,
@@ -186,39 +249,40 @@ class _TvDetailsPageState extends State<TvDetailsPage> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                AppSpacing.gapXl,
                 Row(
                   children: [
                     _SourceButton(
                       onTap: () =>
                           _controller.sendCommand(TvRemoteCommand.source),
                     ),
-                    const SizedBox(width: 10),
+                    AppSpacing.gapHLg,
                     _HomeButton(
                       onTap: () =>
                           _controller.sendCommand(TvRemoteCommand.home),
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                AppSpacing.gapX3l,
                 TvRemoteWidget(
                   onCommand: _controller.sendCommand,
                   onKeyboardTap: _showVoiceInput,
                 ),
-                const SizedBox(height: 20),
+                AppSpacing.gapX5l,
                 Text(
                   l.tvAppsTitle,
                   style: const TextStyle(
+                    fontFamily: 'ShareTech',
                     color: AppColors.textSecondary,
-                    fontSize: 12,
+                    fontSize: 12.0,
                   ),
                 ),
-                const SizedBox(height: 10),
+                AppSpacing.gapLg,
                 TvAppsGrid(
                   apps: defaultTvApps,
                   onAppTap: _controller.launchApp,
                 ),
-                const SizedBox(height: 18),
+                AppSpacing.gapX4l,
                 TvInfoGrid(
                   ipLabel: l.ipLocalLabel,
                   ip: d.ipAddress,
@@ -236,18 +300,18 @@ class _TvDetailsPageState extends State<TvDetailsPage> {
                   online: isConnected,
                   connectionLabel: connectionLabel,
                 ),
-                const SizedBox(height: 18),
+                AppSpacing.gapX4l,
                 RoomToggleRow(
-                  roomName:
-                      _controller.roomName(context.l10n.none),
+                  anchorKey: _roomKey,
+                  roomName: _controller.roomName(context.l10n.none),
                   onSelectRoom: _selectRoom,
-                  value: _controller.isOn,
-                  onChanged: (v) => _controller.togglePower(v),
+                  isOn: _controller.isOn,
+                  onTap: () => _controller.togglePower(_controller.isOn),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          AppSpacing.gapX3l,
           Center(
             child: TextButton(
               onPressed: _delete,
@@ -288,7 +352,7 @@ class _TvHeader extends StatelessWidget {
     return Row(
       children: [
         const Icon(Icons.cast_rounded, size: 20, color: AppColors.textPrimary),
-        const SizedBox(width: 10),
+        AppSpacing.gapHLg,
         Text(
           sourceName,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
@@ -296,13 +360,14 @@ class _TvHeader extends StatelessWidget {
                 color: AppColors.textPrimary,
               ),
         ),
-        const SizedBox(width: 10),
+        AppSpacing.gapHLg,
         Expanded(
           child: Text(
             updatedLabel,
             style: const TextStyle(
+              fontFamily: 'ShareTech',
               color: AppColors.textSecondary,
-              fontSize: 11,
+              fontSize: AppFontSizes.sm,
             ),
             overflow: TextOverflow.ellipsis,
           ),
@@ -329,24 +394,25 @@ class _SourceButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      borderRadius: BorderRadius.circular(6),
+      borderRadius: AppRadius.smBR,
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(6),
-          border: Border.all(color: AppColors.success, width: 1),
+          borderRadius: AppRadius.smBR,
+          border: Border.all(color: AppColors.primary, width: 1),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.input_rounded, color: AppColors.success, size: 16),
-            const SizedBox(width: 6),
+            const Icon(Icons.input_rounded, color: AppColors.primary, size: 16),
+            AppSpacing.gapHSm,
             Text(
               context.l10n.tvKeySource,
               style: const TextStyle(
-                color: AppColors.success,
-                fontSize: 12,
+                fontFamily: 'ShareTech',
+                color: AppColors.primary,
+                fontSize: 12.0,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -366,13 +432,13 @@ class _HomeButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      borderRadius: BorderRadius.circular(6),
+      borderRadius: AppRadius.smBR,
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(6),
-          border: Border.all(color: AppColors.stroke, width: 1),
+          borderRadius: AppRadius.smBR,
+          border: Border.all(color: AppColors.border, width: 1),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -382,8 +448,9 @@ class _HomeButton extends StatelessWidget {
             Text(
               context.l10n.tvKeyHome,
               style: const TextStyle(
+                fontFamily: 'ShareTech',
                 color: AppColors.textPrimary,
-                fontSize: 12,
+                fontSize: 12.0,
                 fontWeight: FontWeight.w600,
               ),
             ),

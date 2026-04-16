@@ -77,6 +77,24 @@ class EquipmentsController extends ChangeNotifier {
         .toList(growable: false);
   }
 
+  /// TV devices filtered to visible rooms in the given group.
+  List<TvDevice> tvDevicesForGroup(String? groupId) {
+    if (groupId == null) return _tvDevices;
+    final roomIds = visibleRoomIds(groupId);
+    return _tvDevices
+        .where((tv) => roomIds.contains(tv.roomId))
+        .toList(growable: false);
+  }
+
+  /// WLED devices filtered to visible rooms in the given group.
+  List<WledDevice> wledDevicesForGroup(String? groupId) {
+    if (groupId == null) return _wledDevices;
+    final roomIds = visibleRoomIds(groupId);
+    return _wledDevices
+        .where((w) => roomIds.contains(w.roomId))
+        .toList(growable: false);
+  }
+
   // ---------------------------------------------------------------------------
   // CRUD operations
   // ---------------------------------------------------------------------------

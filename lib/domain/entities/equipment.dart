@@ -1,4 +1,11 @@
-enum EquipmentType { shellyPlusPlugS, shellyPlugS, other }
+enum EquipmentType { shellyPlusPlugS, shellyPlugS, shellyHT, other }
+
+extension EquipmentTypeX on EquipmentType {
+  bool get isPlug =>
+      this == EquipmentType.shellyPlusPlugS ||
+      this == EquipmentType.shellyPlugS;
+  bool get isThermometer => this == EquipmentType.shellyHT;
+}
 
 class Equipment {
   final String id;

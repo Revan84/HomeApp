@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_font_sizes.dart';
+import '../../../core/theme/app_radius.dart';
+import '../../../core/theme/app_spacing.dart';
 
 /// A single info row like:
 /// "IP locale : 192.168.1.10  [edit]"
@@ -27,16 +30,16 @@ class InfoRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final base = Theme.of(context).textTheme.bodyMedium;
 
-    final labelStyle = base?.copyWith(color: AppColors.textSecondary, fontSize: 13);
+    final labelStyle = base?.copyWith(color: AppColors.textSecondary, fontSize: AppFontSizes.body);
     final valueStyle = base?.copyWith(
       color: AppColors.textPrimary,
       fontWeight: FontWeight.w700,
-      fontSize: 13
+      fontSize: AppFontSizes.body
     );
 
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: AppRadius.lgBR,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 6),
         child: Row(
@@ -54,7 +57,7 @@ class InfoRow extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 8),
+            AppSpacing.gapHMd,
             trailing,
           ],
         ),

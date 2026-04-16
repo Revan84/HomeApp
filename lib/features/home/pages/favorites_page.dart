@@ -3,7 +3,12 @@ import 'package:provider/provider.dart';
 
 import '../../../core/i18n/loc.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_radius.dart';
+import '../../../core/theme/app_shadows.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../domain/entities/equipment.dart';
+import '../../../domain/entities/tv_device.dart';
+import '../../../domain/entities/wled_device.dart';
 import '../../../features/equipments/pages/equipment_details_page.dart';
 import '../../../features/live/controllers/live_polling_controller.dart';
 import '../../../domain/entities/room.dart';
@@ -20,11 +25,15 @@ import '../widgets/favorite_pill_tile.dart';
 /// - floating add button at the bottom
 class FavoritesPage extends StatefulWidget {
   final List<Equipment> equipments;
+  final List<TvDevice> tvDevices;
+  final List<WledDevice> wledDevices;
   final List<Room> rooms;
 
   const FavoritesPage({
     super.key,
     required this.equipments,
+    required this.tvDevices,
+    required this.wledDevices,
     required this.rooms,
   });
 
@@ -33,12 +42,16 @@ class FavoritesPage extends StatefulWidget {
 }
 
 class _FavoritesPageState extends State<FavoritesPage> {
-  late List<Equipment> _favorites;
+  late List<Equipment> _favoriteEquipments;
+  late List<TvDevice> _favoriteTvs;
+  late List<WledDevice> _favoriteWleds;
 
   @override
   void initState() {
     super.initState();
-    _favorites = widget.equipments.where((equipment) => equipment.isFavorite).toList();
+    _favoriteEquipments = widget.equipments.where((e) => e.isFavorite).toList();
+    _favoriteTvs = widget.tvDevices.where((t) => t.isFavorite).toList();
+    _favoriteWleds = widget.wledDevices.where((w) => w.isFavorite).toList();
   }
 
   Future<void> _openDetails(Equipment equipment) async {
@@ -59,8 +72,20 @@ class _FavoritesPageState extends State<FavoritesPage> {
     if (!mounted) return;
 
     setState(() {
-      _favorites.removeWhere((item) => item.id == equipment.id);
+      _favoriteEquipments.removeWhere((item) => item.id == equipment.id);
     });
+  }
+
+  Future<void> _removeTv(TvDevice tv) async {
+    await context.read<HomeController>().removeTvFromFavorites(tv);
+    if (!mounted) return;
+    setState(() => _favoriteTvs.removeWhere((t) => t.id == tv.id));
+  }
+
+  Future<void> _removeWled(WledDevice wled) async {
+    await context.read<HomeController>().removeWledFromFavorites(wled);
+    if (!mounted) return;
+    setState(() => _favoriteWleds.removeWhere((w) => w.id == wled.id));
   }
 
   void _onAddPressed() {
@@ -86,13 +111,39 @@ class _FavoritesPageState extends State<FavoritesPage> {
     return Icons.devices_other_outlined;
   }
 
-  Color _statusColorFor(bool isOnline) {
-    return isOnline ? AppColors.success : Colors.redAccent;
+  List<({String title, IconData icon, VoidCallback onTap, VoidCallback onRemove})> _buildRows(LivePollingController liveController) {
+    final rows = <({String title, IconData icon, VoidCallback onTap, VoidCallback onRemove})>[];
+    for (final e in _favoriteEquipments) {
+      rows.add((
+        title: e.name,
+        icon: _leadingIconFor(e),
+        onTap: () => _openDetails(e),
+        onRemove: () => _removeFavorite(e),
+      ));
+    }
+    for (final tv in _favoriteTvs) {
+      rows.add((
+        title: tv.name,
+        icon: Icons.tv_rounded,
+        onTap: () {},
+        onRemove: () => _removeTv(tv),
+      ));
+    }
+    for (final wled in _favoriteWleds) {
+      rows.add((
+        title: wled.name,
+        icon: Icons.lightbulb_outline_rounded,
+        onTap: () {},
+        onRemove: () => _removeWled(wled),
+      ));
+    }
+    return rows;
   }
 
   @override
   Widget build(BuildContext context) {
     final liveController = context.watch<LivePollingController>();
+    final rows = _buildRows(liveController);
 
     return Scaffold(
       body: SafeArea(
@@ -102,7 +153,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
               onBackPressed: () => Navigator.of(context).pop(),
             ),
             Expanded(
-              child: _favorites.isEmpty
+              child: rows.isEmpty
                   ? Center(
                       child: Text(
                         context.l10n.noFavorites,
@@ -113,10 +164,10 @@ class _FavoritesPageState extends State<FavoritesPage> {
                     )
                   : ListView.separated(
                       padding: const EdgeInsets.fromLTRB(14, 8, 14, 24),
-                      itemCount: _favorites.length + 1,
-                      separatorBuilder: (_, _) => const SizedBox(height: 14),
+                      itemCount: rows.length + 1,
+                      separatorBuilder: (_, _) => AppSpacing.gapX2l,
                       itemBuilder: (context, index) {
-                        if (index == _favorites.length) {
+                        if (index == rows.length) {
                           return Padding(
                             padding: const EdgeInsets.only(top: 8),
                             child: Center(
@@ -128,17 +179,14 @@ class _FavoritesPageState extends State<FavoritesPage> {
                           );
                         }
 
-                        final equipment = _favorites[index];
-                        final liveState = liveController.live[equipment.id];
-                        final isOnline = liveState?.online ?? false;
-
+                        final row = rows[index];
                         return FavoritePillTile(
-                          icon: _leadingIconFor(equipment),
-                          title: equipment.name,
-                          statusColor: _statusColorFor(isOnline),
+                          icon: row.icon,
+                          title: row.title,
+                          statusColor: AppColors.textSecondary,
                           removeTooltip: context.l10n.favoriteRemoveTooltip,
-                          onTap: () => _openDetails(equipment),
-                          onRemove: () => _removeFavorite(equipment),
+                          onTap: row.onTap,
+                          onRemove: row.onRemove,
                         );
                       },
                     ),
@@ -180,7 +228,7 @@ class _FavoritesPageHeader extends StatelessWidget {
                   color: AppColors.textSecondary,
                 ),
               ),
-              const SizedBox(width: 6),
+              AppSpacing.gapHSm,
               IconButton(
                 tooltip: context.l10n.favoritesFilterTooltip,
                 onPressed: () {
@@ -190,7 +238,7 @@ class _FavoritesPageHeader extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 4),
+          AppSpacing.gapXs,
           Center(
             child: Text(
               context.l10n.favoritesPageTitle,
@@ -200,7 +248,7 @@ class _FavoritesPageHeader extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 12),
+          AppSpacing.gapXl,
         ],
       ),
     );
@@ -224,7 +272,7 @@ class _FavoritesAddButton extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(999),
+          borderRadius: AppRadius.pillBR,
           onTap: onPressed,
           child: Container(
             width: 52,
@@ -234,16 +282,9 @@ class _FavoritesAddButton extends StatelessWidget {
               shape: BoxShape.circle,
               border: Border.all(
                 width: 0.7,
-                color: AppColors.stroke.withValues(alpha: 0.90),
+                color: AppColors.border.withValues(alpha: 0.90),
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.22),
-                  blurRadius: 3,
-                  spreadRadius: 1,
-                  offset: const Offset(1, 5),
-                ),
-              ],
+              boxShadow: AppShadows.subtle,
             ),
             child: const Icon(
               Icons.add,

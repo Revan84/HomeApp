@@ -28,7 +28,7 @@ class StatWidgetFactory {
         child: Center(
           child: Text(
             'Loading…',
-            style: TextStyle(color: Colors.white54),
+            style: TextStyle(fontFamily: 'ShareTech', color: Colors.white54),
           ),
         ),
       );

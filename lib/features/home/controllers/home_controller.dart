@@ -1,35 +1,58 @@
-import 'package:flutter/foundation.dart';
+import 'dart:async' show unawaited;
+import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+
+import '../../integrations/wled/data/wled_api_client.dart';
+import '../../integrations/samsung/data/samsung_ws_client.dart';
+import '../../tv/domain/tv_remote_command.dart';
+
+import '../../../core/storage/local_storage.dart';
+import '../../../core/storage/storage_keys.dart';
 import '../../../data/mappers/equipment_mapper.dart';
 import '../../../domain/entities/equipment.dart';
+import '../../../domain/entities/live_state.dart';
 import '../../../domain/entities/room.dart';
 import '../../../domain/entities/room_group.dart';
 import '../../../domain/entities/tv_device.dart';
+import '../../../domain/entities/wled_device.dart';
 import '../../../domain/repositories/equipment_repository.dart';
 import '../../../domain/repositories/room_group_repository.dart';
 import '../../../domain/repositories/room_repository.dart';
 import '../../../domain/repositories/tv_repository.dart';
+import '../../../domain/repositories/wled_repository.dart';
 import '../../live/controllers/live_polling_controller.dart';
+import '../domain/today_widget_type.dart';
 
-/// Manages home screen data: favorites, rooms, equipments, and live sync.
+/// Manages home screen data: favorites, rooms, devices, today stats, and live sync.
 class HomeController extends ChangeNotifier {
   final RoomGroupRepository _roomGroupRepo;
   final RoomRepository _roomRepo;
   final EquipmentRepository _equipmentRepo;
   final TvRepository _tvRepo;
+  final WledRepository _wledRepo;
   final LivePollingController _liveController;
+  final LocalStorage _storage;
+  final http.Client _httpClient;
 
   HomeController({
     required RoomGroupRepository roomGroupRepo,
     required RoomRepository roomRepo,
     required EquipmentRepository equipmentRepo,
     required TvRepository tvRepo,
+    required WledRepository wledRepo,
     required LivePollingController liveController,
+    required LocalStorage storage,
+    required http.Client httpClient,
   })  : _roomGroupRepo = roomGroupRepo,
         _roomRepo = roomRepo,
         _equipmentRepo = equipmentRepo,
         _tvRepo = tvRepo,
-        _liveController = liveController;
+        _wledRepo = wledRepo,
+        _liveController = liveController,
+        _storage = storage,
+        _httpClient = httpClient;
 
   bool _loading = true;
   bool get isLoading => _loading;
@@ -49,6 +72,111 @@ class HomeController extends ChangeNotifier {
   List<TvDevice> _tvDevices = const [];
   List<TvDevice> get allTvDevices => _tvDevices;
 
+  List<WledDevice> _wledDevices = const [];
+  List<WledDevice> get allWledDevices => _wledDevices;
+
+  final Map<String, WledState> _wledStates = {};
+  final Map<String, bool> _tvIsOn = {};
+  final Map<String, SamsungWsClient> _tvClients = {};
+
+  WledState? wledStateFor(String id) => _wledStates[id];
+  bool tvIsOn(String id) => _tvIsOn[id] ?? true;
+
+  // ---------------------------------------------------------------------------
+  // Today section config
+  // ---------------------------------------------------------------------------
+
+  double _kwhPrice = 0.20;
+  double get kwhPrice => _kwhPrice;
+
+  List<TodayWidgetType> _visibleTodayWidgets = const [
+    TodayWidgetType.consumption,
+  ];
+  List<TodayWidgetType> get visibleTodayWidgets => _visibleTodayWidgets;
+
+  Future<void> _loadTodayConfig() async {
+    final priceStr = await _storage.getString(StorageKeys.kwhPrice);
+    if (priceStr != null) {
+      _kwhPrice = double.tryParse(priceStr) ?? 0.20;
+    }
+
+    final widgetsJson = await _storage.getString(StorageKeys.todayWidgetConfig);
+    if (widgetsJson != null) {
+      final names = (jsonDecode(widgetsJson) as List).cast<String>();
+      _visibleTodayWidgets = names
+          .map((n) => TodayWidgetType.values.where((t) => t.name == n).firstOrNull)
+          .whereType<TodayWidgetType>()
+          .toList();
+    }
+  }
+
+  Future<void> setKwhPrice(double price) async {
+    _kwhPrice = price;
+    await _storage.setString(StorageKeys.kwhPrice, price.toString());
+    notifyListeners();
+  }
+
+  Future<void> setVisibleTodayWidgets(List<TodayWidgetType> types) async {
+    _visibleTodayWidgets = types;
+    await _storage.setString(
+      StorageKeys.todayWidgetConfig,
+      jsonEncode(types.map((t) => t.name).toList()),
+    );
+    notifyListeners();
+  }
+
+  // ---------------------------------------------------------------------------
+  // Today stats (computed, not cached — called from UI build with live map)
+  // ---------------------------------------------------------------------------
+
+  /// Sum of energy (kWh) across all plugs in the visible group.
+  double totalEnergyKwh(String? groupId, Map<String, LiveState> live) {
+    final roomIds = visibleRoomIds(groupId);
+    return _equipments
+        .where((e) => e.type.isPlug && roomIds.contains(e.roomId))
+        .fold(0.0, (sum, e) => sum + ((live[e.id]?.energyWh ?? 0).toDouble() / 1000.0));
+  }
+
+  /// Estimated cost in € based on accumulated kWh and stored price.
+  double estimatedCost(double totalKwh) => totalKwh * _kwhPrice;
+
+  /// Average temperature across thermometer devices in the visible group.
+  /// Returns null when no thermometers are present or no data available.
+  double? averageTemperature(String? groupId, Map<String, LiveState> live) {
+    final roomIds = visibleRoomIds(groupId);
+    final temps = _equipments
+        .where((e) => e.type.isThermometer && roomIds.contains(e.roomId))
+        .map((e) => live[e.id]?.temperatureC)
+        .whereType<double>()
+        .toList();
+    if (temps.isEmpty) return null;
+    return temps.reduce((a, b) => a + b) / temps.length;
+  }
+
+  /// Average humidity across thermometer/sensor devices in the visible group.
+  double? averageHumidity(String? groupId, Map<String, LiveState> live) {
+    final roomIds = visibleRoomIds(groupId);
+    final values = _equipments
+        .where((e) => e.type.isThermometer && roomIds.contains(e.roomId))
+        .map((e) => live[e.id]?.humidity)
+        .whereType<double>()
+        .toList();
+    if (values.isEmpty) return null;
+    return values.reduce((a, b) => a + b) / values.length;
+  }
+
+  /// Whether any thermometer devices exist in the visible group.
+  bool hasThermometers(String? groupId) {
+    final roomIds = visibleRoomIds(groupId);
+    return _equipments.any(
+      (e) => e.type.isThermometer && roomIds.contains(e.roomId),
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // Data loading
+  // ---------------------------------------------------------------------------
+
   /// Loads all data in parallel and syncs live polling for the given group.
   Future<void> loadAll(String? selectedGroupId) async {
     _loading = true;
@@ -60,19 +188,24 @@ class HomeController extends ChangeNotifier {
         _roomRepo.loadAll(),
         _equipmentRepo.loadAll(),
         _tvRepo.loadAll(),
+        _wledRepo.loadAll(),
+        _loadTodayConfig(),
       ]);
 
       final roomGroups = results[0] as List<RoomGroup>;
       final rooms = results[1] as List<Room>;
       final equipments = results[2] as List<Equipment>;
       final tvDevices = results[3] as List<TvDevice>;
+      final wledDevices = results[4] as List<WledDevice>;
 
       _roomGroups = _sortedGroups(roomGroups);
       _rooms = _sortedRooms(rooms);
       _equipments = equipments;
       _tvDevices = tvDevices;
+      _wledDevices = wledDevices;
 
       syncLivePolling(selectedGroupId);
+      unawaited(_fetchWledStates(selectedGroupId));
     } catch (e) {
       _error = e.toString();
     } finally {
@@ -111,11 +244,17 @@ class HomeController extends ChangeNotifier {
         .toList(growable: false);
   }
 
-  bool isPlugEquipment(Equipment e) =>
-      e.type == EquipmentType.shellyPlusPlugS;
+  /// Favorite WLED devices in the selected group.
+  List<WledDevice> favoriteWledDevices(String? groupId) {
+    final roomIds = visibleRoomIds(groupId);
+    return _wledDevices
+        .where((w) => w.isFavorite && roomIds.contains(w.roomId))
+        .toList(growable: false);
+  }
 
-  bool isFavoriteSupported(Equipment e) =>
-      isPlugEquipment(e) && e.showToggle;
+  bool isPlugEquipment(Equipment e) => e.type.isPlug;
+
+  bool isFavoriteSupported(Equipment e) => isPlugEquipment(e) && e.showToggle;
 
   /// Resolves a room name by ID. Returns empty string when not found.
   String roomName(String? roomId) {
@@ -134,6 +273,42 @@ class HomeController extends ChangeNotifier {
     if (_roomGroups.any((g) => g.id == currentId)) return currentId;
     return _roomGroups.isNotEmpty ? _roomGroups.first.id : null;
   }
+
+  /// Total device count in a room (all types).
+  int deviceCountForRoom(String roomId) {
+    final plugs = _equipments.where((e) => e.roomId == roomId).length;
+    final tvs = _tvDevices.where((t) => t.roomId == roomId).length;
+    final wled = _wledDevices.where((w) => w.roomId == roomId).length;
+    return plugs + tvs + wled;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Per-room device accessors (all types)
+  // ---------------------------------------------------------------------------
+
+  List<Equipment> equipmentsForRoom(String roomId) =>
+      _equipments.where((e) => e.roomId == roomId).toList(growable: false);
+
+  List<TvDevice> tvDevicesForRoom(String roomId) =>
+      _tvDevices.where((t) => t.roomId == roomId).toList(growable: false);
+
+  List<WledDevice> wledDevicesForRoom(String roomId) =>
+      _wledDevices.where((w) => w.roomId == roomId).toList(growable: false);
+
+  /// Plugs (Shelly-type) that belong to [roomId] — legacy helper.
+  List<Equipment> plugsForRoom(String roomId) {
+    return _equipments
+        .where((e) => e.type.isPlug && e.roomId == roomId)
+        .toList(growable: false);
+  }
+
+  /// Finds an equipment by id, or null.
+  Equipment? equipmentById(String id) =>
+      _equipments.where((e) => e.id == id).firstOrNull;
+
+  // ---------------------------------------------------------------------------
+  // Live polling sync
+  // ---------------------------------------------------------------------------
 
   /// Syncs live polling with devices relevant to the home screen.
   void syncLivePolling(String? groupId) {
@@ -160,24 +335,80 @@ class HomeController extends ChangeNotifier {
     );
   }
 
-  /// Plugs (Shelly-type) that belong to [roomId].
-  List<Equipment> plugsForRoom(String roomId) {
-    return _equipments
-        .where(
-          (e) => e.type == EquipmentType.shellyPlusPlugS && e.roomId == roomId,
-        )
-        .toList(growable: false);
+  // ---------------------------------------------------------------------------
+  // WLED state
+  // ---------------------------------------------------------------------------
+
+  Future<void> _fetchWledStates(String? groupId) async {
+    final roomIds = visibleRoomIds(groupId);
+    final devices = _wledDevices.where((w) => roomIds.contains(w.roomId) || w.isFavorite);
+    final api = WledApiClient(_httpClient);
+    for (final device in devices) {
+      try {
+        final state = await api.getState(device.ipAddress);
+        if (state != null) {
+          _wledStates[device.id] = state;
+        }
+      } catch (_) {
+        // Unreachable devices are silently skipped.
+      }
+    }
+    notifyListeners();
   }
 
-  /// Finds an equipment by id, or null.
-  Equipment? equipmentById(String id) =>
-      _equipments.where((e) => e.id == id).firstOrNull;
+  Future<void> toggleWled(WledDevice device) async {
+    final currentlyOn = _wledStates[device.id]?.isOn ?? true;
+    final newOn = !currentlyOn;
+    _wledStates[device.id] = (_wledStates[device.id] ?? WledState.defaultState).copyWith(isOn: newOn);
+    notifyListeners();
+    try {
+      await WledApiClient(_httpClient).setOn(device.ipAddress, on: newOn);
+    } catch (_) {
+      _wledStates[device.id] = (_wledStates[device.id]!).copyWith(isOn: currentlyOn);
+      notifyListeners();
+    }
+  }
+
+  Future<void> setWledBrightness(WledDevice device, double value) async {
+    final bri = (value * 255).round().clamp(1, 255);
+    _wledStates[device.id] = (_wledStates[device.id] ?? WledState.defaultState).copyWith(brightness: bri);
+    notifyListeners();
+    try {
+      await WledApiClient(_httpClient).setBrightness(device.ipAddress, bri);
+    } catch (_) {}
+  }
+
+  // ---------------------------------------------------------------------------
+  // TV commands
+  // ---------------------------------------------------------------------------
+
+  Future<void> sendTvCommand(TvDevice device, TvRemoteCommand cmd) async {
+    if (cmd == TvRemoteCommand.powerOn) {
+      _tvIsOn[device.id] = true;
+      notifyListeners();
+    } else if (cmd == TvRemoteCommand.powerOff) {
+      _tvIsOn[device.id] = false;
+      notifyListeners();
+    }
+    var client = _tvClients[device.id];
+    if (client == null) {
+      client = SamsungWsClient();
+      _tvClients[device.id] = client;
+      client.onTokenReceived.listen((token) async {
+        final updated = device.copyWith(wsToken: token);
+        await _tvRepo.update(updated);
+      });
+    }
+    if (client.state != TvConnectionState.connected) {
+      await client.connect(device.ipAddress, savedToken: device.wsToken);
+    }
+    client.sendKey(cmd);
+  }
 
   // ---------------------------------------------------------------------------
   // Room group CRUD
   // ---------------------------------------------------------------------------
 
-  /// Creates a new room group and inserts it into the sorted list.
   Future<RoomGroup> addRoomGroup(String name) async {
     final group = await _roomGroupRepo.add(name);
     _roomGroups = _sortedGroups([..._roomGroups, group]);
@@ -197,6 +428,10 @@ class HomeController extends ChangeNotifier {
     return _tvRepo.update(tv.copyWith(isFavorite: false));
   }
 
+  Future<void> removeWledFromFavorites(WledDevice device) {
+    return _wledRepo.update(device.copyWith(isFavorite: false));
+  }
+
   // ---------------------------------------------------------------------------
   // Live actions
   // ---------------------------------------------------------------------------
@@ -208,7 +443,6 @@ class HomeController extends ChangeNotifier {
   // Room CRUD
   // ---------------------------------------------------------------------------
 
-  /// Returns all rooms NOT in [groupId] (available to be moved into it).
   Future<List<Room>> availableRoomsForGroup(String groupId) async {
     final all = await _roomRepo.loadAll();
     return all.where((r) => r.groupId != groupId).toList(growable: false);
@@ -245,4 +479,13 @@ class HomeController extends ChangeNotifier {
           if (sortCmp != 0) return sortCmp;
           return a.name.toLowerCase().compareTo(b.name.toLowerCase());
         });
+
+  @override
+  void dispose() {
+    for (final client in _tvClients.values) {
+      unawaited(client.disconnect());
+      client.dispose();
+    }
+    super.dispose();
+  }
 }
