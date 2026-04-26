@@ -1,10 +1,12 @@
-enum EquipmentType { shellyPlusPlugS, shellyPlugS, shellyHT, other }
+enum EquipmentType { shellyPlusPlugS, shellyPlugS, shellyHT, hygrometer, other }
 
 extension EquipmentTypeX on EquipmentType {
   bool get isPlug =>
       this == EquipmentType.shellyPlusPlugS ||
       this == EquipmentType.shellyPlugS;
   bool get isThermometer => this == EquipmentType.shellyHT;
+  bool get isHygrometer => this == EquipmentType.hygrometer;
+  bool get isSensor => isThermometer || isHygrometer;
 }
 
 class Equipment {
@@ -37,12 +39,14 @@ class Equipment {
     this.channel = 0,
   });
 
+  static const _absent = Object();
+
   Equipment copyWith({
     String? id,
     String? name,
     String? ip,
     EquipmentType? type,
-    String? roomId,
+    Object? roomId = _absent,
     bool? isFavorite,
     bool? showToggle,
     bool? showPower,
@@ -55,7 +59,7 @@ class Equipment {
       name: name ?? this.name,
       ip: ip ?? this.ip,
       type: type ?? this.type,
-      roomId: roomId ?? this.roomId,
+      roomId: identical(roomId, _absent) ? this.roomId : roomId as String?,
       isFavorite: isFavorite ?? this.isFavorite,
       showToggle: showToggle ?? this.showToggle,
       showPower: showPower ?? this.showPower,

@@ -125,10 +125,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get equipmentTypeOther => 'Autre (test)';
 
   @override
-  String get validationIpRequired => 'IP requise';
+  String get validationIpRequired => 'L\'adresse IP est requise';
 
   @override
-  String get validationIpInvalidFormat => 'Format IP invalide';
+  String get validationIpInvalidFormat => 'Format invalide (ex. 192.168.1.37)';
 
   @override
   String get validationIpInvalid => 'IP invalide';
@@ -841,41 +841,455 @@ class AppLocalizationsFr extends AppLocalizations {
   String get deviceTypeTv => 'TV connectée';
 
   @override
-  String get deviceTypeWled => 'Bandeau LED WLED';
+  String get deviceTypeCobLedRgb => 'Bandeau LED WLED';
 
   @override
-  String get wledAddTitle => 'Ajouter un appareil WLED';
+  String get deviceTypeCobLedCct => 'Éclairage LED CCT';
 
   @override
-  String get wledDefaultName => 'Bandeau LED';
+  String get cobLedRgbAddTitle => 'Ajouter un appareil WLED';
 
   @override
-  String get wledNameHint => 'ex : LEDs Salon';
+  String get cobLedRgbDefaultName => 'Bandeau LED';
 
   @override
-  String get wledModelHint => 'ex : WLED v0.14';
+  String get cobLedRgbNameHint => 'ex : LEDs Salon';
 
   @override
-  String get wledTestFailed => 'Connexion échouée';
+  String get cobLedRgbModelHint => 'ex : WLED v0.14';
 
   @override
-  String get wledDeleteConfirm => 'Supprimer cet appareil ?';
+  String get cobLedRgbTestFailed => 'Connexion échouée';
 
   @override
-  String get wledBrightnessLabel => 'Luminosité';
+  String get cobLedRgbDeleteConfirm => 'Supprimer cet appareil ?';
 
   @override
-  String get wledSpeedLabel => 'Vitesse';
+  String get cobLedRgbBrightnessLabel => 'Luminosité';
 
   @override
-  String get wledIntensityLabel => 'Intensité';
+  String get cobLedRgbSpeedLabel => 'Vitesse';
 
   @override
-  String get wledColorsTab => 'Couleurs';
+  String get cobLedRgbIntensityLabel => 'Intensité';
 
   @override
-  String get wledEffectsTab => 'Effets';
+  String get cobLedRgbColorsTab => 'Couleurs';
 
   @override
-  String get wledScenesLabel => 'Scènes';
+  String get cobLedRgbEffectsTab => 'Effets';
+
+  @override
+  String get cobLedRgbScenesLabel => 'Scènes';
+
+  @override
+  String smartPlugDetailTitle(String name) {
+    return '$name';
+  }
+
+  @override
+  String get smartPlugSubtitle => 'Prise connectée';
+
+  @override
+  String get smartPlugOnline => 'en ligne';
+
+  @override
+  String get smartPlugOffline => 'hors ligne';
+
+  @override
+  String get smartPlugKpiUnit => 'W';
+
+  @override
+  String smartPlugCostPerHour(String cost) {
+    return '≈ $cost €/h';
+  }
+
+  @override
+  String smartPlugCostToday(String cost) {
+    return '≈ $cost€ aujourd\'hui';
+  }
+
+  @override
+  String smartPlugKwhCumulated(String kwh) {
+    return '$kwh kWh cumulés';
+  }
+
+  @override
+  String get smartPlugSectionConsumption => 'Consommation';
+
+  @override
+  String get smartPlugSectionTimeline => 'Chronologie';
+
+  @override
+  String get smartPlugTimelineSubtitle => 'On/off dernières 24h';
+
+  @override
+  String get smartPlugSectionAlerts => 'Alertes';
+
+  @override
+  String get smartPlugNoAlerts => 'Aucun seuil configuré';
+
+  @override
+  String get smartPlugSectionInformations => 'Informations';
+
+  @override
+  String get smartPlugInfoLocalIp => 'IP locale';
+
+  @override
+  String get smartPlugInfoModel => 'Modèle';
+
+  @override
+  String get smartPlugInfoConnection => 'Connexion';
+
+  @override
+  String get smartPlugWifi => 'Wi-Fi';
+
+  @override
+  String get smartPlugChangeRoom => 'Modifier';
+
+  @override
+  String get smartPlugMenuRefresh => 'Actualiser';
+
+  @override
+  String get smartPlugMenuEdit => 'Modifier';
+
+  @override
+  String get smartPlugMenuDelete => 'Supprimer';
+
+  @override
+  String get smartPlugDeleteConfirmTitle => 'Supprimer l\'équipement ?';
+
+  @override
+  String get smartPlugDeleteConfirmBody => 'Cette action est irréversible.';
+
+  @override
+  String get smartPlugDeleteConfirmCancel => 'Annuler';
+
+  @override
+  String get smartPlugDeleteConfirmConfirm => 'Supprimer';
+
+  @override
+  String get smartPlugLastKnownValues => 'Dernières valeurs connues';
+
+  @override
+  String get smartPlugEditKwhPriceTitle => 'Prix de l\'électricité';
+
+  @override
+  String get smartPlugAlertSheetTitle => 'Ajouter une alerte';
+
+  @override
+  String get smartPlugAlertConditionLabel => 'Type d\'alerte';
+
+  @override
+  String get smartPlugAlertConditionWatts => 'Consommation (W)';
+
+  @override
+  String get smartPlugAlertConditionDailyCost => 'Coût journalier (€)';
+
+  @override
+  String get smartPlugAlertThresholdLabel => 'Seuil';
+
+  @override
+  String get smartPlugAlertThresholdHintWatts => 'ex. 2500';
+
+  @override
+  String get smartPlugAlertThresholdHintCost => 'ex. 1,50';
+
+  @override
+  String get smartPlugAlertNotificationsLabel => 'Notifications';
+
+  @override
+  String get smartPlugAlertNotifPush => 'Push';
+
+  @override
+  String get smartPlugAlertNotifBanner => 'Bannière';
+
+  @override
+  String get smartPlugAlertNotifRequired =>
+      'Sélectionnez au moins un type de notification';
+
+  @override
+  String get tvSubtitle => 'Télécommande';
+
+  @override
+  String get tvOnline => 'en ligne';
+
+  @override
+  String get tvOffline => 'hors ligne';
+
+  @override
+  String get tvSourceActive => 'Source active';
+
+  @override
+  String get tvSectionRemote => 'Télécommande';
+
+  @override
+  String get tvSectionApplications => 'Applications';
+
+  @override
+  String get tvSectionInformations => 'Informations';
+
+  @override
+  String get tvMenuRefresh => 'Actualiser';
+
+  @override
+  String get tvMenuEdit => 'Modifier';
+
+  @override
+  String get tvMenuDelete => 'Supprimer';
+
+  @override
+  String get tvDeleteConfirmTitle => 'Supprimer la TV ?';
+
+  @override
+  String get tvDeleteConfirmBody => 'Cette action est irréversible.';
+
+  @override
+  String get tvDeleteConfirmCancel => 'Annuler';
+
+  @override
+  String get tvDeleteConfirmConfirm => 'Supprimer';
+
+  @override
+  String get tvLastKnownValues => 'Dernières valeurs connues';
+
+  @override
+  String get detailSectionLive => 'EN DIRECT';
+
+  @override
+  String get detailSectionHistoric => 'HISTORIQUE';
+
+  @override
+  String get detailSectionInformations => 'INFORMATIONS';
+
+  @override
+  String get detailSectionAlerts => 'ALERTES';
+
+  @override
+  String get detailSectionTemperature => 'TEMPÉRATURE';
+
+  @override
+  String get detailStatMin => 'MIN';
+
+  @override
+  String get detailStatMax => 'MAX';
+
+  @override
+  String get detailStatAvgWeek => 'Moy. semaine';
+
+  @override
+  String get detailStatAvgMonth => 'Moy. mois';
+
+  @override
+  String get detailStatAmplitude => 'Amplitude';
+
+  @override
+  String get detailStatToday => 'Aujourd\'hui';
+
+  @override
+  String get detailInfoStatus => 'Statut';
+
+  @override
+  String get detailTrendRising => 'Tendance : hausse';
+
+  @override
+  String get detailTrendFalling => 'Tendance : baisse';
+
+  @override
+  String get detailTrendUpward => 'Tendance : montée';
+
+  @override
+  String get detailTrendDownward => 'Tendance : descente';
+
+  @override
+  String get thermometerTypeLabel => 'Thermomètre';
+
+  @override
+  String get hygrometerTypeLabel => 'Hygromètre';
+
+  @override
+  String get cobLedRgbTypeLabel => 'COB LED RGB';
+
+  @override
+  String get cobLedCctTypeLabel => 'COB LED CCT';
+
+  @override
+  String get deviceOfflineBanner => 'Appareil hors ligne';
+
+  @override
+  String get deviceNotFound => 'Appareil introuvable';
+
+  @override
+  String get cobLedSectionLuminosity => 'LUMINOSITÉ';
+
+  @override
+  String get cobLedSectionWledControls => 'CONTRÔLES WLED';
+
+  @override
+  String get cobLedRgbSectionColor => 'COULEUR';
+
+  @override
+  String get cobLedCctSectionColourTemp => 'TEMPÉRATURE DE COULEUR';
+
+  @override
+  String get cobLedCctSaveAsTemplateTitle => 'Enregistrer comme modèle';
+
+  @override
+  String get cobLedCctTemplateNameHint => 'Nom du modèle';
+
+  @override
+  String get cobLedCctDeviceHint => 'ex. ESP32 CCT Controller';
+
+  @override
+  String get sensorAlertConditionAbove => 'Au-dessus';
+
+  @override
+  String get sensorAlertConditionBelow => 'En dessous';
+
+  @override
+  String get hygrometerComfortRangeLabel => 'Zone de confort : 40 % – 60 %';
+
+  @override
+  String get hygrometerStatComfort => 'Confort';
+
+  @override
+  String get homeSectionToday => 'Aujourd\'hui';
+
+  @override
+  String get homeTodayConsumptionLabel => 'Consommation';
+
+  @override
+  String get homeTodayAvgTempLabel => 'Temp. moy.';
+
+  @override
+  String get homeTodayHumidityLabel => 'Humidité';
+
+  @override
+  String get equipmentsFilterAllTypes => 'Tous les types';
+
+  @override
+  String equipmentsRoomAll(int count) {
+    return 'Toutes les pièces ($count)';
+  }
+
+  @override
+  String equipmentsRoomItem(String name, int count) {
+    return '$name ($count)';
+  }
+
+  @override
+  String get equipmentsSearchHint => 'Rechercher un appareil...';
+
+  @override
+  String areasAllRooms(int count) {
+    return 'Toutes les pièces ($count)';
+  }
+
+  @override
+  String areasRoomItem(String name, int count) {
+    return '$name ($count)';
+  }
+
+  @override
+  String get areasNoRooms => 'Aucune pièce configurée.';
+
+  @override
+  String get areasNoDevices => 'Aucun appareil dans cette pièce.';
+
+  @override
+  String get deviceStatusOn => 'ON';
+
+  @override
+  String get deviceStatusOff => 'OFF';
+
+  @override
+  String colorCopiedSnack(String hex) {
+    return '$hex copié';
+  }
+
+  @override
+  String get cobLedEffectLabel => 'Effet';
+
+  @override
+  String get cobLedSpeedLabel => 'Vitesse';
+
+  @override
+  String get cobLedIntensityLabel => 'Intensité';
+
+  @override
+  String get cobLedAudioReactive => 'Réactif au son';
+
+  @override
+  String get cobLedAudioReactiveHint => 'Réagir à l\'entrée du microphone';
+
+  @override
+  String get cobLedLoadingEffects => 'Chargement des effets…';
+
+  @override
+  String get cobLedNoPresets => 'Aucun preset trouvé sur l\'appareil.';
+
+  @override
+  String get cobLedSectionTemplates => 'MODÈLES';
+
+  @override
+  String get cobLedSectionActiveScene => 'SCÈNE ACTIVE';
+
+  @override
+  String get cobLedNoActiveScene => 'Aucune scène active';
+
+  @override
+  String get cobLedPresetActive => 'Actif';
+
+  @override
+  String get cobLedPresetApply => 'Appliquer';
+
+  @override
+  String get addDeviceTitle => 'Ajouter un appareil';
+
+  @override
+  String get addDeviceTypeLabel => 'Type d\'appareil';
+
+  @override
+  String get addDeviceTypeHint => 'Sélectionner un type';
+
+  @override
+  String get addDeviceNameLabel => 'Nom de l\'appareil';
+
+  @override
+  String get addDeviceIpLabel => 'IP locale';
+
+  @override
+  String get addDeviceRoomLabel => 'Pièce';
+
+  @override
+  String get addDeviceRoomOptionalLabel => 'Pièce (optionnel)';
+
+  @override
+  String get addDeviceModelOptionalLabel => 'Modèle (optionnel)';
+
+  @override
+  String get addDeviceFavoriteLabel => 'Favori';
+
+  @override
+  String get addDeviceAddToFavorites => 'Ajouter aux favoris';
+
+  @override
+  String get addDeviceConnectedCheck => 'Connecté ✓';
+
+  @override
+  String get cobLedCctAddTitle => 'Ajouter une lumière CCT';
+
+  @override
+  String get validationNameRequired => 'Nom requis';
+
+  @override
+  String get validationIpInvalidRange => 'Adresse IP invalide';
+
+  @override
+  String connectionFailedDetail(String error) {
+    return 'Connexion échouée : $error';
+  }
+
+  @override
+  String get noData => 'Aucune donnée';
 }

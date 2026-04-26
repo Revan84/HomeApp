@@ -1,29 +1,35 @@
-import 'dart:async' show unawaited;
+﻿import 'dart:async' show unawaited;
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
-import '../../integrations/wled/data/wled_api_client.dart';
-import '../../integrations/samsung/data/samsung_ws_client.dart';
-import '../../tv/domain/tv_remote_command.dart';
+import '../../devices/tv/domain/tv_remote_command.dart';
 
 import '../../../core/storage/local_storage.dart';
 import '../../../core/storage/storage_keys.dart';
 import '../../../data/mappers/equipment_mapper.dart';
+import '../../../domain/entities/cob_led_cct_device.dart';
+import '../../../domain/entities/device_bundle.dart';
 import '../../../domain/entities/equipment.dart';
 import '../../../domain/entities/live_state.dart';
 import '../../../domain/entities/room.dart';
 import '../../../domain/entities/room_group.dart';
 import '../../../domain/entities/tv_device.dart';
-import '../../../domain/entities/wled_device.dart';
+import '../../../domain/entities/cob_led_rgb_device.dart';
+import '../../../domain/repositories/cob_led_cct_repository.dart';
 import '../../../domain/repositories/equipment_repository.dart';
 import '../../../domain/repositories/room_group_repository.dart';
 import '../../../domain/repositories/room_repository.dart';
 import '../../../domain/repositories/tv_repository.dart';
-import '../../../domain/repositories/wled_repository.dart';
+import '../../../domain/repositories/cob_led_rgb_repository.dart';
+import '../../integrations/cob_led_rgb/data/cob_led_rgb_api_client.dart' show CobLedRgbState;
+import '../../integrations/cob_led_cct/data/cob_led_cct_api_client.dart' show CctDeviceState;
 import '../../live/controllers/live_polling_controller.dart';
 import '../domain/today_widget_type.dart';
+import 'home_cct_handler.dart';
+import 'home_rgb_handler.dart';
+import 'home_tv_handler.dart';
 
 /// Manages home screen data: favorites, rooms, devices, today stats, and live sync.
 class HomeController extends ChangeNotifier {
@@ -31,17 +37,22 @@ class HomeController extends ChangeNotifier {
   final RoomRepository _roomRepo;
   final EquipmentRepository _equipmentRepo;
   final TvRepository _tvRepo;
-  final WledRepository _wledRepo;
+  final CobLedRgbRepository _cobLedRgbRepo;
+  final CobLedCctRepository _cobLedCctRepo;
   final LivePollingController _liveController;
   final LocalStorage _storage;
-  final http.Client _httpClient;
+
+  late final HomeRgbHandler _rgb;
+  late final HomeCctHandler _cct;
+  late final HomeTvHandler _tv;
 
   HomeController({
     required RoomGroupRepository roomGroupRepo,
     required RoomRepository roomRepo,
     required EquipmentRepository equipmentRepo,
     required TvRepository tvRepo,
-    required WledRepository wledRepo,
+    required CobLedRgbRepository cobLedRgbRepo,
+    required CobLedCctRepository cobLedCctRepo,
     required LivePollingController liveController,
     required LocalStorage storage,
     required http.Client httpClient,
@@ -49,10 +60,14 @@ class HomeController extends ChangeNotifier {
         _roomRepo = roomRepo,
         _equipmentRepo = equipmentRepo,
         _tvRepo = tvRepo,
-        _wledRepo = wledRepo,
+        _cobLedRgbRepo = cobLedRgbRepo,
+        _cobLedCctRepo = cobLedCctRepo,
         _liveController = liveController,
-        _storage = storage,
-        _httpClient = httpClient;
+        _storage = storage {
+    _rgb = HomeRgbHandler(httpClient: httpClient, notify: notifyListeners);
+    _cct = HomeCctHandler(httpClient: httpClient, notify: notifyListeners);
+    _tv = HomeTvHandler(tvRepo: tvRepo, notify: notifyListeners);
+  }
 
   bool _loading = true;
   bool get isLoading => _loading;
@@ -72,15 +87,22 @@ class HomeController extends ChangeNotifier {
   List<TvDevice> _tvDevices = const [];
   List<TvDevice> get allTvDevices => _tvDevices;
 
-  List<WledDevice> _wledDevices = const [];
-  List<WledDevice> get allWledDevices => _wledDevices;
+  List<CobLedRgbDevice> _cobLedRgbDevices = const [];
+  List<CobLedRgbDevice> get allCobLedRgbDevices => _cobLedRgbDevices;
 
-  final Map<String, WledState> _wledStates = {};
-  final Map<String, bool> _tvIsOn = {};
-  final Map<String, SamsungWsClient> _tvClients = {};
+  List<CobLedCctDevice> _cobLedCctDevices = const [];
+  List<CobLedCctDevice> get allCobLedCctDevices => _cobLedCctDevices;
 
-  WledState? wledStateFor(String id) => _wledStates[id];
-  bool tvIsOn(String id) => _tvIsOn[id] ?? true;
+  DeviceBundle get allDevices => DeviceBundle(
+        equipments: _equipments,
+        tvDevices: _tvDevices,
+        cobLedRgbDevices: _cobLedRgbDevices,
+        cobLedCctDevices: _cobLedCctDevices,
+      );
+
+  CobLedRgbState? cobLedRgbStateFor(String id) => _rgb.stateFor(id);
+  CctDeviceState? cctStateFor(String id) => _cct.stateFor(id);
+  bool tvIsOn(String id) => _tv.isOn(id);
 
   // ---------------------------------------------------------------------------
   // Today section config
@@ -188,7 +210,8 @@ class HomeController extends ChangeNotifier {
         _roomRepo.loadAll(),
         _equipmentRepo.loadAll(),
         _tvRepo.loadAll(),
-        _wledRepo.loadAll(),
+        _cobLedRgbRepo.loadAll(),
+        _cobLedCctRepo.loadAll(),
         _loadTodayConfig(),
       ]);
 
@@ -196,16 +219,19 @@ class HomeController extends ChangeNotifier {
       final rooms = results[1] as List<Room>;
       final equipments = results[2] as List<Equipment>;
       final tvDevices = results[3] as List<TvDevice>;
-      final wledDevices = results[4] as List<WledDevice>;
+      final cobLedRgbDevices = results[4] as List<CobLedRgbDevice>;
+      final cctDevices = results[5] as List<CobLedCctDevice>;
 
       _roomGroups = _sortedGroups(roomGroups);
       _rooms = _sortedRooms(rooms);
       _equipments = equipments;
       _tvDevices = tvDevices;
-      _wledDevices = wledDevices;
+      _cobLedRgbDevices = cobLedRgbDevices;
+      _cobLedCctDevices = cctDevices;
 
       syncLivePolling(selectedGroupId);
-      unawaited(_fetchWledStates(selectedGroupId));
+      unawaited(_fetchCobLedRgbStates(selectedGroupId));
+      unawaited(_fetchCctStates(selectedGroupId));
     } catch (e) {
       _error = e.toString();
     } finally {
@@ -245,10 +271,18 @@ class HomeController extends ChangeNotifier {
   }
 
   /// Favorite WLED devices in the selected group.
-  List<WledDevice> favoriteWledDevices(String? groupId) {
+  List<CobLedRgbDevice> favoriteCobLedRgbDevices(String? groupId) {
     final roomIds = visibleRoomIds(groupId);
-    return _wledDevices
+    return _cobLedRgbDevices
         .where((w) => w.isFavorite && roomIds.contains(w.roomId))
+        .toList(growable: false);
+  }
+
+  /// Favorite CCT LED devices in the selected group.
+  List<CobLedCctDevice> favoriteCobLedCctDevices(String? groupId) {
+    final roomIds = visibleRoomIds(groupId);
+    return _cobLedCctDevices
+        .where((c) => c.isFavorite && roomIds.contains(c.roomId))
         .toList(growable: false);
   }
 
@@ -278,8 +312,9 @@ class HomeController extends ChangeNotifier {
   int deviceCountForRoom(String roomId) {
     final plugs = _equipments.where((e) => e.roomId == roomId).length;
     final tvs = _tvDevices.where((t) => t.roomId == roomId).length;
-    final wled = _wledDevices.where((w) => w.roomId == roomId).length;
-    return plugs + tvs + wled;
+    final rgb = _cobLedRgbDevices.where((w) => w.roomId == roomId).length;
+    final cct = _cobLedCctDevices.where((c) => c.roomId == roomId).length;
+    return plugs + tvs + rgb + cct;
   }
 
   // ---------------------------------------------------------------------------
@@ -292,8 +327,11 @@ class HomeController extends ChangeNotifier {
   List<TvDevice> tvDevicesForRoom(String roomId) =>
       _tvDevices.where((t) => t.roomId == roomId).toList(growable: false);
 
-  List<WledDevice> wledDevicesForRoom(String roomId) =>
-      _wledDevices.where((w) => w.roomId == roomId).toList(growable: false);
+  List<CobLedRgbDevice> cobLedRgbDevicesForRoom(String roomId) =>
+      _cobLedRgbDevices.where((w) => w.roomId == roomId).toList(growable: false);
+
+  List<CobLedCctDevice> cobLedCctDevicesForRoom(String roomId) =>
+      _cobLedCctDevices.where((c) => c.roomId == roomId).toList(growable: false);
 
   /// Plugs (Shelly-type) that belong to [roomId] — legacy helper.
   List<Equipment> plugsForRoom(String roomId) {
@@ -336,74 +374,30 @@ class HomeController extends ChangeNotifier {
   }
 
   // ---------------------------------------------------------------------------
-  // WLED state
+  // RGB / CCT / TV — delegated to sub-handlers
   // ---------------------------------------------------------------------------
 
-  Future<void> _fetchWledStates(String? groupId) async {
+  Future<void> _fetchCobLedRgbStates(String? groupId) {
     final roomIds = visibleRoomIds(groupId);
-    final devices = _wledDevices.where((w) => roomIds.contains(w.roomId) || w.isFavorite);
-    final api = WledApiClient(_httpClient);
-    for (final device in devices) {
-      try {
-        final state = await api.getState(device.ipAddress);
-        if (state != null) {
-          _wledStates[device.id] = state;
-        }
-      } catch (_) {
-        // Unreachable devices are silently skipped.
-      }
-    }
-    notifyListeners();
+    return _rgb.fetchStates(
+      _cobLedRgbDevices.where((w) => roomIds.contains(w.roomId) || w.isFavorite),
+    );
   }
 
-  Future<void> toggleWled(WledDevice device) async {
-    final currentlyOn = _wledStates[device.id]?.isOn ?? true;
-    final newOn = !currentlyOn;
-    _wledStates[device.id] = (_wledStates[device.id] ?? WledState.defaultState).copyWith(isOn: newOn);
-    notifyListeners();
-    try {
-      await WledApiClient(_httpClient).setOn(device.ipAddress, on: newOn);
-    } catch (_) {
-      _wledStates[device.id] = (_wledStates[device.id]!).copyWith(isOn: currentlyOn);
-      notifyListeners();
-    }
+  Future<void> _fetchCctStates(String? groupId) {
+    final roomIds = visibleRoomIds(groupId);
+    return _cct.fetchStates(
+      _cobLedCctDevices.where((c) => roomIds.contains(c.roomId) || c.isFavorite),
+    );
   }
 
-  Future<void> setWledBrightness(WledDevice device, double value) async {
-    final bri = (value * 255).round().clamp(1, 255);
-    _wledStates[device.id] = (_wledStates[device.id] ?? WledState.defaultState).copyWith(brightness: bri);
-    notifyListeners();
-    try {
-      await WledApiClient(_httpClient).setBrightness(device.ipAddress, bri);
-    } catch (_) {}
-  }
+  Future<void> toggleCobLedRgb(CobLedRgbDevice device) => _rgb.toggle(device);
+  Future<void> setCobLedRgbBrightness(CobLedRgbDevice device, double v) => _rgb.setBrightness(device, v);
 
-  // ---------------------------------------------------------------------------
-  // TV commands
-  // ---------------------------------------------------------------------------
+  Future<void> toggleCobLedCct(CobLedCctDevice device) => _cct.toggle(device);
+  Future<void> setCobLedCctBrightness(CobLedCctDevice device, double v) => _cct.setBrightness(device, v);
 
-  Future<void> sendTvCommand(TvDevice device, TvRemoteCommand cmd) async {
-    if (cmd == TvRemoteCommand.powerOn) {
-      _tvIsOn[device.id] = true;
-      notifyListeners();
-    } else if (cmd == TvRemoteCommand.powerOff) {
-      _tvIsOn[device.id] = false;
-      notifyListeners();
-    }
-    var client = _tvClients[device.id];
-    if (client == null) {
-      client = SamsungWsClient();
-      _tvClients[device.id] = client;
-      client.onTokenReceived.listen((token) async {
-        final updated = device.copyWith(wsToken: token);
-        await _tvRepo.update(updated);
-      });
-    }
-    if (client.state != TvConnectionState.connected) {
-      await client.connect(device.ipAddress, savedToken: device.wsToken);
-    }
-    client.sendKey(cmd);
-  }
+  Future<void> sendTvCommand(TvDevice device, TvRemoteCommand cmd) => _tv.sendCommand(device, cmd);
 
   // ---------------------------------------------------------------------------
   // Room group CRUD
@@ -428,8 +422,12 @@ class HomeController extends ChangeNotifier {
     return _tvRepo.update(tv.copyWith(isFavorite: false));
   }
 
-  Future<void> removeWledFromFavorites(WledDevice device) {
-    return _wledRepo.update(device.copyWith(isFavorite: false));
+  Future<void> removeCobLedRgbFromFavorites(CobLedRgbDevice device) {
+    return _cobLedRgbRepo.update(device.copyWith(isFavorite: false));
+  }
+
+  Future<void> removeCobLedCctFromFavorites(CobLedCctDevice device) {
+    return _cobLedCctRepo.update(device.copyWith(isFavorite: false));
   }
 
   // ---------------------------------------------------------------------------
@@ -482,10 +480,7 @@ class HomeController extends ChangeNotifier {
 
   @override
   void dispose() {
-    for (final client in _tvClients.values) {
-      unawaited(client.disconnect());
-      client.dispose();
-    }
+    _tv.dispose();
     super.dispose();
   }
 }

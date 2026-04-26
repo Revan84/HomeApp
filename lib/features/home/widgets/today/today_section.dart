@@ -7,6 +7,7 @@ import '../../../../core/theme/app_radius.dart';
 import '../../../../domain/entities/live_state.dart';
 import '../../../live/controllers/live_polling_controller.dart';
 import '../../controllers/home_controller.dart';
+import '../../../../core/i18n/loc.dart';
 import '../../domain/today_widget_type.dart';
 import 'today_manage_sheet.dart';
 import 'today_stat_tile.dart';
@@ -64,7 +65,7 @@ class TodaySection extends StatelessWidget {
               icon: Icons.bolt_rounded,
               value: '${kwh.toStringAsFixed(1)} kWh',
               subValue: '${cost.toStringAsFixed(2)}€',
-              label: 'Consumption',
+              label: context.l10n.homeTodayConsumptionLabel,
               accentColor: AppColors.plugAccent,
             ),
           );
@@ -76,7 +77,7 @@ class TodaySection extends StatelessWidget {
               TodayStatTile(
                 icon: Icons.thermostat_rounded,
                 value: '${temp.toStringAsFixed(1)} °C',
-                label: 'Average temp.',
+                label: context.l10n.homeTodayAvgTempLabel,
                 accentColor: AppColors.thermometerAccent,
               ),
             );
@@ -89,7 +90,7 @@ class TodaySection extends StatelessWidget {
               TodayStatTile(
                 icon: Icons.water_drop_rounded,
                 value: '${hum.toStringAsFixed(0)}%',
-                label: 'Humidity',
+                label: context.l10n.homeTodayHumidityLabel,
                 accentColor: AppColors.hygrometerAccent,
               ),
             );

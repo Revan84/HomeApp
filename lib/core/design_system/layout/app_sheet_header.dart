@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
@@ -14,7 +14,7 @@ import '../../theme/app_spacing.dart';
 ///
 /// // With leading icon (WLED / TV add sheet)
 /// AppSheetHeader(
-///   title: l10n.wledAddTitle,
+///   title: l10n.cobLedRgbAddTitle,
 ///   leadingIcon: Icons.lightbulb_outline_rounded,
 ///   onClose: () => Navigator.pop(context, false),
 /// )

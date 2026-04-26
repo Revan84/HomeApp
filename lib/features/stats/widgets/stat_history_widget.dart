@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/i18n/loc.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_font_sizes.dart';
 import '../../../core/theme/app_spacing.dart';
@@ -20,11 +21,11 @@ class StatHistoryWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final points = series.points;
     if (points.isEmpty) {
-      return const SizedBox(
+      return SizedBox(
         height: 80,
         child: Center(
-          child: Text('No data',
-              style: TextStyle(fontFamily: 'ShareTech', color: AppColors.textSecondary)),
+          child: Text(context.l10n.noData,
+              style: const TextStyle(fontFamily: 'ShareTech', color: AppColors.textSecondary)),
         ),
       );
     }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:front_end/core/i18n/loc.dart';
+import 'package:front_end/core/utils/validators.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/design_system/buttons/app_button.dart';
@@ -16,7 +17,14 @@ import '../controllers/equipments_controller.dart';
 class AddEquipmentSheet extends StatefulWidget {
   final ValueNotifier<int> roomsRefreshNotifier;
 
-  const AddEquipmentSheet({super.key, required this.roomsRefreshNotifier});
+  /// When non-null, the type selector is pre-selected and locked to this value.
+  final EquipmentType? initialType;
+
+  const AddEquipmentSheet({
+    super.key,
+    required this.roomsRefreshNotifier,
+    this.initialType,
+  });
 
   @override
   State<AddEquipmentSheet> createState() => _AddEquipmentSheetState();
@@ -27,7 +35,7 @@ class _AddEquipmentSheetState extends State<AddEquipmentSheet> {
   final _nameCtrl = TextEditingController();
   final _ipCtrl = TextEditingController();
 
-  EquipmentType _type = EquipmentType.shellyPlusPlugS;
+  late EquipmentType _type;
   int _channel = 0;
 
   bool _showToggle = true;
@@ -43,6 +51,16 @@ class _AddEquipmentSheetState extends State<AddEquipmentSheet> {
   String? _testError;
   ShellyDeviceInfoDto? _deviceInfo;
 
+  /// True when the form is locked to a sensor type (no channel / show-data toggles needed).
+  bool get _isSensor =>
+      _type == EquipmentType.shellyHT || _type == EquipmentType.hygrometer;
+
+  @override
+  void initState() {
+    super.initState();
+    _type = widget.initialType ?? EquipmentType.shellyPlusPlugS;
+  }
+
   @override
   void dispose() {
     _nameCtrl.dispose();
@@ -53,10 +71,7 @@ class _AddEquipmentSheetState extends State<AddEquipmentSheet> {
   String? _validateIp(String? v) {
     final s = (v ?? '').trim();
     if (s.isEmpty) return context.l10n.validationIpRequired;
-    final reg = RegExp(r'^(\d{1,3}\.){3}\d{1,3}$');
-    if (!reg.hasMatch(s)) return context.l10n.validationIpInvalidFormat;
-    final parts = s.split('.').map(int.parse).toList();
-    if (parts.any((p) => p < 0 || p > 255)) return context.l10n.validationIpInvalid;
+    if (!Validators.isValidIpv4(s)) return context.l10n.validationIpInvalidFormat;
     return null;
   }
 
@@ -100,23 +115,34 @@ class _AddEquipmentSheetState extends State<AddEquipmentSheet> {
     final eq = Equipment(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       name: _nameCtrl.text.trim().isEmpty
-          ? context.l10n.defaultEquipmentName
+          ? _defaultName()
           : _nameCtrl.text.trim(),
       ip: _ipCtrl.text.trim(),
       type: _type,
       roomId: _selectedRoomId,
       isFavorite: _isFavorite,
-      showToggle: _showToggle,
-      showPower: _showPower,
-      showEnergy: _showEnergy,
-      showRssi: _showRssi,
-      channel: _channel,
+      showToggle: _isSensor ? false : _showToggle,
+      showPower: _isSensor ? false : _showPower,
+      showEnergy: _isSensor ? false : _showEnergy,
+      showRssi: _isSensor ? false : _showRssi,
+      channel: _isSensor ? 0 : _channel,
     );
 
     await controller.addEquipment(eq);
 
     if (!mounted) return;
     Navigator.of(context).pop(true);
+  }
+
+  String _defaultName() {
+    switch (_type) {
+      case EquipmentType.shellyHT:
+        return 'Thermometer';
+      case EquipmentType.hygrometer:
+        return 'Hygrometer';
+      default:
+        return context.l10n.defaultEquipmentName;
+    }
   }
 
   String _typeLabel(BuildContext context, EquipmentType t) {
@@ -126,7 +152,9 @@ class _AddEquipmentSheetState extends State<AddEquipmentSheet> {
       case EquipmentType.shellyPlugS:
         return context.l10n.equipmentTypeShellyPlugS;
       case EquipmentType.shellyHT:
-        return 'Shelly HT';
+        return 'Thermometer';
+      case EquipmentType.hygrometer:
+        return 'Hygrometer';
       case EquipmentType.other:
         return context.l10n.equipmentTypeOther;
     }
@@ -137,6 +165,7 @@ class _AddEquipmentSheetState extends State<AddEquipmentSheet> {
     final l = context.l10n;
     final rooms = context.watch<EquipmentsController>().rooms;
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+    final locked = widget.initialType != null;
 
     return Padding(
       padding: EdgeInsets.only(bottom: bottomInset),
@@ -147,7 +176,7 @@ class _AddEquipmentSheetState extends State<AddEquipmentSheet> {
             mainAxisSize: MainAxisSize.min,
             children: [
               AppSheetHeader(
-                title: l.addEquipmentTitle,
+                title: locked ? _typeLabel(context, _type) : l.addEquipmentTitle,
                 showDragHandle: true,
                 onClose: () => Navigator.of(context).pop(false),
               ),
@@ -158,7 +187,7 @@ class _AddEquipmentSheetState extends State<AddEquipmentSheet> {
                     AppTextField(
                       controller: _nameCtrl,
                       label: l.nameLabel,
-                      hint: l.nameHintExample,
+                      hint: _isSensor ? _defaultName() : l.nameHintExample,
                     ),
                     AppSpacing.gapLg,
                     AppTextField(
@@ -168,33 +197,42 @@ class _AddEquipmentSheetState extends State<AddEquipmentSheet> {
                       keyboardType: TextInputType.number,
                       validator: _validateIp,
                     ),
+
+                    // Channel — only for plugs
+                    if (!_isSensor) ...[
+                      AppSpacing.gapLg,
+                      AppTextField(
+                        initialValue: _channel.toString(),
+                        label: l.channelLabel,
+                        hint: l.channelHint,
+                        keyboardType: TextInputType.number,
+                        validator: _validateChannel,
+                        onChanged: (v) => _channel = int.tryParse(v.trim()) ?? 0,
+                      ),
+                    ],
+
                     AppSpacing.gapLg,
-                    AppTextField(
-                      initialValue: _channel.toString(),
-                      label: l.channelLabel,
-                      hint: l.channelHint,
-                      keyboardType: TextInputType.number,
-                      validator: _validateChannel,
-                      onChanged: (v) => _channel = int.tryParse(v.trim()) ?? 0,
-                    ),
-                    AppSpacing.gapLg,
-                    DropdownButtonFormField<EquipmentType>(
-                      initialValue: _type,
-                      dropdownColor: AppColors.surface,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: AppColors.textPrimary,
-                          ),
-                      borderRadius: AppRadius.xlBR,
-                      decoration: InputDecoration(labelText: l.typeLabel),
-                      items: EquipmentType.values
-                          .map((t) => DropdownMenuItem(
-                                value: t,
-                                child: Text(_typeLabel(context, t)),
-                              ))
-                          .toList(),
-                      onChanged: (v) =>
-                          setState(() => _type = v ?? EquipmentType.other),
-                    ),
+
+                    // Type selector — hidden when type is locked by caller
+                    if (!locked)
+                      DropdownButtonFormField<EquipmentType>(
+                        initialValue: _type,
+                        dropdownColor: AppColors.surface,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: AppColors.textPrimary,
+                            ),
+                        borderRadius: AppRadius.xlBR,
+                        decoration: InputDecoration(labelText: l.typeLabel),
+                        items: EquipmentType.values
+                            .map((t) => DropdownMenuItem(
+                                  value: t,
+                                  child: Text(_typeLabel(context, t)),
+                                ))
+                            .toList(),
+                        onChanged: (v) =>
+                            setState(() => _type = v ?? EquipmentType.other),
+                      ),
+
                     AppSpacing.gapLg,
                     DropdownButtonFormField<String?>(
                       initialValue: _selectedRoomId,
@@ -221,37 +259,42 @@ class _AddEquipmentSheetState extends State<AddEquipmentSheet> {
                       onChanged: (v) => setState(() => _isFavorite = v),
                       title: Text(l.favorite),
                     ),
-                    AppSpacing.gapX2l,
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        l.showDataTitle,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyLarge
-                            ?.copyWith(fontWeight: FontWeight.w600),
+
+                    // Show-data toggles — only for plugs
+                    if (!_isSensor) ...[
+                      AppSpacing.gapX2l,
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          l.showDataTitle,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge
+                              ?.copyWith(fontWeight: FontWeight.w600),
+                        ),
                       ),
-                    ),
-                    SwitchListTile(
-                      value: _showToggle,
-                      onChanged: (v) => setState(() => _showToggle = v),
-                      title: Text(l.showOnOff),
-                    ),
-                    SwitchListTile(
-                      value: _showPower,
-                      onChanged: (v) => setState(() => _showPower = v),
-                      title: Text(l.showPower),
-                    ),
-                    SwitchListTile(
-                      value: _showEnergy,
-                      onChanged: (v) => setState(() => _showEnergy = v),
-                      title: Text(l.showEnergy),
-                    ),
-                    SwitchListTile(
-                      value: _showRssi,
-                      onChanged: (v) => setState(() => _showRssi = v),
-                      title: Text(l.showRssi),
-                    ),
+                      SwitchListTile(
+                        value: _showToggle,
+                        onChanged: (v) => setState(() => _showToggle = v),
+                        title: Text(l.showOnOff),
+                      ),
+                      SwitchListTile(
+                        value: _showPower,
+                        onChanged: (v) => setState(() => _showPower = v),
+                        title: Text(l.showPower),
+                      ),
+                      SwitchListTile(
+                        value: _showEnergy,
+                        onChanged: (v) => setState(() => _showEnergy = v),
+                        title: Text(l.showEnergy),
+                      ),
+                      SwitchListTile(
+                        value: _showRssi,
+                        onChanged: (v) => setState(() => _showRssi = v),
+                        title: Text(l.showRssi),
+                      ),
+                    ],
+
                     AppSpacing.gapLg,
                     if (_testError != null)
                       Padding(

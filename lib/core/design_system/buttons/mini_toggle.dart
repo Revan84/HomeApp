@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_radius.dart';
 import '../../theme/app_shadows.dart';
+import '../../theme/device_accent_scope.dart';
 
 /// Pill-style power toggle — the app's custom on/off switch.
 ///
@@ -32,6 +33,7 @@ class MiniToggle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final enabled = onTap != null && !loading;
+    final accent  = DeviceAccentScope.of(context);
 
     return GestureDetector(
       onTap: enabled
@@ -65,7 +67,7 @@ class MiniToggle extends StatelessWidget {
                 AnimatedContainer(
                   duration: _duration,
                   curve: _curve,
-                  color: isOn ? AppColors.success : AppColors.surface,
+                  color: isOn ? accent : AppColors.surface,
                 ),
 
                 // ── Layer 2: inner-shadow gradient — animated via lerp ────────

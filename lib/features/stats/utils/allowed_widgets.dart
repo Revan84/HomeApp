@@ -11,6 +11,8 @@ DeviceType deviceTypeForEquipment(Equipment eq) {
       return DeviceType.plug;
     case EquipmentType.shellyHT:
       return DeviceType.thermoHygro;
+    case EquipmentType.hygrometer:
+      return DeviceType.hygro;
     case EquipmentType.other:
       return DeviceType.plug;
   }

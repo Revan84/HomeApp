@@ -1,20 +1,23 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/design_system/chips/app_chip.dart';
+import '../../../core/i18n/loc.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../tv/domain/tv_remote_command.dart';
+import '../../devices/tv/domain/tv_remote_command.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../domain/entities/cob_led_cct_device.dart';
 import '../../../domain/entities/room.dart';
 import '../../../domain/entities/tv_device.dart';
-import '../../../domain/entities/wled_device.dart';
+import '../../../domain/entities/cob_led_rgb_device.dart';
 import '../../../domain/entities/equipment.dart';
 import '../../live/controllers/live_polling_controller.dart';
 import '../controllers/home_controller.dart';
+import 'device_cards/cob_led_cct_card.dart';
 import 'device_cards/plug_card.dart';
 import 'device_cards/thermometer_card.dart';
 import 'device_cards/tv_card.dart';
-import 'device_cards/wled_card.dart';
+import 'device_cards/cob_led_rgb_card.dart';
 
 /// Areas section with:
 /// - Horizontal room chip selector ("All Rooms" + one per room)
@@ -26,14 +29,16 @@ class AreasSection extends StatefulWidget {
     required this.groupId,
     required this.onOpenEquipment,
     required this.onOpenTv,
-    required this.onOpenWled,
+    required this.onOpenCobLedRgb,
+    required this.onOpenCobLedCct,
   });
 
   final List<Room> rooms;
   final String? groupId;
   final void Function(String equipmentId) onOpenEquipment;
   final void Function(String tvId) onOpenTv;
-  final void Function(String wledId) onOpenWled;
+  final void Function(String deviceId) onOpenCobLedRgb;
+  final void Function(String cctId) onOpenCobLedCct;
 
   @override
   State<AreasSection> createState() => _AreasSectionState();
@@ -84,7 +89,7 @@ class _AreasSectionState extends State<AreasSection> {
           Padding(
             padding: const EdgeInsets.only(top: AppSpacing.md),
             child: Text(
-              rooms.isEmpty ? 'No rooms yet.' : 'No devices in this room.',
+              rooms.isEmpty ? context.l10n.areasNoRooms : context.l10n.areasNoDevices,
               style: Theme.of(context)
                   .textTheme
                   .bodyMedium
@@ -122,8 +127,11 @@ class _AreasSectionState extends State<AreasSection> {
       for (final tv in homeCtl.tvDevicesForRoom(room.id)) {
         items.add(_buildTvCard(tv, homeCtl));
       }
-      for (final wled in homeCtl.wledDevicesForRoom(room.id)) {
-        items.add(_buildWledCard(wled, homeCtl));
+      for (final device in homeCtl.cobLedRgbDevicesForRoom(room.id)) {
+        items.add(_buildCobLedRgbCard(device, homeCtl));
+      }
+      for (final cct in homeCtl.cobLedCctDevicesForRoom(room.id)) {
+        items.add(_buildCobLedCctCard(cct, homeCtl));
       }
     }
 
@@ -162,23 +170,39 @@ class _AreasSectionState extends State<AreasSection> {
     );
   }
 
-  Widget _buildWledCard(WledDevice wled, HomeController homeCtl) {
-    final state = homeCtl.wledStateFor(wled.id);
+  Widget _buildCobLedRgbCard(CobLedRgbDevice device, HomeController homeCtl) {
+    final state = homeCtl.cobLedRgbStateFor(device.id);
     final isOn = state?.isOn ?? false;
     final brightness = ((state?.brightness ?? 128) / 255.0).clamp(0.0, 1.0);
     final c = state?.primaryColor;
     final color = c != null
         ? Color.fromARGB(255, c.red, c.green, c.blue)
         : Colors.amber;
-    return WledCard(
-      device: wled,
+    return CobLedRgbCard(
+      device: device,
       isOn: isOn,
       brightness: brightness,
       sceneName: '',
       color: color,
-      onTap: () => widget.onOpenWled(wled.id),
-      onToggle: () => homeCtl.toggleWled(wled),
-      onBrightnessDrag: (v) => homeCtl.setWledBrightness(wled, v),
+      onTap: () => widget.onOpenCobLedRgb(device.id),
+      onToggle: () => homeCtl.toggleCobLedRgb(device),
+      onBrightnessDrag: (v) => homeCtl.setCobLedRgbBrightness(device, v),
+    );
+  }
+
+  Widget _buildCobLedCctCard(CobLedCctDevice cct, HomeController homeCtl) {
+    final state = homeCtl.cctStateFor(cct.id);
+    final isOn = state?.isOn ?? false;
+    final brightness = state?.brightness ?? 200;
+    final colorTempK = state?.colorTempK ?? 3000;
+    return CobLedCctCard(
+      device: cct,
+      isOn: isOn,
+      brightness: brightness,
+      colorTempK: colorTempK,
+      onTap: () => widget.onOpenCobLedCct(cct.id),
+      onToggle: () => homeCtl.toggleCobLedCct(cct),
+      onBrightnessDrag: (v) => homeCtl.setCobLedCctBrightness(cct, v),
     );
   }
 }
@@ -209,7 +233,7 @@ class _RoomChips extends StatelessWidget {
 
     final chips = <Widget>[
       AppChip(
-        label: 'All Rooms ($totalCount)',
+        label: context.l10n.areasAllRooms(totalCount),
         selected: selectedRoomId == null,
         variant: AppChipVariant.outlined,
         onTap: () => onSelect(null),
@@ -217,7 +241,7 @@ class _RoomChips extends StatelessWidget {
       ...rooms.map((r) {
         final count = homeCtl.deviceCountForRoom(r.id);
         return AppChip(
-          label: '${r.name} ($count)',
+          label: context.l10n.areasRoomItem(r.name, count),
           selected: selectedRoomId == r.id,
           variant: AppChipVariant.outlined,
           onTap: () => onSelect(r.id),

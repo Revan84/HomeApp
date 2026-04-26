@@ -1,9 +1,12 @@
-import 'dart:math' show cos, sin;
+﻿import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'core/notifications/alert_evaluation_service.dart';
+import 'core/notifications/notification_service.dart';
 import 'core/widgets/curved_bottom_bar.dart';
+import 'core/widgets/dotted_fab.dart';
 import 'core/theme/app_colors.dart';
 import 'core/theme/app_radius.dart';
 import 'core/theme/app_spacing.dart';
@@ -18,18 +21,16 @@ import 'features/stats/pages/stats_tab.dart';
 import 'features/equipments/pages/equipments_tab.dart';
 import 'features/automation/pages/automation_tab.dart';
 import 'features/profile/pages/profile_tab.dart';
-import 'features/equipments/widgets/add_equipment_sheet.dart';
-import 'features/tv/widgets/add_tv_sheet.dart';
-import 'features/wled/widgets/add_wled_sheet.dart';
 import 'features/home/widgets/add_room_sheet.dart';
 import 'features/home/widgets/add_room_group_sheet.dart';
 import 'features/home/widgets/home_summary_header.dart';
 import 'features/equipments/controllers/equipments_controller.dart';
+import 'features/equipments/widgets/add_device_dialog.dart';
 import 'features/live/controllers/live_polling_controller.dart';
-import 'features/shell/widgets/device_type_picker_sheet.dart';
 
 enum _FabAction {
   addDevice,
+  scanDevice,
   addRoom,
   addRoomGroup,
   addChart,
@@ -56,6 +57,8 @@ class _AppShellState extends State<AppShell> {
   int _tabIndex = 0;
   final PageController _pageController = PageController();
   bool _isProgrammaticJump = false;
+
+  StreamSubscription<AlertBannerEvent>? _bannerSub;
 
   final ValueNotifier<int> _equipmentsRefresh = ValueNotifier<int>(0);
   final ValueNotifier<int> _homeRefresh = ValueNotifier<int>(0);
@@ -95,10 +98,23 @@ class _AppShellState extends State<AppShell> {
     _homeRefresh.addListener(() => shell.loadRoomGroups());
     _roomsRefresh.addListener(() => shell.loadRoomGroups());
     shell.loadRoomGroups();
+
+    // Subscribe to in-app alert banners.
+    _bannerSub = context
+        .read<AlertEvaluationService>()
+        .bannerStream
+        .listen(_showAlertBanner);
+
+    // Request notification permission after the first frame so the system
+    // dialog appears on top of a fully-rendered screen.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      NotificationService.requestPermission();
+    });
   }
 
   @override
   void dispose() {
+    _bannerSub?.cancel();
     context.read<ShellController>().removeListener(_syncGroupIdFromController);
     _pageController.dispose();
     _selectedGroupId.dispose();
@@ -204,7 +220,7 @@ class _AppShellState extends State<AppShell> {
     );
   }
 
-  Future<_FabAction?> _showFabPopup(List<_FabMenuOption> options) {
+  Future<_FabAction?> _showFabMenu(List<_FabMenuOption> options) {
     final position = _fabMenuPosition();
     if (position == null) return Future.value(null);
     return showMenu<_FabAction>(
@@ -218,11 +234,17 @@ class _AppShellState extends State<AppShell> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(o.icon, color: AppColors.textPrimary, size: AppFontSizes.display),
+                    Icon(o.icon,
+                        color: AppColors.textPrimary,
+                        size: AppFontSizes.display),
                     AppSpacing.gapHLg,
-                    Text(o.label,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: AppColors.textPrimary)),
+                    Text(
+                      o.label,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(color: AppColors.textPrimary),
+                    ),
                   ],
                 ),
               ))
@@ -230,46 +252,84 @@ class _AppShellState extends State<AppShell> {
     );
   }
 
-  Future<_FabAction?> _showFabMenuForHome() {
-    return _showFabPopup([
-      _FabMenuOption(Icons.meeting_room_outlined, context.l10n.addRoomTitle,
-          _FabAction.addRoom),
-      _FabMenuOption(Icons.home_work_outlined,
-          context.l10n.roomsAddGroupTitle, _FabAction.addRoomGroup),
-    ]);
+  void _showAlertBanner(AlertBannerEvent event) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        duration: const Duration(seconds: 6),
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 80),
+        backgroundColor: AppColors.card,
+        shape: RoundedRectangleBorder(
+          borderRadius: AppRadius.xlBR,
+          side: const BorderSide(color: AppColors.danger, width: 0.8),
+        ),
+        content: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(top: 1),
+              child: Icon(Icons.warning_amber_rounded,
+                  color: AppColors.danger, size: 18),
+            ),
+            AppSpacing.gapHMd,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    event.title,
+                    style: const TextStyle(
+                      fontFamily: 'ShareTech',
+                      fontWeight: FontWeight.w600,
+                      fontSize: AppFontSizes.body,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    event.body,
+                    style: const TextStyle(
+                      fontFamily: 'ShareTech',
+                      fontSize: AppFontSizes.sm,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
-  Future<_FabAction?> _showFabMenuForStats() {
-    final l10n = context.l10n;
-    return _showFabPopup([
-      _FabMenuOption(Icons.show_chart, l10n.statsAddChart, _FabAction.addChart),
-      _FabMenuOption(
-          Icons.table_chart_outlined, l10n.statsAddTable, _FabAction.addTable),
-      _FabMenuOption(Icons.history, l10n.statsAddHistory, _FabAction.addHistory),
-      _FabMenuOption(
-          Icons.bookmark_outline, l10n.statsAddKpi, _FabAction.addKpi),
-    ]);
-  }
-
-  Future<_FabAction?> _showFabMenuForEquipments() {
-    return _showFabPopup([
-      _FabMenuOption(
-          Icons.add, context.l10n.addEquipmentTitle, _FabAction.addDevice),
-    ]);
-  }
-
-  Future<DeviceType?> _pickDeviceType() {
-    return showModalBottomSheet<DeviceType>(
-      context: context,
-      useSafeArea: true,
-      builder: (_) => const DeviceTypePickerSheet(),
+  void _showScanDeviceInfo() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text(
+          'Wi-Fi scan coming soon',
+          style: TextStyle(fontFamily: 'ShareTech'),
+        ),
+        backgroundColor: AppColors.surface,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.xlBR),
+      ),
     );
   }
 
   Future<void> _onFabPressed() async {
+    final l10n = context.l10n;
     switch (_tabIndex) {
+      // ── Home: add room / room group ──────────────────────────────────────
       case 0:
-        final action = await _showFabMenuForHome();
+        final action = await _showFabMenu([
+          _FabMenuOption(
+              Icons.meeting_room_outlined, l10n.addRoomTitle, _FabAction.addRoom),
+          _FabMenuOption(
+              Icons.home_work_outlined, l10n.roomsAddGroupTitle, _FabAction.addRoomGroup),
+        ]);
         if (!mounted) return;
         if (action == _FabAction.addRoom) {
           final added = await showModalBottomSheet<bool>(
@@ -298,57 +358,47 @@ class _AppShellState extends State<AppShell> {
           }
         }
         break;
+
+      // ── Stats: add widget ────────────────────────────────────────────────
       case 1:
-        final statsAction = await _showFabMenuForStats();
+        final statsAction = await _showFabMenu([
+          _FabMenuOption(Icons.show_chart, l10n.statsAddChart, _FabAction.addChart),
+          _FabMenuOption(
+              Icons.table_chart_outlined, l10n.statsAddTable, _FabAction.addTable),
+          _FabMenuOption(Icons.history, l10n.statsAddHistory, _FabAction.addHistory),
+          _FabMenuOption(
+              Icons.bookmark_outline, l10n.statsAddKpi, _FabAction.addKpi),
+        ]);
         if (!mounted || statsAction == null) return;
-        final typeMap = {
+        _statsAddWidget.value = {
           _FabAction.addChart: StatWidgetType.chart,
           _FabAction.addTable: StatWidgetType.table,
           _FabAction.addHistory: StatWidgetType.history,
           _FabAction.addKpi: StatWidgetType.kpi,
-        };
-        _statsAddWidget.value = typeMap[statsAction];
+        }[statsAction];
         break;
+
+      // ── Equipments: add / scan device ────────────────────────────────────
       case 2:
-        final action = await _showFabMenuForEquipments();
-        if (!mounted || action != _FabAction.addDevice) return;
-        final deviceType = await _pickDeviceType();
-        if (!mounted || deviceType == null) return;
-        bool? added;
-        switch (deviceType) {
-          case DeviceType.connectedPlug:
-            added = await showModalBottomSheet<bool>(
-              context: context,
-              isScrollControlled: true,
-              useSafeArea: true,
-              builder: (_) => AddEquipmentSheet(
-                roomsRefreshNotifier: _roomsRefresh,
-              ),
-            );
-            break;
-          case DeviceType.tv:
-            added = await showModalBottomSheet<bool>(
-              context: context,
-              isScrollControlled: true,
-              useSafeArea: true,
-              builder: (_) => const AddTvSheet(),
-            );
-            break;
-          case DeviceType.wled:
-            added = await showModalBottomSheet<bool>(
-              context: context,
-              isScrollControlled: true,
-              useSafeArea: true,
-              builder: (_) => const AddWledSheet(),
-            );
-            break;
+        final action = await _showFabMenu([
+          _FabMenuOption(
+              Icons.add_rounded, l10n.addEquipmentTitle, _FabAction.addDevice),
+          _FabMenuOption(
+              Icons.wifi_find_rounded, 'Scan on Wi-Fi', _FabAction.scanDevice),
+        ]);
+        if (!mounted || action == null) return;
+        if (action == _FabAction.scanDevice) {
+          _showScanDeviceInfo();
+          return;
         }
+        final added = await AddDeviceDialog.show(context);
         if (!mounted) return;
         if (added == true) {
           _equipmentsRefresh.value++;
           _homeRefresh.value++;
         }
         break;
+
       default:
         break;
     }
@@ -381,7 +431,7 @@ class _AppShellState extends State<AppShell> {
           ? null
           : Padding(
               padding: const EdgeInsets.only(bottom: 48),
-              child: _DottedFab(
+              child: DottedFab(
                 key: _fabKey,
                 onPressed: _onFabPressed,
               ),
@@ -439,70 +489,3 @@ class _AppShellState extends State<AppShell> {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Dotted-border FAB
-// ---------------------------------------------------------------------------
-
-class _DottedFab extends StatelessWidget {
-  const _DottedFab({super.key, required this.onPressed});
-
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    const double size = 64;
-    return GestureDetector(
-      onTap: onPressed,
-      child: SizedBox.square(
-        dimension: size,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: AppColors.bg.withValues(alpha: 0.98),
-            shape: BoxShape.circle,
-          ),
-          child: CustomPaint(
-            painter: _DottedCirclePainter(
-              color: AppColors.primary,
-              dotRadius: 1.0,
-              dotCount: 52,
-            ),
-            child: const Center(
-              child: Icon(Icons.add, color: AppColors.primary, size: 28),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _DottedCirclePainter extends CustomPainter {
-  const _DottedCirclePainter({
-    required this.color,
-    this.dotRadius = 2.0,
-    this.dotCount = 36,
-  });
-
-  final Color color;
-  final double dotRadius;
-  final int dotCount;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()..color = color;
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width / 2 - dotRadius;
-    const twoPi = 2 * 3.141592653589793;
-
-    for (int i = 0; i < dotCount; i++) {
-      final angle = twoPi * i / dotCount;
-      final dx = center.dx + radius * cos(angle);
-      final dy = center.dy + radius * sin(angle);
-      canvas.drawCircle(Offset(dx, dy), dotRadius, paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(_DottedCirclePainter old) =>
-      old.color != color || old.dotRadius != dotRadius || old.dotCount != dotCount;
-}

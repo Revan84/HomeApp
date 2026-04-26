@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:front_end/core/i18n/loc.dart';
+import 'package:front_end/core/utils/validators.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/design_system/buttons/app_button.dart';
@@ -64,13 +65,7 @@ class _EditEquipmentSheetState extends State<EditEquipmentSheet> {
   String? _validateIp(String? v) {
     final s = (v ?? '').trim();
     if (s.isEmpty) return context.l10n.validationIpRequired;
-
-    final reg = RegExp(r'^(\d{1,3}\.){3}\d{1,3}$');
-    if (!reg.hasMatch(s)) return context.l10n.validationIpInvalidFormat;
-
-    final parts = s.split('.').map(int.parse).toList();
-    if (parts.any((p) => p < 0 || p > 255)) return context.l10n.validationIpInvalid;
-
+    if (!Validators.isValidIpv4(s)) return context.l10n.validationIpInvalidFormat;
     return null;
   }
 
@@ -88,7 +83,9 @@ class _EditEquipmentSheetState extends State<EditEquipmentSheet> {
       case EquipmentType.shellyPlugS:
         return context.l10n.equipmentTypeShellyPlugS;
       case EquipmentType.shellyHT:
-        return 'Shelly HT';
+        return 'Thermometer';
+      case EquipmentType.hygrometer:
+        return 'Hygrometer';
       case EquipmentType.other:
         return context.l10n.equipmentTypeOther;
     }

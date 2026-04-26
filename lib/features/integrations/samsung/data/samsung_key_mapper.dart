@@ -1,4 +1,4 @@
-import '../../../tv/domain/tv_remote_command.dart';
+import '../../../devices/tv/domain/tv_remote_command.dart';
 
 /// Maps [TvRemoteCommand] to Samsung KEY_* string codes.
 const Map<TvRemoteCommand, String> samsungKeyMap = {

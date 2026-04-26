@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/i18n/loc.dart';
@@ -6,9 +6,11 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_radius.dart';
 import '../../../core/theme/app_shadows.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../domain/entities/device_bundle.dart';
 import '../../../domain/entities/equipment.dart';
+import '../../../domain/entities/cob_led_cct_device.dart';
 import '../../../domain/entities/tv_device.dart';
-import '../../../domain/entities/wled_device.dart';
+import '../../../domain/entities/cob_led_rgb_device.dart';
 import '../../../features/equipments/pages/equipment_details_page.dart';
 import '../../../features/live/controllers/live_polling_controller.dart';
 import '../../../domain/entities/room.dart';
@@ -24,16 +26,12 @@ import '../widgets/favorite_pill_tile.dart';
 /// - trailing remove button
 /// - floating add button at the bottom
 class FavoritesPage extends StatefulWidget {
-  final List<Equipment> equipments;
-  final List<TvDevice> tvDevices;
-  final List<WledDevice> wledDevices;
+  final DeviceBundle devices;
   final List<Room> rooms;
 
   const FavoritesPage({
     super.key,
-    required this.equipments,
-    required this.tvDevices,
-    required this.wledDevices,
+    required this.devices,
     required this.rooms,
   });
 
@@ -44,14 +42,16 @@ class FavoritesPage extends StatefulWidget {
 class _FavoritesPageState extends State<FavoritesPage> {
   late List<Equipment> _favoriteEquipments;
   late List<TvDevice> _favoriteTvs;
-  late List<WledDevice> _favoriteWleds;
+  late List<CobLedRgbDevice> _favoriteCobLedRgbs;
+  late List<CobLedCctDevice> _favoriteCcts;
 
   @override
   void initState() {
     super.initState();
-    _favoriteEquipments = widget.equipments.where((e) => e.isFavorite).toList();
-    _favoriteTvs = widget.tvDevices.where((t) => t.isFavorite).toList();
-    _favoriteWleds = widget.wledDevices.where((w) => w.isFavorite).toList();
+    _favoriteEquipments = widget.devices.equipments.where((e) => e.isFavorite).toList();
+    _favoriteTvs = widget.devices.tvDevices.where((t) => t.isFavorite).toList();
+    _favoriteCobLedRgbs = widget.devices.cobLedRgbDevices.where((w) => w.isFavorite).toList();
+    _favoriteCcts = widget.devices.cobLedCctDevices.where((c) => c.isFavorite).toList();
   }
 
   Future<void> _openDetails(Equipment equipment) async {
@@ -82,10 +82,16 @@ class _FavoritesPageState extends State<FavoritesPage> {
     setState(() => _favoriteTvs.removeWhere((t) => t.id == tv.id));
   }
 
-  Future<void> _removeWled(WledDevice wled) async {
-    await context.read<HomeController>().removeWledFromFavorites(wled);
+  Future<void> _removeCobLedRgb(CobLedRgbDevice device) async {
+    await context.read<HomeController>().removeCobLedRgbFromFavorites(device);
     if (!mounted) return;
-    setState(() => _favoriteWleds.removeWhere((w) => w.id == wled.id));
+    setState(() => _favoriteCobLedRgbs.removeWhere((w) => w.id == device.id));
+  }
+
+  Future<void> _removeCct(CobLedCctDevice cct) async {
+    await context.read<HomeController>().removeCobLedCctFromFavorites(cct);
+    if (!mounted) return;
+    setState(() => _favoriteCcts.removeWhere((c) => c.id == cct.id));
   }
 
   void _onAddPressed() {
@@ -129,12 +135,20 @@ class _FavoritesPageState extends State<FavoritesPage> {
         onRemove: () => _removeTv(tv),
       ));
     }
-    for (final wled in _favoriteWleds) {
+    for (final device in _favoriteCobLedRgbs) {
       rows.add((
-        title: wled.name,
+        title: device.name,
         icon: Icons.lightbulb_outline_rounded,
         onTap: () {},
-        onRemove: () => _removeWled(wled),
+        onRemove: () => _removeCobLedRgb(device),
+      ));
+    }
+    for (final cct in _favoriteCcts) {
+      rows.add((
+        title: cct.name,
+        icon: Icons.wb_incandescent_outlined,
+        onTap: () {},
+        onRemove: () => _removeCct(cct),
       ));
     }
     return rows;

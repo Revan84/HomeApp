@@ -75,24 +75,25 @@ class AppChip extends StatelessWidget {
 
     switch (variant) {
       case AppChipVariant.filter:
-        bg = selected ? AppColors.primary : AppColors.surface;
-        fg = selected ? AppColors.bg : AppColors.textSecondary;
+        bg = AppColors.bg;
+        fg = selected ? AppColors.primary : AppColors.textSecondary;
         border = selected
-            ? Border.all(color: Colors.transparent)
-            : Border.all(color: AppColors.border.withValues(alpha: 0.4));
+            ? Border.all(color: AppColors.primary, width: 0.6)
+            : Border.all(color: AppColors.border, width: 0.6);
 
       case AppChipVariant.outlined:
         // Fond toujours surface, bordure colorée selon la sélection.
         bg = AppColors.surface;
         fg = selected ? AppColors.primary : AppColors.textPrimary;
         border = Border.all(
-          color: selected ? AppColors.primary : AppColors.border.withValues(alpha: 0.5),
+          color: selected ? AppColors.primary : AppColors.border,
+          width: 0.6,
         );
 
       case AppChipVariant.tag:
         bg = AppColors.surface;
         fg = AppColors.textSecondary;
-        border = Border.all(color: AppColors.border.withValues(alpha: 0.4));
+        border = Border.all(color: AppColors.border, width: 0.6);
     }
 
     return GestureDetector(
@@ -100,12 +101,12 @@ class AppChip extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 160),
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.xl,
-          vertical: AppSpacing.sm,
+          horizontal: AppSpacing.lg,
+          vertical: AppSpacing.md,
         ),
         decoration: BoxDecoration(
           color: bg,
-          borderRadius: AppRadius.chipBR,
+          borderRadius: AppRadius.lgBR,
           border: border,
         ),
         child: Row(
@@ -118,9 +119,9 @@ class AppChip extends StatelessWidget {
             Text(
               label,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: fg,
-                    fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
-                  ),
+                color: fg,
+                fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+              ),
             ),
             if (trailing != null) ...[
               AppSpacing.gapHXs,

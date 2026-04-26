@@ -12,7 +12,8 @@
 .swiftpm/
 migrate_working_dir/
 .claude
-
+CLAUDE.MD
+graphify-out
 # IntelliJ related
 *.iml
 *.ipr

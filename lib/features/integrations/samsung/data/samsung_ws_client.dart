@@ -4,7 +4,7 @@ import 'dart:io' show HttpClient, WebSocket;
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-import '../../../tv/domain/tv_remote_command.dart';
+import '../../../devices/tv/domain/tv_remote_command.dart';
 import 'samsung_key_mapper.dart';
 
 /// Connection state exposed to the UI.

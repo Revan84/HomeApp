@@ -2,20 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_colors.dart';
-import '../../../core/theme/app_font_sizes.dart';
-import '../../../core/theme/app_radius.dart';
-import '../../../core/theme/app_spacing.dart';
 import '../../../core/i18n/loc.dart';
 
-import '../domain/chart_type.dart';
 import '../../../domain/entities/equipment.dart';
 import '../domain/metric_type.dart';
 import '../domain/stat_widget.dart';
-import '../domain/time_range.dart';
 
 import '../controller/stats_controller.dart';
 import '../utils/allowed_widgets.dart';
 import '../widgets/stat_device_group_card.dart';
+import '../widgets/stat_widget_config_dialog.dart';
 import '../widgets/stat_widget_entry.dart';
 import '../widgets/stat_widget_factory.dart';
 import '../widgets/stats_empty_state.dart';
@@ -90,7 +86,7 @@ class _StatsTabState extends State<StatsTab> {
   }
 
   // ---------------------------------------------------------------------------
-  // Config dialog
+  // Config dialog (add)
   // ---------------------------------------------------------------------------
 
   Future<void> _showConfigDialog(StatWidgetType widgetType) async {
@@ -99,259 +95,43 @@ class _StatsTabState extends State<StatsTab> {
 
     if (equipments.isEmpty) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(context.l10n.statsNoDevicesInRoom),
-          behavior: SnackBarBehavior.floating,
-          margin: const EdgeInsets.only(left: 16, right: 16, bottom: 100),
-        ),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(context.l10n.statsNoDevicesInRoom),
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.only(left: 16, right: 16, bottom: 100),
+      ));
       return;
     }
 
-    // Filter equipments whose DeviceType supports this widgetType.
-    final compatibleEquipments = equipments.where((eq) {
-      return widgetTypesFor(eq).contains(widgetType);
-    }).toList();
+    final compatible =
+        equipments.where((eq) => widgetTypesFor(eq).contains(widgetType)).toList();
 
-    if (compatibleEquipments.isEmpty) {
+    if (compatible.isEmpty) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(context.l10n.statsNoCompatibleDevice),
-          behavior: SnackBarBehavior.floating,
-          margin: const EdgeInsets.only(left: 16, right: 16, bottom: 100),
-        ),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(context.l10n.statsNoCompatibleDevice),
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.only(left: 16, right: 16, bottom: 100),
+      ));
       return;
     }
 
-    Equipment selectedEquipment = compatibleEquipments.first;
-    List<MetricType> availableMetrics = metricsFor(selectedEquipment);
-    MetricType selectedMetric =
-        availableMetrics.isNotEmpty ? availableMetrics.first : MetricType.power;
-    TimeRange selectedRange = TimeRange.day1;
-    ChartType chartType = ChartType.line;
-
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) {
-        return StatefulBuilder(
-          builder: (ctx, setDialogState) {
-            return AlertDialog(
-              backgroundColor: AppColors.surface,
-              title: Text(ctx.l10n.statsConfigTitle),
-              content: SingleChildScrollView(
-                child: _buildConfigFields(
-                  ctx: ctx,
-                  setDialogState: setDialogState,
-                  equipments: compatibleEquipments,
-                  selectedEquipment: selectedEquipment,
-                  availableMetrics: availableMetrics,
-                  selectedMetric: selectedMetric,
-                  selectedRange: selectedRange,
-                  chartType: chartType,
-                  widgetType: widgetType,
-                  onEquipmentChanged: (eq, metrics) {
-                    selectedEquipment = eq;
-                    availableMetrics = metrics;
-                    if (!metrics.contains(selectedMetric)) {
-                      selectedMetric = metrics.isNotEmpty
-                          ? metrics.first
-                          : MetricType.power;
-                    }
-                  },
-                  onMetricChanged: (m) => selectedMetric = m,
-                  onRangeChanged: (r) => selectedRange = r,
-                  onChartTypeChanged: (ct) => chartType = ct,
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(ctx).pop(false),
-                  child: Text(ctx.l10n.cancel),
-                ),
-                FilledButton(
-                  style: FilledButton.styleFrom(
-                      backgroundColor: AppColors.primary),
-                  onPressed: () => Navigator.of(ctx).pop(true),
-                  child: Text(ctx.l10n.add),
-                ),
-              ],
-            );
-          },
-        );
-      },
+    final result = await StatWidgetConfigDialog.show(
+      context,
+      widgetType: widgetType,
+      equipments: compatible,
     );
+    if (result == null || !mounted) return;
 
-    if (confirmed != true || !mounted) return;
-
-    final config = StatWidgetConfig(
-      id: DateTime.now().microsecondsSinceEpoch.toString(),
-      type: widgetType,
-      title: '${selectedEquipment.name} · ${selectedMetric.label}',
-      deviceId: selectedEquipment.id,
-      metric: selectedMetric,
-      range: selectedRange,
-      chartType: widgetType == StatWidgetType.chart ? chartType : null,
-    );
-
-    await context.read<StatsController>().addWidget(config);
-  }
-
-  /// Shared form fields used by both add and edit config dialogs.
-  Widget _buildConfigFields({
-    required BuildContext ctx,
-    required StateSetter setDialogState,
-    required List<Equipment> equipments,
-    required Equipment selectedEquipment,
-    required List<MetricType> availableMetrics,
-    required MetricType selectedMetric,
-    required TimeRange selectedRange,
-    required ChartType chartType,
-    required StatWidgetType widgetType,
-    required void Function(Equipment eq, List<MetricType> metrics)
-        onEquipmentChanged,
-    required ValueChanged<MetricType> onMetricChanged,
-    required ValueChanged<TimeRange> onRangeChanged,
-    required ValueChanged<ChartType> onChartTypeChanged,
-  }) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // -- Equipment dropdown --
-        Text(ctx.l10n.statsDeviceLabel,
-            style: const TextStyle(
-                fontFamily: 'ShareTech', fontSize: 12.0, color: AppColors.textSecondary)),
-        AppSpacing.gapSm,
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            color: AppColors.bg,
-            borderRadius: AppRadius.xlBR,
-            border:
-                Border.all(color: AppColors.border.withValues(alpha: 0.4)),
-          ),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              value: selectedEquipment.id,
-              isExpanded: true,
-              borderRadius: AppRadius.xlBR,
-              dropdownColor: AppColors.bg,
-              style: const TextStyle(
-                  fontFamily: 'ShareTech', color: AppColors.textPrimary, fontSize: AppFontSizes.body),
-              items: equipments.map((eq) {
-                return DropdownMenuItem(
-                  value: eq.id,
-                  child: Text(eq.name),
-                );
-              }).toList(),
-              onChanged: (id) {
-                if (id == null) return;
-                final eq = equipments.where((e) => e.id == id).firstOrNull;
-                if (eq == null) return;
-                final newMetrics = metricsFor(eq);
-                setDialogState(() => onEquipmentChanged(eq, newMetrics));
-              },
-            ),
-          ),
-        ),
-
-        AppSpacing.gapX3l,
-
-        // -- Metric picker --
-        Text(ctx.l10n.statsMetricLabel,
-            style: const TextStyle(
-                fontFamily: 'ShareTech', fontSize: 12.0, color: AppColors.textSecondary)),
-        AppSpacing.gapSm,
-        Wrap(
-          spacing: 6,
-          runSpacing: 6,
-          children: availableMetrics.map((m) {
-            final selected = m == selectedMetric;
-            return ChoiceChip(
-              avatar: Icon(_metricIcon(m),
-                  size: 16,
-                  color:
-                      selected ? AppColors.bg : AppColors.textSecondary),
-              label: Text(m.label,
-                  style: TextStyle(
-                      fontFamily: 'ShareTech',
-                      fontSize: AppFontSizes.sm,
-                      color: selected
-                          ? AppColors.bg
-                          : AppColors.textSecondary)),
-              selected: selected,
-              selectedColor: AppColors.primary,
-              backgroundColor: AppColors.bg,
-              onSelected: (_) =>
-                  setDialogState(() => onMetricChanged(m)),
-              visualDensity: VisualDensity.compact,
-            );
-          }).toList(),
-        ),
-
-        AppSpacing.gapX3l,
-
-        // -- Time range picker --
-        Text(ctx.l10n.statsTimeRangeLabel,
-            style: const TextStyle(
-                fontFamily: 'ShareTech', fontSize: 12.0, color: AppColors.textSecondary)),
-        AppSpacing.gapSm,
-        Wrap(
-          spacing: 6,
-          children: TimeRange.values.map((r) {
-            final selected = r == selectedRange;
-            return ChoiceChip(
-              label: Text(r.shortLabel,
-                  style: TextStyle(
-                      fontFamily: 'ShareTech',
-                      fontSize: AppFontSizes.sm,
-                      color: selected
-                          ? AppColors.bg
-                          : AppColors.textSecondary)),
-              selected: selected,
-              selectedColor: AppColors.primary,
-              backgroundColor: AppColors.bg,
-              onSelected: (_) =>
-                  setDialogState(() => onRangeChanged(r)),
-              visualDensity: VisualDensity.compact,
-            );
-          }).toList(),
-        ),
-
-        // -- Chart type (only for chart widgets) --
-        if (widgetType == StatWidgetType.chart) ...[
-          AppSpacing.gapX3l,
-          Text(ctx.l10n.statsChartTypeLabel,
-              style: const TextStyle(
-                  fontFamily: 'ShareTech', fontSize: 12.0, color: AppColors.textSecondary)),
-          AppSpacing.gapSm,
-          Wrap(
-            spacing: 6,
-            children: ChartType.values.map((ct) {
-              final selected = ct == chartType;
-              return ChoiceChip(
-                label: Text('${ct.name[0].toUpperCase()}${ct.name.substring(1)}',
-                    style: TextStyle(
-                        fontFamily: 'ShareTech',
-                        fontSize: AppFontSizes.sm,
-                        color: selected
-                            ? AppColors.bg
-                            : AppColors.textSecondary)),
-                selected: selected,
-                selectedColor: AppColors.primary,
-                backgroundColor: AppColors.bg,
-                onSelected: (_) =>
-                    setDialogState(() => onChartTypeChanged(ct)),
-                visualDensity: VisualDensity.compact,
-              );
-            }).toList(),
-          ),
-        ],
-      ],
-    );
+    await context.read<StatsController>().addWidget(StatWidgetConfig(
+          id: DateTime.now().microsecondsSinceEpoch.toString(),
+          type: widgetType,
+          title: '${result.equipment.name} · ${result.metric.label}',
+          deviceId: result.equipment.id,
+          metric: result.metric,
+          range: result.range,
+          chartType: widgetType == StatWidgetType.chart ? result.chartType : null,
+        ));
   }
 
   // ---------------------------------------------------------------------------
@@ -446,26 +226,10 @@ class _StatsTabState extends State<StatsTab> {
         return l10n.statsDeviceTypeSmartPlug;
       case EquipmentType.shellyHT:
         return 'Thermometer';
+      case EquipmentType.hygrometer:
+        return 'Hygrometer';
       case EquipmentType.other:
         return l10n.statsDeviceTypeGeneric;
-    }
-  }
-
-  /// Returns the icon for a [MetricType] in the presentation layer.
-  IconData _metricIcon(MetricType type) {
-    switch (type) {
-      case MetricType.state:
-        return Icons.toggle_on;
-      case MetricType.temperature:
-        return Icons.thermostat;
-      case MetricType.humidity:
-        return Icons.water_drop;
-      case MetricType.power:
-        return Icons.bolt;
-      case MetricType.energy:
-        return Icons.electrical_services;
-      case MetricType.brightness:
-        return Icons.light_mode;
     }
   }
 
@@ -507,81 +271,30 @@ class _StatsTabState extends State<StatsTab> {
     final equipments = controller.equipmentsForRoom(controller.selectedRoomId);
     if (equipments.isEmpty) return;
 
-    Equipment selectedEquipment = equipments.firstWhere(
+    final initialEquipment = equipments.firstWhere(
       (e) => e.id == config.deviceId,
       orElse: () => equipments.first,
     );
-    List<MetricType> availableMetrics = metricsFor(selectedEquipment);
-    MetricType selectedMetric = availableMetrics.contains(config.metric)
-        ? config.metric
-        : (availableMetrics.isNotEmpty
-            ? availableMetrics.first
-            : MetricType.power);
-    TimeRange selectedRange = config.range;
-    ChartType chartType = config.chartType ?? ChartType.line;
 
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) {
-        return StatefulBuilder(
-          builder: (ctx, setDialogState) {
-            return AlertDialog(
-              backgroundColor: AppColors.surface,
-              title: Text(ctx.l10n.statsEditWidget),
-              content: SingleChildScrollView(
-                child: _buildConfigFields(
-                  ctx: ctx,
-                  setDialogState: setDialogState,
-                  equipments: equipments,
-                  selectedEquipment: selectedEquipment,
-                  availableMetrics: availableMetrics,
-                  selectedMetric: selectedMetric,
-                  selectedRange: selectedRange,
-                  chartType: chartType,
-                  widgetType: config.type,
-                  onEquipmentChanged: (eq, metrics) {
-                    selectedEquipment = eq;
-                    availableMetrics = metrics;
-                    if (!metrics.contains(selectedMetric)) {
-                      selectedMetric = metrics.isNotEmpty
-                          ? metrics.first
-                          : MetricType.power;
-                    }
-                  },
-                  onMetricChanged: (m) => selectedMetric = m,
-                  onRangeChanged: (r) => selectedRange = r,
-                  onChartTypeChanged: (ct) => chartType = ct,
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(ctx).pop(false),
-                  child: Text(ctx.l10n.cancel),
-                ),
-                FilledButton(
-                  style: FilledButton.styleFrom(
-                      backgroundColor: AppColors.primary),
-                  onPressed: () => Navigator.of(ctx).pop(true),
-                  child: Text(ctx.l10n.save),
-                ),
-              ],
-            );
-          },
-        );
-      },
+    final result = await StatWidgetConfigDialog.show(
+      context,
+      widgetType: config.type,
+      equipments: equipments,
+      initialEquipment: initialEquipment,
+      initialMetric: config.metric,
+      initialRange: config.range,
+      initialChartType: config.chartType,
+      isEdit: true,
     );
+    if (result == null || !mounted) return;
 
-    if (confirmed != true || !mounted) return;
-
-    final updated = config.copyWith(
-      title: '${selectedEquipment.name} · ${selectedMetric.label}',
-      deviceId: selectedEquipment.id,
-      metric: selectedMetric,
-      range: selectedRange,
-      chartType: config.type == StatWidgetType.chart ? chartType : null,
-    );
-
-    await context.read<StatsController>().updateWidget(updated);
+    await context.read<StatsController>().updateWidget(config.copyWith(
+          title: '${result.equipment.name} · ${result.metric.label}',
+          deviceId: result.equipment.id,
+          metric: result.metric,
+          range: result.range,
+          chartType: config.type == StatWidgetType.chart ? result.chartType : null,
+        ));
   }
 }
 

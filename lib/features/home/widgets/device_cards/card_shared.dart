@@ -39,7 +39,7 @@ class CardShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Figma: accent at 12% blended over cardBase
-    final topColor = Color.lerp(AppColors.card, accentColor, 0.3)!;
+    final topColor = Color.lerp(AppColors.card, accentColor, 0.70)!;
 
     return Container(
       decoration: BoxDecoration(
@@ -73,15 +73,17 @@ class CardShell extends StatelessWidget {
                     ),
                     // Divider: Figma gradient stroke (0% → F8F2F2 → 0%)
                     Container(
-                      height: 0.6,
-                      decoration: const BoxDecoration(
+                      height: 0.8,
+                      decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Color(0x00F8F2F2),
+                            topColor.withValues(alpha: 0),
+                            topColor.withValues(alpha: 0.80),
                             Color(0xFFF8F2F2),
-                            Color(0x00F8F2F2),
+                            topColor.withValues(alpha: 0.80),
+                            topColor.withValues(alpha: 0),
                           ],
-                          stops: [0.0, 0.5, 1.0],
+                          stops: [0, 0, 0.5, 1, 1],
                         ),
                       ),
                     ),
@@ -116,11 +118,7 @@ class CardShell extends StatelessWidget {
 // ============================================================
 
 class CardHeader extends StatelessWidget {
-  const CardHeader({
-    super.key,
-    required this.icon,
-    required this.name,
-  });
+  const CardHeader({super.key, required this.icon, required this.name});
 
   final IconData icon;
   final String name;
@@ -217,5 +215,5 @@ class CardFooter extends StatelessWidget {
   }
 }
 
-// MiniToggle is provided by core/design_system/buttons/mini_toggle.dart 
+// MiniToggle is provided by core/design_system/buttons/mini_toggle.dart
 // (re-exported above — no local definition needed).

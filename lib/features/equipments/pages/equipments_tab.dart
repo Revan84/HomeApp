@@ -1,23 +1,91 @@
 import 'package:flutter/material.dart';
-import 'package:front_end/core/i18n/loc.dart';
 import 'package:front_end/core/theme/app_colors.dart';
+import 'package:front_end/core/theme/app_font_sizes.dart';
 import 'package:front_end/core/theme/app_radius.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/design_system/chips/app_chip.dart';
-import '../../../domain/entities/equipment.dart';
+import '../../../core/i18n/loc.dart';
+import '../../../core/design_system/tiles/device_list_tile.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../domain/entities/cob_led_cct_device.dart';
+import '../../../domain/entities/cob_led_rgb_device.dart';
+import '../../../domain/entities/equipment.dart';
+import '../../../domain/entities/live_state.dart';
+import '../../../domain/entities/tv_device.dart';
 
+import '../../devices/cob_led_cct/view/cob_led_cct_detail_screen.dart';
+import '../../devices/cob_led_rgb/pages/cob_led_rgb_details_page.dart';
+import '../../devices/hygrometer/view/hygrometer_detail_screen.dart';
+import '../../devices/smart_plug/view/smart_plug_detail_screen.dart';
+import '../../devices/thermometer/view/thermometer_detail_screen.dart';
+import '../../devices/tv/view/tv_detail_screen.dart';
 import '../../live/controllers/live_polling_controller.dart';
-import '../../tv/pages/tv_details_page.dart';
-import '../../wled/pages/wled_details_page.dart';
 import '../controllers/equipments_controller.dart';
+import '../widgets/equipments_search_bar.dart';
 import 'equipment_details_page.dart';
 
-enum _DeviceKind { all, equipment, tv, wled }
+// ── Device display helpers (top-level — no state dependency) ─────────────────
 
-// Sentinel used to distinguish "All" selection from menu dismissal.
-const _kAll = '__all__';
+IconData _iconForType(EquipmentType type) => switch (type) {
+      EquipmentType.shellyPlusPlugS ||
+      EquipmentType.shellyPlugS =>
+        Icons.power_rounded,
+      EquipmentType.shellyHT => Icons.thermostat_rounded,
+      EquipmentType.hygrometer => Icons.water_drop_outlined,
+      _ => Icons.devices_other_rounded,
+    };
+
+Color _accentForType(EquipmentType type) => switch (type) {
+      EquipmentType.shellyPlusPlugS ||
+      EquipmentType.shellyPlugS =>
+        AppColors.plugAccent,
+      EquipmentType.shellyHT => AppColors.thermometerAccent,
+      EquipmentType.hygrometer => AppColors.hygrometerAccent,
+      _ => AppColors.primary,
+    };
+
+String _typeLabel(EquipmentType type, BuildContext context) => switch (type) {
+      EquipmentType.shellyPlusPlugS => context.l10n.statsDeviceTypeSmartPlug,
+      EquipmentType.shellyPlugS => 'Smart Plug S',
+      EquipmentType.shellyHT => context.l10n.thermometerTypeLabel,
+      EquipmentType.hygrometer => context.l10n.hygrometerTypeLabel,
+      _ => context.l10n.statsDeviceTypeGeneric,
+    };
+
+String _equipmentValue(Equipment e, LiveState? st) {
+  if (st == null) return '';
+  if (e.type == EquipmentType.shellyHT) {
+    return st.temperatureC != null
+        ? '${st.temperatureC!.toStringAsFixed(1)} °C'
+        : '';
+  }
+  if (e.type == EquipmentType.hygrometer) {
+    return st.humidity != null ? '${st.humidity!.toStringAsFixed(0)} %' : '';
+  }
+  if (e.type.isPlug && st.powerW != null) {
+    return '${st.powerW!.toStringAsFixed(0)} W';
+  }
+  return '';
+}
+
+/// Green when online, grey when offline or unknown.
+Color _dotColor(bool? online) =>
+    (online ?? false) ? AppColors.success : AppColors.textSecondary;
+
+// ── Filter kind enum ──────────────────────────────────────────────────────────
+
+enum _DeviceKind {
+  all,
+  equipment,
+  tv,
+  cobLedRgb,
+  cobLedCct,
+  thermometer,
+  hygrometer,
+}
+
+// ── Widget ────────────────────────────────────────────────────────────────────
 
 class EquipmentsTab extends StatefulWidget {
   final ValueNotifier<int> refreshNotifier;
@@ -36,13 +104,16 @@ class EquipmentsTab extends StatefulWidget {
 class _EquipmentsTabState extends State<EquipmentsTab> {
   String? _selectedRoomId;
   _DeviceKind _selectedKind = _DeviceKind.all;
-
-  final GlobalKey _roomKey = GlobalKey();
-  final GlobalKey _typeKey = GlobalKey();
+  final _searchCtrl = TextEditingController();
+  String _searchQuery = '';
 
   @override
   void initState() {
     super.initState();
+    _searchCtrl.addListener(() {
+      final q = _searchCtrl.text.toLowerCase();
+      if (q != _searchQuery) setState(() => _searchQuery = q);
+    });
     _reload();
     widget.refreshNotifier.addListener(_reload);
     widget.selectedGroupIdNotifier.addListener(_onGroupChanged);
@@ -50,6 +121,7 @@ class _EquipmentsTabState extends State<EquipmentsTab> {
 
   @override
   void dispose() {
+    _searchCtrl.dispose();
     widget.refreshNotifier.removeListener(_reload);
     widget.selectedGroupIdNotifier.removeListener(_onGroupChanged);
     super.dispose();
@@ -64,131 +136,117 @@ class _EquipmentsTabState extends State<EquipmentsTab> {
     if (mounted) setState(() => _selectedRoomId = null);
   }
 
-  Future<void> _onEquipmentTap(String equipmentId) async {
-    final changed = await Navigator.of(context).push<bool>(
-      MaterialPageRoute(
-        builder: (_) => EquipmentDetailsPage(equipmentId: equipmentId),
-      ),
-    );
-    if (changed == true) _reload();
-  }
+  // ── Navigation ───────────────────────────────────────────────────────────────
 
-  Future<void> _onTvTap(String tvId) async {
-    final changed = await Navigator.of(context).push<bool>(
-      MaterialPageRoute(builder: (_) => TvDetailsPage(deviceId: tvId)),
-    );
-    if (changed == true) _reload();
-  }
-
-  Future<void> _onWledTap(String wledId) async {
-    final changed = await Navigator.of(context).push<bool>(
-      MaterialPageRoute(builder: (_) => WledDetailsPage(deviceId: wledId)),
-    );
-    if (changed == true) _reload();
-  }
-
-  IconData _iconForType(EquipmentType type) {
-    switch (type) {
-      case EquipmentType.shellyPlusPlugS:
-      default:
-        return Icons.devices_other;
+  Future<void> _onEquipmentTap(Equipment equipment) async {
+    final Widget page;
+    if (equipment.type.isPlug) {
+      page = SmartPlugDetailScreen(equipment: equipment);
+    } else if (equipment.type == EquipmentType.shellyHT) {
+      page = ThermometerDetailScreen(equipment: equipment);
+    } else if (equipment.type == EquipmentType.hygrometer) {
+      page = HygrometerDetailScreen(equipment: equipment);
+    } else {
+      page = EquipmentDetailsPage(equipmentId: equipment.id);
     }
+    final changed =
+        await Navigator.of(context).push<bool>(MaterialPageRoute(builder: (_) => page));
+    if (changed == true) _reload();
   }
 
-  // ---------------------------------------------------------------------------
-  // Locale helpers
-  // ---------------------------------------------------------------------------
-
-  static String _allLabel(BuildContext context) {
-    final lang = Localizations.localeOf(context).languageCode;
-    return lang == 'fr' ? 'Toutes les pièces' : 'All rooms';
+  Future<void> _onTvTap(TvDevice tv) async {
+    final changed = await Navigator.of(context)
+        .push<bool>(MaterialPageRoute(builder: (_) => TvDetailScreen(device: tv)));
+    if (changed == true) _reload();
   }
 
-  static String _allTypesLabel(BuildContext context) {
-    final lang = Localizations.localeOf(context).languageCode;
-    return lang == 'fr' ? 'Tous les types' : 'All types';
-  }
-
-  // ---------------------------------------------------------------------------
-  // Menu helpers
-  // ---------------------------------------------------------------------------
-
-  RelativeRect? _menuPosition(GlobalKey key) {
-    final overlay =
-        Overlay.of(context).context.findRenderObject() as RenderBox?;
-    final keyCtx = key.currentContext;
-    if (keyCtx == null || overlay == null) return null;
-    final box = keyCtx.findRenderObject() as RenderBox?;
-    if (box == null) return null;
-    final pos = box.localToGlobal(Offset.zero);
-    final size = box.size;
-    return RelativeRect.fromRect(
-      Rect.fromLTWH(pos.dx, pos.dy, size.width, size.height),
-      Offset.zero & overlay.size,
+  Future<void> _onCobLedRgbTap(String deviceId) async {
+    final changed = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(builder: (_) => CobLedRgbDetailsPage(deviceId: deviceId)),
     );
+    if (changed == true) _reload();
   }
 
-  Future<void> _showRoomMenu(EquipmentsController controller) async {
-    final position = _menuPosition(_roomKey);
-    if (position == null) return;
-
-    final result = await showMenu<String>(
-      context: context,
-      position: position,
-      color: AppColors.surface,
-      shape: RoundedRectangleBorder(borderRadius: AppRadius.xlBR),
-      items: [
-        PopupMenuItem<String>(
-          value: _kAll,
-          child: _MenuRow(
-            label: _allLabel(context),
-            checked: _selectedRoomId == null,
-          ),
-        ),
-        ...controller.rooms.map((r) => PopupMenuItem<String>(
-              value: r.id,
-              child: _MenuRow(label: r.name, checked: r.id == _selectedRoomId),
-            )),
-      ],
+  Future<void> _onCobLedCctTap(CobLedCctDevice device) async {
+    final changed = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(builder: (_) => CobLedCctDetailScreen(device: device)),
     );
-    if (result == null || !mounted) return;
-    setState(() => _selectedRoomId = result == _kAll ? null : result);
+    if (changed == true) _reload();
   }
+
+  // ── Type filter menu ─────────────────────────────────────────────────────────
 
   Future<void> _showTypeMenu() async {
-    final position = _menuPosition(_typeKey);
-    if (position == null) return;
-
     final l10n = context.l10n;
-    final items = <({_DeviceKind kind, String label})>[
-      (kind: _DeviceKind.all, label: _allTypesLabel(context)),
-      (kind: _DeviceKind.equipment, label: l10n.tabEquipments),
-      (kind: _DeviceKind.tv, label: 'TV'),
-      (kind: _DeviceKind.wled, label: 'WLED'),
+    final items = [
+      (_DeviceKind.all, l10n.equipmentsFilterAllTypes),
+      (_DeviceKind.equipment, l10n.statsDeviceTypeSmartPlug),
+      (_DeviceKind.tv, l10n.deviceTypeTv),
+      (_DeviceKind.cobLedRgb, l10n.cobLedRgbTypeLabel),
+      (_DeviceKind.cobLedCct, l10n.cobLedCctTypeLabel),
+      (_DeviceKind.thermometer, l10n.thermometerTypeLabel),
+      (_DeviceKind.hygrometer, l10n.hygrometerTypeLabel),
     ];
+
+    final overlay =
+        Overlay.of(context).context.findRenderObject() as RenderBox?;
+    if (overlay == null) return;
+
+    final size = overlay.size;
+    final pos = RelativeRect.fromLTRB(
+      size.width - 220,
+      140,
+      16,
+      size.height - 140,
+    );
 
     final result = await showMenu<_DeviceKind>(
       context: context,
-      position: position,
+      position: pos,
       color: AppColors.surface,
       shape: RoundedRectangleBorder(borderRadius: AppRadius.xlBR),
       items: items
           .map((e) => PopupMenuItem<_DeviceKind>(
-                value: e.kind,
-                child: _MenuRow(
-                  label: e.label,
-                  checked: _selectedKind == e.kind,
+                value: e.$1,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (_selectedKind == e.$1)
+                      const Icon(Icons.check_rounded,
+                          color: AppColors.primary, size: 18)
+                    else
+                      const SizedBox(width: 18),
+                    AppSpacing.gapHMd,
+                    Text(
+                      e.$2,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(color: AppColors.textPrimary),
+                    ),
+                  ],
                 ),
               ))
           .toList(),
     );
-    if (result == null || !mounted) return;
-    setState(() => _selectedKind = result);
+    if (result != null && mounted) setState(() => _selectedKind = result);
   }
 
-  // ---------------------------------------------------------------------------
-  // Build
-  // ---------------------------------------------------------------------------
+  // ── Room count helper ────────────────────────────────────────────────────────
+
+  int _countForRoom(
+    String roomId,
+    List<Equipment> equips,
+    List<TvDevice> tvs,
+    List<CobLedRgbDevice> rgbs,
+    List<CobLedCctDevice> ccts,
+  ) =>
+      equips.where((e) => e.roomId == roomId).length +
+      tvs.where((t) => t.roomId == roomId).length +
+      rgbs.where((d) => d.roomId == roomId).length +
+      ccts.where((d) => d.roomId == roomId).length;
+
+  // ── Build ────────────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
@@ -200,57 +258,155 @@ class _EquipmentsTabState extends State<EquipmentsTab> {
       return const SafeArea(child: Center(child: CircularProgressIndicator()));
     }
 
-    // Apply group filter
-    var equipments = controller.equipmentsForGroup(groupId);
-    var tvDevices = controller.tvDevicesForGroup(groupId);
-    var wledDevices = controller.wledDevicesForGroup(groupId);
+    // ── Unfiltered lists (used for counts + room chips) ──────────────────────
+    final allEquipments = controller.equipmentsForGroup(groupId);
+    final allTvDevices = controller.tvDevicesForGroup(groupId);
+    final allCobLedRgbDevices = controller.cobLedRgbDevicesForGroup(groupId);
+    final allCobLedCctDevices = controller.cobLedCctDevicesForGroup(groupId);
 
-    // Apply room filter
-    if (_selectedRoomId != null) {
-      equipments =
-          equipments.where((e) => e.roomId == _selectedRoomId).toList();
-      tvDevices =
-          tvDevices.where((tv) => tv.roomId == _selectedRoomId).toList();
-      wledDevices =
-          wledDevices.where((w) => w.roomId == _selectedRoomId).toList();
+    // ── Header stats ─────────────────────────────────────────────────────────
+    final onlineCount =
+        allEquipments.where((e) => liveCtl.live[e.id]?.online == true).length;
+    final totalCount = allEquipments.length +
+        allTvDevices.length +
+        allCobLedRgbDevices.length +
+        allCobLedCctDevices.length;
+    final roomsWithDevices = {
+      ...allEquipments.where((e) => e.roomId != null).map((e) => e.roomId!),
+      ...allTvDevices.where((t) => t.roomId != null).map((t) => t.roomId!),
+      ...allCobLedRgbDevices.where((d) => d.roomId != null).map((d) => d.roomId!),
+      ...allCobLedCctDevices.where((d) => d.roomId != null).map((d) => d.roomId!),
+    }.length;
+
+    // ── Apply room filter ────────────────────────────────────────────────────
+    var equipments = _selectedRoomId == null
+        ? allEquipments
+        : allEquipments.where((e) => e.roomId == _selectedRoomId).toList();
+    var tvDevices = _selectedRoomId == null
+        ? allTvDevices
+        : allTvDevices.where((t) => t.roomId == _selectedRoomId).toList();
+    var cobLedRgbDevices = _selectedRoomId == null
+        ? allCobLedRgbDevices
+        : allCobLedRgbDevices.where((d) => d.roomId == _selectedRoomId).toList();
+    var cobLedCctDevices = _selectedRoomId == null
+        ? allCobLedCctDevices
+        : allCobLedCctDevices.where((d) => d.roomId == _selectedRoomId).toList();
+
+    // ── Apply kind filter ────────────────────────────────────────────────────
+    switch (_selectedKind) {
+      case _DeviceKind.equipment:
+        tvDevices = [];
+        cobLedRgbDevices = [];
+        cobLedCctDevices = [];
+      case _DeviceKind.tv:
+        equipments = [];
+        cobLedRgbDevices = [];
+        cobLedCctDevices = [];
+      case _DeviceKind.cobLedRgb:
+        equipments = [];
+        tvDevices = [];
+        cobLedCctDevices = [];
+      case _DeviceKind.cobLedCct:
+        equipments = [];
+        tvDevices = [];
+        cobLedRgbDevices = [];
+      case _DeviceKind.thermometer:
+        equipments =
+            equipments.where((e) => e.type == EquipmentType.shellyHT).toList();
+        tvDevices = [];
+        cobLedRgbDevices = [];
+        cobLedCctDevices = [];
+      case _DeviceKind.hygrometer:
+        equipments = equipments
+            .where((e) => e.type == EquipmentType.hygrometer)
+            .toList();
+        tvDevices = [];
+        cobLedRgbDevices = [];
+        cobLedCctDevices = [];
+      case _DeviceKind.all:
+        break;
     }
 
-    // Apply kind filter
-    if (_selectedKind == _DeviceKind.equipment) {
-      tvDevices = [];
-      wledDevices = [];
-    } else if (_selectedKind == _DeviceKind.tv) {
-      equipments = [];
-      wledDevices = [];
-    } else if (_selectedKind == _DeviceKind.wled) {
-      equipments = [];
-      tvDevices = [];
+    // ── Apply search filter ──────────────────────────────────────────────────
+    if (_searchQuery.isNotEmpty) {
+      equipments = equipments
+          .where((e) => e.name.toLowerCase().contains(_searchQuery))
+          .toList();
+      tvDevices = tvDevices
+          .where((t) => t.name.toLowerCase().contains(_searchQuery))
+          .toList();
+      cobLedRgbDevices = cobLedRgbDevices
+          .where((d) => d.name.toLowerCase().contains(_searchQuery))
+          .toList();
+      cobLedCctDevices = cobLedCctDevices
+          .where((d) => d.name.toLowerCase().contains(_searchQuery))
+          .toList();
     }
 
-    final totalCount =
-        equipments.length + tvDevices.length + wledDevices.length;
+    // ── Room name helper (closure — needs controller) ────────────────────────
+    String roomName(String? id) {
+      if (id == null) return '';
+      return controller.rooms.where((r) => r.id == id).firstOrNull?.name ?? '';
+    }
 
-    // Room label
-    final roomLabel = _selectedRoomId == null
-        ? _allLabel(context)
-        : controller.rooms
-                .where((r) => r.id == _selectedRoomId)
-                .firstOrNull
-                ?.name ??
-            _allLabel(context);
-
-    // Type label
-    final typeLabel = switch (_selectedKind) {
-      _DeviceKind.all => _allTypesLabel(context),
-      _DeviceKind.equipment => context.l10n.tabEquipments,
-      _DeviceKind.tv => 'TV',
-      _DeviceKind.wled => 'WLED',
-    };
+    // ── Pre-build flat tile list (replaces index-dispatch itemBuilder) ────────
+    final tiles = <Widget>[
+      for (final e in equipments)
+        DeviceListTile(
+          icon: _iconForType(e.type),
+          iconColor: _accentForType(e.type),
+          title: e.name,
+          subtitle: [
+            if (roomName(e.roomId).isNotEmpty) roomName(e.roomId),
+            _typeLabel(e.type, context),
+            if (_equipmentValue(e, liveCtl.live[e.id]).isNotEmpty)
+              _equipmentValue(e, liveCtl.live[e.id]),
+          ].join(' · '),
+          dotColor: _dotColor(liveCtl.live[e.id]?.online),
+          onTap: () => _onEquipmentTap(e),
+        ),
+      for (final tv in tvDevices)
+        DeviceListTile(
+          icon: Icons.tv_rounded,
+          iconColor: Colors.blueGrey,
+          title: tv.name,
+          subtitle: [if (roomName(tv.roomId).isNotEmpty) roomName(tv.roomId), 'TV']
+              .join(' · '),
+          dotColor: _dotColor(liveCtl.live[tv.id]?.online),
+          onTap: () => _onTvTap(tv),
+        ),
+      for (final d in cobLedRgbDevices)
+        DeviceListTile(
+          icon: Icons.lightbulb_outline_rounded,
+          iconColor: AppColors.cobLedRgbAccent,
+          title: d.name,
+          subtitle: [
+            if (roomName(d.roomId).isNotEmpty) roomName(d.roomId),
+            context.l10n.cobLedRgbTypeLabel,
+          ].join(' · '),
+          dotColor: _dotColor(liveCtl.live[d.id]?.online),
+          onTap: () => _onCobLedRgbTap(d.id),
+        ),
+      for (final cct in cobLedCctDevices)
+        DeviceListTile(
+          icon: Icons.wb_incandescent_outlined,
+          iconColor: AppColors.cobLedCctAccent,
+          title: cct.name,
+          subtitle: [
+            if (roomName(cct.roomId).isNotEmpty) roomName(cct.roomId),
+            context.l10n.cobLedCctTypeLabel,
+            if (cct.activeSceneId.isNotEmpty) cct.activeSceneId,
+          ].join(' · '),
+          dotColor: _dotColor(liveCtl.live[cct.id]?.online),
+          onTap: () => _onCobLedCctTap(cct),
+        ),
+    ];
 
     return SafeArea(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Filter bar
+          // ── Header ──────────────────────────────────────────────────────────
           Padding(
             padding: const EdgeInsets.fromLTRB(
               AppSpacing.x3l,
@@ -258,159 +414,109 @@ class _EquipmentsTabState extends State<EquipmentsTab> {
               AppSpacing.x3l,
               0,
             ),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppChip(
-                  key: _roomKey,
-                  label: roomLabel,
-                  variant: AppChipVariant.outlined,
-                  trailing: Icons.keyboard_arrow_down_rounded,
-                  onTap: () => _showRoomMenu(controller),
+                const Text(
+                  'Devices',
+                  style: TextStyle(
+                    fontFamily: 'ShareTech',
+                    fontWeight: FontWeight.w700,
+                    fontSize: AppFontSizes.heading,
+                    color: AppColors.textPrimary,
+                  ),
                 ),
-                AppSpacing.gapHMd,
-                AppChip(
-                  key: _typeKey,
-                  label: typeLabel,
-                  variant: AppChipVariant.outlined,
-                  trailing: Icons.keyboard_arrow_down_rounded,
-                  onTap: () => _showTypeMenu(),
+                const SizedBox(height: 2),
+                Text(
+                  '$onlineCount / $totalCount online'
+                  '${roomsWithDevices > 0 ? ' · $roomsWithDevices rooms' : ''}',
+                  style: const TextStyle(
+                    fontFamily: 'ShareTech',
+                    fontSize: AppFontSizes.sm,
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ],
             ),
           ),
-          AppSpacing.gapX3l,
-          Expanded(
+
+          AppSpacing.gapX2l,
+
+          // ── Search + filter ──────────────────────────────────────────────────
+          EquipmentsSearchBar(
+            controller: _searchCtrl,
+            isFiltered: _selectedKind != _DeviceKind.all,
+            onFilterTap: _showTypeMenu,
+          ),
+
+          AppSpacing.gapX2l,
+
+          // ── Room chips ───────────────────────────────────────────────────────
+          SizedBox(
+            height: 34,
             child: ListView.separated(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
-              itemCount: totalCount,
-              separatorBuilder: (_, _) => AppSpacing.gapX3l,
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.x3l),
+              separatorBuilder: (_, _) => const SizedBox(width: AppSpacing.md),
+              itemCount: controller.rooms.length + 1,
               itemBuilder: (_, i) {
-                if (i < equipments.length) {
-                  final e = equipments[i];
-                  final st = controller.isSupported(e)
-                      ? liveCtl.live[e.id]
-                      : null;
-                  final dotColor =
-                      (st?.online ?? false) ? Colors.green : Colors.orange;
-                  return _EquipmentPill(
-                    title: e.name,
-                    icon: _iconForType(e.type),
-                    dotColor: dotColor,
-                    onTap: () => _onEquipmentTap(e.id),
+                if (i == 0) {
+                  return AppChip(
+                    label: context.l10n.equipmentsRoomAll(totalCount),
+                    selected: _selectedRoomId == null,
+                    variant: AppChipVariant.filter,
+                    onTap: () => setState(() => _selectedRoomId = null),
                   );
                 }
-                if (i < equipments.length + tvDevices.length) {
-                  final tv = tvDevices[i - equipments.length];
-                  return _EquipmentPill(
-                    title: tv.name,
-                    icon: Icons.tv,
-                    dotColor: Colors.blueGrey,
-                    onTap: () => _onTvTap(tv.id),
-                  );
-                }
-                final wled =
-                    wledDevices[i - equipments.length - tvDevices.length];
-                return _EquipmentPill(
-                  title: wled.name,
-                  icon: Icons.lightbulb_outline_rounded,
-                  dotColor: Colors.amber.shade600,
-                  onTap: () => _onWledTap(wled.id),
+                final room = controller.rooms[i - 1];
+                final count = _countForRoom(
+                  room.id,
+                  allEquipments,
+                  allTvDevices,
+                  allCobLedRgbDevices,
+                  allCobLedCctDevices,
+                );
+                return AppChip(
+                  label: context.l10n.equipmentsRoomItem(room.name, count),
+                  selected: _selectedRoomId == room.id,
+                  variant: AppChipVariant.filter,
+                  onTap: () => setState(() => _selectedRoomId = room.id),
                 );
               },
             ),
           ),
+
+          AppSpacing.gapX2l,
+
+          // ── Device list ──────────────────────────────────────────────────────
+          Expanded(
+            child: tiles.isEmpty
+                ? Center(
+                    child: Text(
+                      _searchQuery.isNotEmpty
+                          ? 'No results for "$_searchQuery"'
+                          : 'No devices',
+                      style: const TextStyle(
+                        fontFamily: 'ShareTech',
+                        fontSize: AppFontSizes.body,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  )
+                : ListView.separated(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.x3l,
+                      0,
+                      AppSpacing.x3l,
+                      100,
+                    ),
+                    itemCount: tiles.length,
+                    separatorBuilder: (_, _) =>
+                        const SizedBox(height: AppSpacing.md),
+                    itemBuilder: (_, i) => tiles[i],
+                  ),
+          ),
         ],
-      ),
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Menu row
-// ---------------------------------------------------------------------------
-
-class _MenuRow extends StatelessWidget {
-  final String label;
-  final bool checked;
-
-  const _MenuRow({required this.label, required this.checked});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (checked)
-          const Icon(Icons.check_rounded, color: AppColors.primary, size: 18)
-        else
-          const SizedBox(width: 18),
-        AppSpacing.gapHMd,
-        Text(
-          label,
-          style: Theme.of(context)
-              .textTheme
-              .bodyMedium
-              ?.copyWith(color: AppColors.textPrimary),
-        ),
-      ],
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Equipment pill tile
-// ---------------------------------------------------------------------------
-
-class _EquipmentPill extends StatelessWidget {
-  final String title;
-  final IconData icon;
-  final Color dotColor;
-  final VoidCallback onTap;
-
-  const _EquipmentPill({
-    required this.title,
-    required this.icon,
-    required this.dotColor,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: AppRadius.x4lBR,
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-        decoration: BoxDecoration(
-          color: AppColors.bg,
-          borderRadius: AppRadius.x4lBR,
-          border: Border.all(color: AppColors.border.withValues(alpha: 0.75)),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, color: AppColors.primary),
-            AppSpacing.gapHXl,
-            Expanded(
-              child: Text(
-                title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-            ),
-            AppSpacing.gapHLg,
-            Container(
-              width: 10,
-              height: 10,
-              decoration: BoxDecoration(
-                color: dotColor,
-                shape: BoxShape.circle,
-              ),
-            ),
-            AppSpacing.gapHLg,
-            const Icon(Icons.chevron_right),
-          ],
-        ),
       ),
     );
   }

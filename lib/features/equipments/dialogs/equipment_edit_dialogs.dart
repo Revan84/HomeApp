@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:front_end/core/theme/app_colors.dart';
 
 import '../../../core/i18n/loc.dart';
+import '../../../core/utils/validators.dart';
 
 import '../../../domain/entities/room.dart';
 import '../../../domain/entities/equipment.dart';
@@ -16,14 +18,13 @@ class EquipmentEditDialogs {
     final isConfirmed = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
+        backgroundColor: AppColors.card,
         title: Text(context.l10n.detailsEditNameTooltip),
         content: TextField(
           controller: controller,
           autofocus: true,
           textInputAction: TextInputAction.done,
-          decoration: InputDecoration(
-            hintText: context.l10n.nameHintExample,
-          ),
+          decoration: InputDecoration(hintText: context.l10n.nameHintExample),
         ),
         actions: [
           TextButton(
@@ -51,32 +52,17 @@ class EquipmentEditDialogs {
   }) async {
     final controller = TextEditingController(text: currentIp);
 
-    bool isValidIp(String value) {
-      final parts = value.split('.');
-      if (parts.length != 4) return false;
-
-      for (final part in parts) {
-        final number = int.tryParse(part);
-        if (number == null || number < 0 || number > 255) {
-          return false;
-        }
-      }
-
-      return true;
-    }
-
     final isConfirmed = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
+        backgroundColor: AppColors.card,
         title: Text(context.l10n.detailsEditIpTooltip),
         content: TextField(
           controller: controller,
           autofocus: true,
           keyboardType: TextInputType.number,
           textInputAction: TextInputAction.done,
-          decoration: InputDecoration(
-            hintText: context.l10n.ipLocalHint,
-          ),
+          decoration: InputDecoration(hintText: context.l10n.ipLocalHint),
         ),
         actions: [
           TextButton(
@@ -94,7 +80,7 @@ class EquipmentEditDialogs {
     if (isConfirmed != true) return null;
 
     final value = controller.text.trim();
-    if (!isValidIp(value)) return null;
+    if (!Validators.isValidIpv4(value)) return null;
 
     return value;
   }
@@ -170,8 +156,8 @@ class _SelectionTile<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
-          fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-        );
+      fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+    );
 
     return ListTile(
       dense: true,
@@ -179,10 +165,7 @@ class _SelectionTile<T> extends StatelessWidget {
       leading: Icon(
         selected ? Icons.radio_button_checked : Icons.radio_button_off,
       ),
-      title: Text(
-        label,
-        style: textStyle,
-      ),
+      title: Text(label, style: textStyle),
       onTap: () => Navigator.pop<T>(context, value),
     );
   }

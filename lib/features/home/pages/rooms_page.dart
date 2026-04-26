@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/i18n/loc.dart';
@@ -6,10 +6,8 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_radius.dart';
 import '../../../core/theme/app_shadows.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../domain/entities/equipment.dart';
+import '../../../domain/entities/device_bundle.dart';
 import '../../../domain/entities/room.dart';
-import '../../../domain/entities/tv_device.dart';
-import '../../../domain/entities/wled_device.dart';
 import '../../../domain/entities/room_group.dart';
 import '../controllers/home_controller.dart';
 import '../dialogs/room_group_dialogs.dart';
@@ -25,17 +23,13 @@ import '../widgets/rooms_pick_sheet.dart';
 class RoomsPage extends StatefulWidget {
   final RoomGroup? activeGroup;
   final List<Room> rooms;
-  final List<Equipment> equipments;
-  final List<TvDevice> tvDevices;
-  final List<WledDevice> wledDevices;
+  final DeviceBundle devices;
 
   const RoomsPage({
     super.key,
     required this.activeGroup,
     required this.rooms,
-    required this.equipments,
-    required this.tvDevices,
-    required this.wledDevices,
+    required this.devices,
   });
 
   @override
@@ -233,10 +227,12 @@ class _RoomsPageState extends State<RoomsPage> {
                             }
 
                             final room = _rooms[index];
+                            final d = widget.devices;
                             final equipCount =
-                                widget.equipments.where((e) => e.roomId == room.id).length +
-                                widget.tvDevices.where((t) => t.roomId == room.id).length +
-                                widget.wledDevices.where((w) => w.roomId == room.id).length;
+                                d.equipments.where((e) => e.roomId == room.id).length +
+                                d.tvDevices.where((t) => t.roomId == room.id).length +
+                                d.cobLedRgbDevices.where((w) => w.roomId == room.id).length +
+                                d.cobLedCctDevices.where((c) => c.roomId == room.id).length;
 
                             return RoomPillTile(
                               title: room.name,

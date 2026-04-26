@@ -16,6 +16,7 @@ class LiveState {
   final double? temperatureC;
   final double? humidity;
   final int trendTemperature; // -1 falling, 0 stable, +1 rising
+  final int trendHumidity;    // -1 falling, 0 stable, +1 rising
 
   const LiveState({
     required this.online,
@@ -31,6 +32,7 @@ class LiveState {
     this.temperatureC,
     this.humidity,
     this.trendTemperature = 0,
+    this.trendHumidity = 0,
   });
 
   Duration get backoff {
@@ -53,6 +55,7 @@ class LiveState {
     double? temperatureC,
     double? humidity,
     int? trendTemperature,
+    int? trendHumidity,
   }) {
     return LiveState(
       online: online ?? this.online,
@@ -68,6 +71,7 @@ class LiveState {
       temperatureC: temperatureC ?? this.temperatureC,
       humidity: humidity ?? this.humidity,
       trendTemperature: trendTemperature ?? this.trendTemperature,
+      trendHumidity: trendHumidity ?? this.trendHumidity,
     );
   }
 }

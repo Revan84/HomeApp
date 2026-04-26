@@ -326,16 +326,16 @@ abstract class AppLocalizations {
   /// **'Autre (test)'**
   String get equipmentTypeOther;
 
-  /// Erreur de validation : IP manquante
+  /// Erreur validation : champ IP vide
   ///
   /// In fr, this message translates to:
-  /// **'IP requise'**
+  /// **'L\'adresse IP est requise'**
   String get validationIpRequired;
 
-  /// Erreur de validation : format IP invalide
+  /// Erreur validation : format IP incorrect
   ///
   /// In fr, this message translates to:
-  /// **'Format IP invalide'**
+  /// **'Format invalide (ex. 192.168.1.37)'**
   String get validationIpInvalidFormat;
 
   /// Erreur de validation : IP hors plage
@@ -1604,83 +1604,869 @@ abstract class AppLocalizations {
   /// **'TV connectée'**
   String get deviceTypeTv;
 
-  /// Type d'appareil : bandeau LED WLED
+  /// No description provided for @deviceTypeCobLedRgb.
   ///
   /// In fr, this message translates to:
   /// **'Bandeau LED WLED'**
-  String get deviceTypeWled;
+  String get deviceTypeCobLedRgb;
 
-  /// Titre du bottom sheet d'ajout WLED
+  /// Type d'appareil : lampe LED CCT à blanc réglable
+  ///
+  /// In fr, this message translates to:
+  /// **'Éclairage LED CCT'**
+  String get deviceTypeCobLedCct;
+
+  /// No description provided for @cobLedRgbAddTitle.
   ///
   /// In fr, this message translates to:
   /// **'Ajouter un appareil WLED'**
-  String get wledAddTitle;
+  String get cobLedRgbAddTitle;
 
-  /// Nom par défaut d'un appareil WLED
+  /// No description provided for @cobLedRgbDefaultName.
   ///
   /// In fr, this message translates to:
   /// **'Bandeau LED'**
-  String get wledDefaultName;
+  String get cobLedRgbDefaultName;
 
-  /// Exemple de nom d'appareil WLED
+  /// No description provided for @cobLedRgbNameHint.
   ///
   /// In fr, this message translates to:
   /// **'ex : LEDs Salon'**
-  String get wledNameHint;
+  String get cobLedRgbNameHint;
 
-  /// Exemple de modèle WLED
+  /// No description provided for @cobLedRgbModelHint.
   ///
   /// In fr, this message translates to:
   /// **'ex : WLED v0.14'**
-  String get wledModelHint;
+  String get cobLedRgbModelHint;
 
-  /// Échec du test de connexion WLED
+  /// No description provided for @cobLedRgbTestFailed.
   ///
   /// In fr, this message translates to:
   /// **'Connexion échouée'**
-  String get wledTestFailed;
+  String get cobLedRgbTestFailed;
 
-  /// Confirmation de suppression d'un appareil WLED
+  /// No description provided for @cobLedRgbDeleteConfirm.
   ///
   /// In fr, this message translates to:
   /// **'Supprimer cet appareil ?'**
-  String get wledDeleteConfirm;
+  String get cobLedRgbDeleteConfirm;
 
-  /// Label du curseur de luminosité
+  /// No description provided for @cobLedRgbBrightnessLabel.
   ///
   /// In fr, this message translates to:
   /// **'Luminosité'**
-  String get wledBrightnessLabel;
+  String get cobLedRgbBrightnessLabel;
 
-  /// Label du curseur de vitesse d'effet
+  /// No description provided for @cobLedRgbSpeedLabel.
   ///
   /// In fr, this message translates to:
   /// **'Vitesse'**
-  String get wledSpeedLabel;
+  String get cobLedRgbSpeedLabel;
 
-  /// Label du curseur d'intensité d'effet
+  /// No description provided for @cobLedRgbIntensityLabel.
   ///
   /// In fr, this message translates to:
   /// **'Intensité'**
-  String get wledIntensityLabel;
+  String get cobLedRgbIntensityLabel;
 
-  /// Onglet Couleurs
+  /// No description provided for @cobLedRgbColorsTab.
   ///
   /// In fr, this message translates to:
   /// **'Couleurs'**
-  String get wledColorsTab;
+  String get cobLedRgbColorsTab;
 
-  /// Onglet Effets
+  /// No description provided for @cobLedRgbEffectsTab.
   ///
   /// In fr, this message translates to:
   /// **'Effets'**
-  String get wledEffectsTab;
+  String get cobLedRgbEffectsTab;
 
-  /// Label de la section scènes
+  /// No description provided for @cobLedRgbScenesLabel.
   ///
   /// In fr, this message translates to:
   /// **'Scènes'**
-  String get wledScenesLabel;
+  String get cobLedRgbScenesLabel;
+
+  /// Titre de l'écran détail prise connectée
+  ///
+  /// In fr, this message translates to:
+  /// **'{name}'**
+  String smartPlugDetailTitle(String name);
+
+  /// Type d'appareil dans l'en-tête
+  ///
+  /// In fr, this message translates to:
+  /// **'Prise connectée'**
+  String get smartPlugSubtitle;
+
+  /// Statut prise connectée: en ligne
+  ///
+  /// In fr, this message translates to:
+  /// **'en ligne'**
+  String get smartPlugOnline;
+
+  /// Statut prise connectée: hors ligne
+  ///
+  /// In fr, this message translates to:
+  /// **'hors ligne'**
+  String get smartPlugOffline;
+
+  /// Unité de puissance — watts
+  ///
+  /// In fr, this message translates to:
+  /// **'W'**
+  String get smartPlugKpiUnit;
+
+  /// Coût estimé par heure
+  ///
+  /// In fr, this message translates to:
+  /// **'≈ {cost} €/h'**
+  String smartPlugCostPerHour(String cost);
+
+  /// Coût estimé aujourd'hui
+  ///
+  /// In fr, this message translates to:
+  /// **'≈ {cost}€ aujourd\'hui'**
+  String smartPlugCostToday(String cost);
+
+  /// Énergie cumulée en kWh
+  ///
+  /// In fr, this message translates to:
+  /// **'{kwh} kWh cumulés'**
+  String smartPlugKwhCumulated(String kwh);
+
+  /// Titre section consommation
+  ///
+  /// In fr, this message translates to:
+  /// **'Consommation'**
+  String get smartPlugSectionConsumption;
+
+  /// Titre section chronologie
+  ///
+  /// In fr, this message translates to:
+  /// **'Chronologie'**
+  String get smartPlugSectionTimeline;
+
+  /// Sous-titre chronologie
+  ///
+  /// In fr, this message translates to:
+  /// **'On/off dernières 24h'**
+  String get smartPlugTimelineSubtitle;
+
+  /// Titre section alertes
+  ///
+  /// In fr, this message translates to:
+  /// **'Alertes'**
+  String get smartPlugSectionAlerts;
+
+  /// Placeholder aucune alerte
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun seuil configuré'**
+  String get smartPlugNoAlerts;
+
+  /// Titre section informations
+  ///
+  /// In fr, this message translates to:
+  /// **'Informations'**
+  String get smartPlugSectionInformations;
+
+  /// Label IP locale
+  ///
+  /// In fr, this message translates to:
+  /// **'IP locale'**
+  String get smartPlugInfoLocalIp;
+
+  /// Label modèle
+  ///
+  /// In fr, this message translates to:
+  /// **'Modèle'**
+  String get smartPlugInfoModel;
+
+  /// Label type de connexion
+  ///
+  /// In fr, this message translates to:
+  /// **'Connexion'**
+  String get smartPlugInfoConnection;
+
+  /// Valeur connexion Wi-Fi
+  ///
+  /// In fr, this message translates to:
+  /// **'Wi-Fi'**
+  String get smartPlugWifi;
+
+  /// Bouton changer de pièce
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier'**
+  String get smartPlugChangeRoom;
+
+  /// Menu: actualiser
+  ///
+  /// In fr, this message translates to:
+  /// **'Actualiser'**
+  String get smartPlugMenuRefresh;
+
+  /// Menu: modifier
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier'**
+  String get smartPlugMenuEdit;
+
+  /// Menu: supprimer
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer'**
+  String get smartPlugMenuDelete;
+
+  /// Titre confirmation suppression
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer l\'équipement ?'**
+  String get smartPlugDeleteConfirmTitle;
+
+  /// Corps confirmation suppression
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette action est irréversible.'**
+  String get smartPlugDeleteConfirmBody;
+
+  /// Annuler la suppression
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler'**
+  String get smartPlugDeleteConfirmCancel;
+
+  /// Confirmer la suppression
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer'**
+  String get smartPlugDeleteConfirmConfirm;
+
+  /// Bannière affichée quand la prise est hors ligne
+  ///
+  /// In fr, this message translates to:
+  /// **'Dernières valeurs connues'**
+  String get smartPlugLastKnownValues;
+
+  /// Titre du dialogue pour modifier le prix du kWh
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix de l\'électricité'**
+  String get smartPlugEditKwhPriceTitle;
+
+  /// Titre du bottom sheet d'ajout d'alerte
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter une alerte'**
+  String get smartPlugAlertSheetTitle;
+
+  /// Label au-dessus des chips de condition
+  ///
+  /// In fr, this message translates to:
+  /// **'Type d\'alerte'**
+  String get smartPlugAlertConditionLabel;
+
+  /// Chip condition: seuil en watts
+  ///
+  /// In fr, this message translates to:
+  /// **'Consommation (W)'**
+  String get smartPlugAlertConditionWatts;
+
+  /// Chip condition: seuil coût journalier
+  ///
+  /// In fr, this message translates to:
+  /// **'Coût journalier (€)'**
+  String get smartPlugAlertConditionDailyCost;
+
+  /// Label au-dessus du champ de seuil
+  ///
+  /// In fr, this message translates to:
+  /// **'Seuil'**
+  String get smartPlugAlertThresholdLabel;
+
+  /// Hint pour le seuil en watts
+  ///
+  /// In fr, this message translates to:
+  /// **'ex. 2500'**
+  String get smartPlugAlertThresholdHintWatts;
+
+  /// Hint pour le seuil de coût journalier
+  ///
+  /// In fr, this message translates to:
+  /// **'ex. 1,50'**
+  String get smartPlugAlertThresholdHintCost;
+
+  /// Label au-dessus des chips de notification
+  ///
+  /// In fr, this message translates to:
+  /// **'Notifications'**
+  String get smartPlugAlertNotificationsLabel;
+
+  /// Chip notification: notification push
+  ///
+  /// In fr, this message translates to:
+  /// **'Push'**
+  String get smartPlugAlertNotifPush;
+
+  /// Chip notification: bannière in-app
+  ///
+  /// In fr, this message translates to:
+  /// **'Bannière'**
+  String get smartPlugAlertNotifBanner;
+
+  /// Erreur de validation: aucun type de notification sélectionné
+  ///
+  /// In fr, this message translates to:
+  /// **'Sélectionnez au moins un type de notification'**
+  String get smartPlugAlertNotifRequired;
+
+  /// Type d'appareil TV dans l'en-tête de détail
+  ///
+  /// In fr, this message translates to:
+  /// **'Télécommande'**
+  String get tvSubtitle;
+
+  /// Statut TV : en ligne
+  ///
+  /// In fr, this message translates to:
+  /// **'en ligne'**
+  String get tvOnline;
+
+  /// Statut TV : hors ligne
+  ///
+  /// In fr, this message translates to:
+  /// **'hors ligne'**
+  String get tvOffline;
+
+  /// Label affiché sous le nom de la source actuelle
+  ///
+  /// In fr, this message translates to:
+  /// **'Source active'**
+  String get tvSourceActive;
+
+  /// Titre de la carte section télécommande
+  ///
+  /// In fr, this message translates to:
+  /// **'Télécommande'**
+  String get tvSectionRemote;
+
+  /// Titre de la carte section applications
+  ///
+  /// In fr, this message translates to:
+  /// **'Applications'**
+  String get tvSectionApplications;
+
+  /// Titre de la carte section informations
+  ///
+  /// In fr, this message translates to:
+  /// **'Informations'**
+  String get tvSectionInformations;
+
+  /// Menu TV : actualiser
+  ///
+  /// In fr, this message translates to:
+  /// **'Actualiser'**
+  String get tvMenuRefresh;
+
+  /// Menu TV : modifier
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier'**
+  String get tvMenuEdit;
+
+  /// Menu TV : supprimer
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer'**
+  String get tvMenuDelete;
+
+  /// Titre de la confirmation de suppression TV
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer la TV ?'**
+  String get tvDeleteConfirmTitle;
+
+  /// Corps de la confirmation de suppression TV
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette action est irréversible.'**
+  String get tvDeleteConfirmBody;
+
+  /// Bouton annuler la suppression TV
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler'**
+  String get tvDeleteConfirmCancel;
+
+  /// Bouton confirmer la suppression TV
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer'**
+  String get tvDeleteConfirmConfirm;
+
+  /// Bannière affichée sur le détail TV quand déconnecté
+  ///
+  /// In fr, this message translates to:
+  /// **'Dernières valeurs connues'**
+  String get tvLastKnownValues;
+
+  /// Titre de carte section : lecture en direct
+  ///
+  /// In fr, this message translates to:
+  /// **'EN DIRECT'**
+  String get detailSectionLive;
+
+  /// Titre de carte section : graphique historique
+  ///
+  /// In fr, this message translates to:
+  /// **'HISTORIQUE'**
+  String get detailSectionHistoric;
+
+  /// Titre de carte section : informations appareil
+  ///
+  /// In fr, this message translates to:
+  /// **'INFORMATIONS'**
+  String get detailSectionInformations;
+
+  /// Titre de carte section : alertes configurées
+  ///
+  /// In fr, this message translates to:
+  /// **'ALERTES'**
+  String get detailSectionAlerts;
+
+  /// Titre de carte section : température (hygromètre)
+  ///
+  /// In fr, this message translates to:
+  /// **'TEMPÉRATURE'**
+  String get detailSectionTemperature;
+
+  /// Label stat box : valeur minimale
+  ///
+  /// In fr, this message translates to:
+  /// **'MIN'**
+  String get detailStatMin;
+
+  /// Label stat box : valeur maximale
+  ///
+  /// In fr, this message translates to:
+  /// **'MAX'**
+  String get detailStatMax;
+
+  /// Label stat box : moyenne hebdomadaire
+  ///
+  /// In fr, this message translates to:
+  /// **'Moy. semaine'**
+  String get detailStatAvgWeek;
+
+  /// Label stat box : moyenne mensuelle
+  ///
+  /// In fr, this message translates to:
+  /// **'Moy. mois'**
+  String get detailStatAvgMonth;
+
+  /// Label stat box : écart min/max journalier
+  ///
+  /// In fr, this message translates to:
+  /// **'Amplitude'**
+  String get detailStatAmplitude;
+
+  /// Label période stat box : aujourd'hui
+  ///
+  /// In fr, this message translates to:
+  /// **'Aujourd\'hui'**
+  String get detailStatToday;
+
+  /// Label ligne info : statut de l'appareil
+  ///
+  /// In fr, this message translates to:
+  /// **'Statut'**
+  String get detailInfoStatus;
+
+  /// Indicateur de tendance : température en hausse
+  ///
+  /// In fr, this message translates to:
+  /// **'Tendance : hausse'**
+  String get detailTrendRising;
+
+  /// Indicateur de tendance : température en baisse
+  ///
+  /// In fr, this message translates to:
+  /// **'Tendance : baisse'**
+  String get detailTrendFalling;
+
+  /// Indicateur de tendance : humidité en hausse
+  ///
+  /// In fr, this message translates to:
+  /// **'Tendance : montée'**
+  String get detailTrendUpward;
+
+  /// Indicateur de tendance : humidité en baisse
+  ///
+  /// In fr, this message translates to:
+  /// **'Tendance : descente'**
+  String get detailTrendDownward;
+
+  /// Label type appareil : thermomètre
+  ///
+  /// In fr, this message translates to:
+  /// **'Thermomètre'**
+  String get thermometerTypeLabel;
+
+  /// Label type appareil : hygromètre
+  ///
+  /// In fr, this message translates to:
+  /// **'Hygromètre'**
+  String get hygrometerTypeLabel;
+
+  /// Label type appareil : bandeau LED RGB
+  ///
+  /// In fr, this message translates to:
+  /// **'COB LED RGB'**
+  String get cobLedRgbTypeLabel;
+
+  /// Label type appareil : éclairage COB LED CCT
+  ///
+  /// In fr, this message translates to:
+  /// **'COB LED CCT'**
+  String get cobLedCctTypeLabel;
+
+  /// Bannière affichée quand un appareil est hors ligne
+  ///
+  /// In fr, this message translates to:
+  /// **'Appareil hors ligne'**
+  String get deviceOfflineBanner;
+
+  /// Affiché quand l'identifiant de l'appareil est introuvable
+  ///
+  /// In fr, this message translates to:
+  /// **'Appareil introuvable'**
+  String get deviceNotFound;
+
+  /// Titre de carte section : contrôles luminosité
+  ///
+  /// In fr, this message translates to:
+  /// **'LUMINOSITÉ'**
+  String get cobLedSectionLuminosity;
+
+  /// Titre de carte section : contrôles effets WLED
+  ///
+  /// In fr, this message translates to:
+  /// **'CONTRÔLES WLED'**
+  String get cobLedSectionWledControls;
+
+  /// Titre de carte section : sélecteur de couleur
+  ///
+  /// In fr, this message translates to:
+  /// **'COULEUR'**
+  String get cobLedRgbSectionColor;
+
+  /// Titre de carte section : contrôles température de couleur
+  ///
+  /// In fr, this message translates to:
+  /// **'TEMPÉRATURE DE COULEUR'**
+  String get cobLedCctSectionColourTemp;
+
+  /// Titre du dialogue pour enregistrer l'état CCT comme modèle
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer comme modèle'**
+  String get cobLedCctSaveAsTemplateTitle;
+
+  /// Texte indicatif du champ nom de modèle
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom du modèle'**
+  String get cobLedCctTemplateNameHint;
+
+  /// Texte indicatif du champ nom d'appareil CCT
+  ///
+  /// In fr, this message translates to:
+  /// **'ex. ESP32 CCT Controller'**
+  String get cobLedCctDeviceHint;
+
+  /// Chip condition alerte : déclencher si valeur au-dessus du seuil
+  ///
+  /// In fr, this message translates to:
+  /// **'Au-dessus'**
+  String get sensorAlertConditionAbove;
+
+  /// Chip condition alerte : déclencher si valeur en dessous du seuil
+  ///
+  /// In fr, this message translates to:
+  /// **'En dessous'**
+  String get sensorAlertConditionBelow;
+
+  /// Label sous la barre de confort de l'hygromètre
+  ///
+  /// In fr, this message translates to:
+  /// **'Zone de confort : 40 % – 60 %'**
+  String get hygrometerComfortRangeLabel;
+
+  /// Label stat box : niveau de confort actuel
+  ///
+  /// In fr, this message translates to:
+  /// **'Confort'**
+  String get hygrometerStatComfort;
+
+  /// Titre de section page d'accueil : résumé du jour
+  ///
+  /// In fr, this message translates to:
+  /// **'Aujourd\'hui'**
+  String get homeSectionToday;
+
+  /// Label KPI section aujourd'hui : consommation totale
+  ///
+  /// In fr, this message translates to:
+  /// **'Consommation'**
+  String get homeTodayConsumptionLabel;
+
+  /// Label KPI section aujourd'hui : température moyenne
+  ///
+  /// In fr, this message translates to:
+  /// **'Temp. moy.'**
+  String get homeTodayAvgTempLabel;
+
+  /// Label KPI section aujourd'hui : humidité
+  ///
+  /// In fr, this message translates to:
+  /// **'Humidité'**
+  String get homeTodayHumidityLabel;
+
+  /// Chip filtre onglet appareils : tous les types
+  ///
+  /// In fr, this message translates to:
+  /// **'Tous les types'**
+  String get equipmentsFilterAllTypes;
+
+  /// Chip filtre pièce : toutes les pièces avec nombre d'appareils
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes les pièces ({count})'**
+  String equipmentsRoomAll(int count);
+
+  /// Chip filtre pièce : nom de pièce avec nombre d'appareils
+  ///
+  /// In fr, this message translates to:
+  /// **'{name} ({count})'**
+  String equipmentsRoomItem(String name, int count);
+
+  /// Texte indicatif de la barre de recherche dans l'onglet appareils
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher un appareil...'**
+  String get equipmentsSearchHint;
+
+  /// Chip section zones : toutes les pièces avec nombre d'appareils
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes les pièces ({count})'**
+  String areasAllRooms(int count);
+
+  /// Chip section zones : nom de pièce avec nombre d'appareils
+  ///
+  /// In fr, this message translates to:
+  /// **'{name} ({count})'**
+  String areasRoomItem(String name, int count);
+
+  /// État vide section zones : aucune pièce configurée
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune pièce configurée.'**
+  String get areasNoRooms;
+
+  /// État vide section zones : pièce sans appareil
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun appareil dans cette pièce.'**
+  String get areasNoDevices;
+
+  /// Barre de puissance : appareil allumé
+  ///
+  /// In fr, this message translates to:
+  /// **'ON'**
+  String get deviceStatusOn;
+
+  /// Barre de puissance : appareil éteint
+  ///
+  /// In fr, this message translates to:
+  /// **'OFF'**
+  String get deviceStatusOff;
+
+  /// Snackbar affiché quand une couleur hex est copiée
+  ///
+  /// In fr, this message translates to:
+  /// **'{hex} copié'**
+  String colorCopiedSnack(String hex);
+
+  /// Label au-dessus du menu déroulant d'effets WLED
+  ///
+  /// In fr, this message translates to:
+  /// **'Effet'**
+  String get cobLedEffectLabel;
+
+  /// Label curseur : vitesse de l'effet
+  ///
+  /// In fr, this message translates to:
+  /// **'Vitesse'**
+  String get cobLedSpeedLabel;
+
+  /// Label curseur : intensité de l'effet
+  ///
+  /// In fr, this message translates to:
+  /// **'Intensité'**
+  String get cobLedIntensityLabel;
+
+  /// Label toggle : mode réactif audio
+  ///
+  /// In fr, this message translates to:
+  /// **'Réactif au son'**
+  String get cobLedAudioReactive;
+
+  /// Sous-titre du toggle réactif audio
+  ///
+  /// In fr, this message translates to:
+  /// **'Réagir à l\'entrée du microphone'**
+  String get cobLedAudioReactiveHint;
+
+  /// Placeholder pendant le chargement des effets WLED
+  ///
+  /// In fr, this message translates to:
+  /// **'Chargement des effets…'**
+  String get cobLedLoadingEffects;
+
+  /// État vide quand aucun preset WLED n'est disponible
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun preset trouvé sur l\'appareil.'**
+  String get cobLedNoPresets;
+
+  /// Titre de section pour la liste des presets WLED
+  ///
+  /// In fr, this message translates to:
+  /// **'MODÈLES'**
+  String get cobLedSectionTemplates;
+
+  /// Titre de section pour le preset WLED actif
+  ///
+  /// In fr, this message translates to:
+  /// **'SCÈNE ACTIVE'**
+  String get cobLedSectionActiveScene;
+
+  /// Placeholder quand aucun preset WLED n'est actif
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune scène active'**
+  String get cobLedNoActiveScene;
+
+  /// Badge sur le preset WLED actuellement actif
+  ///
+  /// In fr, this message translates to:
+  /// **'Actif'**
+  String get cobLedPresetActive;
+
+  /// Bouton pour appliquer un preset WLED
+  ///
+  /// In fr, this message translates to:
+  /// **'Appliquer'**
+  String get cobLedPresetApply;
+
+  /// Titre de la boîte de dialogue d'ajout d'appareil
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un appareil'**
+  String get addDeviceTitle;
+
+  /// Label champ : sélecteur de type d'appareil
+  ///
+  /// In fr, this message translates to:
+  /// **'Type d\'appareil'**
+  String get addDeviceTypeLabel;
+
+  /// Placeholder dans le menu déroulant du type d'appareil
+  ///
+  /// In fr, this message translates to:
+  /// **'Sélectionner un type'**
+  String get addDeviceTypeHint;
+
+  /// Label champ : nom de l'appareil
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom de l\'appareil'**
+  String get addDeviceNameLabel;
+
+  /// Label champ : adresse IP locale
+  ///
+  /// In fr, this message translates to:
+  /// **'IP locale'**
+  String get addDeviceIpLabel;
+
+  /// Label champ : pièce associée
+  ///
+  /// In fr, this message translates to:
+  /// **'Pièce'**
+  String get addDeviceRoomLabel;
+
+  /// Label champ pièce optionnel dans les feuilles d'ajout
+  ///
+  /// In fr, this message translates to:
+  /// **'Pièce (optionnel)'**
+  String get addDeviceRoomOptionalLabel;
+
+  /// Label champ modèle optionnel dans les feuilles d'ajout
+  ///
+  /// In fr, this message translates to:
+  /// **'Modèle (optionnel)'**
+  String get addDeviceModelOptionalLabel;
+
+  /// Label case à cocher : ajouter aux favoris
+  ///
+  /// In fr, this message translates to:
+  /// **'Favori'**
+  String get addDeviceFavoriteLabel;
+
+  /// Label case à cocher dans la feuille d'ajout CCT
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter aux favoris'**
+  String get addDeviceAddToFavorites;
+
+  /// Label du bouton Test quand le test de connexion réussit
+  ///
+  /// In fr, this message translates to:
+  /// **'Connecté ✓'**
+  String get addDeviceConnectedCheck;
+
+  /// Titre de la feuille d'ajout LED CCT
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter une lumière CCT'**
+  String get cobLedCctAddTitle;
+
+  /// Erreur validation : champ nom vide
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom requis'**
+  String get validationNameRequired;
+
+  /// Erreur validation : octets IP hors limites
+  ///
+  /// In fr, this message translates to:
+  /// **'Adresse IP invalide'**
+  String get validationIpInvalidRange;
+
+  /// Erreur affichée quand le test de connexion échoue avec un message détaillé
+  ///
+  /// In fr, this message translates to:
+  /// **'Connexion échouée : {error}'**
+  String connectionFailedDetail(String error);
+
+  /// Placeholder état vide dans les widgets graphique/historique
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune donnée'**
+  String get noData;
 }
 
 class _AppLocalizationsDelegate

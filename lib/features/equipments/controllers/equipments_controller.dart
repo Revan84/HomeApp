@@ -1,19 +1,22 @@
-import 'package:flutter/foundation.dart';
+﻿import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../data/mappers/equipment_mapper.dart';
+import '../../../domain/entities/cob_led_cct_device.dart';
 import '../../../domain/entities/equipment.dart';
 import '../../../domain/entities/room.dart';
 import '../../../domain/entities/tv_device.dart';
-import '../../../domain/entities/wled_device.dart';
+import '../../../domain/entities/cob_led_rgb_device.dart';
+import '../../../domain/repositories/cob_led_cct_repository.dart';
 import '../../../domain/repositories/equipment_repository.dart';
 import '../../../domain/repositories/room_repository.dart';
 import '../../../domain/repositories/tv_repository.dart';
-import '../../../domain/repositories/wled_repository.dart';
+import '../../../domain/repositories/cob_led_rgb_repository.dart';
+import '../../integrations/cob_led_cct/data/cob_led_cct_api_client.dart';
 import '../../integrations/samsung/data/samsung_ws_client.dart';
 import '../../integrations/shelly/data/dto/shelly_device_info_dto.dart';
 import '../../integrations/shelly/data/shelly_rpc_client.dart';
-import '../../integrations/wled/data/wled_api_client.dart';
+import '../../integrations/cob_led_rgb/data/cob_led_rgb_api_client.dart';
 import '../../live/controllers/live_polling_controller.dart';
 
 /// Manages equipment list data, live polling sync, and device CRUD operations.
@@ -21,7 +24,8 @@ class EquipmentsController extends ChangeNotifier {
   final EquipmentRepository _equipmentRepo;
   final RoomRepository _roomRepo;
   final TvRepository _tvRepo;
-  final WledRepository _wledRepo;
+  final CobLedRgbRepository _cobLedRgbRepo;
+  final CobLedCctRepository _cobLedCctRepo;
   final LivePollingController _liveController;
   final ShellyRpcClient _rpc;
   final http.Client _httpClient;
@@ -30,14 +34,16 @@ class EquipmentsController extends ChangeNotifier {
     required EquipmentRepository equipmentRepo,
     required RoomRepository roomRepo,
     required TvRepository tvRepo,
-    required WledRepository wledRepo,
+    required CobLedRgbRepository cobLedRgbRepo,
+    required CobLedCctRepository cobLedCctRepo,
     required LivePollingController liveController,
     required ShellyRpcClient rpc,
     required http.Client httpClient,
   })  : _equipmentRepo = equipmentRepo,
         _roomRepo = roomRepo,
         _tvRepo = tvRepo,
-        _wledRepo = wledRepo,
+        _cobLedRgbRepo = cobLedRgbRepo,
+        _cobLedCctRepo = cobLedCctRepo,
         _liveController = liveController,
         _rpc = rpc,
         _httpClient = httpClient;
@@ -57,8 +63,11 @@ class EquipmentsController extends ChangeNotifier {
   List<TvDevice> _tvDevices = [];
   List<TvDevice> get tvDevices => _tvDevices;
 
-  List<WledDevice> _wledDevices = [];
-  List<WledDevice> get wledDevices => _wledDevices;
+  List<CobLedRgbDevice> _cobLedRgbDevices = [];
+  List<CobLedRgbDevice> get cobLedRgbDevices => _cobLedRgbDevices;
+
+  List<CobLedCctDevice> _cobLedCctDevices = [];
+  List<CobLedCctDevice> get cobLedCctDevices => _cobLedCctDevices;
 
   bool isSupported(Equipment e) => e.type == EquipmentType.shellyPlusPlugS;
 
@@ -87,11 +96,20 @@ class EquipmentsController extends ChangeNotifier {
   }
 
   /// WLED devices filtered to visible rooms in the given group.
-  List<WledDevice> wledDevicesForGroup(String? groupId) {
-    if (groupId == null) return _wledDevices;
+  List<CobLedRgbDevice> cobLedRgbDevicesForGroup(String? groupId) {
+    if (groupId == null) return _cobLedRgbDevices;
     final roomIds = visibleRoomIds(groupId);
-    return _wledDevices
+    return _cobLedRgbDevices
         .where((w) => roomIds.contains(w.roomId))
+        .toList(growable: false);
+  }
+
+  /// COB LED CCT devices filtered to visible rooms in the given group.
+  List<CobLedCctDevice> cobLedCctDevicesForGroup(String? groupId) {
+    if (groupId == null) return _cobLedCctDevices;
+    final roomIds = visibleRoomIds(groupId);
+    return _cobLedCctDevices
+        .where((c) => roomIds.contains(c.roomId))
         .toList(growable: false);
   }
 
@@ -132,9 +150,20 @@ class EquipmentsController extends ChangeNotifier {
     }
   }
 
-  Future<void> addWledDevice(WledDevice device) async {
+  Future<void> addCobLedRgbDevice(CobLedRgbDevice device) async {
     try {
-      await _wledRepo.add(device);
+      await _cobLedRgbRepo.add(device);
+      await loadAll();
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      rethrow;
+    }
+  }
+
+  Future<void> addCobLedCctDevice(CobLedCctDevice device) async {
+    try {
+      await _cobLedCctRepo.add(device);
       await loadAll();
     } catch (e) {
       _error = e.toString();
@@ -172,8 +201,13 @@ class EquipmentsController extends ChangeNotifier {
   }
 
   /// Tests WLED connection. Returns true if reachable.
-  Future<bool> testWledConnection(String ip) {
-    return WledApiClient(_httpClient).testConnection(ip);
+  Future<bool> testCobLedRgbConnection(String ip) {
+    return CobLedRgbApiClient(_httpClient).testConnection(ip);
+  }
+
+  /// Tests COB LED CCT connection. Returns true if reachable.
+  Future<bool> testCobLedCctConnection(String ip) {
+    return CobLedCctApiClient(_httpClient).testConnection(ip);
   }
 
   // ---------------------------------------------------------------------------
@@ -190,13 +224,15 @@ class EquipmentsController extends ChangeNotifier {
         _equipmentRepo.loadAll(),
         _roomRepo.loadAll(),
         _tvRepo.loadAll(),
-        _wledRepo.loadAll(),
+        _cobLedRgbRepo.loadAll(),
+        _cobLedCctRepo.loadAll(),
       ]);
 
       _allEquipments = results[0] as List<Equipment>;
       _rooms = results[1] as List<Room>;
       _tvDevices = results[2] as List<TvDevice>;
-      _wledDevices = results[3] as List<WledDevice>;
+      _cobLedRgbDevices = results[3] as List<CobLedRgbDevice>;
+      _cobLedCctDevices = results[4] as List<CobLedCctDevice>;
 
       final endpoints = _allEquipments
           .where(isSupported)

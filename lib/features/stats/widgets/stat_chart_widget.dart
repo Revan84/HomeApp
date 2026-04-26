@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
+import '../../../core/i18n/loc.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_font_sizes.dart';
 import '../../../core/theme/app_spacing.dart';
@@ -60,11 +61,11 @@ class _StatChartWidgetState extends State<StatChartWidget> {
   Widget build(BuildContext context) {
     final points = widget.series.points;
     if (points.isEmpty) {
-      return const SizedBox(
+      return SizedBox(
         height: 120,
         child: Center(
-          child: Text('No data',
-              style: TextStyle(fontFamily: 'ShareTech', color: AppColors.textSecondary)),
+          child: Text(context.l10n.noData,
+              style: const TextStyle(fontFamily: 'ShareTech', color: AppColors.textSecondary)),
         ),
       );
     }

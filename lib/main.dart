@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -7,7 +7,6 @@ import 'package:http/http.dart' as http;
 import 'app_shell.dart';
 
 import 'core/theme/app_theme.dart';
-import 'core/i18n/app_strings.dart';
 import 'core/i18n/l10n/app_localizations.dart';
 import 'core/i18n/locale_controller.dart';
 import 'core/network/http_client.dart';
@@ -17,14 +16,16 @@ import 'core/utils/id_generator.dart';
 import 'domain/repositories/equipment_repository.dart';
 import 'domain/repositories/room_group_repository.dart';
 import 'domain/repositories/room_repository.dart';
+import 'domain/repositories/cob_led_cct_repository.dart';
 import 'domain/repositories/tv_repository.dart';
-import 'domain/repositories/wled_repository.dart';
+import 'domain/repositories/cob_led_rgb_repository.dart';
 
 import 'data/repositories/equipment_repository_local.dart';
 import 'data/repositories/room_group_repository_local.dart';
 import 'data/repositories/room_repository_local.dart';
 import 'features/integrations/samsung/data/samsung_tv_repository.dart';
-import 'features/integrations/wled/data/wled_local_repository.dart';
+import 'features/integrations/cob_led_cct/data/cob_led_cct_local_repository.dart';
+import 'features/integrations/cob_led_rgb/data/cob_led_rgb_local_repository.dart';
 
 import 'features/integrations/shelly/data/shelly_live_device_repository.dart';
 import 'features/integrations/shelly/data/shelly_rpc_client.dart';
@@ -39,9 +40,12 @@ import 'features/stats/controller/stats_controller.dart';
 import 'features/shell/controllers/shell_controller.dart';
 import 'features/home/controllers/home_controller.dart';
 import 'features/equipments/controllers/equipments_controller.dart';
+import 'core/notifications/notification_service.dart';
+import 'core/notifications/alert_evaluation_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService.init();
   final prefs = await SharedPreferences.getInstance();
   runApp(MyApp(prefs: prefs));
 }
@@ -72,8 +76,11 @@ class MyApp extends StatelessWidget {
         Provider<TvRepository>(
           create: (_) => SamsungTvRepository(storage),
         ),
-        Provider<WledRepository>(
-          create: (_) => WledLocalRepository(storage),
+        Provider<CobLedRgbRepository>(
+          create: (_) => CobLedRgbLocalRepository(storage),
+        ),
+        Provider<CobLedCctRepository>(
+          create: (_) => CobLedCctLocalRepository(storage),
         ),
         Provider<http.Client>(
           create: (_) => http.Client(),
@@ -100,6 +107,13 @@ class MyApp extends StatelessWidget {
             return controller;
           },
         ),
+        Provider<AlertEvaluationService>(
+          create: (context) => AlertEvaluationService(
+            live: context.read<LivePollingController>(),
+            storage: context.read<LocalStorage>(),
+          ),
+          dispose: (_, svc) => svc.dispose(),
+        ),
         Provider<StatsRepository>(
           create: (_) => MockStatsRepository(storage),
         ),
@@ -121,7 +135,8 @@ class MyApp extends StatelessWidget {
             roomRepo: context.read<RoomRepository>(),
             equipmentRepo: context.read<EquipmentRepository>(),
             tvRepo: context.read<TvRepository>(),
-            wledRepo: context.read<WledRepository>(),
+            cobLedRgbRepo: context.read<CobLedRgbRepository>(),
+            cobLedCctRepo: context.read<CobLedCctRepository>(),
             liveController: context.read<LivePollingController>(),
             storage: context.read<LocalStorage>(),
             httpClient: context.read<http.Client>(),
@@ -132,7 +147,8 @@ class MyApp extends StatelessWidget {
             equipmentRepo: context.read<EquipmentRepository>(),
             roomRepo: context.read<RoomRepository>(),
             tvRepo: context.read<TvRepository>(),
-            wledRepo: context.read<WledRepository>(),
+            cobLedRgbRepo: context.read<CobLedRgbRepository>(),
+            cobLedCctRepo: context.read<CobLedCctRepository>(),
             liveController: context.read<LivePollingController>(),
             rpc: context.read<ShellyRpcClient>(),
             httpClient: context.read<http.Client>(),
@@ -143,7 +159,7 @@ class MyApp extends StatelessWidget {
         builder: (context, localeController, _) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            title: AppStrings.appName,
+            title: 'IOT Flutter App',
             theme: AppTheme.dark(),
             home: const AppShell(),
             localizationsDelegates: const [

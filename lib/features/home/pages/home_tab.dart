@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/i18n/loc.dart';
@@ -7,23 +7,29 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_font_sizes.dart';
 import '../../../core/design_system/layout/app_section_header.dart';
 
+import '../../../domain/entities/device_bundle.dart';
+import '../../../domain/entities/cob_led_cct_device.dart';
 import '../../../domain/entities/equipment.dart';
 import '../../../domain/entities/tv_device.dart';
-import '../../../domain/entities/wled_device.dart';
+import '../../../domain/entities/cob_led_rgb_device.dart';
 
 import '../../live/controllers/live_polling_controller.dart';
+import '../../devices/thermometer/view/thermometer_detail_screen.dart';
 import '../../equipments/pages/equipment_details_page.dart';
-import '../../tv/pages/tv_details_page.dart';
-import '../../wled/pages/wled_details_page.dart';
+import '../../devices/smart_plug/view/smart_plug_detail_screen.dart';
+import '../../devices/tv/view/tv_detail_screen.dart';
+import '../../devices/cob_led_rgb/pages/cob_led_rgb_details_page.dart';
 import '../../equipments/widgets/edit_equipment_sheet.dart';
-import '../../tv/domain/tv_remote_command.dart';
+import '../../devices/tv/domain/tv_remote_command.dart';
 
 import '../controllers/home_controller.dart';
 import '../widgets/areas_section.dart';
+import '../widgets/device_cards/cob_led_cct_card.dart';
 import '../widgets/device_cards/plug_card.dart';
 import '../widgets/device_cards/thermometer_card.dart';
 import '../widgets/device_cards/tv_card.dart';
-import '../widgets/device_cards/wled_card.dart';
+import '../widgets/device_cards/cob_led_rgb_card.dart';
+import '../../devices/cob_led_cct/view/cob_led_cct_detail_screen.dart';
 import '../widgets/today/today_section.dart';
 import 'rooms_page.dart';
 import 'favorites_page.dart';
@@ -77,24 +83,39 @@ class _HomeTabState extends State<HomeTab> {
   // ---------------------------------------------------------------------------
 
   Future<void> _openEquipmentDetails(Equipment equipment) async {
+    final Widget page;
+    if (equipment.type.isPlug) {
+      page = SmartPlugDetailScreen(equipment: equipment);
+    } else if (equipment.type == EquipmentType.shellyHT) {
+      page = ThermometerDetailScreen(equipment: equipment);
+    } else {
+      page = EquipmentDetailsPage(equipmentId: equipment.id);
+    }
     final changed = await Navigator.of(context).push<bool>(
-      MaterialPageRoute(
-        builder: (_) => EquipmentDetailsPage(equipmentId: equipment.id),
-      ),
+      MaterialPageRoute(builder: (_) => page),
     );
     if (changed == true) widget.refreshNotifier.value++;
   }
 
   Future<void> _openTvDetails(TvDevice tv) async {
     await Navigator.of(context).push<bool>(
-      MaterialPageRoute(builder: (_) => TvDetailsPage(deviceId: tv.id)),
+      MaterialPageRoute(builder: (_) => TvDetailScreen(device: tv)),
     );
     _reload();
   }
 
-  Future<void> _openWledDetails(WledDevice device) async {
+  Future<void> _openCobLedRgbDetails(CobLedRgbDevice device) async {
     await Navigator.of(context).push<bool>(
-      MaterialPageRoute(builder: (_) => WledDetailsPage(deviceId: device.id)),
+      MaterialPageRoute(builder: (_) => CobLedRgbDetailsPage(deviceId: device.id)),
+    );
+    _reload();
+  }
+
+  Future<void> _openCobLedCctDetails(CobLedCctDevice device) async {
+    await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => CobLedCctDetailScreen(device: device),
+      ),
     );
     _reload();
   }
@@ -114,9 +135,7 @@ class _HomeTabState extends State<HomeTab> {
     final changed = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
         builder: (_) => FavoritesPage(
-          equipments: controller.allEquipments,
-          tvDevices: controller.allTvDevices,
-          wledDevices: controller.allWledDevices,
+          devices: controller.allDevices,
           rooms: controller.allRooms,
         ),
       ),
@@ -131,9 +150,7 @@ class _HomeTabState extends State<HomeTab> {
         builder: (_) => RoomsPage(
           activeGroup: controller.activeRoomGroup(_selectedGroupId),
           rooms: controller.visibleRooms(_selectedGroupId),
-          equipments: controller.allEquipments,
-          tvDevices: controller.allTvDevices,
-          wledDevices: controller.allWledDevices,
+          devices: controller.allDevices,
         ),
       ),
     );
@@ -150,13 +167,12 @@ class _HomeTabState extends State<HomeTab> {
     final liveController = context.watch<LivePollingController>();
     final groupId = _selectedGroupId;
 
-    final favoriteEquipments = controller.favoriteEquipments(groupId);
-    final favoriteTvs = controller.favoriteTvDevices(groupId);
-    final favoriteWleds = controller.favoriteWledDevices(groupId);
-    final hasFavorites =
-        favoriteEquipments.isNotEmpty ||
-        favoriteTvs.isNotEmpty ||
-        favoriteWleds.isNotEmpty;
+    final favorites = DeviceBundle(
+      equipments: controller.favoriteEquipments(groupId),
+      tvDevices: controller.favoriteTvDevices(groupId),
+      cobLedRgbDevices: controller.favoriteCobLedRgbDevices(groupId),
+      cobLedCctDevices: controller.favoriteCobLedCctDevices(groupId),
+    );
 
     return Scaffold(
       body: RefreshIndicator(
@@ -169,9 +185,9 @@ class _HomeTabState extends State<HomeTab> {
             // ----------------------------------------------------------------
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 6, 16, 0),
-              child: const Text(
-                'Today',
-                style: TextStyle(
+              child: Text(
+                context.l10n.homeSectionToday,
+                style: const TextStyle(
                   fontFamily: 'ShareTech',
                   color: AppColors.textPrimary,
                   fontWeight: FontWeight.w700,
@@ -210,7 +226,7 @@ class _HomeTabState extends State<HomeTab> {
                 height: 160,
                 child: Center(child: CircularProgressIndicator()),
               )
-            else if (!hasFavorites)
+            else if (favorites.isEmpty)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: SizedBox(
@@ -229,14 +245,13 @@ class _HomeTabState extends State<HomeTab> {
               )
             else
               _FavoritesSlider(
-                favoriteEquipments: favoriteEquipments,
-                favoriteTvs: favoriteTvs,
-                favoriteWleds: favoriteWleds,
+                favorites: favorites,
                 controller: controller,
                 liveController: liveController,
                 onOpenEquipment: _openEquipmentDetails,
                 onOpenTv: _openTvDetails,
-                onOpenWled: _openWledDetails,
+                onOpenCobLedRgb: _openCobLedRgbDetails,
+                onOpenCobLedCct: _openCobLedCctDetails,
                 onEditEquipment: _editEquipment,
                 onRemoveEquipment: (e) async {
                   await controller.removeEquipmentFromFavorites(e);
@@ -246,8 +261,12 @@ class _HomeTabState extends State<HomeTab> {
                   await controller.removeTvFromFavorites(tv);
                   widget.refreshNotifier.value++;
                 },
-                onRemoveWled: (w) async {
-                  await controller.removeWledFromFavorites(w);
+                onRemoveCobLedRgb: (w) async {
+                  await controller.removeCobLedRgbFromFavorites(w);
+                  widget.refreshNotifier.value++;
+                },
+                onRemoveCobLedCct: (c) async {
+                  await controller.removeCobLedCctFromFavorites(c);
                   widget.refreshNotifier.value++;
                 },
               ),
@@ -285,11 +304,17 @@ class _HomeTabState extends State<HomeTab> {
                         .firstOrNull;
                     if (tv != null) _openTvDetails(tv);
                   },
-                  onOpenWled: (id) {
-                    final w = controller.allWledDevices
+                  onOpenCobLedRgb: (id) {
+                    final w = controller.allCobLedRgbDevices
                         .where((w) => w.id == id)
                         .firstOrNull;
-                    if (w != null) _openWledDetails(w);
+                    if (w != null) _openCobLedRgbDetails(w);
+                  },
+                  onOpenCobLedCct: (id) {
+                    final c = controller.allCobLedCctDevices
+                        .where((c) => c.id == id)
+                        .firstOrNull;
+                    if (c != null) _openCobLedCctDetails(c);
                   },
                 ),
               ),
@@ -306,38 +331,38 @@ class _HomeTabState extends State<HomeTab> {
 
 class _FavoritesSlider extends StatelessWidget {
   const _FavoritesSlider({
-    required this.favoriteEquipments,
-    required this.favoriteTvs,
-    required this.favoriteWleds,
+    required this.favorites,
     required this.controller,
     required this.liveController,
     required this.onOpenEquipment,
     required this.onOpenTv,
-    required this.onOpenWled,
+    required this.onOpenCobLedRgb,
+    required this.onOpenCobLedCct,
     required this.onEditEquipment,
     required this.onRemoveEquipment,
     required this.onRemoveTv,
-    required this.onRemoveWled,
+    required this.onRemoveCobLedRgb,
+    required this.onRemoveCobLedCct,
   });
 
-  final List<Equipment> favoriteEquipments;
-  final List<TvDevice> favoriteTvs;
-  final List<WledDevice> favoriteWleds;
+  final DeviceBundle favorites;
   final HomeController controller;
   final LivePollingController liveController;
   final void Function(Equipment) onOpenEquipment;
   final void Function(TvDevice) onOpenTv;
-  final void Function(WledDevice) onOpenWled;
+  final void Function(CobLedRgbDevice) onOpenCobLedRgb;
+  final void Function(CobLedCctDevice) onOpenCobLedCct;
   final void Function(Equipment) onEditEquipment;
   final void Function(Equipment) onRemoveEquipment;
   final void Function(TvDevice) onRemoveTv;
-  final void Function(WledDevice) onRemoveWled;
+  final void Function(CobLedRgbDevice) onRemoveCobLedRgb;
+  final void Function(CobLedCctDevice) onRemoveCobLedCct;
 
   @override
   Widget build(BuildContext context) {
     final cards = <Widget>[];
 
-    for (final eq in favoriteEquipments) {
+    for (final eq in favorites.equipments) {
       final state = eq.type.isPlug ? liveController.live[eq.id] : null;
       if (eq.type.isThermometer) {
         cards.add(
@@ -359,7 +384,7 @@ class _FavoritesSlider extends StatelessWidget {
       }
     }
 
-    for (final tv in favoriteTvs) {
+    for (final tv in favorites.tvDevices) {
       final isOn = controller.tvIsOn(tv.id);
       cards.add(TvCard(
         tv: tv,
@@ -371,21 +396,37 @@ class _FavoritesSlider extends StatelessWidget {
       ));
     }
 
-    for (final wled in favoriteWleds) {
-      final state = controller.wledStateFor(wled.id);
+    for (final device in favorites.cobLedRgbDevices) {
+      final state = controller.cobLedRgbStateFor(device.id);
       final isOn = state?.isOn ?? false;
       final brightness = ((state?.brightness ?? 128) / 255.0).clamp(0.0, 1.0);
       final c = state?.primaryColor;
       final color = c != null ? Color.fromARGB(255, c.red, c.green, c.blue) : Colors.amber;
-      cards.add(WledCard(
-        device: wled,
+      cards.add(CobLedRgbCard(
+        device: device,
         isOn: isOn,
         brightness: brightness,
         sceneName: '',
         color: color,
-        onTap: () => onOpenWled(wled),
-        onToggle: () => controller.toggleWled(wled),
-        onBrightnessDrag: (v) => controller.setWledBrightness(wled, v),
+        onTap: () => onOpenCobLedRgb(device),
+        onToggle: () => controller.toggleCobLedRgb(device),
+        onBrightnessDrag: (v) => controller.setCobLedRgbBrightness(device, v),
+      ));
+    }
+
+    for (final cct in favorites.cobLedCctDevices) {
+      final state = controller.cctStateFor(cct.id);
+      final isOn = state?.isOn ?? false;
+      final brightness = state?.brightness ?? 200;
+      final colorTempK = state?.colorTempK ?? 3000;
+      cards.add(CobLedCctCard(
+        device: cct,
+        isOn: isOn,
+        brightness: brightness,
+        colorTempK: colorTempK,
+        onTap: () => onOpenCobLedCct(cct),
+        onToggle: () => controller.toggleCobLedCct(cct),
+        onBrightnessDrag: (v) => controller.setCobLedCctBrightness(cct, v),
       ));
     }
 

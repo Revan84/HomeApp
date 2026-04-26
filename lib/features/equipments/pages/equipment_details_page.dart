@@ -251,6 +251,8 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
         return context.l10n.equipmentTypeShellyPlugS;
       case EquipmentType.shellyHT:
         return 'Shelly HT';
+      case EquipmentType.hygrometer:
+        return 'Hygrometer';
       case EquipmentType.other:
         return context.l10n.equipmentTypeOther;
     }
@@ -290,6 +292,7 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
         context.l10n.equipmentTypeShellyPlusPlugS,
       EquipmentType.shellyPlugS => context.l10n.equipmentTypeShellyPlugS,
       EquipmentType.shellyHT => 'Shelly HT',
+      EquipmentType.hygrometer => 'Hygrometer',
       EquipmentType.other => context.l10n.valueUnknown,
     };
 
@@ -304,6 +307,7 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
       EquipmentType.shellyPlusPlugS || EquipmentType.shellyPlugS =>
         AppColors.plugAccent,
       EquipmentType.shellyHT => AppColors.thermometerAccent,
+      EquipmentType.hygrometer => AppColors.hygrometerAccent,
       EquipmentType.other => null,
     };
 

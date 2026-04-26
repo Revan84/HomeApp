@@ -4,6 +4,7 @@ import '../../../../../core/i18n/loc.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/theme/app_radius.dart';
 import '../../../../../core/theme/app_spacing.dart';
+import '../../../../../core/theme/device_accent_scope.dart';
 import '../../../../../domain/entities/history_window.dart';
 
 /// Compact range chips used above the history chart.
@@ -73,7 +74,7 @@ class _HistoryRangeChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final foregroundColor =
-        selected ? AppColors.primary : AppColors.textSecondary;
+        selected ? DeviceAccentScope.of(context) : AppColors.textSecondary;
 
     return InkWell(
       onTap: onTap,
