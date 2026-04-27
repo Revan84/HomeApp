@@ -9,12 +9,17 @@ import '../../theme/app_spacing.dart';
 ///
 /// Used in the Equipments tab and Favorites list.
 ///
+/// The secondary line is split into two colour zones:
+/// - [subtitle] → [AppColors.textSecondary]  ("Salon · Smart Plug")
+/// - [liveValue] → [AppColors.textPrimary]   ("64 W", "Scene Warm")
+///
 /// ```dart
 /// DeviceListTile(
 ///   icon: Icons.power,
 ///   iconColor: AppColors.plugAccent,
 ///   title: 'Desk Plug',
-///   subtitle: 'Salon · Smart Plug · 64 W',
+///   subtitle: 'Salon · Smart Plug',
+///   liveValue: '64 W',
 ///   dotColor: Colors.green,
 ///   onTap: () => _open(equipment),
 /// )
@@ -28,18 +33,20 @@ class DeviceListTile extends StatelessWidget {
     required this.subtitle,
     required this.dotColor,
     required this.onTap,
+    this.liveValue,
   });
 
-  /// Icon displayed in the leading rounded square.
+  /// Icon displayed in the leading area.
   final IconData icon;
 
-  /// Colour used for the icon and its background tint.
+  /// Colour used for the icon tint.
   final Color iconColor;
 
   /// Device display name.
   final String title;
 
-  /// Pre-formatted secondary line, e.g. "Salon · Smart Plug · 64 W".
+  /// Base secondary line shown in [AppColors.textSecondary],
+  /// e.g. "Salon · Smart Plug".
   final String subtitle;
 
   /// Online indicator dot colour.
@@ -47,8 +54,14 @@ class DeviceListTile extends StatelessWidget {
 
   final VoidCallback onTap;
 
+  /// Optional live reading appended after [subtitle] in [AppColors.textPrimary],
+  /// e.g. "64 W", "22.5 °C", "Scene Warm". Separated from [subtitle] by " · ".
+  final String? liveValue;
+
   @override
   Widget build(BuildContext context) {
+    final bool hasSecondLine = subtitle.isNotEmpty || liveValue != null;
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -63,11 +76,11 @@ class DeviceListTile extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.x2l,
-              vertical: AppSpacing.x2l,
+              vertical: AppSpacing.lg,
             ),
             child: Row(
               children: [
-                // ── Icon box ─────────────────────────────────────────────
+                // ── Icon ─────────────────────────────────────────────────
                 Icon(icon, size: 24, color: AppColors.textPrimary),
 
                 AppSpacing.gapHX2l,
@@ -77,7 +90,7 @@ class DeviceListTile extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Title row + online dot
+                      // Title + online dot
                       Row(
                         children: [
                           Flexible(
@@ -104,17 +117,43 @@ class DeviceListTile extends StatelessWidget {
                           ),
                         ],
                       ),
-                      if (subtitle.isNotEmpty) ...[
+
+                      // Subtitle + live value
+                      if (hasSecondLine) ...[
                         const SizedBox(height: 2),
-                        Text(
-                          subtitle,
+                        Text.rich(
+                          TextSpan(
+                            style: const TextStyle(
+                              fontFamily: 'ShareTech',
+                              fontSize: AppFontSizes.body,
+                            ),
+                            children: [
+                              if (subtitle.isNotEmpty)
+                                TextSpan(
+                                  text: subtitle,
+                                  style: const TextStyle(
+                                    color: AppColors.textSecondary,
+                                  ),
+                                ),
+                              if (subtitle.isNotEmpty && liveValue != null)
+                                const TextSpan(
+                                  text: ' · ',
+                                  style: TextStyle(
+                                    color: AppColors.textSecondary,
+                                  ),
+                                ),
+                              if (liveValue != null)
+                                TextSpan(
+                                  text: liveValue!,
+                                  style: const TextStyle(
+                                    color: AppColors.textPrimary,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                            ],
+                          ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontFamily: 'ShareTech',
-                            fontSize: AppFontSizes.body,
-                            color: AppColors.textSecondary,
-                          ),
                         ),
                       ],
                     ],

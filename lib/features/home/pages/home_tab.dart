@@ -131,13 +131,9 @@ class _HomeTabState extends State<HomeTab> {
   }
 
   Future<void> _openFavoritesPage() async {
-    final controller = context.read<HomeController>();
     final changed = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
-        builder: (_) => FavoritesPage(
-          devices: controller.allDevices,
-          rooms: controller.allRooms,
-        ),
+        builder: (_) => FavoritesPage(groupId: _selectedGroupId),
       ),
     );
     if (changed == true) widget.refreshNotifier.value++;

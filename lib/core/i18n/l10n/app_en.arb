@@ -706,6 +706,25 @@
     "@favoritesAddTooltip": {
         "description": "Tooltip of the round button used to add a favorite on the favorites page"
     },
+    "favoritesSearchHint": "Search devices...",
+    "@favoritesSearchHint": {
+        "description": "Placeholder text in the favorites page search field"
+    },
+    "favoritesOnlineOf": "{online} / {total} online",
+    "@favoritesOnlineOf": {
+        "description": "Stats line: online device count vs total",
+        "placeholders": {
+            "online": {"type": "int"},
+            "total": {"type": "int"}
+        }
+    },
+    "favoritesRoomsCount": "{count} rooms",
+    "@favoritesRoomsCount": {
+        "description": "Stats line: number of rooms in the current group",
+        "placeholders": {
+            "count": {"type": "int"}
+        }
+    },
     "roomsSectionTitle": "Areas",
     "@roomsSectionTitle": {
         "description": "Section title of the rooms list displayed on the Home page"

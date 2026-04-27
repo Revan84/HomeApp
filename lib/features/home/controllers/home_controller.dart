@@ -430,6 +430,36 @@ class HomeController extends ChangeNotifier {
     return _cobLedCctRepo.update(device.copyWith(isFavorite: false));
   }
 
+  /// Toggles the favorite flag, updates the in-memory cache immediately so
+  /// reactive UIs (e.g. FavoritesPage) rebuild without a full [loadAll].
+  Future<void> toggleEquipmentFavorite(Equipment e) async {
+    final updated = e.copyWith(isFavorite: !e.isFavorite);
+    await _equipmentRepo.update(updated);
+    _equipments = [for (final x in _equipments) if (x.id == e.id) updated else x];
+    notifyListeners();
+  }
+
+  Future<void> toggleTvFavorite(TvDevice tv) async {
+    final updated = tv.copyWith(isFavorite: !tv.isFavorite);
+    await _tvRepo.update(updated);
+    _tvDevices = [for (final x in _tvDevices) if (x.id == tv.id) updated else x];
+    notifyListeners();
+  }
+
+  Future<void> toggleCobLedRgbFavorite(CobLedRgbDevice d) async {
+    final updated = d.copyWith(isFavorite: !d.isFavorite);
+    await _cobLedRgbRepo.update(updated);
+    _cobLedRgbDevices = [for (final x in _cobLedRgbDevices) if (x.id == d.id) updated else x];
+    notifyListeners();
+  }
+
+  Future<void> toggleCobLedCctFavorite(CobLedCctDevice c) async {
+    final updated = c.copyWith(isFavorite: !c.isFavorite);
+    await _cobLedCctRepo.update(updated);
+    _cobLedCctDevices = [for (final x in _cobLedCctDevices) if (x.id == c.id) updated else x];
+    notifyListeners();
+  }
+
   // ---------------------------------------------------------------------------
   // Live actions
   // ---------------------------------------------------------------------------

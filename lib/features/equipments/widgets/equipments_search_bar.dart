@@ -21,6 +21,7 @@ class EquipmentsSearchBar extends StatelessWidget {
     required this.controller,
     required this.isFiltered,
     required this.onFilterTap,
+    this.hintText,
   });
 
   final TextEditingController controller;
@@ -30,6 +31,9 @@ class EquipmentsSearchBar extends StatelessWidget {
   final bool isFiltered;
 
   final VoidCallback onFilterTap;
+
+  /// Override the default hint text. Falls back to [AppLocalizations.equipmentsSearchHint].
+  final String? hintText;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +50,7 @@ class EquipmentsSearchBar extends StatelessWidget {
                 color: AppColors.textPrimary,
               ),
               decoration: InputDecoration(
-                hintText: context.l10n.equipmentsSearchHint,
+                hintText: hintText ?? context.l10n.equipmentsSearchHint,
                 hintStyle: TextStyle(
                   fontFamily: 'ShareTech',
                   fontSize: AppFontSizes.body,
@@ -64,15 +68,15 @@ class EquipmentsSearchBar extends StatelessWidget {
                   vertical: AppSpacing.md,
                 ),
                 border: OutlineInputBorder(
-                  borderRadius: AppRadius.x2lBR,
+                  borderRadius: AppRadius.x4lBR,
                   borderSide: BorderSide(color: AppColors.border),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: AppRadius.x2lBR,
+                  borderRadius: AppRadius.x4lBR,
                   borderSide: BorderSide(color: AppColors.border),
                 ),
                 focusedBorder: const OutlineInputBorder(
-                  borderRadius: AppRadius.x2lBR,
+                  borderRadius: AppRadius.x4lBR,
                   borderSide: BorderSide(color: AppColors.primary, width: 1.5),
                 ),
               ),
@@ -91,7 +95,7 @@ class EquipmentsSearchBar extends StatelessWidget {
                 border: Border.all(
                   color: isFiltered
                       ? AppColors.primary
-                      : AppColors.border.withValues(alpha: 0.4),
+                      : AppColors.border,
                 ),
               ),
               child: Icon(

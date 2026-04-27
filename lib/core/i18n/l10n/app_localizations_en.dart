@@ -522,6 +522,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get favoritesAddTooltip => 'Add a favorite';
 
   @override
+  String get favoritesSearchHint => 'Search devices...';
+
+  @override
+  String favoritesOnlineOf(int online, int total) {
+    return '$online / $total online';
+  }
+
+  @override
+  String favoritesRoomsCount(int count) {
+    return '$count rooms';
+  }
+
+  @override
   String get roomsSectionTitle => 'Areas';
 
   @override

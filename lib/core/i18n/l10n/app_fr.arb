@@ -706,6 +706,25 @@
     "@favoritesAddTooltip": {
         "description": "Tooltip du bouton rond permettant d'ajouter un favori sur la page favoris"
     },
+    "favoritesSearchHint": "Rechercher des appareils...",
+    "@favoritesSearchHint": {
+        "description": "Texte d'aide du champ de recherche sur la page favoris"
+    },
+    "favoritesOnlineOf": "{online} / {total} en ligne",
+    "@favoritesOnlineOf": {
+        "description": "Ligne de stats : nombre d'appareils en ligne sur le total",
+        "placeholders": {
+            "online": {"type": "int"},
+            "total": {"type": "int"}
+        }
+    },
+    "favoritesRoomsCount": "{count} pièces",
+    "@favoritesRoomsCount": {
+        "description": "Ligne de stats : nombre de pièces dans le groupe actif",
+        "placeholders": {
+            "count": {"type": "int"}
+        }
+    },
     "roomsSectionTitle": "Areas",
     "@roomsSectionTitle": {
         "description": "Titre de section de la liste des pièces affichée sur la page d'accueil"

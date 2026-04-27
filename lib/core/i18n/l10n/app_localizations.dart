@@ -1010,6 +1010,24 @@ abstract class AppLocalizations {
   /// **'Ajouter un favori'**
   String get favoritesAddTooltip;
 
+  /// Texte d'aide du champ de recherche sur la page favoris
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher des appareils...'**
+  String get favoritesSearchHint;
+
+  /// Ligne de stats : nombre d'appareils en ligne sur le total
+  ///
+  /// In fr, this message translates to:
+  /// **'{online} / {total} en ligne'**
+  String favoritesOnlineOf(int online, int total);
+
+  /// Ligne de stats : nombre de pièces dans le groupe actif
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} pièces'**
+  String favoritesRoomsCount(int count);
+
   /// Titre de section de la liste des pièces affichée sur la page d'accueil
   ///
   /// In fr, this message translates to:

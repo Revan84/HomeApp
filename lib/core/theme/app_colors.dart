@@ -6,7 +6,7 @@ abstract final class AppColors {
   static const Color bg = Color(0xFF1D1D1D);
 
   /// Device card background — warm dark, visually distinct from bg.
-  static const Color card = Color(0xFF292929);
+  static const Color card = Color.fromARGB(195, 41, 41, 41);
 
   /// Elevated surfaces — bottom sheets, drawers, modals.
   static const Color surface = Color(0xFF252525);

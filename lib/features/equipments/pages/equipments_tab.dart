@@ -359,9 +359,10 @@ class _EquipmentsTabState extends State<EquipmentsTab> {
           subtitle: [
             if (roomName(e.roomId).isNotEmpty) roomName(e.roomId),
             _typeLabel(e.type, context),
-            if (_equipmentValue(e, liveCtl.live[e.id]).isNotEmpty)
-              _equipmentValue(e, liveCtl.live[e.id]),
           ].join(' · '),
+          liveValue: _equipmentValue(e, liveCtl.live[e.id]).isNotEmpty
+              ? _equipmentValue(e, liveCtl.live[e.id])
+              : null,
           dotColor: _dotColor(liveCtl.live[e.id]?.online),
           onTap: () => _onEquipmentTap(e),
         ),
@@ -395,8 +396,13 @@ class _EquipmentsTabState extends State<EquipmentsTab> {
           subtitle: [
             if (roomName(cct.roomId).isNotEmpty) roomName(cct.roomId),
             context.l10n.cobLedCctTypeLabel,
-            if (cct.activeSceneId.isNotEmpty) cct.activeSceneId,
           ].join(' · '),
+          liveValue: cct.activeSceneId.isNotEmpty
+              ? cct.scenes
+                  .where((s) => s.id == cct.activeSceneId)
+                  .firstOrNull
+                  ?.name
+              : null,
           dotColor: _dotColor(liveCtl.live[cct.id]?.online),
           onTap: () => _onCobLedCctTap(cct),
         ),
@@ -486,7 +492,7 @@ class _EquipmentsTabState extends State<EquipmentsTab> {
             ),
           ),
 
-          AppSpacing.gapX2l,
+          AppSpacing.gapX5l,
 
           // ── Device list ──────────────────────────────────────────────────────
           Expanded(
@@ -512,7 +518,7 @@ class _EquipmentsTabState extends State<EquipmentsTab> {
                     ),
                     itemCount: tiles.length,
                     separatorBuilder: (_, _) =>
-                        const SizedBox(height: AppSpacing.md),
+                        const SizedBox(height: AppSpacing.x3l),
                     itemBuilder: (_, i) => tiles[i],
                   ),
           ),
