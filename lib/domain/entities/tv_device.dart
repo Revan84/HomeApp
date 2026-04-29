@@ -31,12 +31,13 @@ class TvDevice {
     String? modelName,
     String? source,
     String? wsToken,
+    bool clearRoomId = false,
   }) {
     return TvDevice(
       id: id ?? this.id,
       name: name ?? this.name,
       ipAddress: ipAddress ?? this.ipAddress,
-      roomId: roomId ?? this.roomId,
+      roomId: clearRoomId ? null : (roomId ?? this.roomId),
       isFavorite: isFavorite ?? this.isFavorite,
       modelName: modelName ?? this.modelName,
       source: source ?? this.source,

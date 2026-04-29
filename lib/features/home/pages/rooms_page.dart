@@ -1,246 +1,524 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/design_system/buttons/app_button.dart';
+import '../../../core/design_system/chips/app_chip.dart';
+import '../../../core/design_system/tiles/device_list_tile.dart';
 import '../../../core/i18n/loc.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_font_sizes.dart';
 import '../../../core/theme/app_radius.dart';
-import '../../../core/theme/app_shadows.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../domain/entities/device_bundle.dart';
 import '../../../domain/entities/room.dart';
 import '../../../domain/entities/room_group.dart';
+import '../../equipments/widgets/equipments_search_bar.dart';
 import '../controllers/home_controller.dart';
-import '../dialogs/room_group_dialogs.dart';
-import '../widgets/room_pill_tile.dart';
-import '../widgets/rooms_pick_sheet.dart';
+import 'room_detail_page.dart';
 
-/// Rooms page showing only the rooms belonging to the currently active group.
+// ── Page ──────────────────────────────────────────────────────────────────────
+
+/// Full-screen rooms browser — same design language as [FavoritesPage].
 ///
-/// The visual structure follows the same spirit as the favorites page:
-/// - custom header
-/// - pill rows
-/// - centered add button at the bottom
+/// Shows all rooms across all groups, with group chips for filtering,
+/// a search bar, and a FAB to add a new room.
 class RoomsPage extends StatefulWidget {
-  final RoomGroup? activeGroup;
-  final List<Room> rooms;
-  final DeviceBundle devices;
+  final String? groupId;
 
-  const RoomsPage({
-    super.key,
-    required this.activeGroup,
-    required this.rooms,
-    required this.devices,
-  });
+  const RoomsPage({super.key, required this.groupId});
 
   @override
   State<RoomsPage> createState() => _RoomsPageState();
 }
 
 class _RoomsPageState extends State<RoomsPage> {
-  late List<Room> _rooms;
+  final _searchCtrl = TextEditingController();
+  String _searchQuery = '';
+  String? _selectedGroupId; // null = all groups
 
   @override
   void initState() {
     super.initState();
-    _rooms = [...widget.rooms];
-    _sortRooms();
-  }
-
-  Future<void> _addRoom() async {
-    final activeGroup = widget.activeGroup;
-    if (activeGroup == null) return;
-
-    final controller = context.read<HomeController>();
-    final currentGroupRoomIds = _rooms.map((r) => r.id).toSet();
-
-    try {
-      final allAvailable = await controller.availableRoomsForGroup(activeGroup.id);
-      final availableRooms = allAvailable
-          .where((r) => !currentGroupRoomIds.contains(r.id))
-          .toList();
-
-      if (!mounted) return;
-
-      final result = await showModalBottomSheet<RoomsPickResult>(
-        context: context,
-        shape: const RoundedRectangleBorder(
-          borderRadius: AppRadius.sheetTopBR,
-        ),
-        builder: (_) => RoomsPickSheet(availableRooms: availableRooms),
-      );
-
-      if (result == null || !mounted) return;
-
-      if (result.isCreateNew) {
-        final name = await RoomGroupDialogs.editRoomName(context);
-        if (name == null) return;
-
-        final createdRoom = await controller.addRoom(
-          name: name,
-          groupId: activeGroup.id,
-        );
-
-        if (!mounted) return;
-
-        setState(() {
-          _rooms.add(createdRoom);
-          _sortRooms();
-        });
-      } else if (result.existingRoom != null) {
-        final existing = result.existingRoom!;
-        await controller.moveRoomToGroup(existing, activeGroup.id);
-
-        if (!mounted) return;
-
-        setState(() {
-          _rooms.add(existing.copyWith(groupId: activeGroup.id));
-          _sortRooms();
-        });
-      }
-    } catch (_) {
-      // Errors are surfaced by the controller; no silent swallowing.
-      rethrow;
-    }
-  }
-
-  void _sortRooms() {
-    _rooms.sort((a, b) {
-      final sortComparison = a.sortOrder.compareTo(b.sortOrder);
-      if (sortComparison != 0) return sortComparison;
-      return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+    // Pre-select the active group so the page opens scoped.
+    _selectedGroupId = widget.groupId;
+    _searchCtrl.addListener(() {
+      final q = _searchCtrl.text.toLowerCase();
+      if (q != _searchQuery) setState(() => _searchQuery = q);
     });
-  }
-
-  Future<void> _renameRoom(Room room) async {
-    final controller = context.read<HomeController>();
-    final nextName = await RoomGroupDialogs.editRoomName(
-      context,
-      currentName: room.name,
-    );
-    if (nextName == null) return;
-
-    final updated = room.copyWith(name: nextName);
-    try {
-      await controller.renameRoom(room, nextName);
-    } catch (_) {
-      rethrow;
-    }
-
-    if (!mounted) return;
-
-    setState(() {
-      final index = _rooms.indexWhere((item) => item.id == room.id);
-      if (index != -1) {
-        _rooms[index] = updated;
-      }
-    });
-  }
-
-  Future<void> _deleteRoom(Room room) async {
-    final controller = context.read<HomeController>();
-    final confirmed = await RoomGroupDialogs.confirmDelete(
-      context,
-      title: context.l10n.roomsDeleteRoomTitle,
-      message: context.l10n.roomsDeleteRoomMessage(room.name),
-    );
-    if (!confirmed) return;
-
-    try {
-      await controller.deleteRoom(room);
-    } catch (_) {
-      rethrow;
-    }
-
-    if (!mounted) return;
-
-    setState(() {
-      _rooms.removeWhere((item) => item.id == room.id);
-    });
-  }
-
-  void _openRoom(Room room) {
-    // No-op: a dedicated room details page is not yet implemented.
   }
 
   @override
+  void dispose() {
+    _searchCtrl.dispose();
+    super.dispose();
+  }
+
+  // ── Add room dialog ──────────────────────────────────────────────────────────
+
+  Future<void> _addRoom(HomeController ctrl) async {
+    final groups = ctrl.roomGroups;
+    if (groups.isEmpty) return;
+
+    final result = await _showAddRoomDialog(groups);
+    if (result == null || !mounted) return;
+
+    await ctrl.addRoom(name: result.name, groupId: result.groupId);
+    // loadAll not needed — addRoom already calls notifyListeners via addRoom
+    // But we reload to keep room list fresh.
+    if (mounted) await ctrl.loadAll(widget.groupId);
+  }
+
+  Future<_AddRoomResult?> _showAddRoomDialog(List<RoomGroup> groups) async {
+    String? selectedGroupId = _selectedGroupId ?? groups.first.id;
+    final nameCtrl = TextEditingController();
+
+    // Bottom sheet floats above the keyboard naturally via viewInsetsOf padding.
+    return showModalBottomSheet<_AddRoomResult>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setSheetState) {
+          final keyboardPadding = MediaQuery.viewInsetsOf(ctx).bottom;
+          return Padding(
+            padding: EdgeInsets.fromLTRB(24, 28, 24, keyboardPadding + 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // ── Title ─────────────────────────────────────────────────
+                Text(
+                  context.l10n.roomsAddRoomTitle,
+                  style: const TextStyle(
+                    fontFamily: 'ShareTech',
+                    fontWeight: FontWeight.w600,
+                    fontSize: AppFontSizes.sectionTitle,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.x3l),
+
+                // ── Group label ───────────────────────────────────────────
+                Text(
+                  context.l10n.roomsTargetGroupLabel,
+                  style: const TextStyle(
+                    fontFamily: 'ShareTech',
+                    fontSize: AppFontSizes.sm,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+                const SizedBox(height: 6),
+
+                // ── Group dropdown ────────────────────────────────────────
+                DropdownButtonFormField<String>(
+                  initialValue: selectedGroupId,
+                  dropdownColor: AppColors.surface,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: AppColors.bg,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.x2l,
+                      vertical: AppSpacing.md,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: AppRadius.x2lBR,
+                      borderSide: const BorderSide(color: AppColors.border),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: AppRadius.x2lBR,
+                      borderSide: const BorderSide(color: AppColors.border),
+                    ),
+                    focusedBorder: const OutlineInputBorder(
+                      borderRadius: AppRadius.x2lBR,
+                      borderSide: BorderSide(color: AppColors.primary, width: 1.5),
+                    ),
+                  ),
+                  items: groups
+                      .map((g) => DropdownMenuItem(
+                            value: g.id,
+                            child: Text(
+                              g.name,
+                              style: const TextStyle(
+                                fontFamily: 'ShareTech',
+                                fontSize: AppFontSizes.body,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                          ))
+                      .toList(),
+                  onChanged: (v) => setSheetState(() => selectedGroupId = v),
+                ),
+
+                const SizedBox(height: AppSpacing.x3l),
+
+                // ── Room name label ───────────────────────────────────────
+                Text(
+                  context.l10n.roomsRoomNameLabel,
+                  style: const TextStyle(
+                    fontFamily: 'ShareTech',
+                    fontSize: AppFontSizes.sm,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+                const SizedBox(height: 6),
+
+                // ── Room name field ───────────────────────────────────────
+                TextField(
+                  controller: nameCtrl,
+                  autofocus: true,
+                  textInputAction: TextInputAction.done,
+                  style: const TextStyle(
+                    fontFamily: 'ShareTech',
+                    fontSize: AppFontSizes.body,
+                    color: AppColors.textPrimary,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: context.l10n.roomsRoomNameHint,
+                    hintStyle: const TextStyle(
+                      fontFamily: 'ShareTech',
+                      fontSize: AppFontSizes.body,
+                      color: AppColors.textSecondary,
+                    ),
+                    filled: true,
+                    fillColor: AppColors.bg,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.x2l,
+                      vertical: AppSpacing.md,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: AppRadius.x2lBR,
+                      borderSide: const BorderSide(color: AppColors.border),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: AppRadius.x2lBR,
+                      borderSide: const BorderSide(color: AppColors.border),
+                    ),
+                    focusedBorder: const OutlineInputBorder(
+                      borderRadius: AppRadius.x2lBR,
+                      borderSide: BorderSide(color: AppColors.primary, width: 1.5),
+                    ),
+                  ),
+                  onSubmitted: (_) {
+                    final name = nameCtrl.text.trim();
+                    if (name.isNotEmpty && selectedGroupId != null) {
+                      Navigator.of(ctx).pop(
+                        _AddRoomResult(name: name, groupId: selectedGroupId!),
+                      );
+                    }
+                  },
+                ),
+
+                const SizedBox(height: AppSpacing.x3l),
+
+                // ── Buttons ───────────────────────────────────────────────
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    AppButton(
+                      label: context.l10n.cancel,
+                      variant: AppButtonVariant.ghost,
+                      compact: true,
+                      onPressed: () => Navigator.of(ctx).pop(),
+                    ),
+                    const SizedBox(width: AppSpacing.md),
+                    AppButton(
+                      label: context.l10n.save,
+                      variant: AppButtonVariant.primary,
+                      compact: true,
+                      onPressed: () {
+                        final name = nameCtrl.text.trim();
+                        if (name.isEmpty || selectedGroupId == null) return;
+                        Navigator.of(ctx).pop(
+                          _AddRoomResult(name: name, groupId: selectedGroupId!),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  // ── Room actions ─────────────────────────────────────────────────────────────
+
+  Future<void> _deleteRoom(HomeController ctrl, Room room) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        backgroundColor: AppColors.surface,
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.xlBR),
+        title: Text(context.l10n.roomsDeleteRoomTitle),
+        content: Text(context.l10n.roomsDeleteRoomMessage(room.name)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(context.l10n.cancel),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: AppColors.danger),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(context.l10n.delete),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    await ctrl.deleteRoom(room);
+    if (mounted) await ctrl.loadAll(widget.groupId);
+  }
+
+  Future<void> _openRoomDetail(HomeController ctrl, Room room) async {
+    final changed = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => RoomDetailPage(room: room, groupId: widget.groupId),
+      ),
+    );
+    if (changed == true && mounted) await ctrl.loadAll(widget.groupId);
+  }
+
+  // ── Build ────────────────────────────────────────────────────────────────────
+
+  @override
   Widget build(BuildContext context) {
-    final activeGroup = widget.activeGroup;
+    final ctrl = context.watch<HomeController>();
+
+    final allGroups = ctrl.roomGroups;
+    final allRooms = ctrl.allRooms;
+
+    // Stats
+    final totalRooms = allRooms.length;
+    final totalGroups = allGroups.length;
+
+    // Apply group chip filter
+    final groupFilteredRooms = _selectedGroupId == null
+        ? allRooms
+        : allRooms.where((r) => r.groupId == _selectedGroupId).toList();
+
+    // Apply search filter
+    final visibleRooms = _searchQuery.isEmpty
+        ? groupFilteredRooms
+        : groupFilteredRooms
+            .where((r) => r.name.toLowerCase().contains(_searchQuery))
+            .toList();
+
+    // Room counts per group (for chips) — always from allRooms, not filtered
+    final groupCounts = {
+      for (final g in allGroups) g.id: allRooms.where((r) => r.groupId == g.id).length,
+    };
+
+    // Device count per room
+    int deviceCountForRoom(String roomId) => ctrl.deviceCountForRoom(roomId);
+
+    // Build tile list: DeviceListTile + outside X button
+    Widget removeRow({required Widget tile, required VoidCallback onRemove}) =>
+        Row(
+          children: [
+            Expanded(child: tile),
+            IconButton(
+              tooltip: context.l10n.roomsDeleteRoomTooltip,
+              onPressed: onRemove,
+              icon: const Icon(
+                Icons.close_rounded,
+                size: 20,
+                color: AppColors.danger,
+              ),
+            ),
+          ],
+        );
+
+    final tiles = <Widget>[
+      for (final room in visibleRooms)
+        removeRow(
+          onRemove: () => _deleteRoom(ctrl, room),
+          tile: DeviceListTile(
+            icon: Icons.meeting_room_outlined,
+            iconColor: AppColors.primary,
+            title: room.name,
+            subtitle: allGroups
+                .where((g) => g.id == room.groupId)
+                .firstOrNull
+                ?.name ?? '',
+            liveValue: context.l10n.roomsEquipmentCount(deviceCountForRoom(room.id)),
+            dotColor: AppColors.textSecondary,
+            onTap: () => _openRoomDetail(ctrl, room),
+          ),
+        ),
+    ];
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: AppColors.card,
+        surfaceTintColor: Colors.transparent,
+        elevation: 4,
+        shadowColor: Colors.black.withValues(alpha: 0.45),
+        leading: const BackButton(),
+        title: Text(
+          context.l10n.roomsPageTitle,
+          style: const TextStyle(
+            fontFamily: 'ShareTech',
+            fontWeight: FontWeight.w600,
+            fontSize: AppFontSizes.heading,
+            color: AppColors.textPrimary,
+          ),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () => ctrl.loadAll(widget.groupId),
+            icon: const Icon(Icons.refresh_rounded),
+            color: AppColors.textSecondary,
+          ),
+        ],
+      ),
       body: SafeArea(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _RoomsPageHeader(
-              title: context.l10n.roomsPageTitle,
-              onBackPressed: () => Navigator.of(context).pop(true),
+            // ── Stats ─────────────────────────────────────────────────────────
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.x3l,
+                AppSpacing.x3l,
+                AppSpacing.x3l,
+                0,
+              ),
+              child: Text(
+                '$totalRooms rooms · $totalGroups groups',
+                style: const TextStyle(
+                  fontFamily: 'ShareTech',
+                  fontSize: AppFontSizes.sm,
+                  color: AppColors.textSecondary,
+                ),
+              ),
             ),
+
+            AppSpacing.gapX2l,
+
+            // ── Search ────────────────────────────────────────────────────────
+            EquipmentsSearchBar(
+              controller: _searchCtrl,
+              isFiltered: false,
+              onFilterTap: () {},
+              hintText: context.l10n.roomsSearchHint,
+            ),
+
+            AppSpacing.gapX2l,
+
+            // ── Group chips ───────────────────────────────────────────────────
+            SizedBox(
+              height: 34,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: AppSpacing.x3l),
+                separatorBuilder: (_, _) =>
+                    const SizedBox(width: AppSpacing.md),
+                itemCount: allGroups.length + 1,
+                itemBuilder: (_, i) {
+                  if (i == 0) {
+                    return AppChip(
+                      label: context.l10n.equipmentsRoomAll(totalRooms),
+                      selected: _selectedGroupId == null,
+                      variant: AppChipVariant.filter,
+                      onTap: () => setState(() => _selectedGroupId = null),
+                    );
+                  }
+                  final group = allGroups[i - 1];
+                  final count = groupCounts[group.id] ?? 0;
+                  return AppChip(
+                    label: '${group.name} ($count)',
+                    selected: _selectedGroupId == group.id,
+                    variant: AppChipVariant.filter,
+                    onTap: () =>
+                        setState(() => _selectedGroupId = group.id),
+                  );
+                },
+              ),
+            ),
+
+            AppSpacing.gapX5l,
+
+            // ── Room list ─────────────────────────────────────────────────────
             Expanded(
-              child: activeGroup == null
-                  ? Center(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        child: Text(
-                          context.l10n.roomsNoActiveGroupSelected,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: AppColors.textSecondary,
-                              ),
-                        ),
-                      ),
-                    )
-                  : _rooms.isEmpty
+              child: ctrl.isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : tiles.isEmpty
                       ? Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 24),
-                              child: Text(
-                                context.l10n.roomsEmptyForGroup(activeGroup.name),
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      color: AppColors.textSecondary,
-                                    ),
+                            Text(
+                              context.l10n.roomsEmptyState,
+                              style: const TextStyle(
+                                fontFamily: 'ShareTech',
+                                fontSize: AppFontSizes.body,
+                                color: AppColors.textSecondary,
                               ),
                             ),
-                            AppSpacing.gapX4l,
-                            _RoomsAddButton(
-                              tooltip: context.l10n.roomsAddRoomTooltip,
-                              onPressed: _addRoom,
+                            const SizedBox(height: AppSpacing.x3l),
+                            GestureDetector(
+                              onTap: () => _addRoom(ctrl),
+                              child: Container(
+                                width: 48,
+                                height: 48,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: AppColors.surface,
+                                  border: Border.all(
+                                    color: AppColors.border,
+                                    width: 1.5,
+                                  ),
+                                ),
+                                child: const Icon(
+                                  Icons.add_rounded,
+                                  size: 22,
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
                             ),
                           ],
                         )
                       : ListView.separated(
-                          padding: const EdgeInsets.fromLTRB(14, 8, 14, 24),
-                          itemCount: _rooms.length + 1,
-                          separatorBuilder: (_, _) => AppSpacing.gapX2l,
-                          itemBuilder: (context, index) {
-                            if (index == _rooms.length) {
-                              return Padding(
-                                padding: const EdgeInsets.only(top: 8),
-                                child: Center(
-                                  child: _RoomsAddButton(
-                                    tooltip: context.l10n.roomsAddRoomTooltip,
-                                    onPressed: _addRoom,
+                          padding: const EdgeInsets.fromLTRB(
+                            AppSpacing.x3l,
+                            0,
+                            AppSpacing.x3l,
+                            100,
+                          ),
+                          itemCount: tiles.length + 1,
+                          separatorBuilder: (_, _) =>
+                              const SizedBox(height: AppSpacing.x3l),
+                          itemBuilder: (_, i) {
+                            if (i < tiles.length) return tiles[i];
+                            // Circle add-room button at the bottom of the list
+                            return Center(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: AppSpacing.x2l),
+                                child: GestureDetector(
+                                  onTap: () => _addRoom(ctrl),
+                                  child: Container(
+                                    width: 48,
+                                    height: 48,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: AppColors.surface,
+                                      border: Border.all(
+                                        color: AppColors.border,
+                                        width: 1.5,
+                                      ),
+                                    ),
+                                    child: const Icon(
+                                      Icons.add_rounded,
+                                      size: 22,
+                                      color: AppColors.textSecondary,
+                                    ),
                                   ),
                                 ),
-                              );
-                            }
-
-                            final room = _rooms[index];
-                            final d = widget.devices;
-                            final equipCount =
-                                d.equipments.where((e) => e.roomId == room.id).length +
-                                d.tvDevices.where((t) => t.roomId == room.id).length +
-                                d.cobLedRgbDevices.where((w) => w.roomId == room.id).length +
-                                d.cobLedCctDevices.where((c) => c.roomId == room.id).length;
-
-                            return RoomPillTile(
-                              title: room.name,
-                              equipmentCount: equipCount,
-                              removeTooltip: context.l10n.roomsDeleteRoomTooltip,
-                              onTap: () => _openRoom(room),
-                              onLongPress: () => _renameRoom(room),
-                              onRemove: () => _deleteRoom(room),
+                              ),
                             );
                           },
                         ),
@@ -252,85 +530,10 @@ class _RoomsPageState extends State<RoomsPage> {
   }
 }
 
-class _RoomsPageHeader extends StatelessWidget {
-  final String title;
-  final VoidCallback onBackPressed;
+// ── Small data class for dialog result ────────────────────────────────────────
 
-  const _RoomsPageHeader({
-    required this.title,
-    required this.onBackPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(10, 6, 10, 8),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              IconButton(
-                tooltip:
-                    MaterialLocalizations.of(context).backButtonTooltip,
-                onPressed: onBackPressed,
-                icon: const Icon(Icons.chevron_left_rounded),
-              ),
-            ],
-          ),
-          AppSpacing.gapXs,
-          Center(
-            child: Text(
-              title,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: AppColors.textPrimary,
-                    fontWeight: FontWeight.w600,
-                  ),
-            ),
-          ),
-          AppSpacing.gapXl,
-        ],
-      ),
-    );
-  }
-}
-
-class _RoomsAddButton extends StatelessWidget {
-  final String tooltip;
-  final VoidCallback onPressed;
-
-  const _RoomsAddButton({
-    required this.tooltip,
-    required this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Tooltip(
-      message: tooltip,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: AppRadius.pillBR,
-          onTap: onPressed,
-          child: Ink(
-            width: 52,
-            height: 52,
-            decoration: BoxDecoration(
-              color: AppColors.surface,
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: AppColors.border.withValues(alpha: 0.35),
-              ),
-              boxShadow: AppShadows.moderate,
-            ),
-            child: const Icon(
-              Icons.add,
-              color: AppColors.textSecondary,
-              size: 22,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+class _AddRoomResult {
+  final String name;
+  final String groupId;
+  const _AddRoomResult({required this.name, required this.groupId});
 }

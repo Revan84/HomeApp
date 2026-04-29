@@ -78,11 +78,13 @@ class EquipmentsController extends ChangeNotifier {
   }
 
   /// Equipments filtered to visible rooms in the given group.
+  /// Unassigned devices (roomId == null) are always included so they are
+  /// never invisible after being removed from a room.
   List<Equipment> equipmentsForGroup(String? groupId) {
     if (groupId == null) return _allEquipments;
     final roomIds = visibleRoomIds(groupId);
     return _allEquipments
-        .where((e) => roomIds.contains(e.roomId))
+        .where((e) => e.roomId == null || roomIds.contains(e.roomId))
         .toList(growable: false);
   }
 
@@ -91,7 +93,7 @@ class EquipmentsController extends ChangeNotifier {
     if (groupId == null) return _tvDevices;
     final roomIds = visibleRoomIds(groupId);
     return _tvDevices
-        .where((tv) => roomIds.contains(tv.roomId))
+        .where((tv) => tv.roomId == null || roomIds.contains(tv.roomId))
         .toList(growable: false);
   }
 
@@ -100,7 +102,7 @@ class EquipmentsController extends ChangeNotifier {
     if (groupId == null) return _cobLedRgbDevices;
     final roomIds = visibleRoomIds(groupId);
     return _cobLedRgbDevices
-        .where((w) => roomIds.contains(w.roomId))
+        .where((w) => w.roomId == null || roomIds.contains(w.roomId))
         .toList(growable: false);
   }
 
@@ -109,7 +111,7 @@ class EquipmentsController extends ChangeNotifier {
     if (groupId == null) return _cobLedCctDevices;
     final roomIds = visibleRoomIds(groupId);
     return _cobLedCctDevices
-        .where((c) => roomIds.contains(c.roomId))
+        .where((c) => c.roomId == null || roomIds.contains(c.roomId))
         .toList(growable: false);
   }
 

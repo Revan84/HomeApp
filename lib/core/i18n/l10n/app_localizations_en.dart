@@ -565,6 +565,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get roomsRenameRoomTitle => 'Rename room';
 
   @override
+  String get roomsRoomNameLabel => 'Room name';
+
+  @override
   String get roomsRoomNameHint => 'Ex. Living room, Kitchen';
 
   @override
@@ -633,6 +636,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String roomsEmptyForGroup(String groupName) {
     return 'No rooms yet for the group “$groupName”.';
   }
+
+  @override
+  String get roomsSearchHint => 'Search rooms...';
+
+  @override
+  String get roomDetailRemoveTooltip => 'Remove from room';
+
+  @override
+  String get roomDetailUnlinkTitle => 'Remove from room?';
+
+  @override
+  String roomDetailUnlinkMessage(String deviceName) {
+    return '\'$deviceName\' will be removed from this room. The device will not be deleted.';
+  }
+
+  @override
+  String get roomDetailUnlinkConfirm => 'Remove';
 
   @override
   String get roomsGroupNameFieldLabel => 'Group name';

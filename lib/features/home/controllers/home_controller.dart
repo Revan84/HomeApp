@@ -255,10 +255,11 @@ class HomeController extends ChangeNotifier {
       visibleRooms(groupId).map((r) => r.id).toSet();
 
   /// Favorite plug equipments in the selected group.
+  /// Unassigned favorites (roomId == null) are always included.
   List<Equipment> favoriteEquipments(String? groupId) {
     final roomIds = visibleRoomIds(groupId);
     return _equipments
-        .where((e) => e.isFavorite && roomIds.contains(e.roomId))
+        .where((e) => e.isFavorite && (e.roomId == null || roomIds.contains(e.roomId)))
         .toList(growable: false);
   }
 
@@ -266,7 +267,7 @@ class HomeController extends ChangeNotifier {
   List<TvDevice> favoriteTvDevices(String? groupId) {
     final roomIds = visibleRoomIds(groupId);
     return _tvDevices
-        .where((tv) => tv.isFavorite && roomIds.contains(tv.roomId))
+        .where((tv) => tv.isFavorite && (tv.roomId == null || roomIds.contains(tv.roomId)))
         .toList(growable: false);
   }
 
@@ -274,7 +275,7 @@ class HomeController extends ChangeNotifier {
   List<CobLedRgbDevice> favoriteCobLedRgbDevices(String? groupId) {
     final roomIds = visibleRoomIds(groupId);
     return _cobLedRgbDevices
-        .where((w) => w.isFavorite && roomIds.contains(w.roomId))
+        .where((w) => w.isFavorite && (w.roomId == null || roomIds.contains(w.roomId)))
         .toList(growable: false);
   }
 
@@ -282,7 +283,7 @@ class HomeController extends ChangeNotifier {
   List<CobLedCctDevice> favoriteCobLedCctDevices(String? groupId) {
     final roomIds = visibleRoomIds(groupId);
     return _cobLedCctDevices
-        .where((c) => c.isFavorite && roomIds.contains(c.roomId))
+        .where((c) => c.isFavorite && (c.roomId == null || roomIds.contains(c.roomId)))
         .toList(growable: false);
   }
 
@@ -455,6 +456,38 @@ class HomeController extends ChangeNotifier {
 
   Future<void> toggleCobLedCctFavorite(CobLedCctDevice c) async {
     final updated = c.copyWith(isFavorite: !c.isFavorite);
+    await _cobLedCctRepo.update(updated);
+    _cobLedCctDevices = [for (final x in _cobLedCctDevices) if (x.id == c.id) updated else x];
+    notifyListeners();
+  }
+
+  // ---------------------------------------------------------------------------
+  // Remove from room (clears roomId, updates cache immediately)
+  // ---------------------------------------------------------------------------
+
+  Future<void> removeEquipmentFromRoom(Equipment e) async {
+    final updated = e.copyWith(roomId: null);
+    await _equipmentRepo.update(updated);
+    _equipments = [for (final x in _equipments) if (x.id == e.id) updated else x];
+    notifyListeners();
+  }
+
+  Future<void> removeTvFromRoom(TvDevice tv) async {
+    final updated = tv.copyWith(clearRoomId: true);
+    await _tvRepo.update(updated);
+    _tvDevices = [for (final x in _tvDevices) if (x.id == tv.id) updated else x];
+    notifyListeners();
+  }
+
+  Future<void> removeCobLedRgbFromRoom(CobLedRgbDevice d) async {
+    final updated = d.copyWith(clearRoomId: true);
+    await _cobLedRgbRepo.update(updated);
+    _cobLedRgbDevices = [for (final x in _cobLedRgbDevices) if (x.id == d.id) updated else x];
+    notifyListeners();
+  }
+
+  Future<void> removeCobLedCctFromRoom(CobLedCctDevice c) async {
+    final updated = c.copyWith(clearRoomId: true);
     await _cobLedCctRepo.update(updated);
     _cobLedCctDevices = [for (final x in _cobLedCctDevices) if (x.id == c.id) updated else x];
     notifyListeners();

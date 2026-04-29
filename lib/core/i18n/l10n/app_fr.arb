@@ -714,15 +714,21 @@
     "@favoritesOnlineOf": {
         "description": "Ligne de stats : nombre d'appareils en ligne sur le total",
         "placeholders": {
-            "online": {"type": "int"},
-            "total": {"type": "int"}
+            "online": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
         }
     },
     "favoritesRoomsCount": "{count} pièces",
     "@favoritesRoomsCount": {
         "description": "Ligne de stats : nombre de pièces dans le groupe actif",
         "placeholders": {
-            "count": {"type": "int"}
+            "count": {
+                "type": "int"
+            }
         }
     },
     "roomsSectionTitle": "Areas",
@@ -764,6 +770,10 @@
     "roomsRenameRoomTitle": "Renommer la pièce",
     "@roomsRenameRoomTitle": {
         "description": "Titre du dialogue de renommage d'une pièce"
+    },
+    "roomsRoomNameLabel": "Nom de la pièce",
+    "@roomsRoomNameLabel": {
+        "description": "Libellé au-dessus du champ de saisie du nom d'une pièce"
     },
     "roomsRoomNameHint": "Ex. Salon, Cuisine",
     "@roomsRoomNameHint": {
@@ -873,6 +883,31 @@
             }
         }
     },
+    "roomsSearchHint": "Rechercher des pièces...",
+    "@roomsSearchHint": {
+        "description": "Hint text for the rooms search field"
+    },
+    "roomDetailRemoveTooltip": "Retirer de la pièce",
+    "@roomDetailRemoveTooltip": {
+        "description": "Tooltip on the X button that removes a device from a room"
+    },
+    "roomDetailUnlinkTitle": "Retirer de la pièce ?",
+    "@roomDetailUnlinkTitle": {
+        "description": "Titre de la boîte de confirmation lors du retrait d'un équipement d'une pièce"
+    },
+    "roomDetailUnlinkMessage": "'{deviceName}' sera retiré de cette pièce.",
+    "@roomDetailUnlinkMessage": {
+        "description": "Corps de la boîte de confirmation lors du retrait d'un équipement d'une pièce",
+        "placeholders": {
+            "deviceName": {
+                "type": "String"
+            }
+        }
+    },
+    "roomDetailUnlinkConfirm": "Retirer",
+    "@roomDetailUnlinkConfirm": {
+        "description": "Bouton de confirmation dans la boîte de retrait d'une pièce"
+    },
     "roomsGroupNameFieldLabel": "Nom de l'ensemble",
     "@roomsGroupNameFieldLabel": {
         "description": "Label du champ de saisie du nom d'un ensemble de pièces"
@@ -903,7 +938,6 @@
             }
         }
     },
-
     "statsAddWidgetTitle": "Ajouter un widget",
     "@statsAddWidgetTitle": {
         "description": "Titre du bottom sheet pour ajouter un widget de statistiques"
@@ -992,7 +1026,6 @@
     "@statsEmptyHint": {
         "description": "Texte d'indication sous l'icône d'état vide"
     },
-
     "statsNoCompatibleDevice": "Aucun appareil compatible pour ce type de widget",
     "@statsNoCompatibleDevice": {
         "description": "Message snackbar quand aucun appareil ne supporte le type de widget"
@@ -1014,426 +1047,792 @@
             }
         }
     },
-
     "tvAddTitle": "Ajouter une TV",
-    "@tvAddTitle": { "description": "Titre de la bottom sheet d'ajout TV" },
+    "@tvAddTitle": {
+        "description": "Titre de la bottom sheet d'ajout TV"
+    },
     "tvDefaultName": "Smart TV",
-    "@tvDefaultName": { "description": "Nom par défaut d'une TV" },
+    "@tvDefaultName": {
+        "description": "Nom par défaut d'une TV"
+    },
     "tvNameHint": "ex : Samsung Salon",
-    "@tvNameHint": { "description": "Exemple de nom pour la TV" },
+    "@tvNameHint": {
+        "description": "Exemple de nom pour la TV"
+    },
     "tvTestFailed": "Connexion échouée",
-    "@tvTestFailed": { "description": "Message d'erreur si le test WS échoue" },
+    "@tvTestFailed": {
+        "description": "Message d'erreur si le test WS échoue"
+    },
     "tvDeleteConfirm": "Supprimer cette TV ?",
-    "@tvDeleteConfirm": { "description": "Confirmation de suppression TV" },
+    "@tvDeleteConfirm": {
+        "description": "Confirmation de suppression TV"
+    },
     "tvReconnect": "Reconnecter",
-    "@tvReconnect": { "description": "Bouton de reconnexion TV" },
+    "@tvReconnect": {
+        "description": "Bouton de reconnexion TV"
+    },
     "tvStatusConnected": "Connecté",
-    "@tvStatusConnected": { "description": "État TV : connecté" },
+    "@tvStatusConnected": {
+        "description": "État TV : connecté"
+    },
     "tvStatusConnecting": "Connexion…",
-    "@tvStatusConnecting": { "description": "État TV : en cours de connexion" },
+    "@tvStatusConnecting": {
+        "description": "État TV : en cours de connexion"
+    },
     "tvStatusDisconnected": "Déconnecté",
-    "@tvStatusDisconnected": { "description": "État TV : déconnecté" },
+    "@tvStatusDisconnected": {
+        "description": "État TV : déconnecté"
+    },
     "tvKeyPower": "Éteindre",
-    "@tvKeyPower": { "description": "Touche télécommande : éteindre" },
+    "@tvKeyPower": {
+        "description": "Touche télécommande : éteindre"
+    },
     "tvKeyVolUp": "Volume +",
-    "@tvKeyVolUp": { "description": "Touche télécommande : volume haut" },
+    "@tvKeyVolUp": {
+        "description": "Touche télécommande : volume haut"
+    },
     "tvKeyVolDown": "Volume −",
-    "@tvKeyVolDown": { "description": "Touche télécommande : volume bas" },
+    "@tvKeyVolDown": {
+        "description": "Touche télécommande : volume bas"
+    },
     "tvKeyMute": "Muet",
-    "@tvKeyMute": { "description": "Touche télécommande : muet" },
+    "@tvKeyMute": {
+        "description": "Touche télécommande : muet"
+    },
     "tvKeyUp": "Haut",
-    "@tvKeyUp": { "description": "Touche télécommande : haut" },
+    "@tvKeyUp": {
+        "description": "Touche télécommande : haut"
+    },
     "tvKeyDown": "Bas",
-    "@tvKeyDown": { "description": "Touche télécommande : bas" },
+    "@tvKeyDown": {
+        "description": "Touche télécommande : bas"
+    },
     "tvKeyLeft": "Gauche",
-    "@tvKeyLeft": { "description": "Touche télécommande : gauche" },
+    "@tvKeyLeft": {
+        "description": "Touche télécommande : gauche"
+    },
     "tvKeyRight": "Droite",
-    "@tvKeyRight": { "description": "Touche télécommande : droite" },
+    "@tvKeyRight": {
+        "description": "Touche télécommande : droite"
+    },
     "tvKeyBack": "Retour",
-    "@tvKeyBack": { "description": "Touche télécommande : retour" },
+    "@tvKeyBack": {
+        "description": "Touche télécommande : retour"
+    },
     "tvKeyHome": "Accueil",
-    "@tvKeyHome": { "description": "Touche télécommande : accueil" },
+    "@tvKeyHome": {
+        "description": "Touche télécommande : accueil"
+    },
     "tvKeyMenu": "Menu",
-    "@tvKeyMenu": { "description": "Touche télécommande : menu" },
+    "@tvKeyMenu": {
+        "description": "Touche télécommande : menu"
+    },
     "tvKeyKeyboard": "Clavier",
-    "@tvKeyKeyboard": { "description": "Touche télécommande : clavier" },
+    "@tvKeyKeyboard": {
+        "description": "Touche télécommande : clavier"
+    },
     "tvKeySource": "Source",
-    "@tvKeySource": { "description": "Touche télécommande : changer source" },
+    "@tvKeySource": {
+        "description": "Touche télécommande : changer source"
+    },
     "tvAppsTitle": "Applications :",
-    "@tvAppsTitle": { "description": "Titre de la section applications TV" },
+    "@tvAppsTitle": {
+        "description": "Titre de la section applications TV"
+    },
     "tvTypeSmartTv": "TV Connectée",
-    "@tvTypeSmartTv": { "description": "Type d'équipement : TV connectée" },
+    "@tvTypeSmartTv": {
+        "description": "Type d'équipement : TV connectée"
+    },
     "tvDefaultModel": "Samsung",
-    "@tvDefaultModel": { "description": "Modèle TV par défaut" },
+    "@tvDefaultModel": {
+        "description": "Modèle TV par défaut"
+    },
     "tvStatusConnectedWifi": "Connected (wi-fi)",
-    "@tvStatusConnectedWifi": { "description": "État TV connecté en wifi" },
+    "@tvStatusConnectedWifi": {
+        "description": "État TV connecté en wifi"
+    },
     "tvModelLabel": "Modèle",
-    "@tvModelLabel": { "description": "Label champ modèle TV" },
+    "@tvModelLabel": {
+        "description": "Label champ modèle TV"
+    },
     "tvModelHint": "ex : Samsung 55Q80B",
-    "@tvModelHint": { "description": "Exemple de modèle TV" },
+    "@tvModelHint": {
+        "description": "Exemple de modèle TV"
+    },
     "tvVoiceListening": "À l'écoute…",
-    "@tvVoiceListening": { "description": "Saisie vocale : en écoute" },
+    "@tvVoiceListening": {
+        "description": "Saisie vocale : en écoute"
+    },
     "tvVoiceTap": "Appuyez sur le micro pour réessayer",
-    "@tvVoiceTap": { "description": "Saisie vocale : appuyer pour démarrer" },
+    "@tvVoiceTap": {
+        "description": "Saisie vocale : appuyer pour démarrer"
+    },
     "tvVoiceError": "Microphone indisponible",
-    "@tvVoiceError": { "description": "Erreur saisie vocale" },
+    "@tvVoiceError": {
+        "description": "Erreur saisie vocale"
+    },
     "tvKeySettings": "Paramètres",
-    "@tvKeySettings": { "description": "Touche télécommande : paramètres / menu" },
+    "@tvKeySettings": {
+        "description": "Touche télécommande : paramètres / menu"
+    },
     "tvKeyboardHint": "Texte à envoyer à la TV…",
-    "@tvKeyboardHint": { "description": "Indication champ clavier" },
+    "@tvKeyboardHint": {
+        "description": "Indication champ clavier"
+    },
     "tvKeyboardSend": "Envoyer",
-    "@tvKeyboardSend": { "description": "Bouton envoi clavier" },
+    "@tvKeyboardSend": {
+        "description": "Bouton envoi clavier"
+    },
     "addDeviceTypeTitle": "Type d'appareil",
-    "@addDeviceTypeTitle": { "description": "Titre du sélecteur de type d'appareil" },
+    "@addDeviceTypeTitle": {
+        "description": "Titre du sélecteur de type d'appareil"
+    },
     "deviceTypePlug": "Prise connectée",
-    "@deviceTypePlug": { "description": "Type d'appareil : prise connectée" },
+    "@deviceTypePlug": {
+        "description": "Type d'appareil : prise connectée"
+    },
     "deviceTypeTv": "TV connectée",
-    "@deviceTypeTv": { "description": "Type d'appareil : TV connectée" },
+    "@deviceTypeTv": {
+        "description": "Type d'appareil : TV connectée"
+    },
     "deviceTypeCobLedRgb": "Bandeau LED WLED",
-    "@deviceTypeWled": { "description": "Type d'appareil : bandeau LED WLED" },
+    "@deviceTypeCobLedRgb": {
+        "description": "Type d'appareil : bandeau LED WLED"
+    },
     "deviceTypeCobLedCct": "Éclairage LED CCT",
-    "@deviceTypeCobLedCct": { "description": "Type d'appareil : lampe LED CCT à blanc réglable" },
+    "@deviceTypeCobLedCct": {
+        "description": "Type d'appareil : lampe LED CCT à blanc réglable"
+    },
     "cobLedRgbAddTitle": "Ajouter un appareil WLED",
-    "@wledAddTitle": { "description": "Titre du bottom sheet d'ajout WLED" },
+    "@cobLedRgbAddTitle": {
+        "description": "Titre du bottom sheet d'ajout WLED"
+    },
     "cobLedRgbDefaultName": "Bandeau LED",
-    "@wledDefaultName": { "description": "Nom par défaut d'un appareil WLED" },
+    "@cobLedRgbDefaultName": {
+        "description": "Nom par défaut d'un appareil WLED"
+    },
     "cobLedRgbNameHint": "ex : LEDs Salon",
-    "@wledNameHint": { "description": "Exemple de nom d'appareil WLED" },
+    "@cobLedRgbNameHint": {
+        "description": "Exemple de nom d'appareil WLED"
+    },
     "cobLedRgbModelHint": "ex : WLED v0.14",
-    "@wledModelHint": { "description": "Exemple de modèle WLED" },
+    "@cobLedRgbModelHint": {
+        "description": "Exemple de modèle WLED"
+    },
     "cobLedRgbTestFailed": "Connexion échouée",
-    "@wledTestFailed": { "description": "Échec du test de connexion WLED" },
+    "@cobLedRgbTestFailed": {
+        "description": "Échec du test de connexion WLED"
+    },
     "cobLedRgbDeleteConfirm": "Supprimer cet appareil ?",
-    "@wledDeleteConfirm": { "description": "Confirmation de suppression d'un appareil WLED" },
+    "@cobLedRgbDeleteConfirm": {
+        "description": "Confirmation de suppression d'un appareil WLED"
+    },
     "cobLedRgbBrightnessLabel": "Luminosité",
-    "@wledBrightnessLabel": { "description": "Label du curseur de luminosité" },
+    "@cobLedRgbBrightnessLabel": {
+        "description": "Label du curseur de luminosité"
+    },
     "cobLedRgbSpeedLabel": "Vitesse",
-    "@wledSpeedLabel": { "description": "Label du curseur de vitesse d'effet" },
+    "@cobLedRgbSpeedLabel": {
+        "description": "Label du curseur de vitesse d'effet"
+    },
     "cobLedRgbIntensityLabel": "Intensité",
-    "@wledIntensityLabel": { "description": "Label du curseur d'intensité d'effet" },
+    "@cobLedRgbIntensityLabel": {
+        "description": "Label du curseur d'intensité d'effet"
+    },
     "cobLedRgbColorsTab": "Couleurs",
-    "@wledColorsTab": { "description": "Onglet Couleurs" },
+    "@cobLedRgbColorsTab": {
+        "description": "Onglet Couleurs"
+    },
     "cobLedRgbEffectsTab": "Effets",
-    "@wledEffectsTab": { "description": "Onglet Effets" },
+    "@cobLedRgbEffectsTab": {
+        "description": "Onglet Effets"
+    },
     "cobLedRgbScenesLabel": "Scènes",
-    "@wledScenesLabel": { "description": "Label de la section scènes" },
+    "@cobLedRgbScenesLabel": {
+        "description": "Label de la section scènes"
+    },
     "smartPlugDetailTitle": "{name}",
     "@smartPlugDetailTitle": {
         "description": "Titre de l'écran détail prise connectée",
-        "placeholders": { "name": { "type": "String" } }
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
     },
     "smartPlugSubtitle": "Prise connectée",
-    "@smartPlugSubtitle": { "description": "Type d'appareil dans l'en-tête" },
+    "@smartPlugSubtitle": {
+        "description": "Type d'appareil dans l'en-tête"
+    },
     "smartPlugOnline": "en ligne",
-    "@smartPlugOnline": { "description": "Statut prise connectée: en ligne" },
+    "@smartPlugOnline": {
+        "description": "Statut prise connectée: en ligne"
+    },
     "smartPlugOffline": "hors ligne",
-    "@smartPlugOffline": { "description": "Statut prise connectée: hors ligne" },
+    "@smartPlugOffline": {
+        "description": "Statut prise connectée: hors ligne"
+    },
     "smartPlugKpiUnit": "W",
-    "@smartPlugKpiUnit": { "description": "Unité de puissance — watts" },
+    "@smartPlugKpiUnit": {
+        "description": "Unité de puissance — watts"
+    },
     "smartPlugCostPerHour": "≈ {cost} €/h",
     "@smartPlugCostPerHour": {
         "description": "Coût estimé par heure",
-        "placeholders": { "cost": { "type": "String" } }
+        "placeholders": {
+            "cost": {
+                "type": "String"
+            }
+        }
     },
     "smartPlugCostToday": "≈ {cost}€ aujourd'hui",
     "@smartPlugCostToday": {
         "description": "Coût estimé aujourd'hui",
-        "placeholders": { "cost": { "type": "String" } }
+        "placeholders": {
+            "cost": {
+                "type": "String"
+            }
+        }
     },
     "smartPlugKwhCumulated": "{kwh} kWh cumulés",
     "@smartPlugKwhCumulated": {
         "description": "Énergie cumulée en kWh",
-        "placeholders": { "kwh": { "type": "String" } }
+        "placeholders": {
+            "kwh": {
+                "type": "String"
+            }
+        }
     },
     "smartPlugSectionConsumption": "Consommation",
-    "@smartPlugSectionConsumption": { "description": "Titre section consommation" },
+    "@smartPlugSectionConsumption": {
+        "description": "Titre section consommation"
+    },
     "smartPlugSectionTimeline": "Chronologie",
-    "@smartPlugSectionTimeline": { "description": "Titre section chronologie" },
+    "@smartPlugSectionTimeline": {
+        "description": "Titre section chronologie"
+    },
     "smartPlugTimelineSubtitle": "On/off dernières 24h",
-    "@smartPlugTimelineSubtitle": { "description": "Sous-titre chronologie" },
+    "@smartPlugTimelineSubtitle": {
+        "description": "Sous-titre chronologie"
+    },
     "smartPlugSectionAlerts": "Alertes",
-    "@smartPlugSectionAlerts": { "description": "Titre section alertes" },
+    "@smartPlugSectionAlerts": {
+        "description": "Titre section alertes"
+    },
     "smartPlugNoAlerts": "Aucun seuil configuré",
-    "@smartPlugNoAlerts": { "description": "Placeholder aucune alerte" },
+    "@smartPlugNoAlerts": {
+        "description": "Placeholder aucune alerte"
+    },
     "smartPlugSectionInformations": "Informations",
-    "@smartPlugSectionInformations": { "description": "Titre section informations" },
+    "@smartPlugSectionInformations": {
+        "description": "Titre section informations"
+    },
     "smartPlugInfoLocalIp": "IP locale",
-    "@smartPlugInfoLocalIp": { "description": "Label IP locale" },
+    "@smartPlugInfoLocalIp": {
+        "description": "Label IP locale"
+    },
     "smartPlugInfoModel": "Modèle",
-    "@smartPlugInfoModel": { "description": "Label modèle" },
+    "@smartPlugInfoModel": {
+        "description": "Label modèle"
+    },
     "smartPlugInfoConnection": "Connexion",
-    "@smartPlugInfoConnection": { "description": "Label type de connexion" },
+    "@smartPlugInfoConnection": {
+        "description": "Label type de connexion"
+    },
     "smartPlugWifi": "Wi-Fi",
-    "@smartPlugWifi": { "description": "Valeur connexion Wi-Fi" },
+    "@smartPlugWifi": {
+        "description": "Valeur connexion Wi-Fi"
+    },
     "smartPlugChangeRoom": "Modifier",
-    "@smartPlugChangeRoom": { "description": "Bouton changer de pièce" },
+    "@smartPlugChangeRoom": {
+        "description": "Bouton changer de pièce"
+    },
     "smartPlugMenuRefresh": "Actualiser",
-    "@smartPlugMenuRefresh": { "description": "Menu: actualiser" },
+    "@smartPlugMenuRefresh": {
+        "description": "Menu: actualiser"
+    },
     "smartPlugMenuEdit": "Modifier",
-    "@smartPlugMenuEdit": { "description": "Menu: modifier" },
+    "@smartPlugMenuEdit": {
+        "description": "Menu: modifier"
+    },
     "smartPlugMenuDelete": "Supprimer",
-    "@smartPlugMenuDelete": { "description": "Menu: supprimer" },
+    "@smartPlugMenuDelete": {
+        "description": "Menu: supprimer"
+    },
     "smartPlugDeleteConfirmTitle": "Supprimer l'équipement ?",
-    "@smartPlugDeleteConfirmTitle": { "description": "Titre confirmation suppression" },
+    "@smartPlugDeleteConfirmTitle": {
+        "description": "Titre confirmation suppression"
+    },
     "smartPlugDeleteConfirmBody": "Cette action est irréversible.",
-    "@smartPlugDeleteConfirmBody": { "description": "Corps confirmation suppression" },
+    "@smartPlugDeleteConfirmBody": {
+        "description": "Corps confirmation suppression"
+    },
     "smartPlugDeleteConfirmCancel": "Annuler",
-    "@smartPlugDeleteConfirmCancel": { "description": "Annuler la suppression" },
+    "@smartPlugDeleteConfirmCancel": {
+        "description": "Annuler la suppression"
+    },
     "smartPlugDeleteConfirmConfirm": "Supprimer",
-    "@smartPlugDeleteConfirmConfirm": { "description": "Confirmer la suppression" },
+    "@smartPlugDeleteConfirmConfirm": {
+        "description": "Confirmer la suppression"
+    },
     "smartPlugLastKnownValues": "Dernières valeurs connues",
-    "@smartPlugLastKnownValues": { "description": "Bannière affichée quand la prise est hors ligne" },
+    "@smartPlugLastKnownValues": {
+        "description": "Bannière affichée quand la prise est hors ligne"
+    },
     "smartPlugEditKwhPriceTitle": "Prix de l'électricité",
-    "@smartPlugEditKwhPriceTitle": { "description": "Titre du dialogue pour modifier le prix du kWh" },
+    "@smartPlugEditKwhPriceTitle": {
+        "description": "Titre du dialogue pour modifier le prix du kWh"
+    },
     "smartPlugAlertSheetTitle": "Ajouter une alerte",
-    "@smartPlugAlertSheetTitle": { "description": "Titre du bottom sheet d'ajout d'alerte" },
+    "@smartPlugAlertSheetTitle": {
+        "description": "Titre du bottom sheet d'ajout d'alerte"
+    },
     "smartPlugAlertConditionLabel": "Type d'alerte",
-    "@smartPlugAlertConditionLabel": { "description": "Label au-dessus des chips de condition" },
+    "@smartPlugAlertConditionLabel": {
+        "description": "Label au-dessus des chips de condition"
+    },
     "smartPlugAlertConditionWatts": "Consommation (W)",
-    "@smartPlugAlertConditionWatts": { "description": "Chip condition: seuil en watts" },
+    "@smartPlugAlertConditionWatts": {
+        "description": "Chip condition: seuil en watts"
+    },
     "smartPlugAlertConditionDailyCost": "Coût journalier (€)",
-    "@smartPlugAlertConditionDailyCost": { "description": "Chip condition: seuil coût journalier" },
+    "@smartPlugAlertConditionDailyCost": {
+        "description": "Chip condition: seuil coût journalier"
+    },
     "smartPlugAlertThresholdLabel": "Seuil",
-    "@smartPlugAlertThresholdLabel": { "description": "Label au-dessus du champ de seuil" },
+    "@smartPlugAlertThresholdLabel": {
+        "description": "Label au-dessus du champ de seuil"
+    },
     "smartPlugAlertThresholdHintWatts": "ex. 2500",
-    "@smartPlugAlertThresholdHintWatts": { "description": "Hint pour le seuil en watts" },
+    "@smartPlugAlertThresholdHintWatts": {
+        "description": "Hint pour le seuil en watts"
+    },
     "smartPlugAlertThresholdHintCost": "ex. 1,50",
-    "@smartPlugAlertThresholdHintCost": { "description": "Hint pour le seuil de coût journalier" },
+    "@smartPlugAlertThresholdHintCost": {
+        "description": "Hint pour le seuil de coût journalier"
+    },
     "smartPlugAlertNotificationsLabel": "Notifications",
-    "@smartPlugAlertNotificationsLabel": { "description": "Label au-dessus des chips de notification" },
+    "@smartPlugAlertNotificationsLabel": {
+        "description": "Label au-dessus des chips de notification"
+    },
     "smartPlugAlertNotifPush": "Push",
-    "@smartPlugAlertNotifPush": { "description": "Chip notification: notification push" },
+    "@smartPlugAlertNotifPush": {
+        "description": "Chip notification: notification push"
+    },
     "smartPlugAlertNotifBanner": "Bannière",
-    "@smartPlugAlertNotifBanner": { "description": "Chip notification: bannière in-app" },
+    "@smartPlugAlertNotifBanner": {
+        "description": "Chip notification: bannière in-app"
+    },
     "smartPlugAlertNotifRequired": "Sélectionnez au moins un type de notification",
-    "@smartPlugAlertNotifRequired": { "description": "Erreur de validation: aucun type de notification sélectionné" },
-
+    "@smartPlugAlertNotifRequired": {
+        "description": "Erreur de validation: aucun type de notification sélectionné"
+    },
     "tvSubtitle": "Télécommande",
-    "@tvSubtitle": { "description": "Type d'appareil TV dans l'en-tête de détail" },
+    "@tvSubtitle": {
+        "description": "Type d'appareil TV dans l'en-tête de détail"
+    },
     "tvOnline": "en ligne",
-    "@tvOnline": { "description": "Statut TV : en ligne" },
+    "@tvOnline": {
+        "description": "Statut TV : en ligne"
+    },
     "tvOffline": "hors ligne",
-    "@tvOffline": { "description": "Statut TV : hors ligne" },
+    "@tvOffline": {
+        "description": "Statut TV : hors ligne"
+    },
     "tvSourceActive": "Source active",
-    "@tvSourceActive": { "description": "Label affiché sous le nom de la source actuelle" },
+    "@tvSourceActive": {
+        "description": "Label affiché sous le nom de la source actuelle"
+    },
     "tvSectionRemote": "Télécommande",
-    "@tvSectionRemote": { "description": "Titre de la carte section télécommande" },
+    "@tvSectionRemote": {
+        "description": "Titre de la carte section télécommande"
+    },
     "tvSectionApplications": "Applications",
-    "@tvSectionApplications": { "description": "Titre de la carte section applications" },
+    "@tvSectionApplications": {
+        "description": "Titre de la carte section applications"
+    },
     "tvSectionInformations": "Informations",
-    "@tvSectionInformations": { "description": "Titre de la carte section informations" },
+    "@tvSectionInformations": {
+        "description": "Titre de la carte section informations"
+    },
     "tvMenuRefresh": "Actualiser",
-    "@tvMenuRefresh": { "description": "Menu TV : actualiser" },
+    "@tvMenuRefresh": {
+        "description": "Menu TV : actualiser"
+    },
     "tvMenuEdit": "Modifier",
-    "@tvMenuEdit": { "description": "Menu TV : modifier" },
+    "@tvMenuEdit": {
+        "description": "Menu TV : modifier"
+    },
     "tvMenuDelete": "Supprimer",
-    "@tvMenuDelete": { "description": "Menu TV : supprimer" },
+    "@tvMenuDelete": {
+        "description": "Menu TV : supprimer"
+    },
     "tvDeleteConfirmTitle": "Supprimer la TV ?",
-    "@tvDeleteConfirmTitle": { "description": "Titre de la confirmation de suppression TV" },
+    "@tvDeleteConfirmTitle": {
+        "description": "Titre de la confirmation de suppression TV"
+    },
     "tvDeleteConfirmBody": "Cette action est irréversible.",
-    "@tvDeleteConfirmBody": { "description": "Corps de la confirmation de suppression TV" },
+    "@tvDeleteConfirmBody": {
+        "description": "Corps de la confirmation de suppression TV"
+    },
     "tvDeleteConfirmCancel": "Annuler",
-    "@tvDeleteConfirmCancel": { "description": "Bouton annuler la suppression TV" },
+    "@tvDeleteConfirmCancel": {
+        "description": "Bouton annuler la suppression TV"
+    },
     "tvDeleteConfirmConfirm": "Supprimer",
-    "@tvDeleteConfirmConfirm": { "description": "Bouton confirmer la suppression TV" },
+    "@tvDeleteConfirmConfirm": {
+        "description": "Bouton confirmer la suppression TV"
+    },
     "tvLastKnownValues": "Dernières valeurs connues",
-    "@tvLastKnownValues": { "description": "Bannière affichée sur le détail TV quand déconnecté" },
-
+    "@tvLastKnownValues": {
+        "description": "Bannière affichée sur le détail TV quand déconnecté"
+    },
     "detailSectionLive": "EN DIRECT",
-    "@detailSectionLive": { "description": "Titre de carte section : lecture en direct" },
+    "@detailSectionLive": {
+        "description": "Titre de carte section : lecture en direct"
+    },
     "detailSectionHistoric": "HISTORIQUE",
-    "@detailSectionHistoric": { "description": "Titre de carte section : graphique historique" },
+    "@detailSectionHistoric": {
+        "description": "Titre de carte section : graphique historique"
+    },
     "detailSectionInformations": "INFORMATIONS",
-    "@detailSectionInformations": { "description": "Titre de carte section : informations appareil" },
+    "@detailSectionInformations": {
+        "description": "Titre de carte section : informations appareil"
+    },
     "detailSectionAlerts": "ALERTES",
-    "@detailSectionAlerts": { "description": "Titre de carte section : alertes configurées" },
+    "@detailSectionAlerts": {
+        "description": "Titre de carte section : alertes configurées"
+    },
     "detailSectionTemperature": "TEMPÉRATURE",
-    "@detailSectionTemperature": { "description": "Titre de carte section : température (hygromètre)" },
-
+    "@detailSectionTemperature": {
+        "description": "Titre de carte section : température (hygromètre)"
+    },
     "detailStatMin": "MIN",
-    "@detailStatMin": { "description": "Label stat box : valeur minimale" },
+    "@detailStatMin": {
+        "description": "Label stat box : valeur minimale"
+    },
     "detailStatMax": "MAX",
-    "@detailStatMax": { "description": "Label stat box : valeur maximale" },
+    "@detailStatMax": {
+        "description": "Label stat box : valeur maximale"
+    },
     "detailStatAvgWeek": "Moy. semaine",
-    "@detailStatAvgWeek": { "description": "Label stat box : moyenne hebdomadaire" },
+    "@detailStatAvgWeek": {
+        "description": "Label stat box : moyenne hebdomadaire"
+    },
     "detailStatAvgMonth": "Moy. mois",
-    "@detailStatAvgMonth": { "description": "Label stat box : moyenne mensuelle" },
+    "@detailStatAvgMonth": {
+        "description": "Label stat box : moyenne mensuelle"
+    },
     "detailStatAmplitude": "Amplitude",
-    "@detailStatAmplitude": { "description": "Label stat box : écart min/max journalier" },
+    "@detailStatAmplitude": {
+        "description": "Label stat box : écart min/max journalier"
+    },
     "detailStatToday": "Aujourd'hui",
-    "@detailStatToday": { "description": "Label période stat box : aujourd'hui" },
+    "@detailStatToday": {
+        "description": "Label période stat box : aujourd'hui"
+    },
     "detailInfoStatus": "Statut",
-    "@detailInfoStatus": { "description": "Label ligne info : statut de l'appareil" },
-
+    "@detailInfoStatus": {
+        "description": "Label ligne info : statut de l'appareil"
+    },
     "detailTrendRising": "Tendance : hausse",
-    "@detailTrendRising": { "description": "Indicateur de tendance : température en hausse" },
+    "@detailTrendRising": {
+        "description": "Indicateur de tendance : température en hausse"
+    },
     "detailTrendFalling": "Tendance : baisse",
-    "@detailTrendFalling": { "description": "Indicateur de tendance : température en baisse" },
+    "@detailTrendFalling": {
+        "description": "Indicateur de tendance : température en baisse"
+    },
     "detailTrendUpward": "Tendance : montée",
-    "@detailTrendUpward": { "description": "Indicateur de tendance : humidité en hausse" },
+    "@detailTrendUpward": {
+        "description": "Indicateur de tendance : humidité en hausse"
+    },
     "detailTrendDownward": "Tendance : descente",
-    "@detailTrendDownward": { "description": "Indicateur de tendance : humidité en baisse" },
-
+    "@detailTrendDownward": {
+        "description": "Indicateur de tendance : humidité en baisse"
+    },
     "thermometerTypeLabel": "Thermomètre",
-    "@thermometerTypeLabel": { "description": "Label type appareil : thermomètre" },
+    "@thermometerTypeLabel": {
+        "description": "Label type appareil : thermomètre"
+    },
     "hygrometerTypeLabel": "Hygromètre",
-    "@hygrometerTypeLabel": { "description": "Label type appareil : hygromètre" },
+    "@hygrometerTypeLabel": {
+        "description": "Label type appareil : hygromètre"
+    },
     "cobLedRgbTypeLabel": "COB LED RGB",
-    "@cobLedRgbTypeLabel": { "description": "Label type appareil : bandeau LED RGB" },
+    "@cobLedRgbTypeLabel": {
+        "description": "Label type appareil : bandeau LED RGB"
+    },
     "cobLedCctTypeLabel": "COB LED CCT",
-    "@cobLedCctTypeLabel": { "description": "Label type appareil : éclairage COB LED CCT" },
-
+    "@cobLedCctTypeLabel": {
+        "description": "Label type appareil : éclairage COB LED CCT"
+    },
     "deviceOfflineBanner": "Appareil hors ligne",
-    "@deviceOfflineBanner": { "description": "Bannière affichée quand un appareil est hors ligne" },
+    "@deviceOfflineBanner": {
+        "description": "Bannière affichée quand un appareil est hors ligne"
+    },
     "deviceNotFound": "Appareil introuvable",
-    "@deviceNotFound": { "description": "Affiché quand l'identifiant de l'appareil est introuvable" },
-
+    "@deviceNotFound": {
+        "description": "Affiché quand l'identifiant de l'appareil est introuvable"
+    },
     "cobLedSectionLuminosity": "LUMINOSITÉ",
-    "@cobLedSectionLuminosity": { "description": "Titre de carte section : contrôles luminosité" },
+    "@cobLedSectionLuminosity": {
+        "description": "Titre de carte section : contrôles luminosité"
+    },
     "cobLedSectionWledControls": "CONTRÔLES WLED",
-    "@cobLedSectionWledControls": { "description": "Titre de carte section : contrôles effets WLED" },
+    "@cobLedSectionWledControls": {
+        "description": "Titre de carte section : contrôles effets WLED"
+    },
     "cobLedRgbSectionColor": "COULEUR",
-    "@cobLedRgbSectionColor": { "description": "Titre de carte section : sélecteur de couleur" },
+    "@cobLedRgbSectionColor": {
+        "description": "Titre de carte section : sélecteur de couleur"
+    },
     "cobLedCctSectionColourTemp": "TEMPÉRATURE DE COULEUR",
-    "@cobLedCctSectionColourTemp": { "description": "Titre de carte section : contrôles température de couleur" },
-
+    "@cobLedCctSectionColourTemp": {
+        "description": "Titre de carte section : contrôles température de couleur"
+    },
     "cobLedCctSaveAsTemplateTitle": "Enregistrer comme modèle",
-    "@cobLedCctSaveAsTemplateTitle": { "description": "Titre du dialogue pour enregistrer l'état CCT comme modèle" },
+    "@cobLedCctSaveAsTemplateTitle": {
+        "description": "Titre du dialogue pour enregistrer l'état CCT comme modèle"
+    },
     "cobLedCctTemplateNameHint": "Nom du modèle",
-    "@cobLedCctTemplateNameHint": { "description": "Texte indicatif du champ nom de modèle" },
+    "@cobLedCctTemplateNameHint": {
+        "description": "Texte indicatif du champ nom de modèle"
+    },
     "cobLedCctDeviceHint": "ex. ESP32 CCT Controller",
-    "@cobLedCctDeviceHint": { "description": "Texte indicatif du champ nom d'appareil CCT" },
-
+    "@cobLedCctDeviceHint": {
+        "description": "Texte indicatif du champ nom d'appareil CCT"
+    },
     "sensorAlertConditionAbove": "Au-dessus",
-    "@sensorAlertConditionAbove": { "description": "Chip condition alerte : déclencher si valeur au-dessus du seuil" },
+    "@sensorAlertConditionAbove": {
+        "description": "Chip condition alerte : déclencher si valeur au-dessus du seuil"
+    },
     "sensorAlertConditionBelow": "En dessous",
-    "@sensorAlertConditionBelow": { "description": "Chip condition alerte : déclencher si valeur en dessous du seuil" },
-
+    "@sensorAlertConditionBelow": {
+        "description": "Chip condition alerte : déclencher si valeur en dessous du seuil"
+    },
     "hygrometerComfortRangeLabel": "Zone de confort : 40 % – 60 %",
-    "@hygrometerComfortRangeLabel": { "description": "Label sous la barre de confort de l'hygromètre" },
+    "@hygrometerComfortRangeLabel": {
+        "description": "Label sous la barre de confort de l'hygromètre"
+    },
     "hygrometerStatComfort": "Confort",
-    "@hygrometerStatComfort": { "description": "Label stat box : niveau de confort actuel" },
-
+    "@hygrometerStatComfort": {
+        "description": "Label stat box : niveau de confort actuel"
+    },
     "homeSectionToday": "Aujourd'hui",
-    "@homeSectionToday": { "description": "Titre de section page d'accueil : résumé du jour" },
+    "@homeSectionToday": {
+        "description": "Titre de section page d'accueil : résumé du jour"
+    },
     "homeTodayConsumptionLabel": "Consommation",
-    "@homeTodayConsumptionLabel": { "description": "Label KPI section aujourd'hui : consommation totale" },
+    "@homeTodayConsumptionLabel": {
+        "description": "Label KPI section aujourd'hui : consommation totale"
+    },
     "homeTodayAvgTempLabel": "Temp. moy.",
-    "@homeTodayAvgTempLabel": { "description": "Label KPI section aujourd'hui : température moyenne" },
+    "@homeTodayAvgTempLabel": {
+        "description": "Label KPI section aujourd'hui : température moyenne"
+    },
     "homeTodayHumidityLabel": "Humidité",
-    "@homeTodayHumidityLabel": { "description": "Label KPI section aujourd'hui : humidité" },
-
+    "@homeTodayHumidityLabel": {
+        "description": "Label KPI section aujourd'hui : humidité"
+    },
     "equipmentsFilterAllTypes": "Tous les types",
-    "@equipmentsFilterAllTypes": { "description": "Chip filtre onglet appareils : tous les types" },
+    "@equipmentsFilterAllTypes": {
+        "description": "Chip filtre onglet appareils : tous les types"
+    },
     "equipmentsRoomAll": "Toutes les pièces ({count})",
     "@equipmentsRoomAll": {
         "description": "Chip filtre pièce : toutes les pièces avec nombre d'appareils",
-        "placeholders": { "count": { "type": "int" } }
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
     },
     "equipmentsRoomItem": "{name} ({count})",
     "@equipmentsRoomItem": {
         "description": "Chip filtre pièce : nom de pièce avec nombre d'appareils",
         "placeholders": {
-            "name": { "type": "String" },
-            "count": { "type": "int" }
+            "name": {
+                "type": "String"
+            },
+            "count": {
+                "type": "int"
+            }
         }
     },
     "equipmentsSearchHint": "Rechercher un appareil...",
-    "@equipmentsSearchHint": { "description": "Texte indicatif de la barre de recherche dans l'onglet appareils" },
-
+    "@equipmentsSearchHint": {
+        "description": "Texte indicatif de la barre de recherche dans l'onglet appareils"
+    },
     "areasAllRooms": "Toutes les pièces ({count})",
     "@areasAllRooms": {
         "description": "Chip section zones : toutes les pièces avec nombre d'appareils",
-        "placeholders": { "count": { "type": "int" } }
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
     },
     "areasRoomItem": "{name} ({count})",
     "@areasRoomItem": {
         "description": "Chip section zones : nom de pièce avec nombre d'appareils",
         "placeholders": {
-            "name": { "type": "String" },
-            "count": { "type": "int" }
+            "name": {
+                "type": "String"
+            },
+            "count": {
+                "type": "int"
+            }
         }
     },
     "areasNoRooms": "Aucune pièce configurée.",
-    "@areasNoRooms": { "description": "État vide section zones : aucune pièce configurée" },
+    "@areasNoRooms": {
+        "description": "État vide section zones : aucune pièce configurée"
+    },
     "areasNoDevices": "Aucun appareil dans cette pièce.",
-    "@areasNoDevices": { "description": "État vide section zones : pièce sans appareil" },
-
+    "@areasNoDevices": {
+        "description": "État vide section zones : pièce sans appareil"
+    },
     "deviceStatusOn": "ON",
-    "@deviceStatusOn": { "description": "Barre de puissance : appareil allumé" },
+    "@deviceStatusOn": {
+        "description": "Barre de puissance : appareil allumé"
+    },
     "deviceStatusOff": "OFF",
-    "@deviceStatusOff": { "description": "Barre de puissance : appareil éteint" },
+    "@deviceStatusOff": {
+        "description": "Barre de puissance : appareil éteint"
+    },
     "colorCopiedSnack": "{hex} copié",
     "@colorCopiedSnack": {
         "description": "Snackbar affiché quand une couleur hex est copiée",
-        "placeholders": { "hex": { "type": "String" } }
+        "placeholders": {
+            "hex": {
+                "type": "String"
+            }
+        }
     },
-
     "cobLedEffectLabel": "Effet",
-    "@cobLedEffectLabel": { "description": "Label au-dessus du menu déroulant d'effets WLED" },
+    "@cobLedEffectLabel": {
+        "description": "Label au-dessus du menu déroulant d'effets WLED"
+    },
     "cobLedSpeedLabel": "Vitesse",
-    "@cobLedSpeedLabel": { "description": "Label curseur : vitesse de l'effet" },
+    "@cobLedSpeedLabel": {
+        "description": "Label curseur : vitesse de l'effet"
+    },
     "cobLedIntensityLabel": "Intensité",
-    "@cobLedIntensityLabel": { "description": "Label curseur : intensité de l'effet" },
+    "@cobLedIntensityLabel": {
+        "description": "Label curseur : intensité de l'effet"
+    },
     "cobLedAudioReactive": "Réactif au son",
-    "@cobLedAudioReactive": { "description": "Label toggle : mode réactif audio" },
+    "@cobLedAudioReactive": {
+        "description": "Label toggle : mode réactif audio"
+    },
     "cobLedAudioReactiveHint": "Réagir à l'entrée du microphone",
-    "@cobLedAudioReactiveHint": { "description": "Sous-titre du toggle réactif audio" },
+    "@cobLedAudioReactiveHint": {
+        "description": "Sous-titre du toggle réactif audio"
+    },
     "cobLedLoadingEffects": "Chargement des effets…",
-    "@cobLedLoadingEffects": { "description": "Placeholder pendant le chargement des effets WLED" },
+    "@cobLedLoadingEffects": {
+        "description": "Placeholder pendant le chargement des effets WLED"
+    },
     "cobLedNoPresets": "Aucun preset trouvé sur l'appareil.",
-    "@cobLedNoPresets": { "description": "État vide quand aucun preset WLED n'est disponible" },
+    "@cobLedNoPresets": {
+        "description": "État vide quand aucun preset WLED n'est disponible"
+    },
     "cobLedSectionTemplates": "MODÈLES",
-    "@cobLedSectionTemplates": { "description": "Titre de section pour la liste des presets WLED" },
+    "@cobLedSectionTemplates": {
+        "description": "Titre de section pour la liste des presets WLED"
+    },
     "cobLedSectionActiveScene": "SCÈNE ACTIVE",
-    "@cobLedSectionActiveScene": { "description": "Titre de section pour le preset WLED actif" },
+    "@cobLedSectionActiveScene": {
+        "description": "Titre de section pour le preset WLED actif"
+    },
     "cobLedNoActiveScene": "Aucune scène active",
-    "@cobLedNoActiveScene": { "description": "Placeholder quand aucun preset WLED n'est actif" },
+    "@cobLedNoActiveScene": {
+        "description": "Placeholder quand aucun preset WLED n'est actif"
+    },
     "cobLedPresetActive": "Actif",
-    "@cobLedPresetActive": { "description": "Badge sur le preset WLED actuellement actif" },
+    "@cobLedPresetActive": {
+        "description": "Badge sur le preset WLED actuellement actif"
+    },
     "cobLedPresetApply": "Appliquer",
-    "@cobLedPresetApply": { "description": "Bouton pour appliquer un preset WLED" },
-
+    "@cobLedPresetApply": {
+        "description": "Bouton pour appliquer un preset WLED"
+    },
     "addDeviceTitle": "Ajouter un appareil",
-    "@addDeviceTitle": { "description": "Titre de la boîte de dialogue d'ajout d'appareil" },
+    "@addDeviceTitle": {
+        "description": "Titre de la boîte de dialogue d'ajout d'appareil"
+    },
     "addDeviceTypeLabel": "Type d'appareil",
-    "@addDeviceTypeLabel": { "description": "Label champ : sélecteur de type d'appareil" },
+    "@addDeviceTypeLabel": {
+        "description": "Label champ : sélecteur de type d'appareil"
+    },
     "addDeviceTypeHint": "Sélectionner un type",
-    "@addDeviceTypeHint": { "description": "Placeholder dans le menu déroulant du type d'appareil" },
+    "@addDeviceTypeHint": {
+        "description": "Placeholder dans le menu déroulant du type d'appareil"
+    },
     "addDeviceNameLabel": "Nom de l'appareil",
-    "@addDeviceNameLabel": { "description": "Label champ : nom de l'appareil" },
+    "@addDeviceNameLabel": {
+        "description": "Label champ : nom de l'appareil"
+    },
     "addDeviceIpLabel": "IP locale",
-    "@addDeviceIpLabel": { "description": "Label champ : adresse IP locale" },
+    "@addDeviceIpLabel": {
+        "description": "Label champ : adresse IP locale"
+    },
     "addDeviceRoomLabel": "Pièce",
-    "@addDeviceRoomLabel": { "description": "Label champ : pièce associée" },
+    "@addDeviceRoomLabel": {
+        "description": "Label champ : pièce associée"
+    },
     "addDeviceRoomOptionalLabel": "Pièce (optionnel)",
-    "@addDeviceRoomOptionalLabel": { "description": "Label champ pièce optionnel dans les feuilles d'ajout" },
+    "@addDeviceRoomOptionalLabel": {
+        "description": "Label champ pièce optionnel dans les feuilles d'ajout"
+    },
     "addDeviceModelOptionalLabel": "Modèle (optionnel)",
-    "@addDeviceModelOptionalLabel": { "description": "Label champ modèle optionnel dans les feuilles d'ajout" },
+    "@addDeviceModelOptionalLabel": {
+        "description": "Label champ modèle optionnel dans les feuilles d'ajout"
+    },
     "addDeviceFavoriteLabel": "Favori",
-    "@addDeviceFavoriteLabel": { "description": "Label case à cocher : ajouter aux favoris" },
+    "@addDeviceFavoriteLabel": {
+        "description": "Label case à cocher : ajouter aux favoris"
+    },
     "addDeviceAddToFavorites": "Ajouter aux favoris",
-    "@addDeviceAddToFavorites": { "description": "Label case à cocher dans la feuille d'ajout CCT" },
+    "@addDeviceAddToFavorites": {
+        "description": "Label case à cocher dans la feuille d'ajout CCT"
+    },
     "addDeviceConnectedCheck": "Connecté ✓",
-    "@addDeviceConnectedCheck": { "description": "Label du bouton Test quand le test de connexion réussit" },
-
+    "@addDeviceConnectedCheck": {
+        "description": "Label du bouton Test quand le test de connexion réussit"
+    },
     "cobLedCctAddTitle": "Ajouter une lumière CCT",
-    "@cobLedCctAddTitle": { "description": "Titre de la feuille d'ajout LED CCT" },
-
+    "@cobLedCctAddTitle": {
+        "description": "Titre de la feuille d'ajout LED CCT"
+    },
     "validationNameRequired": "Nom requis",
-    "@validationNameRequired": { "description": "Erreur validation : champ nom vide" },
+    "@validationNameRequired": {
+        "description": "Erreur validation : champ nom vide"
+    },
     "validationIpRequired": "L'adresse IP est requise",
-    "@validationIpRequired": { "description": "Erreur validation : champ IP vide" },
+    "@validationIpRequired": {
+        "description": "Erreur validation : champ IP vide"
+    },
     "validationIpInvalidFormat": "Format invalide (ex. 192.168.1.37)",
-    "@validationIpInvalidFormat": { "description": "Erreur validation : format IP incorrect" },
+    "@validationIpInvalidFormat": {
+        "description": "Erreur validation : format IP incorrect"
+    },
     "validationIpInvalidRange": "Adresse IP invalide",
-    "@validationIpInvalidRange": { "description": "Erreur validation : octets IP hors limites" },
+    "@validationIpInvalidRange": {
+        "description": "Erreur validation : octets IP hors limites"
+    },
     "connectionFailedDetail": "Connexion échouée : {error}",
     "@connectionFailedDetail": {
         "description": "Erreur affichée quand le test de connexion échoue avec un message détaillé",
-        "placeholders": { "error": { "type": "String" } }
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
     },
-
     "noData": "Aucune donnée",
-    "@noData": { "description": "Placeholder état vide dans les widgets graphique/historique" }
+    "@noData": {
+        "description": "Placeholder état vide dans les widgets graphique/historique"
+    }
 }

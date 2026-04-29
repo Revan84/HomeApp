@@ -140,14 +140,9 @@ class _HomeTabState extends State<HomeTab> {
   }
 
   Future<void> _openRoomsPage() async {
-    final controller = context.read<HomeController>();
     final changed = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
-        builder: (_) => RoomsPage(
-          activeGroup: controller.activeRoomGroup(_selectedGroupId),
-          rooms: controller.visibleRooms(_selectedGroupId),
-          devices: controller.allDevices,
-        ),
+        builder: (_) => RoomsPage(groupId: _selectedGroupId),
       ),
     );
     if (changed == true) widget.refreshNotifier.value++;

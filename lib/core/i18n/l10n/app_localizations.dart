@@ -1088,6 +1088,12 @@ abstract class AppLocalizations {
   /// **'Renommer la pièce'**
   String get roomsRenameRoomTitle;
 
+  /// Libellé au-dessus du champ de saisie du nom d'une pièce
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom de la pièce'**
+  String get roomsRoomNameLabel;
+
   /// Placeholder du champ de saisie du nom d'une pièce
   ///
   /// In fr, this message translates to:
@@ -1207,6 +1213,36 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Aucune pièce pour l\'ensemble « {groupName} ».'**
   String roomsEmptyForGroup(String groupName);
+
+  /// Hint text for the rooms search field
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher des pièces...'**
+  String get roomsSearchHint;
+
+  /// Tooltip on the X button that removes a device from a room
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirer de la pièce'**
+  String get roomDetailRemoveTooltip;
+
+  /// Titre de la boîte de confirmation lors du retrait d'un équipement d'une pièce
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirer de la pièce ?'**
+  String get roomDetailUnlinkTitle;
+
+  /// Corps de la boîte de confirmation lors du retrait d'un équipement d'une pièce
+  ///
+  /// In fr, this message translates to:
+  /// **'\'{deviceName}\' sera retiré de cette pièce. L\'équipement ne sera pas supprimé.'**
+  String roomDetailUnlinkMessage(String deviceName);
+
+  /// Bouton de confirmation dans la boîte de retrait d'une pièce
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirer'**
+  String get roomDetailUnlinkConfirm;
 
   /// Label du champ de saisie du nom d'un ensemble de pièces
   ///
