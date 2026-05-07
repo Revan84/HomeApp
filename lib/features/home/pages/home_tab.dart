@@ -25,11 +25,12 @@ import '../../devices/tv/domain/tv_remote_command.dart';
 import '../controllers/home_controller.dart';
 import '../widgets/areas_section.dart';
 import '../widgets/device_cards/cob_led_cct_card.dart';
+import '../widgets/device_cards/hygrometer_card.dart';
 import '../widgets/device_cards/plug_card.dart';
 import '../widgets/device_cards/thermometer_card.dart';
 import '../widgets/device_cards/tv_card.dart';
 import '../widgets/device_cards/cob_led_rgb_card.dart';
-import '../../devices/cob_led_cct/view/cob_led_cct_detail_screen.dart';
+import '../../devices/cob_led_cct/view/detail_screen.dart';
 import '../widgets/today/today_section.dart';
 import 'rooms_page.dart';
 import 'favorites_page.dart';
@@ -354,10 +355,17 @@ class _FavoritesSlider extends StatelessWidget {
     final cards = <Widget>[];
 
     for (final eq in favorites.equipments) {
-      final state = eq.type.isPlug ? liveController.live[eq.id] : null;
       if (eq.type.isThermometer) {
         cards.add(
           ThermometerCard(
+            equipment: eq,
+            liveState: liveController.live[eq.id],
+            onTap: () => onOpenEquipment(eq),
+          ),
+        );
+      } else if (eq.type.isHygrometer) {
+        cards.add(
+          HygrometerCard(
             equipment: eq,
             liveState: liveController.live[eq.id],
             onTap: () => onOpenEquipment(eq),
@@ -367,7 +375,7 @@ class _FavoritesSlider extends StatelessWidget {
         cards.add(
           PlugCard(
             equipment: eq,
-            liveState: state,
+            liveState: eq.type.isPlug ? liveController.live[eq.id] : null,
             onTap: () => onOpenEquipment(eq),
             onToggle: eq.showToggle ? () => controller.togglePlug(eq) : null,
           ),
@@ -409,15 +417,15 @@ class _FavoritesSlider extends StatelessWidget {
       final state = controller.cctStateFor(cct.id);
       final isOn = state?.isOn ?? false;
       final brightness = state?.brightness ?? 200;
-      final colorTempK = state?.colorTempK ?? 3000;
       cards.add(CobLedCctCard(
         device: cct,
         isOn: isOn,
         brightness: brightness,
-        colorTempK: colorTempK,
         onTap: () => onOpenCobLedCct(cct),
         onToggle: () => controller.toggleCobLedCct(cct),
         onBrightnessDrag: (v) => controller.setCobLedCctBrightness(cct, v),
+        onSpeedDown: () => controller.stepCobLedCctSpeed(cct, up: false),
+        onSpeedUp: () => controller.stepCobLedCctSpeed(cct, up: true),
       ));
     }
 

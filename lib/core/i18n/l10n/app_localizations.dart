@@ -1235,7 +1235,7 @@ abstract class AppLocalizations {
   /// Corps de la boîte de confirmation lors du retrait d'un équipement d'une pièce
   ///
   /// In fr, this message translates to:
-  /// **'\'{deviceName}\' sera retiré de cette pièce. L\'équipement ne sera pas supprimé.'**
+  /// **'\'{deviceName}\' sera retiré de cette pièce.'**
   String roomDetailUnlinkMessage(String deviceName);
 
   /// Bouton de confirmation dans la boîte de retrait d'une pièce
@@ -1658,7 +1658,7 @@ abstract class AppLocalizations {
   /// **'TV connectée'**
   String get deviceTypeTv;
 
-  /// No description provided for @deviceTypeCobLedRgb.
+  /// Type d'appareil : bandeau LED WLED
   ///
   /// In fr, this message translates to:
   /// **'Bandeau LED WLED'**
@@ -1670,73 +1670,73 @@ abstract class AppLocalizations {
   /// **'Éclairage LED CCT'**
   String get deviceTypeCobLedCct;
 
-  /// No description provided for @cobLedRgbAddTitle.
+  /// Titre du bottom sheet d'ajout WLED
   ///
   /// In fr, this message translates to:
   /// **'Ajouter un appareil WLED'**
   String get cobLedRgbAddTitle;
 
-  /// No description provided for @cobLedRgbDefaultName.
+  /// Nom par défaut d'un appareil WLED
   ///
   /// In fr, this message translates to:
   /// **'Bandeau LED'**
   String get cobLedRgbDefaultName;
 
-  /// No description provided for @cobLedRgbNameHint.
+  /// Exemple de nom d'appareil WLED
   ///
   /// In fr, this message translates to:
   /// **'ex : LEDs Salon'**
   String get cobLedRgbNameHint;
 
-  /// No description provided for @cobLedRgbModelHint.
+  /// Exemple de modèle WLED
   ///
   /// In fr, this message translates to:
   /// **'ex : WLED v0.14'**
   String get cobLedRgbModelHint;
 
-  /// No description provided for @cobLedRgbTestFailed.
+  /// Échec du test de connexion WLED
   ///
   /// In fr, this message translates to:
   /// **'Connexion échouée'**
   String get cobLedRgbTestFailed;
 
-  /// No description provided for @cobLedRgbDeleteConfirm.
+  /// Confirmation de suppression d'un appareil WLED
   ///
   /// In fr, this message translates to:
   /// **'Supprimer cet appareil ?'**
   String get cobLedRgbDeleteConfirm;
 
-  /// No description provided for @cobLedRgbBrightnessLabel.
+  /// Label du curseur de luminosité
   ///
   /// In fr, this message translates to:
   /// **'Luminosité'**
   String get cobLedRgbBrightnessLabel;
 
-  /// No description provided for @cobLedRgbSpeedLabel.
+  /// Label du curseur de vitesse d'effet
   ///
   /// In fr, this message translates to:
   /// **'Vitesse'**
   String get cobLedRgbSpeedLabel;
 
-  /// No description provided for @cobLedRgbIntensityLabel.
+  /// Label du curseur d'intensité d'effet
   ///
   /// In fr, this message translates to:
   /// **'Intensité'**
   String get cobLedRgbIntensityLabel;
 
-  /// No description provided for @cobLedRgbColorsTab.
+  /// Onglet Couleurs
   ///
   /// In fr, this message translates to:
   /// **'Couleurs'**
   String get cobLedRgbColorsTab;
 
-  /// No description provided for @cobLedRgbEffectsTab.
+  /// Onglet Effets
   ///
   /// In fr, this message translates to:
   /// **'Effets'**
   String get cobLedRgbEffectsTab;
 
-  /// No description provided for @cobLedRgbScenesLabel.
+  /// Label de la section scènes
   ///
   /// In fr, this message translates to:
   /// **'Scènes'**
@@ -2498,6 +2498,30 @@ abstract class AppLocalizations {
   /// **'Ajouter une lumière CCT'**
   String get cobLedCctAddTitle;
 
+  /// Snackbar affiché si l'ajout du contrôleur LED CCT échoue. Générique — détails dans les logs.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible d\'ajouter le contrôleur LED. Vérifiez l\'IP et réessayez.'**
+  String get cobLedCctAddDeviceError;
+
+  /// Étiquette de température CCT pour la plage blanc chaud (≤ 3000 K).
+  ///
+  /// In fr, this message translates to:
+  /// **'Blanc chaud'**
+  String get cctLabelWarmWhite;
+
+  /// Étiquette de température CCT pour la plage blanc neutre (3000–4500 K).
+  ///
+  /// In fr, this message translates to:
+  /// **'Blanc neutre'**
+  String get cctLabelNeutralWhite;
+
+  /// Étiquette de température CCT pour la plage blanc froid (≥ 4500 K).
+  ///
+  /// In fr, this message translates to:
+  /// **'Blanc froid'**
+  String get cctLabelCoolWhite;
+
   /// Erreur validation : champ nom vide
   ///
   /// In fr, this message translates to:
@@ -2521,6 +2545,72 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Aucune donnée'**
   String get noData;
+
+  /// Titre de la carte des modèles sur l'écran CCT
+  ///
+  /// In fr, this message translates to:
+  /// **'Modèles'**
+  String get cobLedCctTemplatesTitle;
+
+  /// État vide affiché quand aucune scène n'a été enregistrée
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun modèle. Enregistrez une scène pour la réutiliser.'**
+  String get cobLedCctNoTemplates;
+
+  /// Badge sur la ligne de scène active dans la carte des modèles
+  ///
+  /// In fr, this message translates to:
+  /// **'Actif'**
+  String get cobLedCctTemplateActiveBadge;
+
+  /// Abréviation de vitesse dans la chaîne de paramètres (ex : '50 vit')
+  ///
+  /// In fr, this message translates to:
+  /// **'vit'**
+  String get cobLedCctSpdSuffix;
+
+  /// Étiquette d'axe de température de couleur : côté chaud (2700 K)
+  ///
+  /// In fr, this message translates to:
+  /// **'Chaud'**
+  String get cobLedCctWarm;
+
+  /// Étiquette d'axe de température de couleur : côté froid (6500 K)
+  ///
+  /// In fr, this message translates to:
+  /// **'Froid'**
+  String get cobLedCctCold;
+
+  /// Placeholder dans la carte de scène active quand aucune scène n'est sélectionnée
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun modèle actif'**
+  String get cobLedCctNoActiveTemplate;
+
+  /// Badge inline affiché à côté du nom de la scène active
+  ///
+  /// In fr, this message translates to:
+  /// **'Scène active'**
+  String get cobLedCctSceneActive;
+
+  /// Titre de la feuille de modification d'un modèle existant
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le modèle'**
+  String get cobLedCctUpdateTemplateTitle;
+
+  /// Titre du dialogue de confirmation avant suppression d'un modèle de scène CCT.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer le modèle ?'**
+  String get cobLedCctDeleteSceneTitle;
+
+  /// Corps du dialogue de confirmation avant suppression d'un modèle de scène CCT.
+  ///
+  /// In fr, this message translates to:
+  /// **'« {name} » sera définitivement supprimé.'**
+  String cobLedCctDeleteSceneBody(String name);
 }
 
 class _AppLocalizationsDelegate

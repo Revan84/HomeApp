@@ -8,13 +8,13 @@ import '../../../../domain/entities/equipment.dart';
 import '../../../../domain/entities/live_state.dart';
 import 'card_shared.dart';
 
-class ThermometerCard extends StatelessWidget {
-  const ThermometerCard({
+class PlugCard extends StatelessWidget {
+  const PlugCard({
     super.key,
     required this.equipment,
     required this.liveState,
     required this.onTap,
-    this.onToggle,
+    required this.onToggle,
   });
 
   final Equipment equipment;
@@ -24,66 +24,66 @@ class ThermometerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final temp = liveState?.temperatureC;
-    final humidity = liveState?.humidity;
-    final trendT = liveState?.trendTemperature ?? 0;
+    final isOn = liveState?.output == true;
     final online = liveState?.online ?? false;
-    final isOn = liveState?.output != false;
     final toggling = liveState?.toggling ?? false;
+    final powerW = liveState?.powerW;
+    final energyKwh = liveState != null
+        ? (liveState!.energyWh ?? 0).toDouble() / 1000.0
+        : null;
+    final trend = liveState?.trendPower ?? 0;
     final updatedLabel = ageLabel(context, liveState?.lastUpdatedAt);
 
     return CardShell(
       onTap: onTap,
-      accentColor: AppColors.thermometerAccent,
+      accentColor: AppColors.plugAccent,
       online: online,
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CardHeader(
-            icon: Icons.thermostat_rounded,
+            icon: Icons.bolt_rounded,
             name: equipment.name,
           ),
-          AppSpacing.gapLg,
+          AppSpacing.gapMd,
           const MetaLabel('Live'),
           AppSpacing.gapXxs,
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                temp != null ? '${temp.toStringAsFixed(1)} °C' : '— °C',
-                style: const TextStyle(
+                powerW != null ? '${powerW.toStringAsFixed(0)} W' : '— W',
+                style: TextStyle(
                   fontFamily: 'ShareTech',
-                  color: AppColors.textPrimary,
+                  color: AppColors.plugAccent,
                   fontWeight: FontWeight.w700,
                   fontSize: AppFontSizes.display,
                 ),
               ),
-              if (trendT != 0) ...[
+              if (trend != 0) ...[
                 AppSpacing.gapHXs,
                 Icon(
-                  trendT > 0
+                  trend > 0
                       ? Icons.arrow_upward_rounded
                       : Icons.arrow_downward_rounded,
                   size: 14,
-                  color: trendT > 0 ? Colors.orange : Colors.lightBlueAccent,
+                  color: trend > 0 ? AppColors.success : AppColors.danger,
                 ),
               ],
             ],
           ),
-          if (humidity != null) ...[
-            AppSpacing.gapSm,
-            const MetaLabel('Average'),
-            AppSpacing.gapXxs,
-            Text(
-              '${humidity.toStringAsFixed(0)} %',
-              style: const TextStyle(
-                fontFamily: 'ShareTech',
-                color: AppColors.textPrimary,
-                fontWeight: FontWeight.w600,
-                fontSize: AppFontSizes.md,
-              ),
+          AppSpacing.gapSm,
+          const MetaLabel('Total'),
+          AppSpacing.gapXxs,
+          Text(
+            energyKwh != null ? '${energyKwh.toStringAsFixed(1)} KWH' : '— KWH',
+            style: TextStyle(
+              fontFamily: 'ShareTech',
+              color: AppColors.plugAccent,
+              fontWeight: FontWeight.w600,
+              fontSize: AppFontSizes.display,
             ),
-          ],
+          ),
         ],
       ),
       footer: CardFooter(

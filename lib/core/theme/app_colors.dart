@@ -14,6 +14,9 @@ abstract final class AppColors {
   // ── Borders & dividers ──────────────────────────────────────────────────────
   static const Color border = Color(0xFF7B7B7B);
 
+    // ── Sliders ───────────────────────────────────────────────────────────────
+  static const Color inactiveSlider = Color(0xFF333333);
+
   // ── Text ────────────────────────────────────────────────────────────────────
   static const Color textPrimary = Color(0xFFF8F2F2);
   static const Color textSecondary = Color(0xFF969696);
@@ -30,10 +33,10 @@ abstract final class AppColors {
   static const Color danger = Color(0xFFD76F5D);
 
   // ── Device type accents ─────────────────────────────────────────────────────
-  static const Color plugAccent = Color(0xFF34724B);
-  static const Color thermometerAccent = Color(0xFF23619E);
-  static const Color cobLedRgbAccent = Color(0xFF88233F);
-  static const Color hygrometerAccent = Color(0xFF4B6F88);
-  static const Color tvAccent = Color(0xFF80352A);
-  static const Color cobLedCctAccent = Color(0xFFAC801A);
+  static const Color plugAccent = Color(0xFF94FFBC);
+  static const Color thermometerAccent = Color(0xFF178CFF);
+  static const Color cobLedRgbAccent = Color(0xFFFF00A1);
+  static const Color hygrometerAccent = Color(0xFF74FAFF);
+  static const Color tvAccent = Color(0xFFBF1E06);
+  static const Color cobLedCctAccent = Color(0xFFFF9500);
 }

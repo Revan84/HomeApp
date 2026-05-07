@@ -1806,6 +1806,22 @@
     "@cobLedCctAddTitle": {
         "description": "Titre de la feuille d'ajout LED CCT"
     },
+    "cobLedCctAddDeviceError": "Impossible d'ajouter le contrôleur LED. Vérifiez l'IP et réessayez.",
+    "@cobLedCctAddDeviceError": {
+        "description": "Snackbar affiché si l'ajout du contrôleur LED CCT échoue. Générique — détails dans les logs."
+    },
+    "cctLabelWarmWhite": "Blanc chaud",
+    "@cctLabelWarmWhite": {
+        "description": "Étiquette de température CCT pour la plage blanc chaud (≤ 3000 K)."
+    },
+    "cctLabelNeutralWhite": "Blanc neutre",
+    "@cctLabelNeutralWhite": {
+        "description": "Étiquette de température CCT pour la plage blanc neutre (3000–4500 K)."
+    },
+    "cctLabelCoolWhite": "Blanc froid",
+    "@cctLabelCoolWhite": {
+        "description": "Étiquette de température CCT pour la plage blanc froid (≥ 4500 K)."
+    },
     "validationNameRequired": "Nom requis",
     "@validationNameRequired": {
         "description": "Erreur validation : champ nom vide"
@@ -1834,5 +1850,54 @@
     "noData": "Aucune donnée",
     "@noData": {
         "description": "Placeholder état vide dans les widgets graphique/historique"
+    },
+    "cobLedCctTemplatesTitle": "Modèles",
+    "@cobLedCctTemplatesTitle": {
+        "description": "Titre de la carte des modèles sur l'écran CCT"
+    },
+    "cobLedCctNoTemplates": "Aucun modèle. Enregistrez une scène pour la réutiliser.",
+    "@cobLedCctNoTemplates": {
+        "description": "État vide affiché quand aucune scène n'a été enregistrée"
+    },
+    "cobLedCctTemplateActiveBadge": "Actif",
+    "@cobLedCctTemplateActiveBadge": {
+        "description": "Badge sur la ligne de scène active dans la carte des modèles"
+    },
+    "cobLedCctSpdSuffix": "vit",
+    "@cobLedCctSpdSuffix": {
+        "description": "Abréviation de vitesse dans la chaîne de paramètres (ex : '50 vit')"
+    },
+    "cobLedCctWarm": "Chaud",
+    "@cobLedCctWarm": {
+        "description": "Étiquette d'axe de température de couleur : côté chaud (2700 K)"
+    },
+    "cobLedCctCold": "Froid",
+    "@cobLedCctCold": {
+        "description": "Étiquette d'axe de température de couleur : côté froid (6500 K)"
+    },
+    "cobLedCctNoActiveTemplate": "Aucun modèle actif",
+    "@cobLedCctNoActiveTemplate": {
+        "description": "Placeholder dans la carte de scène active quand aucune scène n'est sélectionnée"
+    },
+    "cobLedCctSceneActive": "Scène active",
+    "@cobLedCctSceneActive": {
+        "description": "Badge inline affiché à côté du nom de la scène active"
+    },
+    "cobLedCctUpdateTemplateTitle": "Modifier le modèle",
+    "@cobLedCctUpdateTemplateTitle": {
+        "description": "Titre de la feuille de modification d'un modèle existant"
+    },
+    "cobLedCctDeleteSceneTitle": "Supprimer le modèle ?",
+    "@cobLedCctDeleteSceneTitle": {
+        "description": "Titre du dialogue de confirmation avant suppression d'un modèle de scène CCT."
+    },
+    "cobLedCctDeleteSceneBody": "« {name} » sera définitivement supprimé.",
+    "@cobLedCctDeleteSceneBody": {
+        "description": "Corps du dialogue de confirmation avant suppression d'un modèle de scène CCT.",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
     }
 }

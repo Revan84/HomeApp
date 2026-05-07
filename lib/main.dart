@@ -24,7 +24,7 @@ import 'data/repositories/equipment_repository_local.dart';
 import 'data/repositories/room_group_repository_local.dart';
 import 'data/repositories/room_repository_local.dart';
 import 'features/integrations/samsung/data/samsung_tv_repository.dart';
-import 'features/integrations/cob_led_cct/data/cob_led_cct_local_repository.dart';
+import 'features/integrations/cob_led_cct/data/local_repository.dart';
 import 'features/integrations/cob_led_rgb/data/cob_led_rgb_local_repository.dart';
 
 import 'features/integrations/shelly/data/shelly_live_device_repository.dart';

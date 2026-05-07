@@ -14,7 +14,7 @@ import '../../../domain/entities/equipment.dart';
 import '../../../domain/entities/live_state.dart';
 import '../../../domain/entities/tv_device.dart';
 
-import '../../devices/cob_led_cct/view/cob_led_cct_detail_screen.dart';
+import '../../devices/cob_led_cct/view/detail_screen.dart';
 import '../../devices/cob_led_rgb/pages/cob_led_rgb_details_page.dart';
 import '../../devices/hygrometer/view/hygrometer_detail_screen.dart';
 import '../../devices/smart_plug/view/smart_plug_detail_screen.dart';

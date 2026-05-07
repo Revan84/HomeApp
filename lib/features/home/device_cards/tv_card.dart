@@ -4,6 +4,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_font_sizes.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/device_accent_scope.dart';
 import 'card_shared.dart';
 
 class TvCard extends StatelessWidget {
@@ -52,49 +53,55 @@ class TvCard extends StatelessWidget {
                   source.isNotEmpty ? source : '—',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'ShareTech',
-                    color: AppColors.textPrimary,
+                    color: AppColors.tvAccent,
                     fontWeight: FontWeight.w700,
                     fontSize: AppFontSizes.display,
                   ),
                 ),
                 AppSpacing.gapMd,
-                GestureDetector(
-                  onTap: onHome,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 5,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.card,
-                      borderRadius: AppRadius.smBR,
-                      border: Border.all(
-                        color: AppColors.border.withValues(alpha: 0.4),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.home_outlined,
-                          size: AppFontSizes.heading,
-                          color: AppColors.textPrimary,
+                Builder(
+                  builder: (ctx) {
+                    final accent = DeviceAccentScope.of(ctx);
+                    return GestureDetector(
+                      onTap: onHome,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 5,
                         ),
-                        AppSpacing.gapHXs,
-                        Text(
-                          'Home',
-                          style: TextStyle(
-                            fontFamily: 'ShareTech',
-                            color: AppColors.textPrimary,
-                            fontSize: AppFontSizes.heading,
-                            fontWeight: FontWeight.w500,
+                        decoration: BoxDecoration(
+                          color: AppColors.bg,
+                          borderRadius: AppRadius.smBR,
+                          border: Border.all(
+                            color: accent.withValues(alpha: 0.45),
+                            width: 0.5,
                           ),
                         ),
-                      ],
-                    ),
-                  ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.home_outlined,
+                              size: AppFontSizes.heading,
+                              color: accent,
+                            ),
+                            AppSpacing.gapHXs,
+                            Text(
+                              'Home',
+                              style: TextStyle(
+                                fontFamily: 'ShareTech',
+                                color: accent,
+                                fontSize: AppFontSizes.heading,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
@@ -128,12 +135,13 @@ class VolumeControl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final accent = DeviceAccentScope.of(context);
     return Container(
       width: 42,
       decoration: BoxDecoration(
         color: AppColors.bg,
         borderRadius: AppRadius.lgBR,
-        border: Border.all(color: AppColors.border, width: 0.5),
+        border: Border.all(color: accent.withValues(alpha: 0.45), width: 0.5),
       ),
       child: ClipRRect(
         borderRadius: AppRadius.xsBR,
@@ -149,12 +157,12 @@ class VolumeControl extends StatelessWidget {
                   child: Icon(
                     Icons.volume_up_rounded,
                     size: AppFontSizes.heading,
-                    color: AppColors.textPrimary,
+                    color: accent,
                   ),
                 ),
               ),
             ),
-            Container(height: 0.5, color: AppColors.border),
+            Container(height: 0.5, color: accent.withValues(alpha: 0.3)),
             GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: onVolumeDown,
@@ -164,7 +172,7 @@ class VolumeControl extends StatelessWidget {
                   child: Icon(
                     Icons.volume_down_rounded,
                     size: AppFontSizes.heading,
-                    color: AppColors.textPrimary,
+                    color: accent,
                   ),
                 ),
               ),

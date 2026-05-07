@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:front_end/core/theme/app_shadows.dart';
 
 import '../../theme/app_colors.dart';
 import '../../theme/app_radius.dart';
@@ -53,6 +54,7 @@ class AppChip extends StatelessWidget {
     this.leading,
     this.trailing,
     this.variant = AppChipVariant.filter,
+    this.accentColor,
   });
 
   final String label;
@@ -67,26 +69,32 @@ class AppChip extends StatelessWidget {
 
   final AppChipVariant variant;
 
+  /// Overrides the primary colour used for the selected state.
+  /// When null, falls back to [AppColors.primary].
+  final Color? accentColor;
+
   @override
   Widget build(BuildContext context) {
     final Color bg;
     final Color fg;
     final Border border;
 
+    final activeColor = accentColor ?? AppColors.primary;
+
     switch (variant) {
       case AppChipVariant.filter:
         bg = AppColors.bg;
-        fg = selected ? AppColors.primary : AppColors.textSecondary;
+        fg = selected ? activeColor : AppColors.textSecondary;
         border = selected
-            ? Border.all(color: AppColors.primary, width: 0.6)
+            ? Border.all(color: activeColor, width: 0.6)
             : Border.all(color: AppColors.border, width: 0.6);
 
       case AppChipVariant.outlined:
         // Fond toujours surface, bordure colorée selon la sélection.
         bg = AppColors.surface;
-        fg = selected ? AppColors.primary : AppColors.textPrimary;
+        fg = selected ? activeColor : AppColors.textPrimary;
         border = Border.all(
-          color: selected ? AppColors.primary : AppColors.border,
+          color: selected ? activeColor : AppColors.border,
           width: 0.6,
         );
 
@@ -101,13 +109,14 @@ class AppChip extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 160),
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.lg,
+          horizontal: AppSpacing.x2l,
           vertical: AppSpacing.md,
         ),
         decoration: BoxDecoration(
           color: bg,
           borderRadius: AppRadius.lgBR,
           border: border,
+          boxShadow: AppShadows.subtle
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,

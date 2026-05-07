@@ -12,7 +12,7 @@ import '../../../domain/repositories/equipment_repository.dart';
 import '../../../domain/repositories/room_repository.dart';
 import '../../../domain/repositories/tv_repository.dart';
 import '../../../domain/repositories/cob_led_rgb_repository.dart';
-import '../../integrations/cob_led_cct/data/cob_led_cct_api_client.dart';
+import '../../integrations/cob_led_cct/data/api_client.dart';
 import '../../integrations/samsung/data/samsung_ws_client.dart';
 import '../../integrations/shelly/data/dto/shelly_device_info_dto.dart';
 import '../../integrations/shelly/data/shelly_rpc_client.dart';
@@ -29,6 +29,11 @@ class EquipmentsController extends ChangeNotifier {
   final LivePollingController _liveController;
   final ShellyRpcClient _rpc;
   final http.Client _httpClient;
+
+  // Why: API clients are stateless and IP-agnostic — keep one instance per
+  // controller instead of allocating one per test tap. Mirrors HomeCctHandler.
+  late final CobLedCctApiClient _cctApi = CobLedCctApiClient(_httpClient);
+  late final CobLedRgbApiClient _rgbApi = CobLedRgbApiClient(_httpClient);
 
   EquipmentsController({
     required EquipmentRepository equipmentRepo,
@@ -204,12 +209,12 @@ class EquipmentsController extends ChangeNotifier {
 
   /// Tests WLED connection. Returns true if reachable.
   Future<bool> testCobLedRgbConnection(String ip) {
-    return CobLedRgbApiClient(_httpClient).testConnection(ip);
+    return _rgbApi.testConnection(ip);
   }
 
   /// Tests COB LED CCT connection. Returns true if reachable.
   Future<bool> testCobLedCctConnection(String ip) {
-    return CobLedCctApiClient(_httpClient).testConnection(ip);
+    return _cctApi.testConnection(ip);
   }
 
   // ---------------------------------------------------------------------------

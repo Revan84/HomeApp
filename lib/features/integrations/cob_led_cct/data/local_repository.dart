@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer' as dev;
 
 import '../../../../core/storage/local_storage.dart';
+import '../../../../core/storage/storage_keys.dart';
 import '../../../../core/utils/id_generator.dart';
 import '../../../../data/dto/cob_led_cct_device_dto.dart';
 import '../../../../data/mappers/cob_led_cct_device_mapper.dart';
@@ -10,10 +11,8 @@ import '../../../../domain/repositories/cob_led_cct_repository.dart';
 
 /// Local-storage implementation of [CobLedCctRepository].
 ///
-/// Devices are persisted as a JSON array under [_storageKey].
+/// Devices are persisted as a JSON array under [StorageKeys.cobLedCctDevices].
 class CobLedCctLocalRepository implements CobLedCctRepository {
-  static const _storageKey = 'cob_led_cct_devices_v1';
-
   final LocalStorage _storage;
   final IdGenerator _idGenerator;
 
@@ -22,7 +21,7 @@ class CobLedCctLocalRepository implements CobLedCctRepository {
 
   @override
   Future<List<CobLedCctDevice>> loadAll() async {
-    final raw = await _storage.getString(_storageKey);
+    final raw = await _storage.getString(StorageKeys.cobLedCctDevices);
     if (raw == null || raw.isEmpty) return [];
 
     try {
@@ -44,7 +43,7 @@ class CobLedCctLocalRepository implements CobLedCctRepository {
           .map((d) => CobLedCctDeviceMapper.fromDomain(d).toMap())
           .toList(),
     );
-    await _storage.setString(_storageKey, json);
+    await _storage.setString(StorageKeys.cobLedCctDevices, json);
   }
 
   @override

@@ -648,7 +648,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String roomDetailUnlinkMessage(String deviceName) {
-    return '\'$deviceName\' sera retiré de cette pièce. L\'équipement ne sera pas supprimé.';
+    return '\'$deviceName\' sera retiré de cette pièce.';
   }
 
   @override
@@ -1313,6 +1313,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String get cobLedCctAddTitle => 'Ajouter une lumière CCT';
 
   @override
+  String get cobLedCctAddDeviceError =>
+      'Impossible d\'ajouter le contrôleur LED. Vérifiez l\'IP et réessayez.';
+
+  @override
+  String get cctLabelWarmWhite => 'Blanc chaud';
+
+  @override
+  String get cctLabelNeutralWhite => 'Blanc neutre';
+
+  @override
+  String get cctLabelCoolWhite => 'Blanc froid';
+
+  @override
   String get validationNameRequired => 'Nom requis';
 
   @override
@@ -1325,4 +1338,40 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get noData => 'Aucune donnée';
+
+  @override
+  String get cobLedCctTemplatesTitle => 'Modèles';
+
+  @override
+  String get cobLedCctNoTemplates =>
+      'Aucun modèle. Enregistrez une scène pour la réutiliser.';
+
+  @override
+  String get cobLedCctTemplateActiveBadge => 'Actif';
+
+  @override
+  String get cobLedCctSpdSuffix => 'vit';
+
+  @override
+  String get cobLedCctWarm => 'Chaud';
+
+  @override
+  String get cobLedCctCold => 'Froid';
+
+  @override
+  String get cobLedCctNoActiveTemplate => 'Aucun modèle actif';
+
+  @override
+  String get cobLedCctSceneActive => 'Scène active';
+
+  @override
+  String get cobLedCctUpdateTemplateTitle => 'Modifier le modèle';
+
+  @override
+  String get cobLedCctDeleteSceneTitle => 'Supprimer le modèle ?';
+
+  @override
+  String cobLedCctDeleteSceneBody(String name) {
+    return '« $name » sera définitivement supprimé.';
+  }
 }

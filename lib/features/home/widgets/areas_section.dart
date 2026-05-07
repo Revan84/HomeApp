@@ -14,6 +14,7 @@ import '../../../domain/entities/equipment.dart';
 import '../../live/controllers/live_polling_controller.dart';
 import '../controllers/home_controller.dart';
 import 'device_cards/cob_led_cct_card.dart';
+import 'device_cards/hygrometer_card.dart';
 import 'device_cards/plug_card.dart';
 import 'device_cards/thermometer_card.dart';
 import 'device_cards/tv_card.dart';
@@ -150,6 +151,13 @@ class _AreasSectionState extends State<AreasSection> {
         onTap: () => widget.onOpenEquipment(eq.id),
       );
     }
+    if (eq.type.isHygrometer) {
+      return HygrometerCard(
+        equipment: eq,
+        liveState: liveCtl.live[eq.id],
+        onTap: () => widget.onOpenEquipment(eq.id),
+      );
+    }
     return PlugCard(
       equipment: eq,
       liveState: eq.type.isPlug ? liveCtl.live[eq.id] : null,
@@ -194,15 +202,15 @@ class _AreasSectionState extends State<AreasSection> {
     final state = homeCtl.cctStateFor(cct.id);
     final isOn = state?.isOn ?? false;
     final brightness = state?.brightness ?? 200;
-    final colorTempK = state?.colorTempK ?? 3000;
     return CobLedCctCard(
       device: cct,
       isOn: isOn,
       brightness: brightness,
-      colorTempK: colorTempK,
       onTap: () => widget.onOpenCobLedCct(cct.id),
       onToggle: () => homeCtl.toggleCobLedCct(cct),
       onBrightnessDrag: (v) => homeCtl.setCobLedCctBrightness(cct, v),
+      onSpeedDown: () => homeCtl.stepCobLedCctSpeed(cct, up: false),
+      onSpeedUp: () => homeCtl.stepCobLedCctSpeed(cct, up: true),
     );
   }
 }

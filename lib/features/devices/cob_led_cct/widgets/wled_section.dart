@@ -5,22 +5,21 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_font_sizes.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../shared/widgets/detail_section_card.dart';
-import 'cob_led_cct_effect_dropdown.dart';
+import 'effect_dropdown.dart';
+import 'gradient_slider.dart';
 
-/// Section card for WLED controls: effect selector, speed slider, audio toggle.
+/// Section card for WLED controls: effect selector and speed slider.
 class CobLedCctWledSection extends StatelessWidget {
   const CobLedCctWledSection({
     super.key,
     required this.effectId,
     required this.effectNames,
     required this.speed,
-    required this.audioReactive,
     required this.accentColor,
     required this.onEffectChanged,
     required this.onSpeedChangeStart,
     required this.onSpeedChanged,
     required this.onSpeedChangeEnd,
-    required this.onAudioChanged,
   });
 
   final int effectId;
@@ -28,14 +27,12 @@ class CobLedCctWledSection extends StatelessWidget {
 
   /// Normalised speed in [0.0 … 1.0].
   final double speed;
-  final bool audioReactive;
   final Color accentColor;
 
   final void Function(int) onEffectChanged;
   final ValueChanged<double> onSpeedChangeStart;
   final ValueChanged<double> onSpeedChanged;
   final ValueChanged<double> onSpeedChangeEnd;
-  final void Function(bool) onAudioChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +41,9 @@ class CobLedCctWledSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Effect',
-            style: TextStyle(
+          Text(
+            context.l10n.cobLedEffectLabel,
+            style: const TextStyle(
               fontFamily: 'ShareTech',
               fontSize: AppFontSizes.body,
               color: AppColors.textSecondary,
@@ -63,9 +60,9 @@ class CobLedCctWledSection extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'Speed',
-                style: TextStyle(
+              Text(
+                context.l10n.cobLedSpeedLabel,
+                style: const TextStyle(
                   fontFamily: 'ShareTech',
                   fontSize: AppFontSizes.body,
                   color: AppColors.textSecondary,
@@ -81,53 +78,14 @@ class CobLedCctWledSection extends StatelessWidget {
               ),
             ],
           ),
-          SliderTheme(
-            data: SliderTheme.of(context).copyWith(
-              activeTrackColor: accentColor,
-              thumbColor: accentColor,
-              inactiveTrackColor: AppColors.border.withValues(alpha: 0.4),
-              overlayColor: accentColor.withValues(alpha: 0.12),
-            ),
-            child: Slider(
-              value: speed,
-              onChangeStart: onSpeedChangeStart,
-              onChanged: onSpeedChanged,
-              onChangeEnd: onSpeedChangeEnd,
-            ),
-          ),
-          AppSpacing.gapMd,
-          Row(
-            children: [
-              const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Audio Reactive',
-                      style: TextStyle(
-                        fontFamily: 'ShareTech',
-                        fontSize: AppFontSizes.body,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    Text(
-                      'React to microphone input',
-                      style: TextStyle(
-                        fontFamily: 'ShareTech',
-                        fontSize: AppFontSizes.xs,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Switch(
-                value: audioReactive,
-                activeTrackColor: accentColor,
-                activeThumbColor: Colors.white,
-                onChanged: onAudioChanged,
-              ),
-            ],
+          CobLedCctAccentSlider(
+            value: speed,
+            accentColor: accentColor,
+            activeTrackColor: accentColor,
+            inactiveTrackColor: AppColors.inactiveSlider,
+            onChangeStart: onSpeedChangeStart,
+            onChanged: onSpeedChanged,
+            onChangeEnd: onSpeedChangeEnd,
           ),
         ],
       ),

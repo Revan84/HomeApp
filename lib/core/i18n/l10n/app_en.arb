@@ -1806,6 +1806,22 @@
     "@cobLedCctAddTitle": {
         "description": "Title of the add CCT LED sheet"
     },
+    "cobLedCctAddDeviceError": "Couldn't add the LED controller. Check the IP and try again.",
+    "@cobLedCctAddDeviceError": {
+        "description": "Snackbar shown when adding a CCT LED controller fails (network/parse/repo). Generic — full error is logged."
+    },
+    "cctLabelWarmWhite": "Warm white",
+    "@cctLabelWarmWhite": {
+        "description": "CCT temperature label for warm white range (≤ 3000 K)."
+    },
+    "cctLabelNeutralWhite": "Neutral white",
+    "@cctLabelNeutralWhite": {
+        "description": "CCT temperature label for neutral white range (3000–4500 K)."
+    },
+    "cctLabelCoolWhite": "Cool white",
+    "@cctLabelCoolWhite": {
+        "description": "CCT temperature label for cool white range (≥ 4500 K)."
+    },
     "validationNameRequired": "Name required",
     "@validationNameRequired": {
         "description": "Validation error: name field is empty"
@@ -1834,5 +1850,54 @@
     "noData": "No data",
     "@noData": {
         "description": "Empty state placeholder in chart/history widgets"
+    },
+    "cobLedCctTemplatesTitle": "Templates",
+    "@cobLedCctTemplatesTitle": {
+        "description": "Templates card heading on the COB LED CCT detail screen"
+    },
+    "cobLedCctNoTemplates": "No templates yet. Save a scene to reuse it later.",
+    "@cobLedCctNoTemplates": {
+        "description": "Empty state shown in the templates card when no scenes have been saved"
+    },
+    "cobLedCctTemplateActiveBadge": "Active",
+    "@cobLedCctTemplateActiveBadge": {
+        "description": "Badge label on the currently active scene row in the templates card"
+    },
+    "cobLedCctSpdSuffix": "spd",
+    "@cobLedCctSpdSuffix": {
+        "description": "Abbreviation for speed shown in the scene params string (e.g. '50 spd')"
+    },
+    "cobLedCctWarm": "Warm",
+    "@cobLedCctWarm": {
+        "description": "Colour temperature axis label: warm end (2700 K)"
+    },
+    "cobLedCctCold": "Cold",
+    "@cobLedCctCold": {
+        "description": "Colour temperature axis label: cold end (6500 K)"
+    },
+    "cobLedCctNoActiveTemplate": "No active template",
+    "@cobLedCctNoActiveTemplate": {
+        "description": "Placeholder shown in the active scene card when no scene is selected"
+    },
+    "cobLedCctSceneActive": "Scene active",
+    "@cobLedCctSceneActive": {
+        "description": "Inline badge shown next to the active scene name"
+    },
+    "cobLedCctUpdateTemplateTitle": "Update template",
+    "@cobLedCctUpdateTemplateTitle": {
+        "description": "Bottom-sheet title when editing an existing template"
+    },
+    "cobLedCctDeleteSceneTitle": "Delete template?",
+    "@cobLedCctDeleteSceneTitle": {
+        "description": "Title of the confirmation dialog shown before removing a saved CCT scene template."
+    },
+    "cobLedCctDeleteSceneBody": "\"{name}\" will be permanently removed.",
+    "@cobLedCctDeleteSceneBody": {
+        "description": "Body of the confirmation dialog shown before removing a saved CCT scene template.",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
     }
 }

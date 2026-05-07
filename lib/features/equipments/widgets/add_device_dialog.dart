@@ -123,6 +123,7 @@ class _AddDeviceDialogState extends State<AddDeviceDialog> {
   Future<void> _testConnection() async {
     if (!_formKey.currentState!.validate()) return;
     final ctrl = context.read<EquipmentsController>();
+    final ip = _ipCtrl.text.trim();
     setState(() {
       _testing = true;
       _testOk = false;
@@ -130,12 +131,34 @@ class _AddDeviceDialogState extends State<AddDeviceDialog> {
       _deviceInfo = null;
     });
     try {
-      final info = await ctrl.testShellyConnection(_ipCtrl.text.trim());
-      if (!mounted) return;
-      setState(() {
-        _testOk = true;
-        if (_kind == _DeviceKind.smartPlug) _deviceInfo = info;
-      });
+      switch (_kind!) {
+        case _DeviceKind.cobLedCct:
+          final ok = await ctrl.testCobLedCctConnection(ip);
+          if (!mounted) return;
+          if (ok) {
+            setState(() => _testOk = true);
+          } else {
+            setState(() =>
+                _testError = context.l10n.connectionFailedDetail('unreachable'));
+          }
+        case _DeviceKind.cobLedRgb:
+          final ok = await ctrl.testCobLedRgbConnection(ip);
+          if (!mounted) return;
+          if (ok) {
+            setState(() => _testOk = true);
+          } else {
+            setState(() =>
+                _testError = context.l10n.connectionFailedDetail('unreachable'));
+          }
+        default:
+          // Shelly-based devices (smartPlug, thermometer, hygrometer)
+          final info = await ctrl.testShellyConnection(ip);
+          if (!mounted) return;
+          setState(() {
+            _testOk = true;
+            if (_kind == _DeviceKind.smartPlug) _deviceInfo = info;
+          });
+      }
     } catch (e) {
       if (!mounted) return;
       setState(() => _testError = context.l10n.connectionFailedDetail(e.toString()));

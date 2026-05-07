@@ -28,12 +28,12 @@ class MiniToggle extends StatelessWidget {
   final VoidCallback? onTap;
 
   static const _duration = Duration(milliseconds: 280);
-  static const _curve    = Curves.easeInOutCubic;
+  static const _curve = Curves.easeInOutCubic;
 
   @override
   Widget build(BuildContext context) {
     final enabled = onTap != null && !loading;
-    final accent  = DeviceAccentScope.of(context);
+    final accent = DeviceAccentScope.of(context);
 
     return GestureDetector(
       onTap: enabled
@@ -52,10 +52,7 @@ class MiniToggle extends StatelessWidget {
           height: 26,
           decoration: BoxDecoration(
             borderRadius: AppRadius.pillBR,
-            border: Border.all(
-              color: isOn ? Colors.white : AppColors.border,
-              width: 0.5,
-            ),
+            border: Border.all(color: accent, width: 0.4),
           ),
           // ClipRRect keeps the gradient overlay clipped to the pill shape.
           child: ClipRRect(
@@ -91,7 +88,7 @@ class MiniToggle extends StatelessWidget {
                 // ── Layer 3: content (thumb + optional dash / loader) ─────────
                 Padding(
                   padding: const EdgeInsets.all(3),
-                  child: loading ? _buildLoader() : _buildContent(),
+                  child: loading ? _buildLoader() : _buildContent(context),
                 ),
               ],
             ),
@@ -111,7 +108,7 @@ class MiniToggle extends StatelessWidget {
     );
   }
 
-  Widget _buildContent() {
+  Widget _buildContent(BuildContext context) {
     return Stack(
       children: [
         // Dash indicator — visible when OFF, aligned right
@@ -149,10 +146,7 @@ class MiniToggle extends StatelessWidget {
                 : BoxDecoration(
                     shape: BoxShape.circle,
                     color: AppColors.bg.withValues(alpha: 0.2),
-                    border: Border.all(
-                      color: AppColors.border,
-                      width: 0.5,
-                    ),
+                    border: Border.all(color: DeviceAccentScope.of(context), width: 0.5),
                   ),
           ),
         ),

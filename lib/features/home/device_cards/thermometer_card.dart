@@ -3,18 +3,19 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_font_sizes.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/device_accent_scope.dart';
 import '../../../../core/utils/time_label.dart';
 import '../../../../domain/entities/equipment.dart';
 import '../../../../domain/entities/live_state.dart';
 import 'card_shared.dart';
 
-class PlugCard extends StatelessWidget {
-  const PlugCard({
+class ThermometerCard extends StatelessWidget {
+  const ThermometerCard({
     super.key,
     required this.equipment,
     required this.liveState,
     required this.onTap,
-    required this.onToggle,
+    this.onToggle,
   });
 
   final Equipment equipment;
@@ -24,66 +25,66 @@ class PlugCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isOn = liveState?.output == true;
+    final temp = liveState?.temperatureC;
+    final humidity = liveState?.humidity;
+    final trendT = liveState?.trendTemperature ?? 0;
     final online = liveState?.online ?? false;
+    final isOn = liveState?.output != false;
     final toggling = liveState?.toggling ?? false;
-    final powerW = liveState?.powerW;
-    final energyKwh = liveState != null
-        ? (liveState!.energyWh ?? 0).toDouble() / 1000.0
-        : null;
-    final trend = liveState?.trendPower ?? 0;
     final updatedLabel = ageLabel(context, liveState?.lastUpdatedAt);
 
     return CardShell(
       onTap: onTap,
-      accentColor: AppColors.plugAccent,
+      accentColor: AppColors.thermometerAccent,
       online: online,
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CardHeader(
-            icon: Icons.bolt_rounded,
+            icon: Icons.thermostat_rounded,
             name: equipment.name,
           ),
-          AppSpacing.gapMd,
+          AppSpacing.gapLg,
           const MetaLabel('Live'),
           AppSpacing.gapXxs,
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                powerW != null ? '${powerW.toStringAsFixed(0)} W' : '— W',
-                style: const TextStyle(
+                temp != null ? '${temp.toStringAsFixed(1)} °C' : '— °C',
+                style: TextStyle(
                   fontFamily: 'ShareTech',
-                  color: AppColors.textPrimary,
+                  color: AppColors.thermometerAccent,
                   fontWeight: FontWeight.w700,
                   fontSize: AppFontSizes.display,
                 ),
               ),
-              if (trend != 0) ...[
+              if (trendT != 0) ...[
                 AppSpacing.gapHXs,
                 Icon(
-                  trend > 0
+                  trendT > 0
                       ? Icons.arrow_upward_rounded
                       : Icons.arrow_downward_rounded,
                   size: 14,
-                  color: trend > 0 ? AppColors.success : AppColors.danger,
+                  color: trendT > 0 ? Colors.orange : Colors.lightBlueAccent,
                 ),
               ],
             ],
           ),
-          AppSpacing.gapSm,
-          const MetaLabel('Total'),
-          AppSpacing.gapXxs,
-          Text(
-            energyKwh != null ? '${energyKwh.toStringAsFixed(1)} KWH' : '— KWH',
-            style: const TextStyle(
-              fontFamily: 'ShareTech',
-              color: AppColors.textPrimary,
-              fontWeight: FontWeight.w600,
-              fontSize: AppFontSizes.display,
+          if (humidity != null) ...[
+            AppSpacing.gapSm,
+            const MetaLabel('Average'),
+            AppSpacing.gapXxs,
+            Text(
+              '${humidity.toStringAsFixed(0)} %',
+              style: TextStyle(
+                fontFamily: 'ShareTech',
+                color: DeviceAccentScope.of(context),
+                fontWeight: FontWeight.w600,
+                fontSize: AppFontSizes.md,
+              ),
             ),
-          ),
+          ],
         ],
       ),
       footer: CardFooter(

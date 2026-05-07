@@ -648,7 +648,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String roomDetailUnlinkMessage(String deviceName) {
-    return '\'$deviceName\' will be removed from this room. The device will not be deleted.';
+    return '\'$deviceName\' will be removed from this room.';
   }
 
   @override
@@ -1312,6 +1312,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cobLedCctAddTitle => 'Add CCT LED Light';
 
   @override
+  String get cobLedCctAddDeviceError =>
+      'Couldn\'t add the LED controller. Check the IP and try again.';
+
+  @override
+  String get cctLabelWarmWhite => 'Warm white';
+
+  @override
+  String get cctLabelNeutralWhite => 'Neutral white';
+
+  @override
+  String get cctLabelCoolWhite => 'Cool white';
+
+  @override
   String get validationNameRequired => 'Name required';
 
   @override
@@ -1324,4 +1337,40 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noData => 'No data';
+
+  @override
+  String get cobLedCctTemplatesTitle => 'Templates';
+
+  @override
+  String get cobLedCctNoTemplates =>
+      'No templates yet. Save a scene to reuse it later.';
+
+  @override
+  String get cobLedCctTemplateActiveBadge => 'Active';
+
+  @override
+  String get cobLedCctSpdSuffix => 'spd';
+
+  @override
+  String get cobLedCctWarm => 'Warm';
+
+  @override
+  String get cobLedCctCold => 'Cold';
+
+  @override
+  String get cobLedCctNoActiveTemplate => 'No active template';
+
+  @override
+  String get cobLedCctSceneActive => 'Scene active';
+
+  @override
+  String get cobLedCctUpdateTemplateTitle => 'Update template';
+
+  @override
+  String get cobLedCctDeleteSceneTitle => 'Delete template?';
+
+  @override
+  String cobLedCctDeleteSceneBody(String name) {
+    return '\"$name\" will be permanently removed.';
+  }
 }

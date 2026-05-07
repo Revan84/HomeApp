@@ -24,7 +24,7 @@ import '../../../domain/repositories/room_repository.dart';
 import '../../../domain/repositories/tv_repository.dart';
 import '../../../domain/repositories/cob_led_rgb_repository.dart';
 import '../../integrations/cob_led_rgb/data/cob_led_rgb_api_client.dart' show CobLedRgbState;
-import '../../integrations/cob_led_cct/data/cob_led_cct_api_client.dart' show CctDeviceState;
+import '../../integrations/cob_led_cct/data/api_client.dart' show CctDeviceState;
 import '../../live/controllers/live_polling_controller.dart';
 import '../domain/today_widget_type.dart';
 import 'home_cct_handler.dart';
@@ -397,6 +397,8 @@ class HomeController extends ChangeNotifier {
 
   Future<void> toggleCobLedCct(CobLedCctDevice device) => _cct.toggle(device);
   Future<void> setCobLedCctBrightness(CobLedCctDevice device, double v) => _cct.setBrightness(device, v);
+  Future<void> stepCobLedCctSpeed(CobLedCctDevice device, {required bool up}) =>
+      _cct.stepSpeed(device, up: up);
 
   Future<void> sendTvCommand(TvDevice device, TvRemoteCommand cmd) => _tv.sendCommand(device, cmd);
 

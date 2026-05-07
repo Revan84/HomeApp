@@ -35,9 +35,9 @@ Future<String?> showDeviceRoomPicker(
 
   return showModalBottomSheet<String>(
     context: context,
-    backgroundColor: AppColors.card,
+    backgroundColor: AppColors.surface,
     shape: const RoundedRectangleBorder(borderRadius: AppRadius.sheetTopBR),
-    builder: (_) => SafeArea(
+    builder: (sheetCtx) => SafeArea(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -64,7 +64,7 @@ Future<String?> showDeviceRoomPicker(
             trailing: currentRoomId == null
                 ? Icon(Icons.check, color: accent, size: 18)
                 : null,
-            onTap: () => (),//Navigator.pop(_, roomPickerNoneSentinel),
+            onTap: () => Navigator.pop(sheetCtx, roomPickerNoneSentinel),
           ),
           if (rooms.isNotEmpty)
             const Divider(height: 1, color: AppColors.border),
@@ -80,7 +80,7 @@ Future<String?> showDeviceRoomPicker(
               trailing: r.id == currentRoomId
                   ? Icon(Icons.check, color: accent, size: 18)
                   : null,
-              onTap: () => (),//Navigator.pop(_, r.id),
+              onTap: () => Navigator.pop(sheetCtx, r.id),
             ),
           ),
           AppSpacing.gapMd,

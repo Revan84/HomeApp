@@ -5,7 +5,7 @@ import '../../../../core/device/base_device_controller.dart';
 import '../../../../domain/entities/cct_scene.dart';
 import '../../../../domain/entities/cob_led_cct_device.dart';
 import '../../../../domain/repositories/cob_led_cct_repository.dart';
-import '../../../integrations/cob_led_cct/data/cob_led_cct_api_client.dart';
+import '../../../integrations/cob_led_cct/data/api_client.dart';
 
 /// Controller for the COB LED CCT device detail screen.
 ///
@@ -20,15 +20,20 @@ class CobLedCctController extends BaseDeviceController {
   List<String> _effectNames = const [];
   bool _isReachable = false;
 
+  // Why: BaseDeviceController._disposed is private; we need our own flag to
+  // guard fire-and-forget IO writes from the init() async chain.
+  bool _disposed = false;
+
   CobLedCctController({
     required CobLedCctRepository repo,
     required super.roomRepo,
     required http.Client httpClient,
     CobLedCctDevice? initialDevice,
-  })  : _repo = repo,
-        _api = CobLedCctApiClient(httpClient),
-        _device = initialDevice ??
-            const CobLedCctDevice(id: '', name: '', ipAddress: '') {
+  }) : _repo = repo,
+       _api = CobLedCctApiClient(httpClient),
+       _device =
+           initialDevice ??
+           const CobLedCctDevice(id: '', name: '', ipAddress: '') {
     Future.microtask(() => init(_device.id));
   }
 
@@ -52,15 +57,26 @@ class CobLedCctController extends BaseDeviceController {
       if (loaded != null) _device = loaded;
     }
 
-    await Future.wait([
-      loadRooms(),
-      _fetchState(),
-    ]);
+    await Future.wait([loadRooms(), _fetchState()]);
 
-    // Load effect names in background — don't block the screen render.
+    // Load effect names and device info in background — don't block render.
     _api.getEffects(_device.ipAddress).then((effects) {
+      // Why: avoid notify() / state mutation after dispose.
+      if (_disposed) return;
       _effectNames = effects;
       notify();
+    });
+
+    _api.getInfo(_device.ipAddress).then((model) async {
+      // Why: avoid repo write + notify() after dispose.
+      if (_disposed) return;
+      if (model != null && model != _device.modelName) {
+        final updated = _device.copyWith(modelName: model);
+        await _repo.update(updated);
+        if (_disposed) return;
+        _device = updated;
+        notify();
+      }
     });
 
     notify();
@@ -108,7 +124,15 @@ class CobLedCctController extends BaseDeviceController {
     final ct = (minK + (value.clamp(0.0, 1.0) * (maxK - minK))).round();
     _cctState = _cctState.copyWith(colorTempK: ct);
     notify();
-    await _api.setColorTemp(_device.ipAddress, ct);
+    // Use setFullSegment so we don't clobber the active effect/speed with a
+    // separate seg[] write, and to cover all WLED CCT field-name variants.
+    final cct = ((ct - 2700) / (6500 - 2700) * 255).round().clamp(0, 255);
+    await _api.setFullSegment(
+      _device.ipAddress,
+      cct: cct,
+      effectId: _cctState.effectId,
+      speed: _cctState.effectSpeed,
+    );
   }
 
   // ── WLED Controls ────────────────────────────────────────────────────────────
@@ -117,8 +141,11 @@ class CobLedCctController extends BaseDeviceController {
   Future<void> setEffect(int effectId) async {
     _cctState = _cctState.copyWith(effectId: effectId);
     notify();
-    await _api.setEffect(_device.ipAddress, effectId,
-        speed: _cctState.effectSpeed);
+    await _api.setEffect(
+      _device.ipAddress,
+      effectId,
+      speed: _cctState.effectSpeed,
+    );
   }
 
   /// Sets effect speed from a normalised [value] in 0.0–1.0.
@@ -129,15 +156,14 @@ class CobLedCctController extends BaseDeviceController {
     await _api.setEffect(_device.ipAddress, _cctState.effectId, speed: speed);
   }
 
-  Future<void> setAudio(bool enabled) async {
-    _cctState = _cctState.copyWith(audioReactive: enabled);
-    notify();
-    await _api.setAudio(_device.ipAddress, enabled: enabled);
-  }
-
   // ── Scene / Template management ──────────────────────────────────────────────
 
-  /// Applies [scene] to the device (brightness + colour temperature).
+  /// Applies [scene] to the device.
+  ///
+  /// Sequenced as 2 sequential PATCHes (CCT+effect+speed first, brightness
+  /// second) instead of 3 parallel ones. Why: parallel writes had undefined
+  /// ordering on the device and could flash an intermediate frame between the
+  /// old colour/effect and the new brightness.
   Future<void> applyScene(CctScene scene) async {
     final updated = _device.copyWith(activeSceneId: scene.id);
     await _repo.update(updated);
@@ -145,44 +171,71 @@ class CobLedCctController extends BaseDeviceController {
     _cctState = _cctState.copyWith(
       brightness: scene.brightness,
       colorTempK: scene.colorTempK,
+      effectId: scene.effectId,
+      effectSpeed: scene.effectSpeed,
     );
     notify();
-    await Future.wait([
-      _api.setBrightness(_device.ipAddress, scene.brightness),
-      _api.setColorTemp(_device.ipAddress, scene.colorTempK),
-    ]);
-  }
-
-  /// Adds a new scene with [name], current brightness and colour temperature.
-  Future<void> addScene(String name) async {
-    final scene = CctScene(
-      id: DateTime.now().microsecondsSinceEpoch.toString(),
-      name: name,
-      colorTempK: _cctState.colorTempK,
-      brightness: _cctState.brightness,
+    final cct = ((scene.colorTempK - 2700) / (6500 - 2700) * 255)
+        .round()
+        .clamp(0, 255);
+    await _api.setFullSegment(
+      _device.ipAddress,
+      cct: cct,
+      effectId: scene.effectId,
+      speed: scene.effectSpeed,
     );
-    final updated = _device.copyWith(scenes: [..._device.scenes, scene]);
-    await _repo.update(updated);
-    _device = updated;
-    notify();
+    await _api.setBrightness(_device.ipAddress, scene.brightness);
   }
 
-  /// Adds a new scene with explicit values (used by the "save as scene" dialog).
+  /// Adds a new scene capturing all five parameters.
   Future<void> addSceneWithValues({
     required String name,
     required int colorTempK,
     required int brightness,
+    required int effectId,
+    required int effectSpeed,
   }) async {
     final scene = CctScene(
       id: DateTime.now().microsecondsSinceEpoch.toString(),
       name: name,
       colorTempK: colorTempK,
       brightness: brightness,
+      effectId: effectId,
+      effectSpeed: effectSpeed,
     );
     final updated = _device.copyWith(scenes: [..._device.scenes, scene]);
     await _repo.update(updated);
     _device = updated;
     notify();
+  }
+
+  /// Overwrites an existing scene (used when editing an active template).
+  Future<void> updateScene(CctScene scene) async {
+    final nextScenes = _device.scenes
+        .map((s) => s.id == scene.id ? scene : s)
+        .toList();
+    final updated = _device.copyWith(scenes: nextScenes);
+    await _repo.update(updated);
+    _device = updated;
+    notify();
+  }
+
+  /// If a template is currently active, overwrites it with the current device
+  /// state.  Called automatically after the user finishes adjusting any
+  /// parameter while a template is selected.
+  Future<void> saveActiveSceneSnapshot() async {
+    final activeId = _device.activeSceneId;
+    if (activeId.isEmpty) return;
+    final idx = _device.scenes.indexWhere((s) => s.id == activeId);
+    if (idx < 0) return;
+    await updateScene(
+      _device.scenes[idx].copyWith(
+        colorTempK: _cctState.colorTempK,
+        brightness: _cctState.brightness,
+        effectId: _cctState.effectId,
+        effectSpeed: _cctState.effectSpeed,
+      ),
+    );
   }
 
   /// Removes a scene by [sceneId].
@@ -232,5 +285,11 @@ class CobLedCctController extends BaseDeviceController {
 
   Future<void> delete() async {
     await _repo.deleteById(_device.id);
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
   }
 }
