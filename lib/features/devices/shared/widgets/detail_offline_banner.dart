@@ -30,7 +30,6 @@ class DetailOfflineBanner extends StatelessWidget {
         Text(
           label,
           style: const TextStyle(
-            fontFamily: 'ShareTech',
             fontSize: AppFontSizes.sm,
             color: AppColors.danger,
           ),

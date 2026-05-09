@@ -49,7 +49,6 @@ class CobLedRgbActivePresetSection extends StatelessWidget {
               Text(
                 context.l10n.cobLedSectionActiveScene,
                 style: const TextStyle(
-                  fontFamily: 'ShareTech',
                   fontWeight: FontWeight.w600,
                   fontSize: AppFontSizes.sectionTitle,
                   color: AppColors.textPrimary,
@@ -62,7 +61,6 @@ class CobLedRgbActivePresetSection extends StatelessWidget {
             Text(
               activePreset.name,
               style: const TextStyle(
-                fontFamily: 'ShareTech',
                 fontWeight: FontWeight.w700,
                 fontSize: 20,
                 color: AppColors.textPrimary,
@@ -72,7 +70,6 @@ class CobLedRgbActivePresetSection extends StatelessWidget {
             Text(
               context.l10n.cobLedNoActiveScene,
               style: const TextStyle(
-                fontFamily: 'ShareTech',
                 fontSize: AppFontSizes.body,
                 color: AppColors.textSecondary,
               ),
@@ -107,7 +104,6 @@ class CobLedRgbActivePresetSection extends StatelessWidget {
                       child: Text(
                         preset.name,
                         style: TextStyle(
-                          fontFamily: 'ShareTech',
                           fontSize: 12,
                           color: isActive
                               ? accentColor

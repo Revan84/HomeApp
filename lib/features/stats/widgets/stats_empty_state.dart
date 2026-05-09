@@ -37,7 +37,6 @@ class StatsEmptyState extends StatelessWidget {
               context.l10n.statsNoWidgets,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                fontFamily: 'ShareTech',
                 fontSize: AppFontSizes.lg,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimary,
@@ -48,7 +47,6 @@ class StatsEmptyState extends StatelessWidget {
               context.l10n.statsEmptyHint,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                fontFamily: 'ShareTech',
                 fontSize: 12.0,
                 color: AppColors.textSecondary,
               ),

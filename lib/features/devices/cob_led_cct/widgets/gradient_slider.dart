@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 // future grep links the two files.
 const _kCctWarmAmber = Color(0xFFFF9F00);   // 2700 K
 const _kCctCoolWhite = Color(0xFFE8F4FF);   // 6500 K
+const _kCctOverlay   = Color(0xFFDBA528);   // thumb overlay / border tint
 
 class CobLedCctGradientSlider extends StatelessWidget {
   const CobLedCctGradientSlider({
@@ -41,7 +42,7 @@ class CobLedCctGradientSlider extends StatelessWidget {
         inactiveTrackColor: _kCctCoolWhite,
         thumbColor: Colors.white,
         thumbShape: const _BorderedThumbShape(radius: 11),
-        overlayColor: const Color(0xFFDBA528),
+        overlayColor: _kCctOverlay,
         overlayShape: const RoundSliderOverlayShape(overlayRadius: 12),
       ),
       child: Slider(
@@ -59,7 +60,7 @@ class CobLedCctGradientSlider extends StatelessWidget {
 class _BorderedThumbShape extends SliderComponentShape {
   const _BorderedThumbShape({
     this.radius = 11,
-    this.borderColor = const Color(0xFFDBA528),
+    this.borderColor = _kCctOverlay,
   });
 
   final double radius;

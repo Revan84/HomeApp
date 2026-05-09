@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_font_sizes.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/theme/device_accent_scope.dart';
-import '../../../../core/utils/time_label.dart';
-import '../../../../domain/entities/equipment.dart';
-import '../../../../domain/entities/live_state.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_font_sizes.dart';
+import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/device_accent_scope.dart';
+import '../../../core/utils/time_label.dart';
+import '../../../domain/entities/equipment.dart';
+import '../../../domain/entities/live_state.dart';
 import 'card_shared.dart';
 
 class HygrometerCard extends StatelessWidget {
@@ -49,7 +49,6 @@ class HygrometerCard extends StatelessWidget {
           Text(
             humidity != null ? '${humidity.toStringAsFixed(0)} %' : '— %',
             style: TextStyle(
-              fontFamily: 'ShareTech',
               color: AppColors.hygrometerAccent,
               fontWeight: FontWeight.w700,
               fontSize: AppFontSizes.display,
@@ -62,7 +61,6 @@ class HygrometerCard extends StatelessWidget {
             Text(
               '${temp.toStringAsFixed(1)} °C',
               style: TextStyle(
-                fontFamily: 'ShareTech',
                 color: DeviceAccentScope.of(context),
                 fontWeight: FontWeight.w600,
                 fontSize: AppFontSizes.md,

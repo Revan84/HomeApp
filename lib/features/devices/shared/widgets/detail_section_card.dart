@@ -27,7 +27,6 @@ class DetailSectionCard extends StatelessWidget {
           Text(
             title,
             style: const TextStyle(
-              fontFamily: 'ShareTech',
               fontWeight: FontWeight.w600,
               fontSize: AppFontSizes.sectionTitle,
               color: AppColors.textPrimary,

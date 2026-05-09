@@ -142,7 +142,7 @@ class TvRemoteWidget extends StatelessWidget {
               onPressed: () => onCommand(TvRemoteCommand.enter),
               child: const Text(
                 'OK',
-                style: TextStyle(fontFamily: 'ShareTech', fontWeight: FontWeight.bold, fontSize: AppFontSizes.md),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: AppFontSizes.md),
               ),
             ),
           ),
@@ -249,7 +249,6 @@ class _SideButton extends StatelessWidget {
               Text(
                 label,
                 style: const TextStyle(
-                  fontFamily: 'ShareTech',
                   color: AppColors.textSecondary,
                   fontSize: AppFontSizes.body,
                 ),

@@ -189,14 +189,13 @@ class _TvVoiceInputSheetState extends State<TvVoiceInputSheet>
           if (_error.isNotEmpty)
             Text(
               l.tvVoiceError,
-              style: const TextStyle(fontFamily: 'ShareTech', color: AppColors.danger, fontSize: AppFontSizes.body),
+              style: const TextStyle(color: AppColors.danger, fontSize: AppFontSizes.body),
               textAlign: TextAlign.center,
             )
           else if (_transcript.isNotEmpty)
             Text(
               _transcript,
               style: const TextStyle(
-                fontFamily: 'ShareTech',
                 color: AppColors.textPrimary,
                 fontSize: AppFontSizes.heading,
                 fontWeight: FontWeight.w600,
@@ -207,7 +206,6 @@ class _TvVoiceInputSheetState extends State<TvVoiceInputSheet>
             Text(
               _listening ? l.tvVoiceListening : l.tvVoiceTap,
               style: const TextStyle(
-                fontFamily: 'ShareTech',
                 color: AppColors.textSecondary,
                 fontSize: AppFontSizes.md,
               ),
@@ -224,7 +222,7 @@ class _TvVoiceInputSheetState extends State<TvVoiceInputSheet>
                 onPressed: () => Navigator.of(context).pop(),
                 child: Text(
                   l.cancel,
-                  style: const TextStyle(fontFamily: 'ShareTech', color: AppColors.textSecondary),
+                  style: const TextStyle(color: AppColors.textSecondary),
                 ),
               ),
               if (_transcript.isNotEmpty) ...[

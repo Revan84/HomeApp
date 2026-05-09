@@ -66,7 +66,6 @@ class _TodayManageSheetState extends State<TodayManageSheet> {
                 const Text(
                   'Today Widgets',
                   style: TextStyle(
-                    fontFamily: 'ShareTech',
                     color: AppColors.textPrimary,
                     fontWeight: FontWeight.w700,
                     fontSize: AppFontSizes.sectionTitle,
@@ -107,7 +106,6 @@ class _TodayManageSheetState extends State<TodayManageSheet> {
             const Text(
               'Electricity price (€/kWh)',
               style: TextStyle(
-                fontFamily: 'ShareTech',
                 color: AppColors.textSecondary,
                 fontSize: AppFontSizes.body,
               ),
@@ -121,7 +119,6 @@ class _TodayManageSheetState extends State<TodayManageSheet> {
                 FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
               ],
               style: const TextStyle(
-                fontFamily: 'ShareTech',
                 color: AppColors.textPrimary,
                 fontSize: AppFontSizes.lg,
               ),
@@ -130,7 +127,6 @@ class _TodayManageSheetState extends State<TodayManageSheet> {
                 fillColor: AppColors.bg,
                 suffixText: '€/kWh',
                 suffixStyle: const TextStyle(
-                  fontFamily: 'ShareTech',
                   color: AppColors.textSecondary,
                   fontSize: AppFontSizes.body,
                 ),
@@ -168,7 +164,7 @@ class _TodayManageSheetState extends State<TodayManageSheet> {
                 onPressed: _save,
                 child: const Text(
                   'Save',
-                  style: TextStyle(fontFamily: 'ShareTech', fontWeight: FontWeight.w700),
+                  style: TextStyle(fontWeight: FontWeight.w700),
                 ),
               ),
             ),
@@ -199,7 +195,6 @@ class _ToggleRow extends StatelessWidget {
           Text(
             label,
             style: const TextStyle(
-              fontFamily: 'ShareTech',
               color: AppColors.textPrimary,
               fontSize: AppFontSizes.md,
             ),

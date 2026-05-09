@@ -66,7 +66,7 @@ class SmartPlugKpiCard extends StatelessWidget {
     final l10n = context.l10n;
     final accent = DeviceAccentScope.of(context);
     final valueColor = isOffline ? AppColors.textSecondary : accent;
-    final costColor = isOffline ? AppColors.textSecondary : const Color(0xFFF0B429);
+    final costColor = isOffline ? AppColors.textSecondary : AppColors.cost;
     // Rising = red (costs more), falling = accent (saving power), offline = grey.
     final arrowColor = isOffline
         ? AppColors.textSecondary
@@ -84,7 +84,6 @@ class SmartPlugKpiCard extends StatelessWidget {
               Text(
                 '${live.watts} ${l10n.smartPlugKpiUnit}',
                 style: TextStyle(
-                  fontFamily: 'ShareTech',
                   fontWeight: FontWeight.bold,
                   fontSize: 28,
                   color: valueColor,
@@ -107,7 +106,6 @@ class SmartPlugKpiCard extends StatelessWidget {
               Text(
                 l10n.smartPlugCostPerHour(live.costPerHour),
                 style: TextStyle(
-                  fontFamily: 'ShareTech',
                   fontSize: AppFontSizes.body,
                   color: costColor,
                 ),
@@ -122,7 +120,6 @@ class SmartPlugKpiCard extends StatelessWidget {
                     Text(
                       '${kwhPrice.toStringAsFixed(2)} €/kWh',
                       style: const TextStyle(
-                        fontFamily: 'ShareTech',
                         fontSize: AppFontSizes.xs,
                         color: AppColors.textSecondary,
                       ),
@@ -145,7 +142,6 @@ class SmartPlugKpiCard extends StatelessWidget {
               Text(
                 l10n.smartPlugCostToday(live.costToday),
                 style: TextStyle(
-                  fontFamily: 'ShareTech',
                   fontSize: AppFontSizes.sm,
                   color: costColor,
                 ),
@@ -154,7 +150,6 @@ class SmartPlugKpiCard extends StatelessWidget {
               Text(
                 l10n.smartPlugKwhCumulated(live.kwhCumulated),
                 style: const TextStyle(
-                  fontFamily: 'ShareTech',
                   fontSize: AppFontSizes.sm,
                   color: AppColors.textSecondary,
                 ),

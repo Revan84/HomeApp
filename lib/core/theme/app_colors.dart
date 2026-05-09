@@ -39,4 +39,12 @@ abstract final class AppColors {
   static const Color hygrometerAccent = Color(0xFF74FAFF);
   static const Color tvAccent = Color(0xFFBF1E06);
   static const Color cobLedCctAccent = Color(0xFFFF9500);
+
+  // ── Charts ──────────────────────────────────────────────────────────────────
+  /// Primary chart series — used by stats line/bar charts.
+  static const Color chartPrimary = Color(0xFF4FC3F7);
+
+  // ── Cost / energy accents ───────────────────────────────────────────────────
+  /// Energy cost highlight — used on smart plug KPI cards.
+  static const Color cost = Color(0xFFF0B429);
 }

@@ -463,7 +463,6 @@ class _FavoritesPageState extends State<FavoritesPage> {
         title: Text(
           context.l10n.favoritesPageTitle,
           style: const TextStyle(
-            fontFamily: 'ShareTech',
             fontWeight: FontWeight.w600,
             fontSize: AppFontSizes.heading,
             color: AppColors.textPrimary,
@@ -493,7 +492,6 @@ class _FavoritesPageState extends State<FavoritesPage> {
                 '$onlineCount / $totalCount online'
                 '${roomsWithDevices > 0 ? ' · $roomsWithDevices rooms' : ''}',
                 style: const TextStyle(
-                  fontFamily: 'ShareTech',
                   fontSize: AppFontSizes.sm,
                   color: AppColors.textSecondary,
                 ),
@@ -560,7 +558,6 @@ class _FavoritesPageState extends State<FavoritesPage> {
                             ? 'No results for "$_searchQuery"'
                             : context.l10n.noFavorites,
                         style: const TextStyle(
-                          fontFamily: 'ShareTech',
                           fontSize: AppFontSizes.body,
                           color: AppColors.textSecondary,
                         ),

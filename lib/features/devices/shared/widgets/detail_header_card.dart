@@ -86,7 +86,6 @@ class DetailHeaderCard extends StatelessWidget {
                       Text(
                         typeLabel,
                         style: const TextStyle(
-                          fontFamily: 'ShareTech',
                           fontWeight: FontWeight.w600,
                           fontSize: AppFontSizes.sectionTitle,
                           color: AppColors.textPrimary,
@@ -97,7 +96,6 @@ class DetailHeaderCard extends StatelessWidget {
                         Text(
                           updatedLabel,
                           style: const TextStyle(
-                            fontFamily: 'ShareTech',
                             fontSize: AppFontSizes.sm,
                             color: AppColors.textSecondary,
                           ),
@@ -117,7 +115,6 @@ class DetailHeaderCard extends StatelessWidget {
                         Text(
                           isOnline ? context.l10n.netStatusOnline : context.l10n.netStatusOffline,
                           style: TextStyle(
-                            fontFamily: 'ShareTech',
                             fontSize: AppFontSizes.sm,
                             color: isOnline ? accentColor : AppColors.textSecondary,
                           ),

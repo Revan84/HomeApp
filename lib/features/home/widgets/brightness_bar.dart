@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 
 // ============================================================
@@ -36,8 +37,8 @@ class BrightnessBar extends StatelessWidget {
   static const _iconGap  = 4.0;  // gap between thumb bottom and icon top
 
   // ── Colors ───────────────────────────────────────────────────────────────
-  static const _trackBg  = Color(0xFF1D1D1D);
-  static const _iconDark = Color(0xFF1D1D1D); // when icon is inside fill
+  static const _trackBg  = AppColors.bg;
+  static const _iconDark = AppColors.bg; // when icon is inside fill
 
   @override
   Widget build(BuildContext context) {

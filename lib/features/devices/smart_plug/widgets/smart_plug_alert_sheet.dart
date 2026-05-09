@@ -123,7 +123,6 @@ class _SmartPlugAlertSheetState extends State<SmartPlugAlertSheet> {
             keyboardType:
                 const TextInputType.numberWithOptions(decimal: true),
             style: const TextStyle(
-              fontFamily: 'ShareTech',
               fontSize: AppFontSizes.body,
               color: AppColors.textPrimary,
             ),
@@ -137,7 +136,6 @@ class _SmartPlugAlertSheetState extends State<SmartPlugAlertSheet> {
                       ? 'W'
                       : '€/day',
               suffixStyle: const TextStyle(
-                fontFamily: 'ShareTech',
                 fontSize: AppFontSizes.sm,
                 color: AppColors.textSecondary,
               ),
@@ -182,7 +180,6 @@ class _SmartPlugAlertSheetState extends State<SmartPlugAlertSheet> {
             Text(
               _error!,
               style: const TextStyle(
-                fontFamily: 'ShareTech',
                 fontSize: AppFontSizes.sm,
                 color: AppColors.danger,
               ),
@@ -220,7 +217,6 @@ class _SectionLabel extends StatelessWidget {
   Widget build(BuildContext context) => Text(
         text,
         style: const TextStyle(
-          fontFamily: 'ShareTech',
           fontSize: AppFontSizes.sm,
           fontWeight: FontWeight.w600,
           color: AppColors.textSecondary,

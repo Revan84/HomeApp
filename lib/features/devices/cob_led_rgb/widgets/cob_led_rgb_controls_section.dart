@@ -66,7 +66,6 @@ class CobLedRgbControlsSection extends StatelessWidget {
           Text(
             context.l10n.cobLedEffectLabel,
             style: const TextStyle(
-              fontFamily: 'ShareTech',
               fontSize: AppFontSizes.body,
               color: AppColors.textSecondary,
             ),
@@ -114,7 +113,6 @@ class CobLedRgbControlsSection extends StatelessWidget {
                     Text(
                       context.l10n.cobLedAudioReactive,
                       style: const TextStyle(
-                        fontFamily: 'ShareTech',
                         fontSize: AppFontSizes.body,
                         color: AppColors.textPrimary,
                       ),
@@ -122,7 +120,6 @@ class CobLedRgbControlsSection extends StatelessWidget {
                     Text(
                       context.l10n.cobLedAudioReactiveHint,
                       style: const TextStyle(
-                        fontFamily: 'ShareTech',
                         fontSize: AppFontSizes.xs,
                         color: AppColors.textSecondary,
                       ),
@@ -174,7 +171,6 @@ class _SliderRow extends StatelessWidget {
             Text(
               label,
               style: const TextStyle(
-                fontFamily: 'ShareTech',
                 fontSize: AppFontSizes.body,
                 color: AppColors.textSecondary,
               ),
@@ -182,7 +178,6 @@ class _SliderRow extends StatelessWidget {
             Text(
               '${(value * 100).round()} %',
               style: const TextStyle(
-                fontFamily: 'ShareTech',
                 fontSize: AppFontSizes.body,
                 color: AppColors.textPrimary,
               ),

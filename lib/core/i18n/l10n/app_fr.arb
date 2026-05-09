@@ -1899,5 +1899,9 @@
                 "type": "String"
             }
         }
+    },
+    "fabScanOnWifiComingSoon": "Scan Wi-Fi bientôt disponible",
+    "@fabScanOnWifiComingSoon": {
+        "description": "Snackbar affiché quand l'utilisateur appuie sur le FAB de scan Wi-Fi — fonctionnalité non encore implémentée."
     }
 }

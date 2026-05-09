@@ -149,7 +149,6 @@ class _StatWidgetConfigDialogState extends State<StatWidgetConfigDialog> {
             // ── Equipment dropdown ─────────────────────────────────────────
             Text(l10n.statsDeviceLabel,
                 style: const TextStyle(
-                    fontFamily: 'ShareTech',
                     fontSize: 12.0,
                     color: AppColors.textSecondary)),
             AppSpacing.gapSm,
@@ -168,7 +167,6 @@ class _StatWidgetConfigDialogState extends State<StatWidgetConfigDialog> {
                   borderRadius: AppRadius.xlBR,
                   dropdownColor: AppColors.bg,
                   style: const TextStyle(
-                      fontFamily: 'ShareTech',
                       color: AppColors.textPrimary,
                       fontSize: AppFontSizes.body),
                   items: widget.equipments.map((eq) {
@@ -187,7 +185,6 @@ class _StatWidgetConfigDialogState extends State<StatWidgetConfigDialog> {
             // ── Metric chips ───────────────────────────────────────────────
             Text(l10n.statsMetricLabel,
                 style: const TextStyle(
-                    fontFamily: 'ShareTech',
                     fontSize: 12.0,
                     color: AppColors.textSecondary)),
             AppSpacing.gapSm,
@@ -204,7 +201,6 @@ class _StatWidgetConfigDialogState extends State<StatWidgetConfigDialog> {
                           : AppColors.textSecondary),
                   label: Text(m.label,
                       style: TextStyle(
-                          fontFamily: 'ShareTech',
                           fontSize: AppFontSizes.sm,
                           color: selected
                               ? AppColors.bg
@@ -223,7 +219,6 @@ class _StatWidgetConfigDialogState extends State<StatWidgetConfigDialog> {
             // ── Time range chips ───────────────────────────────────────────
             Text(l10n.statsTimeRangeLabel,
                 style: const TextStyle(
-                    fontFamily: 'ShareTech',
                     fontSize: 12.0,
                     color: AppColors.textSecondary)),
             AppSpacing.gapSm,
@@ -234,7 +229,6 @@ class _StatWidgetConfigDialogState extends State<StatWidgetConfigDialog> {
                 return ChoiceChip(
                   label: Text(r.shortLabel,
                       style: TextStyle(
-                          fontFamily: 'ShareTech',
                           fontSize: AppFontSizes.sm,
                           color: selected
                               ? AppColors.bg
@@ -253,7 +247,6 @@ class _StatWidgetConfigDialogState extends State<StatWidgetConfigDialog> {
               AppSpacing.gapX3l,
               Text(l10n.statsChartTypeLabel,
                   style: const TextStyle(
-                      fontFamily: 'ShareTech',
                       fontSize: 12.0,
                       color: AppColors.textSecondary)),
               AppSpacing.gapSm,
@@ -265,7 +258,6 @@ class _StatWidgetConfigDialogState extends State<StatWidgetConfigDialog> {
                     label: Text(
                         '${ct.name[0].toUpperCase()}${ct.name.substring(1)}',
                         style: TextStyle(
-                            fontFamily: 'ShareTech',
                             fontSize: AppFontSizes.sm,
                             color: selected
                                 ? AppColors.bg

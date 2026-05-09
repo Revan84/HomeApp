@@ -53,7 +53,6 @@ class ThermometerCard extends StatelessWidget {
               Text(
                 temp != null ? '${temp.toStringAsFixed(1)} °C' : '— °C',
                 style: TextStyle(
-                  fontFamily: 'ShareTech',
                   color: AppColors.thermometerAccent,
                   fontWeight: FontWeight.w700,
                   fontSize: AppFontSizes.display,
@@ -78,7 +77,6 @@ class ThermometerCard extends StatelessWidget {
             Text(
               '${humidity.toStringAsFixed(0)} %',
               style: TextStyle(
-                fontFamily: 'ShareTech',
                 color: DeviceAccentScope.of(context),
                 fontWeight: FontWeight.w600,
                 fontSize: AppFontSizes.md,

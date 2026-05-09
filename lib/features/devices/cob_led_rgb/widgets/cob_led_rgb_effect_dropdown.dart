@@ -23,7 +23,6 @@ class CobLedRgbEffectDropdown extends StatelessWidget {
       return Text(
         context.l10n.cobLedLoadingEffects,
         style: const TextStyle(
-          fontFamily: 'ShareTech',
           fontSize: AppFontSizes.body,
           color: AppColors.textSecondary,
         ),
@@ -46,7 +45,6 @@ class CobLedRgbEffectDropdown extends StatelessWidget {
           dropdownColor: AppColors.surface,
           iconEnabledColor: AppColors.textSecondary,
           style: const TextStyle(
-            fontFamily: 'ShareTech',
             fontSize: AppFontSizes.body,
             color: AppColors.textPrimary,
           ),

@@ -42,7 +42,6 @@ class StatDeviceGroupCard extends StatelessWidget {
               Text(
                 deviceName,
                 style: const TextStyle(
-                  fontFamily: 'ShareTech',
                   fontSize: AppFontSizes.md,
                   fontWeight: FontWeight.w600,
                   color: AppColors.textPrimary,
@@ -52,7 +51,6 @@ class StatDeviceGroupCard extends StatelessWidget {
                 Text(
                   '$deviceTypeLabel · ${context.l10n.statsWidgetCount(widgetCount)}',
                   style: const TextStyle(
-                    fontFamily: 'ShareTech',
                     fontSize: AppFontSizes.sm,
                     color: AppColors.textSecondary,
                   ),

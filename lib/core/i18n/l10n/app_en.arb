@@ -1899,5 +1899,9 @@
                 "type": "String"
             }
         }
+    },
+    "fabScanOnWifiComingSoon": "Wi-Fi scan coming soon",
+    "@fabScanOnWifiComingSoon": {
+        "description": "Snackbar shown when the user taps the FAB to scan for new Wi-Fi devices — feature not yet implemented."
     }
 }

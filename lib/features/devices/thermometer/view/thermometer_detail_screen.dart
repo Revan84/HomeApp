@@ -174,7 +174,6 @@ class _ThermometerDetailScreenState extends State<ThermometerDetailScreen>
             child: Text(
               e.name,
               style: const TextStyle(
-                fontFamily: 'ShareTech',
                 fontWeight: FontWeight.w600,
                 fontSize: AppFontSizes.heading,
                 color: AppColors.textPrimary,
@@ -254,7 +253,6 @@ class _ThermometerDetailScreenState extends State<ThermometerDetailScreen>
                               ? '${temp.toStringAsFixed(1)} °C'
                               : '— °C',
                           style: const TextStyle(
-                            fontFamily: 'ShareTech',
                             fontSize: AppFontSizes.kpi,
                             fontWeight: FontWeight.w700,
                             color: _accentColor,
@@ -275,7 +273,6 @@ class _ThermometerDetailScreenState extends State<ThermometerDetailScreen>
                           Text(
                             trendT > 0 ? context.l10n.detailTrendRising : context.l10n.detailTrendFalling,
                             style: const TextStyle(
-                              fontFamily: 'ShareTech',
                               fontSize: AppFontSizes.sm,
                               color: AppColors.textSecondary,
                             ),
@@ -288,7 +285,6 @@ class _ThermometerDetailScreenState extends State<ThermometerDetailScreen>
                       Text(
                         ageLabel(context, liveState!.lastUpdatedAt),
                         style: const TextStyle(
-                          fontFamily: 'ShareTech',
                           fontSize: AppFontSizes.sm,
                           color: AppColors.textSecondary,
                         ),

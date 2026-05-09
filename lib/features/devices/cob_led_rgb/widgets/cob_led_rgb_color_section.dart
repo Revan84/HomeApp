@@ -55,7 +55,6 @@ class CobLedRgbColorSection extends StatelessWidget {
                   Text(
                     rgbColor.hex,
                     style: const TextStyle(
-                      fontFamily: 'ShareTech',
                       fontWeight: FontWeight.w700,
                       fontSize: 22,
                       color: AppColors.textPrimary,
@@ -64,7 +63,6 @@ class CobLedRgbColorSection extends StatelessWidget {
                   Text(
                     'RGB (${rgbColor.red}, ${rgbColor.green}, ${rgbColor.blue})',
                     style: const TextStyle(
-                      fontFamily: 'ShareTech',
                       fontSize: AppFontSizes.body,
                       color: AppColors.textSecondary,
                     ),

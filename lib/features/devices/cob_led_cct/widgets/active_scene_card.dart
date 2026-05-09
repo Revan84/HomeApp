@@ -48,7 +48,6 @@ class CobLedCctActiveSceneCard extends StatelessWidget {
                   TextSpan(
                     text: activeScene?.name ?? context.l10n.cobLedCctNoActiveTemplate,
                     style: TextStyle(
-                      fontFamily: 'ShareTech',
                       fontWeight: FontWeight.w700,
                       fontSize: 20,
                       color: accentColor,
@@ -59,7 +58,6 @@ class CobLedCctActiveSceneCard extends StatelessWidget {
                     TextSpan(
                       text: '  ${context.l10n.cobLedCctSceneActive}',
                       style: TextStyle(
-                        fontFamily: 'ShareTech',
                         fontSize: AppFontSizes.md,
                         color: AppColors.textSecondary,
                       ),

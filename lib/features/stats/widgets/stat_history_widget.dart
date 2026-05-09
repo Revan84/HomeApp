@@ -25,7 +25,7 @@ class StatHistoryWidget extends StatelessWidget {
         height: 80,
         child: Center(
           child: Text(context.l10n.noData,
-              style: const TextStyle(fontFamily: 'ShareTech', color: AppColors.textSecondary)),
+              style: const TextStyle(color: AppColors.textSecondary)),
         ),
       );
     }
@@ -63,7 +63,6 @@ class StatHistoryWidget extends StatelessWidget {
                 Text(
                   DateFormat('dd/MM HH:mm', locale).format(point.timestamp),
                   style: const TextStyle(
-                    fontFamily: 'ShareTech',
                     fontSize: AppFontSizes.sm,
                     color: AppColors.textSecondary,
                   ),
@@ -73,7 +72,6 @@ class StatHistoryWidget extends StatelessWidget {
                 Text(
                   metricType.formatValue(point.value),
                   style: const TextStyle(
-                    fontFamily: 'ShareTech',
                     fontSize: AppFontSizes.body,
                     fontWeight: FontWeight.w600,
                     color: AppColors.primary,

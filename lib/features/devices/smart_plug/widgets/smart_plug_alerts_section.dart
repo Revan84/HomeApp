@@ -56,7 +56,6 @@ class SmartPlugAlertsSection extends StatelessWidget {
                 Text(
                   l10n.smartPlugNoAlerts,
                   style: const TextStyle(
-                    fontFamily: 'ShareTech',
                     fontSize: AppFontSizes.body,
                     color: AppColors.textSecondary,
                   ),

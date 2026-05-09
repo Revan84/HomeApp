@@ -59,7 +59,7 @@ Future<String?> showDeviceRoomPicker(
             title: Text(
               label,
               style: const TextStyle(
-                  fontFamily: 'ShareTech', color: AppColors.textPrimary),
+                  color: AppColors.textPrimary),
             ),
             trailing: currentRoomId == null
                 ? Icon(Icons.check, color: accent, size: 18)
@@ -75,7 +75,7 @@ Future<String?> showDeviceRoomPicker(
               title: Text(
                 r.name,
                 style: const TextStyle(
-                    fontFamily: 'ShareTech', color: AppColors.textPrimary),
+                    color: AppColors.textPrimary),
               ),
               trailing: r.id == currentRoomId
                   ? Icon(Icons.check, color: accent, size: 18)

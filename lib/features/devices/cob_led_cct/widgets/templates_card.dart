@@ -51,7 +51,6 @@ class CobLedCctTemplatesCard extends StatelessWidget {
               Text(
                 context.l10n.cobLedCctTemplatesTitle,
                 style: const TextStyle(
-                  fontFamily: 'ShareTech',
                   fontWeight: FontWeight.w700,
                   fontSize: AppFontSizes.heading,
                   color: AppColors.textPrimary,
@@ -72,7 +71,6 @@ class CobLedCctTemplatesCard extends StatelessWidget {
             Text(
               context.l10n.cobLedCctNoTemplates,
               style: const TextStyle(
-                fontFamily: 'ShareTech',
                 fontSize: AppFontSizes.body,
                 color: AppColors.textSecondary,
               ),
@@ -166,7 +164,6 @@ class _SceneRow extends StatelessWidget {
                   TextSpan(
                     text: scene.name,
                     style: const TextStyle(
-                      fontFamily: 'ShareTech',
                       fontSize: AppFontSizes.md,
                       fontWeight: FontWeight.w700,
                       color: AppColors.textPrimary,
@@ -176,7 +173,6 @@ class _SceneRow extends StatelessWidget {
                     TextSpan(
                       text: '  $params',
                       style: const TextStyle(
-                        fontFamily: 'ShareTech',
                         fontSize: AppFontSizes.sm,
                         fontWeight: FontWeight.w400,
                         color: AppColors.textSecondary,
@@ -218,7 +214,6 @@ class _SceneRow extends StatelessWidget {
                         ? context.l10n.cobLedCctTemplateActiveBadge
                         : context.l10n.cobLedPresetApply,
                     style: TextStyle(
-                      fontFamily: 'ShareTech',
                       fontSize: AppFontSizes.sm,
                       color: isActive
                           ? accentColor

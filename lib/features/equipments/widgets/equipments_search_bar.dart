@@ -45,14 +45,12 @@ class EquipmentsSearchBar extends StatelessWidget {
             child: TextField(
               controller: controller,
               style: const TextStyle(
-                fontFamily: 'ShareTech',
                 fontSize: AppFontSizes.body,
                 color: AppColors.textPrimary,
               ),
               decoration: InputDecoration(
                 hintText: hintText ?? context.l10n.equipmentsSearchHint,
                 hintStyle: TextStyle(
-                  fontFamily: 'ShareTech',
                   fontSize: AppFontSizes.body,
                   color: AppColors.textSecondary.withValues(alpha: 0.55),
                 ),

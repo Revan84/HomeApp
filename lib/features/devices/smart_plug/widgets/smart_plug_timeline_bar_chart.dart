@@ -120,7 +120,6 @@ class _BarChartPainter extends CustomPainter {
   }
 
   static TextStyle get _axisStyle => TextStyle(
-    fontFamily: 'ShareTech',
     fontSize: 7,
     fontWeight: FontWeight.w700,
     color: Colors.white.withValues(alpha: 0.38),

@@ -52,7 +52,6 @@ class SmartPlugAlertRow extends StatelessWidget {
                 Text(
                   conditionLabel,
                   style: TextStyle(
-                    fontFamily: 'ShareTech',
                     fontSize: AppFontSizes.body,
                     color: isEnabled
                         ? AppColors.textPrimary
@@ -62,7 +61,6 @@ class SmartPlugAlertRow extends StatelessWidget {
                 Text(
                   thresholdText,
                   style: TextStyle(
-                    fontFamily: 'ShareTech',
                     fontSize: AppFontSizes.body,
                     fontWeight: FontWeight.w600,
                     color: isEnabled ? accent : AppColors.textSecondary,

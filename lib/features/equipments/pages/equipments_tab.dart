@@ -426,7 +426,6 @@ class _EquipmentsTabState extends State<EquipmentsTab> {
                 const Text(
                   'Devices',
                   style: TextStyle(
-                    fontFamily: 'ShareTech',
                     fontWeight: FontWeight.w700,
                     fontSize: AppFontSizes.heading,
                     color: AppColors.textPrimary,
@@ -437,7 +436,6 @@ class _EquipmentsTabState extends State<EquipmentsTab> {
                   '$onlineCount / $totalCount online'
                   '${roomsWithDevices > 0 ? ' · $roomsWithDevices rooms' : ''}',
                   style: const TextStyle(
-                    fontFamily: 'ShareTech',
                     fontSize: AppFontSizes.sm,
                     color: AppColors.textSecondary,
                   ),
@@ -503,7 +501,6 @@ class _EquipmentsTabState extends State<EquipmentsTab> {
                           ? 'No results for "$_searchQuery"'
                           : 'No devices',
                       style: const TextStyle(
-                        fontFamily: 'ShareTech',
                         fontSize: AppFontSizes.body,
                         color: AppColors.textSecondary,
                       ),

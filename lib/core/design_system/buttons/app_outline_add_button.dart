@@ -56,7 +56,6 @@ class AppOutlineAddButton extends StatelessWidget {
             Text(
               label,
               style: TextStyle(
-                fontFamily: 'ShareTech',
                 fontSize: AppFontSizes.md,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimary,

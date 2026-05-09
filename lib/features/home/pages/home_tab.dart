@@ -24,12 +24,12 @@ import '../../devices/tv/domain/tv_remote_command.dart';
 
 import '../controllers/home_controller.dart';
 import '../widgets/areas_section.dart';
-import '../widgets/device_cards/cob_led_cct_card.dart';
-import '../widgets/device_cards/hygrometer_card.dart';
-import '../widgets/device_cards/plug_card.dart';
-import '../widgets/device_cards/thermometer_card.dart';
-import '../widgets/device_cards/tv_card.dart';
-import '../widgets/device_cards/cob_led_rgb_card.dart';
+import '../device_cards/cob_led_cct_card.dart';
+import '../device_cards/hygrometer_card.dart';
+import '../device_cards/plug_card.dart';
+import '../device_cards/thermometer_card.dart';
+import '../device_cards/tv_card.dart';
+import '../device_cards/cob_led_rgb_card.dart';
 import '../../devices/cob_led_cct/view/detail_screen.dart';
 import '../widgets/today/today_section.dart';
 import 'rooms_page.dart';
@@ -180,7 +180,6 @@ class _HomeTabState extends State<HomeTab> {
               child: Text(
                 context.l10n.homeSectionToday,
                 style: const TextStyle(
-                  fontFamily: 'ShareTech',
                   color: AppColors.textPrimary,
                   fontWeight: FontWeight.w700,
                   fontSize: AppFontSizes.sectionTitle,
@@ -227,7 +226,6 @@ class _HomeTabState extends State<HomeTab> {
                     child: Text(
                       context.l10n.noFavorites,
                       style: const TextStyle(
-                        fontFamily: 'ShareTech',
                         color: AppColors.textSecondary,
                         fontSize: AppFontSizes.body,
                       ),

@@ -80,7 +80,6 @@ class _AppButton extends StatelessWidget {
         return const Text(
           'NETFLIX',
           style: TextStyle(
-            fontFamily: 'ShareTech',
             color: Colors.white,
             fontSize: AppFontSizes.sectionTitle,
             fontWeight: FontWeight.w900,
@@ -95,7 +94,6 @@ class _AppButton extends StatelessWidget {
               const TextSpan(
                 text: 'CANAL',
                 style: TextStyle(
-                  fontFamily: 'ShareTech',
                   color: Colors.white,
                   fontSize: AppFontSizes.sectionTitle,
                   fontWeight: FontWeight.w900,
@@ -109,7 +107,6 @@ class _AppButton extends StatelessWidget {
                   child: const Text(
                     '+',
                     style: TextStyle(
-                      fontFamily: 'ShareTech',
                       color: Colors.white,
                       fontSize: AppFontSizes.display,
                       fontWeight: FontWeight.w300,
@@ -126,7 +123,6 @@ class _AppButton extends StatelessWidget {
         return const Text(
           'Disney+',
           style: TextStyle(
-            fontFamily: 'ShareTech',
             color: Colors.white,
             fontSize: AppFontSizes.sectionTitle,
             fontWeight: FontWeight.w700,
@@ -139,7 +135,6 @@ class _AppButton extends StatelessWidget {
         return const Text(
           'YouTube',
           style: TextStyle(
-            fontFamily: 'ShareTech',
             color: Colors.white,
             fontSize: AppFontSizes.lg,
             fontWeight: FontWeight.w700,
@@ -151,7 +146,6 @@ class _AppButton extends StatelessWidget {
         return const Text(
           'twitch',
           style: TextStyle(
-            fontFamily: 'ShareTech',
             color: Colors.white,
             fontSize: AppFontSizes.sectionTitle,
             fontWeight: FontWeight.w900,
@@ -164,7 +158,6 @@ class _AppButton extends StatelessWidget {
         return const Text(
           'prime video',
           style: TextStyle(
-            fontFamily: 'ShareTech',
             color: Colors.white,
             fontSize: AppFontSizes.md,
             fontWeight: FontWeight.w700,
@@ -176,7 +169,6 @@ class _AppButton extends StatelessWidget {
         return Text(
           label,
           style: const TextStyle(
-            fontFamily: 'ShareTech',
             color: AppColors.textPrimary,
             fontSize: AppFontSizes.md,
             fontWeight: FontWeight.w700,

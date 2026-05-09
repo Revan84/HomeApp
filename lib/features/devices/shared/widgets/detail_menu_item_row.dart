@@ -27,7 +27,6 @@ class DetailMenuItemRow extends StatelessWidget {
       Text(
         label,
         style: TextStyle(
-          fontFamily: 'ShareTech',
           fontSize: AppFontSizes.body,
           color: color,
         ),

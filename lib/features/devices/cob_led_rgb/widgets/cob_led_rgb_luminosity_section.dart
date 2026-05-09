@@ -39,7 +39,6 @@ class CobLedRgbLuminositySection extends StatelessWidget {
           Text(
             '${(brightness * 100).round()} %',
             style: const TextStyle(
-              fontFamily: 'ShareTech',
               fontWeight: FontWeight.w700,
               fontSize: 22,
               color: AppColors.textPrimary,

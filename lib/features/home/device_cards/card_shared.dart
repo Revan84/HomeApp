@@ -36,7 +36,10 @@ class CardShell extends StatelessWidget {
   final Color accentColor;
   final bool online;
 
-  static const _bg = Color(0xFF292929);
+  // Why: opaque variant of `AppColors.card` (which is ARGB 195/255 ≈ 76 %
+  // alpha over the same RGB). The card needs an opaque base to render the
+  // accent border/glow ring crisply against any underlay.
+  static const _opaqueCardBg = Color(0xFF292929);
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +47,7 @@ class CardShell extends StatelessWidget {
       accentColor: accentColor,
       child: Container(
         decoration: BoxDecoration(
-          color: _bg,
+          color: _opaqueCardBg,
           borderRadius: AppRadius.x4lBR,
           border: Border.all(color: accentColor, width: 0.5),
         ),
@@ -64,7 +67,7 @@ class CardShell extends StatelessWidget {
                       // ── Content section ────────────────────────────────────
                       Expanded(
                         child: Container(
-                          color: _bg,
+                          color: _opaqueCardBg,
                           padding: const EdgeInsets.fromLTRB(14, 12, 14, 0),
                           child: content,
                         ),
@@ -87,7 +90,7 @@ class CardShell extends StatelessWidget {
                       ),
                       // ── Footer ─────────────────────────────────────────────
                       Container(
-                        color: _bg,
+                        color: _opaqueCardBg,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 14,
                           vertical: 10,
@@ -160,7 +163,6 @@ class CardHeader extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              fontFamily: 'ShareTech',
               color: accent,
               fontWeight: FontWeight.w600,
               fontSize: AppFontSizes.heading,
@@ -185,7 +187,6 @@ class MetaLabel extends StatelessWidget {
     return Text(
       text,
       style: const TextStyle(
-        fontFamily: 'ShareTech',
         color: AppColors.textSecondary,
         fontSize: 12.0,
       ),
@@ -223,7 +224,6 @@ class CardFooter extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
-              fontFamily: 'ShareTech',
               color: AppColors.textSecondary,
               fontSize: 12.0,
             ),

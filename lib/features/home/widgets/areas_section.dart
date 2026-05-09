@@ -13,12 +13,12 @@ import '../../../domain/entities/cob_led_rgb_device.dart';
 import '../../../domain/entities/equipment.dart';
 import '../../live/controllers/live_polling_controller.dart';
 import '../controllers/home_controller.dart';
-import 'device_cards/cob_led_cct_card.dart';
-import 'device_cards/hygrometer_card.dart';
-import 'device_cards/plug_card.dart';
-import 'device_cards/thermometer_card.dart';
-import 'device_cards/tv_card.dart';
-import 'device_cards/cob_led_rgb_card.dart';
+import '../device_cards/cob_led_cct_card.dart';
+import '../device_cards/hygrometer_card.dart';
+import '../device_cards/plug_card.dart';
+import '../device_cards/thermometer_card.dart';
+import '../device_cards/tv_card.dart';
+import '../device_cards/cob_led_rgb_card.dart';
 
 /// Areas section with:
 /// - Horizontal room chip selector ("All Rooms" + one per room)

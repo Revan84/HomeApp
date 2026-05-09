@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_font_sizes.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/utils/time_label.dart';
-import '../../../../domain/entities/equipment.dart';
-import '../../../../domain/entities/live_state.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_font_sizes.dart';
+import '../../../core/theme/app_spacing.dart';
+import '../../../core/utils/time_label.dart';
+import '../../../domain/entities/equipment.dart';
+import '../../../domain/entities/live_state.dart';
 import 'card_shared.dart';
 
 class PlugCard extends StatelessWidget {
@@ -54,7 +54,6 @@ class PlugCard extends StatelessWidget {
               Text(
                 powerW != null ? '${powerW.toStringAsFixed(0)} W' : '— W',
                 style: TextStyle(
-                  fontFamily: 'ShareTech',
                   color: AppColors.plugAccent,
                   fontWeight: FontWeight.w700,
                   fontSize: AppFontSizes.display,
@@ -78,7 +77,6 @@ class PlugCard extends StatelessWidget {
           Text(
             energyKwh != null ? '${energyKwh.toStringAsFixed(1)} KWH' : '— KWH',
             style: TextStyle(
-              fontFamily: 'ShareTech',
               color: AppColors.plugAccent,
               fontWeight: FontWeight.w600,
               fontSize: AppFontSizes.display,

@@ -65,7 +65,7 @@ class _StatChartWidgetState extends State<StatChartWidget> {
         height: 120,
         child: Center(
           child: Text(context.l10n.noData,
-              style: const TextStyle(fontFamily: 'ShareTech', color: AppColors.textSecondary)),
+              style: const TextStyle(color: AppColors.textSecondary)),
         ),
       );
     }
@@ -82,7 +82,6 @@ class _StatChartWidgetState extends State<StatChartWidget> {
             Text(
               metricType.formatValue(currentValue),
               style: const TextStyle(
-                fontFamily: 'ShareTech',
                 fontSize: AppFontSizes.display,
                 fontWeight: FontWeight.w700,
                 color: AppColors.primary,
@@ -115,7 +114,6 @@ class _StatChartWidgetState extends State<StatChartWidget> {
             label: Text(
               r.shortLabel,
               style: TextStyle(
-                fontFamily: 'ShareTech',
                 fontSize: AppFontSizes.xs,
                 color: selected ? AppColors.bg : AppColors.textSecondary,
               ),
@@ -237,7 +235,7 @@ class _StatChartWidgetState extends State<StatChartWidget> {
           value: series.min!,
           title: 'Min',
           color: AppColors.danger,
-          titleStyle: const TextStyle(fontFamily: 'ShareTech', fontSize: AppFontSizes.xs, color: Colors.white),
+          titleStyle: const TextStyle(fontSize: AppFontSizes.xs, color: Colors.white),
           radius: 50,
         ),
       if (series.avg != null)
@@ -245,15 +243,15 @@ class _StatChartWidgetState extends State<StatChartWidget> {
           value: series.avg!,
           title: 'Avg',
           color: AppColors.primary,
-          titleStyle: const TextStyle(fontFamily: 'ShareTech', fontSize: AppFontSizes.xs, color: Colors.white),
+          titleStyle: const TextStyle(fontSize: AppFontSizes.xs, color: Colors.white),
           radius: 50,
         ),
       if (series.max != null)
         PieChartSectionData(
           value: series.max!,
           title: 'Max',
-          color: const Color(0xFF4FC3F7),
-          titleStyle: const TextStyle(fontFamily: 'ShareTech', fontSize: AppFontSizes.xs, color: Colors.white),
+          color: AppColors.chartPrimary,
+          titleStyle: const TextStyle(fontSize: AppFontSizes.xs, color: Colors.white),
           radius: 50,
         ),
     ];

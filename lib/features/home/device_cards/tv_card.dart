@@ -54,7 +54,6 @@ class TvCard extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontFamily: 'ShareTech',
                     color: AppColors.tvAccent,
                     fontWeight: FontWeight.w700,
                     fontSize: AppFontSizes.display,
@@ -91,7 +90,6 @@ class TvCard extends StatelessWidget {
                             Text(
                               'Home',
                               style: TextStyle(
-                                fontFamily: 'ShareTech',
                                 color: accent,
                                 fontSize: AppFontSizes.heading,
                                 fontWeight: FontWeight.w500,

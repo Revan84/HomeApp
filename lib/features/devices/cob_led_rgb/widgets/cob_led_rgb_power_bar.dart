@@ -84,7 +84,6 @@ class CobLedRgbPowerBar extends StatelessWidget {
                 Text(
                   isOn ? context.l10n.deviceStatusOn : context.l10n.deviceStatusOff,
                   style: TextStyle(
-                    fontFamily: 'ShareTech',
                     fontSize: 12.0,
                     color:
                         isOn ? AppColors.success : AppColors.textSecondary,

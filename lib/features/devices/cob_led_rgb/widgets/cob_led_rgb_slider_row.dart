@@ -27,7 +27,6 @@ class CobLedRgbSliderRow extends StatelessWidget {
           child: Text(
             label,
             style: const TextStyle(
-              fontFamily: 'ShareTech',
               fontSize: 12.0,
               color: AppColors.textSecondary,
             ),
@@ -58,7 +57,6 @@ class CobLedRgbSliderRow extends StatelessWidget {
             '${(value * 100).round()}%',
             textAlign: TextAlign.right,
             style: const TextStyle(
-              fontFamily: 'ShareTech',
               fontSize: AppFontSizes.sm,
               color: AppColors.textSecondary,
             ),

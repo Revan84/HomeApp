@@ -25,7 +25,6 @@ class TvRoomCard extends StatelessWidget {
           Text(
             roomName,
             style: const TextStyle(
-              fontFamily: 'ShareTech',
               fontWeight: FontWeight.w600,
               fontSize: AppFontSizes.sectionTitle,
               color: AppColors.textPrimary,

@@ -65,7 +65,6 @@ class HygrometerLiveSection extends StatelessWidget {
               Text(
                 humidity != null ? '${humidity!.toStringAsFixed(0)} %' : '— %',
                 style: const TextStyle(
-                  fontFamily: 'ShareTech',
                   fontSize: AppFontSizes.kpi,
                   fontWeight: FontWeight.w700,
                   color: AppColors.hygrometerAccent,
@@ -84,7 +83,6 @@ class HygrometerLiveSection extends StatelessWidget {
                 Text(
                   trendH > 0 ? context.l10n.detailTrendUpward : context.l10n.detailTrendDownward,
                   style: const TextStyle(
-                    fontFamily: 'ShareTech',
                     fontSize: AppFontSizes.sm,
                     color: AppColors.textSecondary,
                   ),
@@ -99,7 +97,6 @@ class HygrometerLiveSection extends StatelessWidget {
             Text(
               ageLabel(context, liveState!.lastUpdatedAt),
               style: const TextStyle(
-                fontFamily: 'ShareTech',
                 fontSize: AppFontSizes.sm,
                 color: AppColors.textSecondary,
               ),
@@ -114,7 +111,6 @@ class HygrometerLiveSection extends StatelessWidget {
             Text(
               context.l10n.hygrometerComfortRangeLabel,
               style: TextStyle(
-                fontFamily: 'ShareTech',
                 fontSize: AppFontSizes.xs,
                 color: AppColors.textSecondary,
               ),

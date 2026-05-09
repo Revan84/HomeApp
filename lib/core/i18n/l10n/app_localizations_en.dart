@@ -1373,4 +1373,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String cobLedCctDeleteSceneBody(String name) {
     return '\"$name\" will be permanently removed.';
   }
+
+  @override
+  String get fabScanOnWifiComingSoon => 'Wi-Fi scan coming soon';
 }

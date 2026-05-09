@@ -2611,6 +2611,12 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'« {name} » sera définitivement supprimé.'**
   String cobLedCctDeleteSceneBody(String name);
+
+  /// Snackbar affiché quand l'utilisateur appuie sur le FAB de scan Wi-Fi — fonctionnalité non encore implémentée.
+  ///
+  /// In fr, this message translates to:
+  /// **'Scan Wi-Fi bientôt disponible'**
+  String get fabScanOnWifiComingSoon;
 }
 
 class _AppLocalizationsDelegate

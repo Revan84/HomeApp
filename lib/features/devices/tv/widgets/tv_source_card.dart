@@ -37,7 +37,6 @@ class TvSourceCard extends StatelessWidget {
                 Text(
                   source,
                   style: const TextStyle(
-                    fontFamily: 'ShareTech',
                     fontWeight: FontWeight.w700,
                     fontSize: AppFontSizes.kpi,
                     color: accent,
@@ -46,7 +45,6 @@ class TvSourceCard extends StatelessWidget {
                 Text(
                   l10n.tvSourceActive,
                   style: const TextStyle(
-                    fontFamily: 'ShareTech',
                     fontSize: AppFontSizes.body,
                     color: AppColors.textSecondary,
                   ),
@@ -112,7 +110,6 @@ class TvSourceActionButton extends StatelessWidget {
               Text(
                 label,
                 style: TextStyle(
-                  fontFamily: 'ShareTech',
                   fontSize: AppFontSizes.body,
                   color: accent,
                   fontWeight: FontWeight.w600,

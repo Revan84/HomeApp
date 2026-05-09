@@ -197,7 +197,6 @@ class _CobLedRgbDetailsPageState extends State<CobLedRgbDetailsPage>
             child: Text(
               device.name,
               style: const TextStyle(
-                fontFamily: 'ShareTech',
                 fontWeight: FontWeight.w600,
                 fontSize: AppFontSizes.heading,
                 color: AppColors.textPrimary,

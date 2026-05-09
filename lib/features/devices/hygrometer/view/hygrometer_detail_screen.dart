@@ -149,7 +149,6 @@ class _HygrometerDetailScreenState extends State<HygrometerDetailScreen>
             child: Text(
               e.name,
               style: const TextStyle(
-                fontFamily: 'ShareTech',
                 fontWeight: FontWeight.w600,
                 fontSize: AppFontSizes.heading,
                 color: AppColors.textPrimary,
@@ -234,7 +233,6 @@ class _HygrometerDetailScreenState extends State<HygrometerDetailScreen>
                   child: Text(
                     '${temp.toStringAsFixed(1)} °C',
                     style: const TextStyle(
-                      fontFamily: 'ShareTech',
                       fontSize: AppFontSizes.heading,
                       fontWeight: FontWeight.w600,
                       color: AppColors.thermometerAccent,

@@ -42,7 +42,6 @@ class AppDropdownField<T> extends StatelessWidget {
       dropdownColor: AppColors.surface,
       borderRadius: AppRadius.xlBR,
       style: const TextStyle(
-        fontFamily: 'ShareTech',
         fontSize: AppFontSizes.body,
         color: AppColors.textPrimary,
       ),
@@ -54,7 +53,6 @@ class AppDropdownField<T> extends StatelessWidget {
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: TextStyle(
-          fontFamily: 'ShareTech',
           fontSize: AppFontSizes.body,
           color: AppColors.textSecondary.withValues(alpha: 0.55),
         ),

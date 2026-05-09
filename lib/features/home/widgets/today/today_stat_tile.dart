@@ -67,7 +67,6 @@ class TodayStatTile extends StatelessWidget {
               Text(
                 value,
                 style: const TextStyle(
-                  fontFamily: 'ShareTech',
                   color: AppColors.textPrimary,
                   fontWeight: FontWeight.w700,
                   fontSize: AppFontSizes.body,
@@ -78,7 +77,6 @@ class TodayStatTile extends StatelessWidget {
                 Text(
                   '($subValue)',
                   style: const TextStyle(
-                    fontFamily: 'ShareTech',
                     color: AppColors.textSecondary,
                     fontSize: AppFontSizes.sm,
                   ),
@@ -90,7 +88,6 @@ class TodayStatTile extends StatelessWidget {
           Text(
             label,
             style: const TextStyle(
-              fontFamily: 'ShareTech',
               color: AppColors.textSecondary,
               fontSize: AppFontSizes.sm,
             ),

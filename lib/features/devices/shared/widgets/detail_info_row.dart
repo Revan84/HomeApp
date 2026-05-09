@@ -19,7 +19,6 @@ class DetailInfoRow extends StatelessWidget {
         child: Text(
           label,
           style: const TextStyle(
-            fontFamily: 'ShareTech',
             fontSize: AppFontSizes.body,
             color: AppColors.textSecondary,
           ),
@@ -30,7 +29,6 @@ class DetailInfoRow extends StatelessWidget {
         child: Text(
           value,
           style: const TextStyle(
-            fontFamily: 'ShareTech',
             fontSize: AppFontSizes.body,
             color: AppColors.textPrimary,
           ),

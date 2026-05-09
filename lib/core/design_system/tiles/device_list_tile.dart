@@ -99,7 +99,6 @@ class DeviceListTile extends StatelessWidget {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
-                                fontFamily: 'ShareTech',
                                 fontWeight: FontWeight.w500,
                                 fontSize: AppFontSizes.heading,
                                 color: AppColors.textPrimary,
@@ -124,7 +123,6 @@ class DeviceListTile extends StatelessWidget {
                         Text.rich(
                           TextSpan(
                             style: const TextStyle(
-                              fontFamily: 'ShareTech',
                               fontSize: AppFontSizes.body,
                             ),
                             children: [

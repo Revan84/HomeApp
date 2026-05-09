@@ -73,7 +73,6 @@ abstract final class ChartAxisRenderer {
     required String powerUnitLabel,
   }) {
     final textStyle = TextStyle(
-      fontFamily: 'ShareTech',
       fontSize: 7.0,
       fontWeight: FontWeight.w700,
       color: Colors.white.withValues(alpha: 0.38),
@@ -107,7 +106,6 @@ abstract final class ChartAxisRenderer {
     required String localeTag,
   }) {
     final textStyle = TextStyle(
-      fontFamily: 'ShareTech',
       fontSize: 7.0,
       fontWeight: FontWeight.w700,
       color: Colors.white.withValues(alpha: 0.38),
@@ -217,14 +215,12 @@ abstract final class ChartHoverRenderer {
     final timeLabel = formatTooltipTime(point.at);
 
     const valueStyle = TextStyle(
-      fontFamily: 'ShareTech',
       fontSize: AppFontSizes.sm,
       fontWeight: FontWeight.w800,
       color: Colors.white,
     );
 
     final subStyle = TextStyle(
-      fontFamily: 'ShareTech',
       fontSize: AppFontSizes.xs,
       fontWeight: FontWeight.w600,
       color: Colors.white.withValues(alpha: 0.70),

@@ -1374,4 +1374,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String cobLedCctDeleteSceneBody(String name) {
     return '« $name » sera définitivement supprimé.';
   }
+
+  @override
+  String get fabScanOnWifiComingSoon => 'Scan Wi-Fi bientôt disponible';
 }

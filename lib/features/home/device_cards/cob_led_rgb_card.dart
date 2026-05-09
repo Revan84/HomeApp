@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_font_sizes.dart';
-import '../../../../core/theme/app_spacing.dart';
-import 'brightness_bar.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_font_sizes.dart';
+import '../../../core/theme/app_spacing.dart';
+import '../widgets/brightness_bar.dart';
 import 'card_shared.dart';
 
-export 'brightness_bar.dart';
+export '../widgets/brightness_bar.dart';
 
 class CobLedRgbCard extends StatelessWidget {
   const CobLedRgbCard({
@@ -63,7 +63,6 @@ class CobLedRgbCard extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontFamily: 'ShareTech',
                     color: AppColors.cobLedRgbAccent,
                     fontWeight: FontWeight.w700,
                     fontSize: AppFontSizes.sectionTitle,

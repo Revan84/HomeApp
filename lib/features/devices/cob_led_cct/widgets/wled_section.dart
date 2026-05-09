@@ -44,7 +44,6 @@ class CobLedCctWledSection extends StatelessWidget {
           Text(
             context.l10n.cobLedEffectLabel,
             style: const TextStyle(
-              fontFamily: 'ShareTech',
               fontSize: AppFontSizes.body,
               color: AppColors.textSecondary,
             ),
@@ -63,7 +62,6 @@ class CobLedCctWledSection extends StatelessWidget {
               Text(
                 context.l10n.cobLedSpeedLabel,
                 style: const TextStyle(
-                  fontFamily: 'ShareTech',
                   fontSize: AppFontSizes.body,
                   color: AppColors.textSecondary,
                 ),
@@ -71,7 +69,6 @@ class CobLedCctWledSection extends StatelessWidget {
               Text(
                 '${(speed * 100).round()} %',
                 style: const TextStyle(
-                  fontFamily: 'ShareTech',
                   fontSize: AppFontSizes.body,
                   color: AppColors.textPrimary,
                 ),

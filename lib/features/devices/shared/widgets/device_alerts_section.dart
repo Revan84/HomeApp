@@ -58,7 +58,6 @@ class DeviceAlertsSection extends StatelessWidget {
               Text(
                 context.l10n.detailSectionAlerts,
                 style: const TextStyle(
-                  fontFamily: 'ShareTech',
                   fontWeight: FontWeight.w600,
                   fontSize: AppFontSizes.sectionTitle,
                   color: AppColors.textPrimary,
@@ -74,7 +73,6 @@ class DeviceAlertsSection extends StatelessWidget {
             Text(
               context.l10n.smartPlugNoAlerts,
               style: TextStyle(
-                fontFamily: 'ShareTech',
                 fontSize: AppFontSizes.body,
                 color: AppColors.textSecondary,
               ),
@@ -96,7 +94,6 @@ class DeviceAlertsSection extends StatelessWidget {
                       child: Text(
                         alertTitleBuilder(a),
                         style: const TextStyle(
-                          fontFamily: 'ShareTech',
                           fontSize: AppFontSizes.body,
                           color: AppColors.textSecondary,
                         ),
@@ -116,7 +113,6 @@ class DeviceAlertsSection extends StatelessWidget {
                       child: Text(
                         _thresholdLabel(a),
                         style: TextStyle(
-                          fontFamily: 'ShareTech',
                           fontSize: AppFontSizes.sm,
                           fontWeight: FontWeight.w600,
                           color: _alertIconColor(a),

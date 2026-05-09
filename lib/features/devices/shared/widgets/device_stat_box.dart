@@ -24,7 +24,6 @@ class DeviceStatBox extends StatelessWidget {
           Text(
             label,
             style: const TextStyle(
-              fontFamily: 'ShareTech',
               fontSize: AppFontSizes.xs,
               color: AppColors.textSecondary,
             ),
@@ -34,7 +33,6 @@ class DeviceStatBox extends StatelessWidget {
         Text(
           value,
           style: TextStyle(
-            fontFamily: 'ShareTech',
             fontSize: AppFontSizes.body,
             fontWeight: FontWeight.w700,
             color: valueColor ?? AppColors.textPrimary,

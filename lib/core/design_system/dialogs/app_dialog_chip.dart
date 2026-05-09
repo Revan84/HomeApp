@@ -74,7 +74,6 @@ class AppDialogChip extends StatelessWidget {
             Text(
               label,
               style: TextStyle(
-                fontFamily: 'ShareTech',
                 fontSize: AppFontSizes.sm,
                 fontWeight:
                     selected ? FontWeight.w600 : FontWeight.normal,

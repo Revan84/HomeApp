@@ -41,7 +41,6 @@ class CobLedCctColourTempSection extends StatelessWidget {
 
   // Why: shared style for the four K-axis tick labels — keeps loop concise.
   static const _kAxisLabelStyle = TextStyle(
-    fontFamily: 'ShareTech',
     fontSize: AppFontSizes.xs,
     color: AppColors.textSecondary,
   );
@@ -85,7 +84,6 @@ class CobLedCctColourTempSection extends StatelessWidget {
                   Text(
                     '$ctK K',
                     style: TextStyle(
-                      fontFamily: 'ShareTech',
                       fontWeight: FontWeight.w700,
                       fontSize: 22,
                       color: tempColor,
@@ -94,7 +92,6 @@ class CobLedCctColourTempSection extends StatelessWidget {
                   Text(
                     cctTempLabel(context, ctK),
                     style: const TextStyle(
-                      fontFamily: 'ShareTech',
                       fontSize: AppFontSizes.body,
                       color: AppColors.textSecondary,
                     ),
@@ -113,7 +110,6 @@ class CobLedCctColourTempSection extends StatelessWidget {
               Text(
                 context.l10n.cobLedCctWarm,
                 style: const TextStyle(
-                  fontFamily: 'ShareTech',
                   fontSize: AppFontSizes.xs,
                   color: AppColors.cobLedCctAccent,
                 ),
@@ -121,7 +117,6 @@ class CobLedCctColourTempSection extends StatelessWidget {
               Text(
                 context.l10n.cobLedCctCold,
                 style: const TextStyle(
-                  fontFamily: 'ShareTech',
                   fontSize: AppFontSizes.xs,
                   color: AppColors.textPrimary,
                 ),
@@ -158,7 +153,6 @@ class CobLedCctColourTempSection extends StatelessWidget {
               Text(
                 context.l10n.cobLedSectionLuminosity,
                 style: const TextStyle(
-                  fontFamily: 'ShareTech',
                   fontWeight: FontWeight.w600,
                   fontSize: AppFontSizes.sectionTitle,
                   color: AppColors.textPrimary,
@@ -167,7 +161,6 @@ class CobLedCctColourTempSection extends StatelessWidget {
               Text(
                 '${(brightness * 100).round()} %',
                 style: const TextStyle(
-                  fontFamily: 'ShareTech',
                   fontWeight: FontWeight.w700,
                   fontSize: AppFontSizes.sectionTitle,
                   color: AppColors.textPrimary,

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_font_sizes.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../domain/entities/cob_led_cct_device.dart';
-import 'brightness_bar.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_font_sizes.dart';
+import '../../../core/theme/app_spacing.dart';
+import '../../../domain/entities/cob_led_cct_device.dart';
+import '../widgets/brightness_bar.dart';
 import 'card_shared.dart';
 
 /// Home-grid card for a COB LED CCT device.
@@ -72,7 +72,6 @@ class CobLedCctCard extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontFamily: 'ShareTech',
                     color: AppColors.cobLedCctAccent,
                     fontWeight: FontWeight.w700,
                     fontSize: AppFontSizes.sectionTitle,

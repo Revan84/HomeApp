@@ -179,11 +179,10 @@ class _CobLedCctDetailScreenState extends State<CobLedCctDetailScreen>
   }) {
     final nameCtrl = TextEditingController(text: initialName);
     const titleStyle = TextStyle(
-      fontFamily: 'ShareTech', fontWeight: FontWeight.w600,
+      fontWeight: FontWeight.w600,
       fontSize: AppFontSizes.heading, color: AppColors.textPrimary,
     );
     const bodyStyle = TextStyle(
-      fontFamily: 'ShareTech',
       fontSize: AppFontSizes.body, color: AppColors.textSecondary,
     );
     return showModalBottomSheet<String>(
@@ -211,7 +210,7 @@ class _CobLedCctDetailScreenState extends State<CobLedCctDetailScreen>
                 controller: nameCtrl,
                 autofocus: true,
                 style: const TextStyle(
-                  fontFamily: 'ShareTech', color: AppColors.textPrimary,
+                  color: AppColors.textPrimary,
                 ),
                 decoration: InputDecoration(
                   hintText: context.l10n.cobLedCctTemplateNameHint,
@@ -274,7 +273,6 @@ class _CobLedCctDetailScreenState extends State<CobLedCctDetailScreen>
             child: Text(
               d.name,
               style: const TextStyle(
-                fontFamily: 'ShareTech',
                 fontWeight: FontWeight.w600,
                 fontSize: AppFontSizes.heading,
                 color: AppColors.textPrimary,

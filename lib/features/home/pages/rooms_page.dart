@@ -92,7 +92,6 @@ class _RoomsPageState extends State<RoomsPage> {
                 Text(
                   context.l10n.roomsAddRoomTitle,
                   style: const TextStyle(
-                    fontFamily: 'ShareTech',
                     fontWeight: FontWeight.w600,
                     fontSize: AppFontSizes.sectionTitle,
                     color: AppColors.textPrimary,
@@ -104,7 +103,6 @@ class _RoomsPageState extends State<RoomsPage> {
                 Text(
                   context.l10n.roomsTargetGroupLabel,
                   style: const TextStyle(
-                    fontFamily: 'ShareTech',
                     fontSize: AppFontSizes.sm,
                     color: AppColors.textSecondary,
                   ),
@@ -141,7 +139,6 @@ class _RoomsPageState extends State<RoomsPage> {
                             child: Text(
                               g.name,
                               style: const TextStyle(
-                                fontFamily: 'ShareTech',
                                 fontSize: AppFontSizes.body,
                                 color: AppColors.textPrimary,
                               ),
@@ -157,7 +154,6 @@ class _RoomsPageState extends State<RoomsPage> {
                 Text(
                   context.l10n.roomsRoomNameLabel,
                   style: const TextStyle(
-                    fontFamily: 'ShareTech',
                     fontSize: AppFontSizes.sm,
                     color: AppColors.textSecondary,
                   ),
@@ -170,14 +166,12 @@ class _RoomsPageState extends State<RoomsPage> {
                   autofocus: true,
                   textInputAction: TextInputAction.done,
                   style: const TextStyle(
-                    fontFamily: 'ShareTech',
                     fontSize: AppFontSizes.body,
                     color: AppColors.textPrimary,
                   ),
                   decoration: InputDecoration(
                     hintText: context.l10n.roomsRoomNameHint,
                     hintStyle: const TextStyle(
-                      fontFamily: 'ShareTech',
                       fontSize: AppFontSizes.body,
                       color: AppColors.textSecondary,
                     ),
@@ -361,7 +355,6 @@ class _RoomsPageState extends State<RoomsPage> {
         title: Text(
           context.l10n.roomsPageTitle,
           style: const TextStyle(
-            fontFamily: 'ShareTech',
             fontWeight: FontWeight.w600,
             fontSize: AppFontSizes.heading,
             color: AppColors.textPrimary,
@@ -390,7 +383,6 @@ class _RoomsPageState extends State<RoomsPage> {
               child: Text(
                 '$totalRooms rooms · $totalGroups groups',
                 style: const TextStyle(
-                  fontFamily: 'ShareTech',
                   fontSize: AppFontSizes.sm,
                   color: AppColors.textSecondary,
                 ),
@@ -454,7 +446,6 @@ class _RoomsPageState extends State<RoomsPage> {
                             Text(
                               context.l10n.roomsEmptyState,
                               style: const TextStyle(
-                                fontFamily: 'ShareTech',
                                 fontSize: AppFontSizes.body,
                                 color: AppColors.textSecondary,
                               ),

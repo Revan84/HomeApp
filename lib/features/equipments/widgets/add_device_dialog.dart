@@ -361,7 +361,6 @@ class _AddDeviceDialogState extends State<AddDeviceDialog> {
                     child: Text(
                       l10n.addDeviceFavoriteLabel,
                       style: const TextStyle(
-                        fontFamily: 'ShareTech',
                         fontSize: AppFontSizes.body,
                         color: AppColors.textPrimary,
                       ),
@@ -404,7 +403,6 @@ class _AddDeviceDialogState extends State<AddDeviceDialog> {
                 Text(
                   _testError!,
                   style: const TextStyle(
-                    fontFamily: 'ShareTech',
                     fontSize: AppFontSizes.xs,
                     color: AppColors.danger,
                   ),

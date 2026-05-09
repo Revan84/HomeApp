@@ -159,7 +159,6 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
             Text(
               context.l10n.roomDetailUnlinkTitle,
               style: const TextStyle(
-                fontFamily: 'ShareTech',
                 fontWeight: FontWeight.w600,
                 fontSize: AppFontSizes.sectionTitle,
                 color: AppColors.textPrimary,
@@ -169,7 +168,6 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
             Text(
               context.l10n.roomDetailUnlinkMessage(deviceName),
               style: const TextStyle(
-                fontFamily: 'ShareTech',
                 fontSize: AppFontSizes.body,
                 color: AppColors.textSecondary,
               ),
@@ -341,7 +339,6 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
           title: Text(
             widget.room.name,
             style: const TextStyle(
-              fontFamily: 'ShareTech',
               fontWeight: FontWeight.w600,
               fontSize: AppFontSizes.heading,
               color: AppColors.textPrimary,
@@ -370,7 +367,6 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                 child: Text(
                   '$onlineCount / $totalCount online',
                   style: const TextStyle(
-                    fontFamily: 'ShareTech',
                     fontSize: AppFontSizes.sm,
                     color: AppColors.textSecondary,
                   ),
@@ -388,7 +384,6 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                             child: Text(
                               context.l10n.statsNoDevicesInRoom,
                               style: const TextStyle(
-                                fontFamily: 'ShareTech',
                                 fontSize: AppFontSizes.body,
                                 color: AppColors.textSecondary,
                               ),

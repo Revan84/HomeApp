@@ -26,7 +26,7 @@ class StatKpiWidget extends StatelessWidget {
         height: 80,
         child: Center(
           child: Text(context.l10n.statsNoData,
-              style: const TextStyle(fontFamily: 'ShareTech', color: AppColors.textSecondary)),
+              style: const TextStyle(color: AppColors.textSecondary)),
         ),
       );
     }
@@ -41,7 +41,6 @@ class StatKpiWidget extends StatelessWidget {
         Text(
           metricType.formatValue(current),
           style: const TextStyle(
-            fontFamily: 'ShareTech',
             fontSize: AppFontSizes.kpi,
             fontWeight: FontWeight.w700,
             color: AppColors.primary,
@@ -50,7 +49,7 @@ class StatKpiWidget extends StatelessWidget {
         AppSpacing.gapXxs,
         Text(
           metricType.label,
-          style: const TextStyle(fontFamily: 'ShareTech', fontSize: 12.0, color: AppColors.textSecondary),
+          style: const TextStyle(fontSize: 12.0, color: AppColors.textSecondary),
         ),
         AppSpacing.gapXl,
         // Min / Max / Avg row
@@ -73,13 +72,12 @@ class StatKpiWidget extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(fontFamily: 'ShareTech', fontSize: AppFontSizes.xs, color: AppColors.textSecondary),
+          style: const TextStyle(fontSize: AppFontSizes.xs, color: AppColors.textSecondary),
         ),
         AppSpacing.gapXxs,
         Text(
           value != null ? metricType.formatValue(value) : '\u2014',
           style: const TextStyle(
-            fontFamily: 'ShareTech',
             fontSize: AppFontSizes.md,
             fontWeight: FontWeight.w600,
             color: AppColors.primary,

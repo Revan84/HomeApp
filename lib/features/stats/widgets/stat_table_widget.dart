@@ -24,7 +24,7 @@ class StatTableWidget extends StatelessWidget {
         height: 80,
         child: Center(
           child: Text(context.l10n.statsNoData,
-              style: const TextStyle(fontFamily: 'ShareTech', color: AppColors.textSecondary)),
+              style: const TextStyle(color: AppColors.textSecondary)),
         ),
       );
     }
@@ -47,7 +47,6 @@ class StatTableWidget extends StatelessWidget {
                 // "Date" is a universal abbreviation kept as-is.
                 const Text('Date',
                     style: TextStyle(
-                        fontFamily: 'ShareTech',
                         fontSize: AppFontSizes.sm,
                         fontWeight: FontWeight.w600,
                         color: AppColors.textSecondary)),
@@ -55,7 +54,6 @@ class StatTableWidget extends StatelessWidget {
                 Text(
                   '${metricType.label} (${metricType.unit})',
                   style: const TextStyle(
-                      fontFamily: 'ShareTech',
                       fontSize: AppFontSizes.sm,
                       fontWeight: FontWeight.w600,
                       color: AppColors.textSecondary),
@@ -83,13 +81,12 @@ class StatTableWidget extends StatelessWidget {
                         DateFormat('dd/MM/yy HH:mm', locale)
                             .format(point.timestamp),
                         style: const TextStyle(
-                            fontFamily: 'ShareTech', fontSize: AppFontSizes.sm, color: AppColors.textSecondary),
+                            fontSize: AppFontSizes.sm, color: AppColors.textSecondary),
                       ),
                       const Spacer(),
                       Text(
                         metricType.formatValue(point.value),
                         style: const TextStyle(
-                          fontFamily: 'ShareTech',
                           fontSize: 12.0,
                           fontWeight: FontWeight.w600,
                           color: AppColors.success,

@@ -44,7 +44,6 @@ class _InfoLine extends StatelessWidget {
         child: Text(
           '$label: $value',
           style: const TextStyle(
-            fontFamily: 'ShareTech',
             fontSize: AppFontSizes.xs,
             color: AppColors.textSecondary,
           ),

@@ -120,12 +120,10 @@ class _SmartPlugDetailScreenState extends State<SmartPlugDetailScreen>
                 leading: Icon(icon, color: AppColors.textSecondary, size: 20),
                 title: Text(label,
                     style: const TextStyle(
-                        fontFamily: 'ShareTech',
                         fontSize: AppFontSizes.sm,
                         color: AppColors.textSecondary)),
                 subtitle: Text(value,
                     style: const TextStyle(
-                        fontFamily: 'ShareTech',
                         fontSize: AppFontSizes.body,
                         color: AppColors.textPrimary)),
                 trailing: const Icon(Icons.edit_outlined,
@@ -154,7 +152,6 @@ class _SmartPlugDetailScreenState extends State<SmartPlugDetailScreen>
                     alignment: Alignment.centerLeft,
                     child: Text(l10n.smartPlugMenuEdit,
                         style: const TextStyle(
-                            fontFamily: 'ShareTech',
                             fontWeight: FontWeight.w600,
                             fontSize: AppFontSizes.sectionTitle,
                             color: AppColors.textPrimary)),
@@ -307,7 +304,6 @@ class _SmartPlugDetailScreenState extends State<SmartPlugDetailScreen>
               child: Text(
                 e.name,
                 style: const TextStyle(
-                  fontFamily: 'ShareTech',
                   fontWeight: FontWeight.w600,
                   fontSize: AppFontSizes.heading,
                   color: AppColors.textPrimary,

@@ -281,7 +281,6 @@ class _AppShellState extends State<AppShell> {
                   Text(
                     event.title,
                     style: const TextStyle(
-                      fontFamily: 'ShareTech',
                       fontWeight: FontWeight.w600,
                       fontSize: AppFontSizes.body,
                       color: AppColors.textPrimary,
@@ -291,7 +290,6 @@ class _AppShellState extends State<AppShell> {
                   Text(
                     event.body,
                     style: const TextStyle(
-                      fontFamily: 'ShareTech',
                       fontSize: AppFontSizes.sm,
                       color: AppColors.textSecondary,
                     ),
@@ -308,10 +306,7 @@ class _AppShellState extends State<AppShell> {
   void _showScanDeviceInfo() {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text(
-          'Wi-Fi scan coming soon',
-          style: TextStyle(fontFamily: 'ShareTech'),
-        ),
+        content: Text(context.l10n.fabScanOnWifiComingSoon),
         backgroundColor: AppColors.surface,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: AppRadius.xlBR),
