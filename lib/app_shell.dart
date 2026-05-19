@@ -321,7 +321,7 @@ class _AppShellState extends State<AppShell> {
       case 0:
         final action = await _showFabMenu([
           _FabMenuOption(
-              Icons.meeting_room_outlined, l10n.addRoomTitle, _FabAction.addRoom),
+              Icons.meeting_room_outlined, l10n.roomsAddRoomTitle, _FabAction.addRoom),
           _FabMenuOption(
               Icons.home_work_outlined, l10n.roomsAddGroupTitle, _FabAction.addRoomGroup),
         ]);

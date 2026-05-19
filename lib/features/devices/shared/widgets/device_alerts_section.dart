@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import '../../../../core/i18n/loc.dart';
 import '../../../../core/design_system/buttons/app_outline_add_button.dart';
@@ -71,7 +71,7 @@ class DeviceAlertsSection extends StatelessWidget {
           if (alerts.isEmpty) ...[
             AppSpacing.gapX2l,
             Text(
-              context.l10n.smartPlugNoAlerts,
+              context.l10n.alertNoneConfigured,
               style: TextStyle(
                 fontSize: AppFontSizes.body,
                 color: AppColors.textSecondary,

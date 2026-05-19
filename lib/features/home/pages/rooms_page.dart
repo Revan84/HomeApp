@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/design_system/buttons/app_button.dart';
@@ -152,7 +152,7 @@ class _RoomsPageState extends State<RoomsPage> {
 
                 // ── Room name label ───────────────────────────────────────
                 Text(
-                  context.l10n.roomsRoomNameLabel,
+                  context.l10n.roomNameLabel,
                   style: const TextStyle(
                     fontSize: AppFontSizes.sm,
                     color: AppColors.textSecondary,
@@ -315,7 +315,7 @@ class _RoomsPageState extends State<RoomsPage> {
           children: [
             Expanded(child: tile),
             IconButton(
-              tooltip: context.l10n.roomsDeleteRoomTooltip,
+              tooltip: context.l10n.roomsDeleteRoomTitle,
               onPressed: onRemove,
               icon: const Icon(
                 Icons.close_rounded,

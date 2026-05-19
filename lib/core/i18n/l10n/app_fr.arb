@@ -60,10 +60,6 @@
     "@editEquipmentTitle": {
         "description": "Titre de la bottom sheet de modification d'équipement"
     },
-    "ipLocalLabel": "IP locale",
-    "@ipLocalLabel": {
-        "description": "Label du champ IP locale"
-    },
     "ipLocalHint": "ex: 192.168.1.37",
     "@ipLocalHint": {
         "description": "Hint/exemple du champ IP locale"
@@ -163,10 +159,6 @@
     "@validationIpInvalidFormat": {
         "description": "Erreur de validation : format IP invalide"
     },
-    "validationIpInvalid": "IP invalide",
-    "@validationIpInvalid": {
-        "description": "Erreur de validation : IP hors plage"
-    },
     "validationNumberInvalid": "Nombre invalide",
     "@validationNumberInvalid": {
         "description": "Erreur de validation : valeur numérique invalide"
@@ -211,50 +203,6 @@
             "value": {}
         }
     },
-    "detailsNetworkTitle": "Réseau",
-    "@detailsNetworkTitle": {
-        "description": "Titre de la carte réseau sur la page détails équipement"
-    },
-    "detailsWifiLine": "Wi-Fi: {value}",
-    "@detailsWifiLine": {
-        "description": "Ligne SSID Wi-Fi",
-        "placeholders": {
-            "value": {}
-        }
-    },
-    "detailsPhoneIpLine": "IP téléphone: {value}",
-    "@detailsPhoneIpLine": {
-        "description": "Ligne IP du téléphone",
-        "placeholders": {
-            "value": {}
-        }
-    },
-    "detailsEquipmentIpLine": "Équipement: {value}",
-    "@detailsEquipmentIpLine": {
-        "description": "Ligne IP de l'équipement",
-        "placeholders": {
-            "value": {}
-        }
-    },
-    "detailsStatusLine": "Statut: {value}",
-    "@detailsStatusLine": {
-        "description": "Ligne statut réseau",
-        "placeholders": {
-            "value": {}
-        }
-    },
-    "netGrantWifiAccess": "Autoriser l'accès Wi-Fi",
-    "@netGrantWifiAccess": {
-        "description": "Bouton demandant l'autorisation Wi-Fi/Localisation"
-    },
-    "netWifiPermissionRequired": "Permission requise pour lire le Wi-Fi (SSID/IP)",
-    "@netWifiPermissionRequired": {
-        "description": "Statut affiché quand la permission Wi-Fi/Localisation manque"
-    },
-    "netWifiPermissionRequiredPrefix": "Permission requise",
-    "@netWifiPermissionRequiredPrefix": {
-        "description": "Préfixe utilisé pour bloquer les appels RPC quand la permission manque"
-    },
     "netStatusOnline": "En ligne",
     "@netStatusOnline": {
         "description": "Statut: équipement joignable"
@@ -263,132 +211,9 @@
     "@netStatusOffline": {
         "description": "Statut: équipement non joignable"
     },
-    "netStatusNotOnWifi": "Pas en Wi-Fi (ou Wi-Fi non détectable)",
-    "@netStatusNotOnWifi": {
-        "description": "Statut: téléphone pas en Wi-Fi"
-    },
-    "netStatusNotOnWifiPrefix": "Pas en Wi-Fi",
-    "@netStatusNotOnWifiPrefix": {
-        "description": "Préfixe utilisé pour bloquer les appels RPC quand pas en Wi-Fi"
-    },
-    "netStatusWrongWifi": "Mauvais Wi-Fi (réseau différent)",
-    "@netStatusWrongWifi": {
-        "description": "Statut: téléphone sur un autre réseau"
-    },
-    "netStatusWrongWifiPrefix": "Mauvais Wi-Fi",
-    "@netStatusWrongWifiPrefix": {
-        "description": "Préfixe utilisé pour bloquer les appels RPC quand mauvais Wi-Fi"
-    },
-    "detailsDeviceInfoTitle": "Infos appareil",
-    "@detailsDeviceInfoTitle": {
-        "description": "Titre de la carte device info"
-    },
-    "detailsDeviceModelLine": "Modèle: {value}",
-    "@detailsDeviceModelLine": {
-        "description": "Ligne modèle",
-        "placeholders": {
-            "value": {}
-        }
-    },
-    "detailsDeviceGenLine": "Génération: {value}",
-    "@detailsDeviceGenLine": {
-        "description": "Ligne génération",
-        "placeholders": {
-            "value": {}
-        }
-    },
-    "detailsDeviceFwLine": "Firmware: {value}",
-    "@detailsDeviceFwLine": {
-        "description": "Ligne version firmware",
-        "placeholders": {
-            "value": {}
-        }
-    },
-    "detailsDeviceMacLine": "MAC: {value}",
-    "@detailsDeviceMacLine": {
-        "description": "Ligne MAC",
-        "placeholders": {
-            "value": {}
-        }
-    },
-    "detailsLiveDataTitle": "Données live",
-    "@detailsLiveDataTitle": {
-        "description": "Titre de la carte données live"
-    },
-    "detailsOnOffLine": "On/Off: {value}",
-    "@detailsOnOffLine": {
-        "description": "Ligne On/Off",
-        "placeholders": {
-            "value": {}
-        }
-    },
-    "detailsPowerLine": "Puissance: {value}",
-    "@detailsPowerLine": {
-        "description": "Ligne puissance",
-        "placeholders": {
-            "value": {}
-        }
-    },
-    "detailsEnergyLine": "Énergie: {value}",
-    "@detailsEnergyLine": {
-        "description": "Ligne énergie",
-        "placeholders": {
-            "value": {}
-        }
-    },
-    "detailsRssiLine": "RSSI: {value}",
-    "@detailsRssiLine": {
-        "description": "Ligne RSSI",
-        "placeholders": {
-            "value": {}
-        }
-    },
-    "detailsLastUpdatedLine": "Dernière maj: {value}",
-    "@detailsLastUpdatedLine": {
-        "description": "Ligne dernière mise à jour",
-        "placeholders": {
-            "value": {}
-        }
-    },
     "valueUnknown": "—",
     "@valueUnknown": {
         "description": "Valeur inconnue / non disponible"
-    },
-    "valueOn": "ON",
-    "@valueOn": {
-        "description": "État on (interrupteur)"
-    },
-    "valueOff": "OFF",
-    "@valueOff": {
-        "description": "État off (interrupteur)"
-    },
-    "actionTurnOn": "Allumer",
-    "@actionTurnOn": {
-        "description": "Action: allumer l'équipement"
-    },
-    "actionTurnOff": "Éteindre",
-    "@actionTurnOff": {
-        "description": "Action: éteindre l'équipement"
-    },
-    "areas": "Pièces",
-    "@areas": {
-        "description": "Titre de la section affichant les pièces de la maison"
-    },
-    "noRoomsYet": "Aucune pièce pour le moment.",
-    "@noRoomsYet": {
-        "description": "Message affiché lorsqu'il n'y a encore aucune pièce enregistrée"
-    },
-    "seeAll": "Voir tout",
-    "@seeAll": {
-        "description": "Bouton pour afficher toutes les pièces lorsque la liste est réduite"
-    },
-    "seeLess": "Voir moins",
-    "@seeLess": {
-        "description": "Bouton pour réduire la liste des pièces affichées"
-    },
-    "addRoomTitle": "Ajouter une pièce",
-    "@addRoomTitle": {
-        "description": "Titre de la feuille modale permettant d'ajouter une pièce"
     },
     "roomNameLabel": "Nom de la pièce",
     "@roomNameLabel": {
@@ -430,14 +255,6 @@
     "@profileLogout": {
         "description": "Bouton permettant de se déconnecter."
     },
-    "valueSystemDefault": "Langue du système",
-    "@valueSystemDefault": {
-        "description": "Option de langue utilisant la langue du système du téléphone."
-    },
-    "profileTitle": "Profil",
-    "@profileTitle": {
-        "description": "Titre de l'onglet Profil."
-    },
     "languageFrench": "Français",
     "@languageFrench": {
         "description": "Libellé de langue: français."
@@ -446,24 +263,9 @@
     "@languageEnglish": {
         "description": "Libellé de langue: anglais."
     },
-    "detailsConnectionLabel": "Connexion",
-    "@detailsConnectionLabel": {
-        "description": "Label for the connection status row in favorite details."
-    },
     "detailsConnectedWifi": "Connecté (Wi-Fi)",
     "@detailsConnectedWifi": {
         "description": "Connection status label when device is connected over Wi-Fi."
-    },
-    "detailsChartPlaceholder": "Graphique (placeholder)",
-    "@detailsChartPlaceholder": {
-        "description": "Temporary placeholder text displayed where the chart will be."
-    },
-    "detailsUpdatedAt": "Mis à jour : {value}",
-    "@detailsUpdatedAt": {
-        "description": "Last update label with a date/time string.",
-        "placeholders": {
-            "value": {}
-        }
     },
     "powerWatts": "{value} W",
     "@powerWatts": {
@@ -480,59 +282,12 @@
     "@valueNo": {
         "description": "Generic no value."
     },
-    "detailsKeyValueLine": "{key} : {value}",
-    "@detailsKeyValueLine": {
-        "description": "Affichage générique 'clé : valeur' dans les lignes d'infos d'une page détail.",
-        "placeholders": {
-            "key": {},
-            "value": {}
-        }
-    },
     "energyWh": "{value} Wh",
     "@energyWh": {
         "description": "Affichage d'énergie en Wh.",
         "placeholders": {
             "value": {}
         }
-    },
-    "detailsHistoryWindow2h": "Dernières 2 heures",
-    "@detailsHistoryWindow2h": {
-        "description": "Libellé de fenêtre d'historique (graphique) sur la page détails."
-    },
-    "detailsHistoryWindow24h": "Dernières 24 heures",
-    "@detailsHistoryWindow24h": {
-        "description": "Libellé de fenêtre d'historique (graphique) sur la page détails."
-    },
-    "detailsHistoryWindow7d": "7 derniers jours",
-    "@detailsHistoryWindow7d": {
-        "description": "Libellé de fenêtre d'historique (graphique) sur la page détails."
-    },
-    "detailsUpdatedAgo": "Mis à jour il y a {ago}",
-    "@detailsUpdatedAgo": {
-        "description": "Indique le temps écoulé depuis la dernière mise à jour (ex: 3 min).",
-        "placeholders": {
-            "ago": {}
-        }
-    },
-    "detailsUpdatedJustNow": "Mis à jour à l'instant",
-    "@detailsUpdatedJustNow": {
-        "description": "Affiché quand la dernière mise à jour est très récente."
-    },
-    "detailsTrendUp": "En hausse",
-    "@detailsTrendUp": {
-        "description": "Libellé tendance lorsque la puissance augmente (accessibilité)."
-    },
-    "detailsTrendDown": "En baisse",
-    "@detailsTrendDown": {
-        "description": "Libellé tendance lorsque la puissance diminue (accessibilité)."
-    },
-    "detailsTrendFlat": "Stable",
-    "@detailsTrendFlat": {
-        "description": "Libellé tendance lorsque la puissance est stable (accessibilité)."
-    },
-    "detailsDeviceModelRightLabel": "Modèle",
-    "@detailsDeviceModelRightLabel": {
-        "description": "Libellé affiché à droite pour le modèle/nom matériel (ex: Shelly Plug S Gen3)."
     },
     "detailsEditNameTooltip": "Modifier le nom",
     "@detailsEditNameTooltip": {
@@ -546,61 +301,9 @@
     "@detailsSelectTypeTooltip": {
         "description": "Tooltip de l'icône dropdown pour le type d'équipement."
     },
-    "detailsToggleFavoriteTooltip": "Basculer en favori",
-    "@detailsToggleFavoriteTooltip": {
-        "description": "Tooltip du bouton favori (coeur) sur la page détails."
-    },
-    "detailsConnectionStatusLabel": "Statut réseau",
-    "@detailsConnectionStatusLabel": {
-        "description": "Libellé de ligne pour le statut réseau/connexion dans la zone infos."
-    },
-    "detailsConnectedWifiShort": "Connecté (Wi-Fi)",
-    "@detailsConnectedWifiShort": {
-        "description": "Texte court indiquant une connexion Wi-Fi active."
-    },
-    "detailsDisconnectedShort": "Déconnecté",
-    "@detailsDisconnectedShort": {
-        "description": "Texte court indiquant que l'équipement est hors ligne."
-    },
     "detailsRoomDropdownTooltip": "Choisir la pièce",
     "@detailsRoomDropdownTooltip": {
         "description": "Tooltip du dropdown pièce (bas de carte)."
-    },
-    "detailsActionDelete": "Supprimer",
-    "@detailsActionDelete": {
-        "description": "Libellé du bouton supprimer sur la page détails (si tu veux un libellé spécifique à cette page)."
-    },
-    "detailsEditNameDialogTitle": "Modifier le nom de l'équipement",
-    "@detailsEditNameDialogTitle": {
-        "description": "Titre de la boîte de dialogue permettant de modifier le nom donné par l'utilisateur sur la page détails."
-    },
-    "detailsEditNameHint": "ex : Plug",
-    "@detailsEditNameHint": {
-        "description": "Exemple affiché dans le champ de saisie lors de la modification du nom de l'équipement."
-    },
-    "detailsEditIpDialogTitle": "Modifier l'IP locale",
-    "@detailsEditIpDialogTitle": {
-        "description": "Titre de la boîte de dialogue permettant de modifier l'adresse IP locale de l'équipement sur la page détails."
-    },
-    "detailsEditIpHint": "ex : 192.168.1.37",
-    "@detailsEditIpHint": {
-        "description": "Exemple affiché dans le champ de saisie lors de la modification de l'IP locale."
-    },
-    "detailsRoomUnknown": "Pièce inconnue",
-    "@detailsRoomUnknown": {
-        "description": "Affiché quand l'équipement n'est associé à aucune pièce ou que la pièce n'est pas résolue."
-    },
-    "detailsDeviceModelUnknown": "Modèle inconnu",
-    "@detailsDeviceModelUnknown": {
-        "description": "Affiché quand le libellé du modèle matériel n'est pas disponible."
-    },
-    "detailsChartNoData": "Aucune donnée",
-    "@detailsChartNoData": {
-        "description": "Libellé affiché quand le graphique d'historique n'a pas assez de points pour être tracé."
-    },
-    "detailsTimelineTickNow": "Maintenant",
-    "@detailsTimelineTickNow": {
-        "description": "Libellé de la timeline pour le dernier repère du graphique."
     },
     "historyRange1d": "1J",
     "@historyRange1d": {
@@ -668,10 +371,6 @@
     "@homeWelcomeTitle": {
         "description": "Titre de bienvenue affiché dans l'en-tête de la page d'accueil"
     },
-    "homeDefaultAreaGroupName": "Maison #1",
-    "@homeDefaultAreaGroupName": {
-        "description": "Nom par défaut du groupe de pièces affiché dans l'en-tête d'accueil"
-    },
     "homeConnectionSummary": "{onlineCount} équipements connectés · {offlineCount} hors ligne",
     "@homeConnectionSummary": {
         "description": "Résumé de connectivité affiché dans l'en-tête d'accueil",
@@ -690,46 +389,9 @@
     "@favoritesPageTitle": {
         "description": "Titre de la page listant les équipements favoris"
     },
-    "favoriteRemoveTooltip": "Retirer des favoris",
-    "@favoriteRemoveTooltip": {
-        "description": "Tooltip du bouton pour retirer un équipement des favoris"
-    },
-    "favoritesActiveFilterLabel": "Actif(s) : Tous",
-    "@favoritesActiveFilterLabel": {
-        "description": "Libellé affiché en haut à droite de la page favoris pour l'état du filtre actif"
-    },
-    "favoritesFilterTooltip": "Ouvrir les filtres des favoris",
-    "@favoritesFilterTooltip": {
-        "description": "Tooltip du bouton d'ouverture des filtres sur la page favoris"
-    },
-    "favoritesAddTooltip": "Ajouter un favori",
-    "@favoritesAddTooltip": {
-        "description": "Tooltip du bouton rond permettant d'ajouter un favori sur la page favoris"
-    },
     "favoritesSearchHint": "Rechercher des appareils...",
     "@favoritesSearchHint": {
         "description": "Texte d'aide du champ de recherche sur la page favoris"
-    },
-    "favoritesOnlineOf": "{online} / {total} en ligne",
-    "@favoritesOnlineOf": {
-        "description": "Ligne de stats : nombre d'appareils en ligne sur le total",
-        "placeholders": {
-            "online": {
-                "type": "int"
-            },
-            "total": {
-                "type": "int"
-            }
-        }
-    },
-    "favoritesRoomsCount": "{count} pièces",
-    "@favoritesRoomsCount": {
-        "description": "Ligne de stats : nombre de pièces dans le groupe actif",
-        "placeholders": {
-            "count": {
-                "type": "int"
-            }
-        }
     },
     "roomsSectionTitle": "Areas",
     "@roomsSectionTitle": {
@@ -738,14 +400,6 @@
     "roomsPageTitle": "Liste des pièces",
     "@roomsPageTitle": {
         "description": "Titre de la page listant les ensembles de pièces et leurs pièces"
-    },
-    "roomsActiveFilterLabel": "Actif(s) : Tous",
-    "@roomsActiveFilterLabel": {
-        "description": "Libellé affiché en haut à droite de la page des pièces pour l'état du filtre actif"
-    },
-    "roomsFilterTooltip": "Ouvrir les filtres des pièces",
-    "@roomsFilterTooltip": {
-        "description": "Tooltip du bouton d'ouverture des filtres sur la page des pièces"
     },
     "roomsEmptyState": "Aucun ensemble de pièces pour le moment",
     "@roomsEmptyState": {
@@ -771,61 +425,9 @@
     "@roomsRenameRoomTitle": {
         "description": "Titre du dialogue de renommage d'une pièce"
     },
-    "roomsRoomNameLabel": "Nom de la pièce",
-    "@roomsRoomNameLabel": {
-        "description": "Libellé au-dessus du champ de saisie du nom d'une pièce"
-    },
     "roomsRoomNameHint": "Ex. Salon, Cuisine",
     "@roomsRoomNameHint": {
         "description": "Placeholder du champ de saisie du nom d'une pièce"
-    },
-    "roomsAddGroupTooltip": "Ajouter un ensemble de pièces",
-    "@roomsAddGroupTooltip": {
-        "description": "Tooltip du bouton permettant d'ajouter un ensemble de pièces"
-    },
-    "roomsAddRoomTooltip": "Ajouter une pièce",
-    "@roomsAddRoomTooltip": {
-        "description": "Tooltip du bouton permettant d'ajouter une pièce dans un ensemble"
-    },
-    "roomsRenameGroupTooltip": "Renommer l'ensemble",
-    "@roomsRenameGroupTooltip": {
-        "description": "Tooltip du bouton permettant de renommer un ensemble de pièces"
-    },
-    "roomsDeleteGroupTooltip": "Supprimer l'ensemble",
-    "@roomsDeleteGroupTooltip": {
-        "description": "Tooltip du bouton permettant de supprimer un ensemble de pièces"
-    },
-    "roomsDeleteRoomTooltip": "Supprimer la pièce",
-    "@roomsDeleteRoomTooltip": {
-        "description": "Tooltip du bouton permettant de supprimer une pièce"
-    },
-    "roomsDeleteGroupTitle": "Supprimer l'ensemble",
-    "@roomsDeleteGroupTitle": {
-        "description": "Titre du dialogue de confirmation de suppression d'un ensemble de pièces"
-    },
-    "roomsDeleteEmptyGroupMessage": "Supprimer l'ensemble « {groupName} » ?",
-    "@roomsDeleteEmptyGroupMessage": {
-        "description": "Message de confirmation pour supprimer un ensemble vide",
-        "placeholders": {
-            "groupName": {
-                "type": "String",
-                "example": "Maison"
-            }
-        }
-    },
-    "roomsDeleteGroupWithRoomsMessage": "Supprimer l'ensemble « {groupName} » et ses {roomCount} pièce(s) ?",
-    "@roomsDeleteGroupWithRoomsMessage": {
-        "description": "Message de confirmation pour supprimer un ensemble contenant des pièces",
-        "placeholders": {
-            "groupName": {
-                "type": "String",
-                "example": "Maison"
-            },
-            "roomCount": {
-                "type": "int",
-                "example": "3"
-            }
-        }
     },
     "roomsDeleteRoomTitle": "Supprimer la pièce",
     "@roomsDeleteRoomTitle": {
@@ -869,20 +471,6 @@
     "@homeSelectRoomGroupTitle": {
         "description": "Titre du bottom sheet permettant de choisir l'ensemble de pièces actif sur la home"
     },
-    "roomsNoActiveGroupSelected": "Aucun ensemble de pièces actif. Sélectionnez-en un depuis l'accueil.",
-    "@roomsNoActiveGroupSelected": {
-        "description": "Message affiché dans la page des pièces lorsqu'aucun ensemble actif n'est sélectionné"
-    },
-    "roomsEmptyForGroup": "Aucune pièce pour l'ensemble « {groupName} ».",
-    "@roomsEmptyForGroup": {
-        "description": "Message affiché dans la page des pièces lorsque l'ensemble actif ne contient encore aucune pièce",
-        "placeholders": {
-            "groupName": {
-                "type": "String",
-                "example": "Maison"
-            }
-        }
-    },
     "roomsSearchHint": "Rechercher des pièces...",
     "@roomsSearchHint": {
         "description": "Hint text for the rooms search field"
@@ -916,10 +504,6 @@
     "@validationRoomGroupNameRequired": {
         "description": "Message d'erreur affiché quand le nom d'un ensemble de pièces est vide"
     },
-    "roomsAddRoomSheetTitle": "Ajouter une pièce",
-    "@roomsAddRoomSheetTitle": {
-        "description": "Titre du bottom sheet listant les pièces existantes à ajouter à un ensemble"
-    },
     "roomsCreateNewRoom": "Créer une nouvelle pièce",
     "@roomsCreateNewRoom": {
         "description": "Libellé de la ligne d'action pour créer une nouvelle pièce depuis le sheet d'ajout"
@@ -937,10 +521,6 @@
                 "example": "3"
             }
         }
-    },
-    "statsAddWidgetTitle": "Ajouter un widget",
-    "@statsAddWidgetTitle": {
-        "description": "Titre du bottom sheet pour ajouter un widget de statistiques"
     },
     "statsAddChart": "Graphique",
     "@statsAddChart": {
@@ -978,30 +558,6 @@
     "@statsChartTypeLabel": {
         "description": "Libellé du sélecteur de type de graphique dans la config du widget"
     },
-    "statsTimeRangeDay": "1 Jour",
-    "@statsTimeRangeDay": {
-        "description": "Libellé de période : 1 jour"
-    },
-    "statsTimeRangeWeek": "1 Semaine",
-    "@statsTimeRangeWeek": {
-        "description": "Libellé de période : 1 semaine"
-    },
-    "statsTimeRangeMonth": "1 Mois",
-    "@statsTimeRangeMonth": {
-        "description": "Libellé de période : 1 mois"
-    },
-    "statsTimeRangeYear": "1 An",
-    "@statsTimeRangeYear": {
-        "description": "Libellé de période : 1 an"
-    },
-    "statsTimeRangeMax": "Max",
-    "@statsTimeRangeMax": {
-        "description": "Libellé de période : maximum"
-    },
-    "statsNoData": "Aucune donnée",
-    "@statsNoData": {
-        "description": "Affiché quand il n'y a pas de données à montrer"
-    },
     "statsDeviceLabel": "Équipement",
     "@statsDeviceLabel": {
         "description": "Libellé du menu déroulant de l'équipement dans le dialogue de configuration"
@@ -1013,10 +569,6 @@
     "statsEditWidget": "Modifier le widget",
     "@statsEditWidget": {
         "description": "Titre du dialogue de modification du widget"
-    },
-    "statsDeleteWidget": "Supprimer le widget",
-    "@statsDeleteWidget": {
-        "description": "Bouton pour supprimer un widget"
     },
     "statsDeleteConfirm": "Supprimer ce widget ?",
     "@statsDeleteConfirm": {
@@ -1059,21 +611,9 @@
     "@tvNameHint": {
         "description": "Exemple de nom pour la TV"
     },
-    "tvTestFailed": "Connexion échouée",
-    "@tvTestFailed": {
-        "description": "Message d'erreur si le test WS échoue"
-    },
-    "tvDeleteConfirm": "Supprimer cette TV ?",
-    "@tvDeleteConfirm": {
-        "description": "Confirmation de suppression TV"
-    },
     "tvReconnect": "Reconnecter",
     "@tvReconnect": {
         "description": "Bouton de reconnexion TV"
-    },
-    "tvStatusConnected": "Connecté",
-    "@tvStatusConnected": {
-        "description": "État TV : connecté"
     },
     "tvStatusConnecting": "Connexion…",
     "@tvStatusConnecting": {
@@ -1083,38 +623,6 @@
     "@tvStatusDisconnected": {
         "description": "État TV : déconnecté"
     },
-    "tvKeyPower": "Éteindre",
-    "@tvKeyPower": {
-        "description": "Touche télécommande : éteindre"
-    },
-    "tvKeyVolUp": "Volume +",
-    "@tvKeyVolUp": {
-        "description": "Touche télécommande : volume haut"
-    },
-    "tvKeyVolDown": "Volume −",
-    "@tvKeyVolDown": {
-        "description": "Touche télécommande : volume bas"
-    },
-    "tvKeyMute": "Muet",
-    "@tvKeyMute": {
-        "description": "Touche télécommande : muet"
-    },
-    "tvKeyUp": "Haut",
-    "@tvKeyUp": {
-        "description": "Touche télécommande : haut"
-    },
-    "tvKeyDown": "Bas",
-    "@tvKeyDown": {
-        "description": "Touche télécommande : bas"
-    },
-    "tvKeyLeft": "Gauche",
-    "@tvKeyLeft": {
-        "description": "Touche télécommande : gauche"
-    },
-    "tvKeyRight": "Droite",
-    "@tvKeyRight": {
-        "description": "Touche télécommande : droite"
-    },
     "tvKeyBack": "Retour",
     "@tvKeyBack": {
         "description": "Touche télécommande : retour"
@@ -1122,10 +630,6 @@
     "tvKeyHome": "Accueil",
     "@tvKeyHome": {
         "description": "Touche télécommande : accueil"
-    },
-    "tvKeyMenu": "Menu",
-    "@tvKeyMenu": {
-        "description": "Touche télécommande : menu"
     },
     "tvKeyKeyboard": "Clavier",
     "@tvKeyKeyboard": {
@@ -1135,25 +639,9 @@
     "@tvKeySource": {
         "description": "Touche télécommande : changer source"
     },
-    "tvAppsTitle": "Applications :",
-    "@tvAppsTitle": {
-        "description": "Titre de la section applications TV"
-    },
-    "tvTypeSmartTv": "TV Connectée",
-    "@tvTypeSmartTv": {
-        "description": "Type d'équipement : TV connectée"
-    },
-    "tvDefaultModel": "Samsung",
-    "@tvDefaultModel": {
-        "description": "Modèle TV par défaut"
-    },
     "tvStatusConnectedWifi": "Connected (wi-fi)",
     "@tvStatusConnectedWifi": {
         "description": "État TV connecté en wifi"
-    },
-    "tvModelLabel": "Modèle",
-    "@tvModelLabel": {
-        "description": "Label champ modèle TV"
     },
     "tvModelHint": "ex : Samsung 55Q80B",
     "@tvModelHint": {
@@ -1175,17 +663,9 @@
     "@tvKeySettings": {
         "description": "Touche télécommande : paramètres / menu"
     },
-    "tvKeyboardHint": "Texte à envoyer à la TV…",
-    "@tvKeyboardHint": {
-        "description": "Indication champ clavier"
-    },
     "tvKeyboardSend": "Envoyer",
     "@tvKeyboardSend": {
         "description": "Bouton envoi clavier"
-    },
-    "addDeviceTypeTitle": "Type d'appareil",
-    "@addDeviceTypeTitle": {
-        "description": "Titre du sélecteur de type d'appareil"
     },
     "deviceTypePlug": "Prise connectée",
     "@deviceTypePlug": {
@@ -1194,14 +674,6 @@
     "deviceTypeTv": "TV connectée",
     "@deviceTypeTv": {
         "description": "Type d'appareil : TV connectée"
-    },
-    "deviceTypeCobLedRgb": "Bandeau LED WLED",
-    "@deviceTypeCobLedRgb": {
-        "description": "Type d'appareil : bandeau LED WLED"
-    },
-    "deviceTypeCobLedCct": "Éclairage LED CCT",
-    "@deviceTypeCobLedCct": {
-        "description": "Type d'appareil : lampe LED CCT à blanc réglable"
     },
     "cobLedRgbAddTitle": "Ajouter un appareil WLED",
     "@cobLedRgbAddTitle": {
@@ -1219,58 +691,9 @@
     "@cobLedRgbModelHint": {
         "description": "Exemple de modèle WLED"
     },
-    "cobLedRgbTestFailed": "Connexion échouée",
-    "@cobLedRgbTestFailed": {
-        "description": "Échec du test de connexion WLED"
-    },
-    "cobLedRgbDeleteConfirm": "Supprimer cet appareil ?",
-    "@cobLedRgbDeleteConfirm": {
-        "description": "Confirmation de suppression d'un appareil WLED"
-    },
-    "cobLedRgbBrightnessLabel": "Luminosité",
-    "@cobLedRgbBrightnessLabel": {
-        "description": "Label du curseur de luminosité"
-    },
-    "cobLedRgbSpeedLabel": "Vitesse",
-    "@cobLedRgbSpeedLabel": {
-        "description": "Label du curseur de vitesse d'effet"
-    },
-    "cobLedRgbIntensityLabel": "Intensité",
-    "@cobLedRgbIntensityLabel": {
-        "description": "Label du curseur d'intensité d'effet"
-    },
-    "cobLedRgbColorsTab": "Couleurs",
-    "@cobLedRgbColorsTab": {
-        "description": "Onglet Couleurs"
-    },
-    "cobLedRgbEffectsTab": "Effets",
-    "@cobLedRgbEffectsTab": {
-        "description": "Onglet Effets"
-    },
-    "cobLedRgbScenesLabel": "Scènes",
-    "@cobLedRgbScenesLabel": {
-        "description": "Label de la section scènes"
-    },
-    "smartPlugDetailTitle": "{name}",
-    "@smartPlugDetailTitle": {
-        "description": "Titre de l'écran détail prise connectée",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
     "smartPlugSubtitle": "Prise connectée",
     "@smartPlugSubtitle": {
         "description": "Type d'appareil dans l'en-tête"
-    },
-    "smartPlugOnline": "en ligne",
-    "@smartPlugOnline": {
-        "description": "Statut prise connectée: en ligne"
-    },
-    "smartPlugOffline": "hors ligne",
-    "@smartPlugOffline": {
-        "description": "Statut prise connectée: hors ligne"
     },
     "smartPlugKpiUnit": "W",
     "@smartPlugKpiUnit": {
@@ -1311,85 +734,13 @@
     "@smartPlugSectionTimeline": {
         "description": "Titre section chronologie"
     },
-    "smartPlugTimelineSubtitle": "On/off dernières 24h",
-    "@smartPlugTimelineSubtitle": {
-        "description": "Sous-titre chronologie"
-    },
     "smartPlugSectionAlerts": "Alertes",
     "@smartPlugSectionAlerts": {
         "description": "Titre section alertes"
     },
-    "smartPlugNoAlerts": "Aucun seuil configuré",
-    "@smartPlugNoAlerts": {
-        "description": "Placeholder aucune alerte"
-    },
-    "smartPlugSectionInformations": "Informations",
-    "@smartPlugSectionInformations": {
-        "description": "Titre section informations"
-    },
-    "smartPlugInfoLocalIp": "IP locale",
-    "@smartPlugInfoLocalIp": {
-        "description": "Label IP locale"
-    },
-    "smartPlugInfoModel": "Modèle",
-    "@smartPlugInfoModel": {
-        "description": "Label modèle"
-    },
-    "smartPlugInfoConnection": "Connexion",
-    "@smartPlugInfoConnection": {
-        "description": "Label type de connexion"
-    },
-    "smartPlugWifi": "Wi-Fi",
-    "@smartPlugWifi": {
-        "description": "Valeur connexion Wi-Fi"
-    },
-    "smartPlugChangeRoom": "Modifier",
-    "@smartPlugChangeRoom": {
-        "description": "Bouton changer de pièce"
-    },
-    "smartPlugMenuRefresh": "Actualiser",
-    "@smartPlugMenuRefresh": {
-        "description": "Menu: actualiser"
-    },
-    "smartPlugMenuEdit": "Modifier",
-    "@smartPlugMenuEdit": {
-        "description": "Menu: modifier"
-    },
-    "smartPlugMenuDelete": "Supprimer",
-    "@smartPlugMenuDelete": {
-        "description": "Menu: supprimer"
-    },
-    "smartPlugDeleteConfirmTitle": "Supprimer l'équipement ?",
-    "@smartPlugDeleteConfirmTitle": {
-        "description": "Titre confirmation suppression"
-    },
-    "smartPlugDeleteConfirmBody": "Cette action est irréversible.",
-    "@smartPlugDeleteConfirmBody": {
-        "description": "Corps confirmation suppression"
-    },
-    "smartPlugDeleteConfirmCancel": "Annuler",
-    "@smartPlugDeleteConfirmCancel": {
-        "description": "Annuler la suppression"
-    },
-    "smartPlugDeleteConfirmConfirm": "Supprimer",
-    "@smartPlugDeleteConfirmConfirm": {
-        "description": "Confirmer la suppression"
-    },
-    "smartPlugLastKnownValues": "Dernières valeurs connues",
-    "@smartPlugLastKnownValues": {
-        "description": "Bannière affichée quand la prise est hors ligne"
-    },
     "smartPlugEditKwhPriceTitle": "Prix de l'électricité",
     "@smartPlugEditKwhPriceTitle": {
         "description": "Titre du dialogue pour modifier le prix du kWh"
-    },
-    "smartPlugAlertSheetTitle": "Ajouter une alerte",
-    "@smartPlugAlertSheetTitle": {
-        "description": "Titre du bottom sheet d'ajout d'alerte"
-    },
-    "smartPlugAlertConditionLabel": "Type d'alerte",
-    "@smartPlugAlertConditionLabel": {
-        "description": "Label au-dessus des chips de condition"
     },
     "smartPlugAlertConditionWatts": "Consommation (W)",
     "@smartPlugAlertConditionWatts": {
@@ -1399,10 +750,6 @@
     "@smartPlugAlertConditionDailyCost": {
         "description": "Chip condition: seuil coût journalier"
     },
-    "smartPlugAlertThresholdLabel": "Seuil",
-    "@smartPlugAlertThresholdLabel": {
-        "description": "Label au-dessus du champ de seuil"
-    },
     "smartPlugAlertThresholdHintWatts": "ex. 2500",
     "@smartPlugAlertThresholdHintWatts": {
         "description": "Hint pour le seuil en watts"
@@ -1411,18 +758,6 @@
     "@smartPlugAlertThresholdHintCost": {
         "description": "Hint pour le seuil de coût journalier"
     },
-    "smartPlugAlertNotificationsLabel": "Notifications",
-    "@smartPlugAlertNotificationsLabel": {
-        "description": "Label au-dessus des chips de notification"
-    },
-    "smartPlugAlertNotifPush": "Push",
-    "@smartPlugAlertNotifPush": {
-        "description": "Chip notification: notification push"
-    },
-    "smartPlugAlertNotifBanner": "Bannière",
-    "@smartPlugAlertNotifBanner": {
-        "description": "Chip notification: bannière in-app"
-    },
     "smartPlugAlertNotifRequired": "Sélectionnez au moins un type de notification",
     "@smartPlugAlertNotifRequired": {
         "description": "Erreur de validation: aucun type de notification sélectionné"
@@ -1430,14 +765,6 @@
     "tvSubtitle": "Télécommande",
     "@tvSubtitle": {
         "description": "Type d'appareil TV dans l'en-tête de détail"
-    },
-    "tvOnline": "en ligne",
-    "@tvOnline": {
-        "description": "Statut TV : en ligne"
-    },
-    "tvOffline": "hors ligne",
-    "@tvOffline": {
-        "description": "Statut TV : hors ligne"
     },
     "tvSourceActive": "Source active",
     "@tvSourceActive": {
@@ -1450,42 +777,6 @@
     "tvSectionApplications": "Applications",
     "@tvSectionApplications": {
         "description": "Titre de la carte section applications"
-    },
-    "tvSectionInformations": "Informations",
-    "@tvSectionInformations": {
-        "description": "Titre de la carte section informations"
-    },
-    "tvMenuRefresh": "Actualiser",
-    "@tvMenuRefresh": {
-        "description": "Menu TV : actualiser"
-    },
-    "tvMenuEdit": "Modifier",
-    "@tvMenuEdit": {
-        "description": "Menu TV : modifier"
-    },
-    "tvMenuDelete": "Supprimer",
-    "@tvMenuDelete": {
-        "description": "Menu TV : supprimer"
-    },
-    "tvDeleteConfirmTitle": "Supprimer la TV ?",
-    "@tvDeleteConfirmTitle": {
-        "description": "Titre de la confirmation de suppression TV"
-    },
-    "tvDeleteConfirmBody": "Cette action est irréversible.",
-    "@tvDeleteConfirmBody": {
-        "description": "Corps de la confirmation de suppression TV"
-    },
-    "tvDeleteConfirmCancel": "Annuler",
-    "@tvDeleteConfirmCancel": {
-        "description": "Bouton annuler la suppression TV"
-    },
-    "tvDeleteConfirmConfirm": "Supprimer",
-    "@tvDeleteConfirmConfirm": {
-        "description": "Bouton confirmer la suppression TV"
-    },
-    "tvLastKnownValues": "Dernières valeurs connues",
-    "@tvLastKnownValues": {
-        "description": "Bannière affichée sur le détail TV quand déconnecté"
     },
     "detailSectionLive": "EN DIRECT",
     "@detailSectionLive": {
@@ -1774,29 +1065,9 @@
     "@addDeviceNameLabel": {
         "description": "Label champ : nom de l'appareil"
     },
-    "addDeviceIpLabel": "IP locale",
-    "@addDeviceIpLabel": {
-        "description": "Label champ : adresse IP locale"
-    },
-    "addDeviceRoomLabel": "Pièce",
-    "@addDeviceRoomLabel": {
-        "description": "Label champ : pièce associée"
-    },
-    "addDeviceRoomOptionalLabel": "Pièce (optionnel)",
-    "@addDeviceRoomOptionalLabel": {
-        "description": "Label champ pièce optionnel dans les feuilles d'ajout"
-    },
     "addDeviceModelOptionalLabel": "Modèle (optionnel)",
     "@addDeviceModelOptionalLabel": {
         "description": "Label champ modèle optionnel dans les feuilles d'ajout"
-    },
-    "addDeviceFavoriteLabel": "Favori",
-    "@addDeviceFavoriteLabel": {
-        "description": "Label case à cocher : ajouter aux favoris"
-    },
-    "addDeviceAddToFavorites": "Ajouter aux favoris",
-    "@addDeviceAddToFavorites": {
-        "description": "Label case à cocher dans la feuille d'ajout CCT"
     },
     "addDeviceConnectedCheck": "Connecté ✓",
     "@addDeviceConnectedCheck": {
@@ -1833,10 +1104,6 @@
     "validationIpInvalidFormat": "Format invalide (ex. 192.168.1.37)",
     "@validationIpInvalidFormat": {
         "description": "Erreur validation : format IP incorrect"
-    },
-    "validationIpInvalidRange": "Adresse IP invalide",
-    "@validationIpInvalidRange": {
-        "description": "Erreur validation : octets IP hors limites"
     },
     "connectionFailedDetail": "Connexion échouée : {error}",
     "@connectionFailedDetail": {
@@ -1899,6 +1166,74 @@
                 "type": "String"
             }
         }
+    },
+    "deviceInfoLocalIp": "IP locale",
+    "@deviceInfoLocalIp": {
+        "description": "Label générique info appareil : adresse IP locale"
+    },
+    "deviceInfoModelLabel": "Modèle",
+    "@deviceInfoModelLabel": {
+        "description": "Label générique info appareil : nom du modèle matériel"
+    },
+    "deviceInfoConnection": "Connexion",
+    "@deviceInfoConnection": {
+        "description": "Label générique info appareil : type de connexion"
+    },
+    "deviceConnectionWifi": "Wi-Fi",
+    "@deviceConnectionWifi": {
+        "description": "Valeur générique type de connexion : Wi-Fi"
+    },
+    "deviceMenuDelete": "Supprimer",
+    "@deviceMenuDelete": {
+        "description": "Action générique menu appareil : supprimer l'appareil"
+    },
+    "deviceMenuRefresh": "Actualiser",
+    "@deviceMenuRefresh": {
+        "description": "Action générique menu appareil : rafraîchir les données"
+    },
+    "deviceLastKnownValues": "Dernières valeurs connues",
+    "@deviceLastKnownValues": {
+        "description": "Bandeau affiché sur le détail appareil hors ligne - valeurs du dernier sondage réussi"
+    },
+    "alertNoneConfigured": "Aucun seuil configuré",
+    "@alertNoneConfigured": {
+        "description": "État vide dans la section alertes lorsqu'aucun seuil n'est défini"
+    },
+    "alertSheetAddTitle": "Ajouter une alerte",
+    "@alertSheetAddTitle": {
+        "description": "Titre de la bottom sheet lors de l'ajout d'une alerte"
+    },
+    "alertConditionLabel": "Type d'alerte",
+    "@alertConditionLabel": {
+        "description": "Label au-dessus des chips de sélection de condition d'alerte"
+    },
+    "alertThresholdLabel": "Seuil",
+    "@alertThresholdLabel": {
+        "description": "Label au-dessus du champ de saisie du seuil d'alerte"
+    },
+    "alertNotificationsLabel": "Notifications",
+    "@alertNotificationsLabel": {
+        "description": "Label au-dessus des chips de type de notification dans la feuille d'alerte"
+    },
+    "alertNotifPush": "Push",
+    "@alertNotifPush": {
+        "description": "Chip notification : notification push"
+    },
+    "alertNotifBanner": "Bannière",
+    "@alertNotifBanner": {
+        "description": "Chip notification : bannière in-app"
+    },
+    "deviceMenuEdit": "Modifier",
+    "@deviceMenuEdit": {
+        "description": "Action générique menu appareil : modifier l'appareil"
+    },
+    "deviceSectionInformations": "Informations",
+    "@deviceSectionInformations": {
+        "description": "Titre de section générique détail appareil : informations"
+    },
+    "deviceTestFailed": "Connexion échouée",
+    "@deviceTestFailed": {
+        "description": "Erreur générique affichée quand un test de connexion échoue"
     },
     "fabScanOnWifiComingSoon": "Scan Wi-Fi bientôt disponible",
     "@fabScanOnWifiComingSoon": {

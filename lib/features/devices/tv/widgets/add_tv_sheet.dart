@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/design_system/buttons/app_button.dart';
@@ -64,7 +64,7 @@ class _AddTvSheetState extends State<AddTvSheet> {
       setState(() {
         _testOk = result.ok;
         _pairedToken = result.token;
-        if (!result.ok) _testError = context.l10n.tvTestFailed;
+        if (!result.ok) _testError = context.l10n.deviceTestFailed;
       });
     } finally {
       if (mounted) setState(() => _testing = false);
@@ -125,14 +125,14 @@ class _AddTvSheetState extends State<AddTvSheet> {
                     AppTextField(
                       controller: _ipCtrl,
                       keyboardType: TextInputType.number,
-                      label: l.ipLocalLabel,
+                      label: l.deviceInfoLocalIp,
                       hint: l.ipLocalHint,
                       validator: _validateIp,
                     ),
                     AppSpacing.gapLg,
                     AppTextField(
                       controller: _modelCtrl,
-                      label: l.tvModelLabel,
+                      label: l.deviceInfoModelLabel,
                       hint: l.tvModelHint,
                     ),
                     AppSpacing.gapLg,

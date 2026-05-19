@@ -188,12 +188,6 @@ abstract class AppLocalizations {
   /// **'Modifier l\'équipement'**
   String get editEquipmentTitle;
 
-  /// Label du champ IP locale
-  ///
-  /// In fr, this message translates to:
-  /// **'IP locale'**
-  String get ipLocalLabel;
-
   /// Hint/exemple du champ IP locale
   ///
   /// In fr, this message translates to:
@@ -338,12 +332,6 @@ abstract class AppLocalizations {
   /// **'Format invalide (ex. 192.168.1.37)'**
   String get validationIpInvalidFormat;
 
-  /// Erreur de validation : IP hors plage
-  ///
-  /// In fr, this message translates to:
-  /// **'IP invalide'**
-  String get validationIpInvalid;
-
   /// Erreur de validation : valeur numérique invalide
   ///
   /// In fr, this message translates to:
@@ -392,54 +380,6 @@ abstract class AppLocalizations {
   /// **'MAC: {value}'**
   String deviceInfoMac(Object value);
 
-  /// Titre de la carte réseau sur la page détails équipement
-  ///
-  /// In fr, this message translates to:
-  /// **'Réseau'**
-  String get detailsNetworkTitle;
-
-  /// Ligne SSID Wi-Fi
-  ///
-  /// In fr, this message translates to:
-  /// **'Wi-Fi: {value}'**
-  String detailsWifiLine(Object value);
-
-  /// Ligne IP du téléphone
-  ///
-  /// In fr, this message translates to:
-  /// **'IP téléphone: {value}'**
-  String detailsPhoneIpLine(Object value);
-
-  /// Ligne IP de l'équipement
-  ///
-  /// In fr, this message translates to:
-  /// **'Équipement: {value}'**
-  String detailsEquipmentIpLine(Object value);
-
-  /// Ligne statut réseau
-  ///
-  /// In fr, this message translates to:
-  /// **'Statut: {value}'**
-  String detailsStatusLine(Object value);
-
-  /// Bouton demandant l'autorisation Wi-Fi/Localisation
-  ///
-  /// In fr, this message translates to:
-  /// **'Autoriser l\'accès Wi-Fi'**
-  String get netGrantWifiAccess;
-
-  /// Statut affiché quand la permission Wi-Fi/Localisation manque
-  ///
-  /// In fr, this message translates to:
-  /// **'Permission requise pour lire le Wi-Fi (SSID/IP)'**
-  String get netWifiPermissionRequired;
-
-  /// Préfixe utilisé pour bloquer les appels RPC quand la permission manque
-  ///
-  /// In fr, this message translates to:
-  /// **'Permission requise'**
-  String get netWifiPermissionRequiredPrefix;
-
   /// Statut: équipement joignable
   ///
   /// In fr, this message translates to:
@@ -452,155 +392,11 @@ abstract class AppLocalizations {
   /// **'Hors ligne'**
   String get netStatusOffline;
 
-  /// Statut: téléphone pas en Wi-Fi
-  ///
-  /// In fr, this message translates to:
-  /// **'Pas en Wi-Fi (ou Wi-Fi non détectable)'**
-  String get netStatusNotOnWifi;
-
-  /// Préfixe utilisé pour bloquer les appels RPC quand pas en Wi-Fi
-  ///
-  /// In fr, this message translates to:
-  /// **'Pas en Wi-Fi'**
-  String get netStatusNotOnWifiPrefix;
-
-  /// Statut: téléphone sur un autre réseau
-  ///
-  /// In fr, this message translates to:
-  /// **'Mauvais Wi-Fi (réseau différent)'**
-  String get netStatusWrongWifi;
-
-  /// Préfixe utilisé pour bloquer les appels RPC quand mauvais Wi-Fi
-  ///
-  /// In fr, this message translates to:
-  /// **'Mauvais Wi-Fi'**
-  String get netStatusWrongWifiPrefix;
-
-  /// Titre de la carte device info
-  ///
-  /// In fr, this message translates to:
-  /// **'Infos appareil'**
-  String get detailsDeviceInfoTitle;
-
-  /// Ligne modèle
-  ///
-  /// In fr, this message translates to:
-  /// **'Modèle: {value}'**
-  String detailsDeviceModelLine(Object value);
-
-  /// Ligne génération
-  ///
-  /// In fr, this message translates to:
-  /// **'Génération: {value}'**
-  String detailsDeviceGenLine(Object value);
-
-  /// Ligne version firmware
-  ///
-  /// In fr, this message translates to:
-  /// **'Firmware: {value}'**
-  String detailsDeviceFwLine(Object value);
-
-  /// Ligne MAC
-  ///
-  /// In fr, this message translates to:
-  /// **'MAC: {value}'**
-  String detailsDeviceMacLine(Object value);
-
-  /// Titre de la carte données live
-  ///
-  /// In fr, this message translates to:
-  /// **'Données live'**
-  String get detailsLiveDataTitle;
-
-  /// Ligne On/Off
-  ///
-  /// In fr, this message translates to:
-  /// **'On/Off: {value}'**
-  String detailsOnOffLine(Object value);
-
-  /// Ligne puissance
-  ///
-  /// In fr, this message translates to:
-  /// **'Puissance: {value}'**
-  String detailsPowerLine(Object value);
-
-  /// Ligne énergie
-  ///
-  /// In fr, this message translates to:
-  /// **'Énergie: {value}'**
-  String detailsEnergyLine(Object value);
-
-  /// Ligne RSSI
-  ///
-  /// In fr, this message translates to:
-  /// **'RSSI: {value}'**
-  String detailsRssiLine(Object value);
-
-  /// Ligne dernière mise à jour
-  ///
-  /// In fr, this message translates to:
-  /// **'Dernière maj: {value}'**
-  String detailsLastUpdatedLine(Object value);
-
   /// Valeur inconnue / non disponible
   ///
   /// In fr, this message translates to:
   /// **'—'**
   String get valueUnknown;
-
-  /// État on (interrupteur)
-  ///
-  /// In fr, this message translates to:
-  /// **'ON'**
-  String get valueOn;
-
-  /// État off (interrupteur)
-  ///
-  /// In fr, this message translates to:
-  /// **'OFF'**
-  String get valueOff;
-
-  /// Action: allumer l'équipement
-  ///
-  /// In fr, this message translates to:
-  /// **'Allumer'**
-  String get actionTurnOn;
-
-  /// Action: éteindre l'équipement
-  ///
-  /// In fr, this message translates to:
-  /// **'Éteindre'**
-  String get actionTurnOff;
-
-  /// Titre de la section affichant les pièces de la maison
-  ///
-  /// In fr, this message translates to:
-  /// **'Pièces'**
-  String get areas;
-
-  /// Message affiché lorsqu'il n'y a encore aucune pièce enregistrée
-  ///
-  /// In fr, this message translates to:
-  /// **'Aucune pièce pour le moment.'**
-  String get noRoomsYet;
-
-  /// Bouton pour afficher toutes les pièces lorsque la liste est réduite
-  ///
-  /// In fr, this message translates to:
-  /// **'Voir tout'**
-  String get seeAll;
-
-  /// Bouton pour réduire la liste des pièces affichées
-  ///
-  /// In fr, this message translates to:
-  /// **'Voir moins'**
-  String get seeLess;
-
-  /// Titre de la feuille modale permettant d'ajouter une pièce
-  ///
-  /// In fr, this message translates to:
-  /// **'Ajouter une pièce'**
-  String get addRoomTitle;
 
   /// Label du champ de saisie du nom de la pièce
   ///
@@ -662,18 +458,6 @@ abstract class AppLocalizations {
   /// **'Déconnexion'**
   String get profileLogout;
 
-  /// Option de langue utilisant la langue du système du téléphone.
-  ///
-  /// In fr, this message translates to:
-  /// **'Langue du système'**
-  String get valueSystemDefault;
-
-  /// Titre de l'onglet Profil.
-  ///
-  /// In fr, this message translates to:
-  /// **'Profil'**
-  String get profileTitle;
-
   /// Libellé de langue: français.
   ///
   /// In fr, this message translates to:
@@ -686,29 +470,11 @@ abstract class AppLocalizations {
   /// **'Anglais'**
   String get languageEnglish;
 
-  /// Label for the connection status row in favorite details.
-  ///
-  /// In fr, this message translates to:
-  /// **'Connexion'**
-  String get detailsConnectionLabel;
-
   /// Connection status label when device is connected over Wi-Fi.
   ///
   /// In fr, this message translates to:
   /// **'Connecté (Wi-Fi)'**
   String get detailsConnectedWifi;
-
-  /// Temporary placeholder text displayed where the chart will be.
-  ///
-  /// In fr, this message translates to:
-  /// **'Graphique (placeholder)'**
-  String get detailsChartPlaceholder;
-
-  /// Last update label with a date/time string.
-  ///
-  /// In fr, this message translates to:
-  /// **'Mis à jour : {value}'**
-  String detailsUpdatedAt(Object value);
 
   /// Power label in watts.
   ///
@@ -728,71 +494,11 @@ abstract class AppLocalizations {
   /// **'Non'**
   String get valueNo;
 
-  /// Affichage générique 'clé : valeur' dans les lignes d'infos d'une page détail.
-  ///
-  /// In fr, this message translates to:
-  /// **'{key} : {value}'**
-  String detailsKeyValueLine(Object key, Object value);
-
   /// Affichage d'énergie en Wh.
   ///
   /// In fr, this message translates to:
   /// **'{value} Wh'**
   String energyWh(Object value);
-
-  /// Libellé de fenêtre d'historique (graphique) sur la page détails.
-  ///
-  /// In fr, this message translates to:
-  /// **'Dernières 2 heures'**
-  String get detailsHistoryWindow2h;
-
-  /// Libellé de fenêtre d'historique (graphique) sur la page détails.
-  ///
-  /// In fr, this message translates to:
-  /// **'Dernières 24 heures'**
-  String get detailsHistoryWindow24h;
-
-  /// Libellé de fenêtre d'historique (graphique) sur la page détails.
-  ///
-  /// In fr, this message translates to:
-  /// **'7 derniers jours'**
-  String get detailsHistoryWindow7d;
-
-  /// Indique le temps écoulé depuis la dernière mise à jour (ex: 3 min).
-  ///
-  /// In fr, this message translates to:
-  /// **'Mis à jour il y a {ago}'**
-  String detailsUpdatedAgo(Object ago);
-
-  /// Affiché quand la dernière mise à jour est très récente.
-  ///
-  /// In fr, this message translates to:
-  /// **'Mis à jour à l\'instant'**
-  String get detailsUpdatedJustNow;
-
-  /// Libellé tendance lorsque la puissance augmente (accessibilité).
-  ///
-  /// In fr, this message translates to:
-  /// **'En hausse'**
-  String get detailsTrendUp;
-
-  /// Libellé tendance lorsque la puissance diminue (accessibilité).
-  ///
-  /// In fr, this message translates to:
-  /// **'En baisse'**
-  String get detailsTrendDown;
-
-  /// Libellé tendance lorsque la puissance est stable (accessibilité).
-  ///
-  /// In fr, this message translates to:
-  /// **'Stable'**
-  String get detailsTrendFlat;
-
-  /// Libellé affiché à droite pour le modèle/nom matériel (ex: Shelly Plug S Gen3).
-  ///
-  /// In fr, this message translates to:
-  /// **'Modèle'**
-  String get detailsDeviceModelRightLabel;
 
   /// Tooltip de l'icône pour modifier le nom de l'équipement.
   ///
@@ -812,89 +518,11 @@ abstract class AppLocalizations {
   /// **'Choisir le type'**
   String get detailsSelectTypeTooltip;
 
-  /// Tooltip du bouton favori (coeur) sur la page détails.
-  ///
-  /// In fr, this message translates to:
-  /// **'Basculer en favori'**
-  String get detailsToggleFavoriteTooltip;
-
-  /// Libellé de ligne pour le statut réseau/connexion dans la zone infos.
-  ///
-  /// In fr, this message translates to:
-  /// **'Statut réseau'**
-  String get detailsConnectionStatusLabel;
-
-  /// Texte court indiquant une connexion Wi-Fi active.
-  ///
-  /// In fr, this message translates to:
-  /// **'Connecté (Wi-Fi)'**
-  String get detailsConnectedWifiShort;
-
-  /// Texte court indiquant que l'équipement est hors ligne.
-  ///
-  /// In fr, this message translates to:
-  /// **'Déconnecté'**
-  String get detailsDisconnectedShort;
-
   /// Tooltip du dropdown pièce (bas de carte).
   ///
   /// In fr, this message translates to:
   /// **'Choisir la pièce'**
   String get detailsRoomDropdownTooltip;
-
-  /// Libellé du bouton supprimer sur la page détails (si tu veux un libellé spécifique à cette page).
-  ///
-  /// In fr, this message translates to:
-  /// **'Supprimer'**
-  String get detailsActionDelete;
-
-  /// Titre de la boîte de dialogue permettant de modifier le nom donné par l'utilisateur sur la page détails.
-  ///
-  /// In fr, this message translates to:
-  /// **'Modifier le nom de l\'équipement'**
-  String get detailsEditNameDialogTitle;
-
-  /// Exemple affiché dans le champ de saisie lors de la modification du nom de l'équipement.
-  ///
-  /// In fr, this message translates to:
-  /// **'ex : Plug'**
-  String get detailsEditNameHint;
-
-  /// Titre de la boîte de dialogue permettant de modifier l'adresse IP locale de l'équipement sur la page détails.
-  ///
-  /// In fr, this message translates to:
-  /// **'Modifier l\'IP locale'**
-  String get detailsEditIpDialogTitle;
-
-  /// Exemple affiché dans le champ de saisie lors de la modification de l'IP locale.
-  ///
-  /// In fr, this message translates to:
-  /// **'ex : 192.168.1.37'**
-  String get detailsEditIpHint;
-
-  /// Affiché quand l'équipement n'est associé à aucune pièce ou que la pièce n'est pas résolue.
-  ///
-  /// In fr, this message translates to:
-  /// **'Pièce inconnue'**
-  String get detailsRoomUnknown;
-
-  /// Affiché quand le libellé du modèle matériel n'est pas disponible.
-  ///
-  /// In fr, this message translates to:
-  /// **'Modèle inconnu'**
-  String get detailsDeviceModelUnknown;
-
-  /// Libellé affiché quand le graphique d'historique n'a pas assez de points pour être tracé.
-  ///
-  /// In fr, this message translates to:
-  /// **'Aucune donnée'**
-  String get detailsChartNoData;
-
-  /// Libellé de la timeline pour le dernier repère du graphique.
-  ///
-  /// In fr, this message translates to:
-  /// **'Maintenant'**
-  String get detailsTimelineTickNow;
 
   /// Libellé du chip de plage historique : 1 jour
   ///
@@ -968,12 +596,6 @@ abstract class AppLocalizations {
   /// **'Bienvenue'**
   String get homeWelcomeTitle;
 
-  /// Nom par défaut du groupe de pièces affiché dans l'en-tête d'accueil
-  ///
-  /// In fr, this message translates to:
-  /// **'Maison #1'**
-  String get homeDefaultAreaGroupName;
-
   /// Résumé de connectivité affiché dans l'en-tête d'accueil
   ///
   /// In fr, this message translates to:
@@ -986,47 +608,11 @@ abstract class AppLocalizations {
   /// **'Liste des favoris'**
   String get favoritesPageTitle;
 
-  /// Tooltip du bouton pour retirer un équipement des favoris
-  ///
-  /// In fr, this message translates to:
-  /// **'Retirer des favoris'**
-  String get favoriteRemoveTooltip;
-
-  /// Libellé affiché en haut à droite de la page favoris pour l'état du filtre actif
-  ///
-  /// In fr, this message translates to:
-  /// **'Actif(s) : Tous'**
-  String get favoritesActiveFilterLabel;
-
-  /// Tooltip du bouton d'ouverture des filtres sur la page favoris
-  ///
-  /// In fr, this message translates to:
-  /// **'Ouvrir les filtres des favoris'**
-  String get favoritesFilterTooltip;
-
-  /// Tooltip du bouton rond permettant d'ajouter un favori sur la page favoris
-  ///
-  /// In fr, this message translates to:
-  /// **'Ajouter un favori'**
-  String get favoritesAddTooltip;
-
   /// Texte d'aide du champ de recherche sur la page favoris
   ///
   /// In fr, this message translates to:
   /// **'Rechercher des appareils...'**
   String get favoritesSearchHint;
-
-  /// Ligne de stats : nombre d'appareils en ligne sur le total
-  ///
-  /// In fr, this message translates to:
-  /// **'{online} / {total} en ligne'**
-  String favoritesOnlineOf(int online, int total);
-
-  /// Ligne de stats : nombre de pièces dans le groupe actif
-  ///
-  /// In fr, this message translates to:
-  /// **'{count} pièces'**
-  String favoritesRoomsCount(int count);
 
   /// Titre de section de la liste des pièces affichée sur la page d'accueil
   ///
@@ -1039,18 +625,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Liste des pièces'**
   String get roomsPageTitle;
-
-  /// Libellé affiché en haut à droite de la page des pièces pour l'état du filtre actif
-  ///
-  /// In fr, this message translates to:
-  /// **'Actif(s) : Tous'**
-  String get roomsActiveFilterLabel;
-
-  /// Tooltip du bouton d'ouverture des filtres sur la page des pièces
-  ///
-  /// In fr, this message translates to:
-  /// **'Ouvrir les filtres des pièces'**
-  String get roomsFilterTooltip;
 
   /// Texte affiché quand aucun ensemble de pièces n'existe encore
   ///
@@ -1088,65 +662,11 @@ abstract class AppLocalizations {
   /// **'Renommer la pièce'**
   String get roomsRenameRoomTitle;
 
-  /// Libellé au-dessus du champ de saisie du nom d'une pièce
-  ///
-  /// In fr, this message translates to:
-  /// **'Nom de la pièce'**
-  String get roomsRoomNameLabel;
-
   /// Placeholder du champ de saisie du nom d'une pièce
   ///
   /// In fr, this message translates to:
   /// **'Ex. Salon, Cuisine'**
   String get roomsRoomNameHint;
-
-  /// Tooltip du bouton permettant d'ajouter un ensemble de pièces
-  ///
-  /// In fr, this message translates to:
-  /// **'Ajouter un ensemble de pièces'**
-  String get roomsAddGroupTooltip;
-
-  /// Tooltip du bouton permettant d'ajouter une pièce dans un ensemble
-  ///
-  /// In fr, this message translates to:
-  /// **'Ajouter une pièce'**
-  String get roomsAddRoomTooltip;
-
-  /// Tooltip du bouton permettant de renommer un ensemble de pièces
-  ///
-  /// In fr, this message translates to:
-  /// **'Renommer l\'ensemble'**
-  String get roomsRenameGroupTooltip;
-
-  /// Tooltip du bouton permettant de supprimer un ensemble de pièces
-  ///
-  /// In fr, this message translates to:
-  /// **'Supprimer l\'ensemble'**
-  String get roomsDeleteGroupTooltip;
-
-  /// Tooltip du bouton permettant de supprimer une pièce
-  ///
-  /// In fr, this message translates to:
-  /// **'Supprimer la pièce'**
-  String get roomsDeleteRoomTooltip;
-
-  /// Titre du dialogue de confirmation de suppression d'un ensemble de pièces
-  ///
-  /// In fr, this message translates to:
-  /// **'Supprimer l\'ensemble'**
-  String get roomsDeleteGroupTitle;
-
-  /// Message de confirmation pour supprimer un ensemble vide
-  ///
-  /// In fr, this message translates to:
-  /// **'Supprimer l\'ensemble « {groupName} » ?'**
-  String roomsDeleteEmptyGroupMessage(String groupName);
-
-  /// Message de confirmation pour supprimer un ensemble contenant des pièces
-  ///
-  /// In fr, this message translates to:
-  /// **'Supprimer l\'ensemble « {groupName} » et ses {roomCount} pièce(s) ?'**
-  String roomsDeleteGroupWithRoomsMessage(String groupName, int roomCount);
 
   /// Titre du dialogue de confirmation de suppression d'une pièce
   ///
@@ -1202,18 +722,6 @@ abstract class AppLocalizations {
   /// **'Choisir un ensemble'**
   String get homeSelectRoomGroupTitle;
 
-  /// Message affiché dans la page des pièces lorsqu'aucun ensemble actif n'est sélectionné
-  ///
-  /// In fr, this message translates to:
-  /// **'Aucun ensemble de pièces actif. Sélectionnez-en un depuis l\'accueil.'**
-  String get roomsNoActiveGroupSelected;
-
-  /// Message affiché dans la page des pièces lorsque l'ensemble actif ne contient encore aucune pièce
-  ///
-  /// In fr, this message translates to:
-  /// **'Aucune pièce pour l\'ensemble « {groupName} ».'**
-  String roomsEmptyForGroup(String groupName);
-
   /// Hint text for the rooms search field
   ///
   /// In fr, this message translates to:
@@ -1256,12 +764,6 @@ abstract class AppLocalizations {
   /// **'Saisissez un nom d\'ensemble'**
   String get validationRoomGroupNameRequired;
 
-  /// Titre du bottom sheet listant les pièces existantes à ajouter à un ensemble
-  ///
-  /// In fr, this message translates to:
-  /// **'Ajouter une pièce'**
-  String get roomsAddRoomSheetTitle;
-
   /// Libellé de la ligne d'action pour créer une nouvelle pièce depuis le sheet d'ajout
   ///
   /// In fr, this message translates to:
@@ -1279,12 +781,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'({count} équipements)'**
   String roomsEquipmentCount(int count);
-
-  /// Titre du bottom sheet pour ajouter un widget de statistiques
-  ///
-  /// In fr, this message translates to:
-  /// **'Ajouter un widget'**
-  String get statsAddWidgetTitle;
 
   /// Option pour ajouter un widget graphique
   ///
@@ -1340,42 +836,6 @@ abstract class AppLocalizations {
   /// **'Type de graphique'**
   String get statsChartTypeLabel;
 
-  /// Libellé de période : 1 jour
-  ///
-  /// In fr, this message translates to:
-  /// **'1 Jour'**
-  String get statsTimeRangeDay;
-
-  /// Libellé de période : 1 semaine
-  ///
-  /// In fr, this message translates to:
-  /// **'1 Semaine'**
-  String get statsTimeRangeWeek;
-
-  /// Libellé de période : 1 mois
-  ///
-  /// In fr, this message translates to:
-  /// **'1 Mois'**
-  String get statsTimeRangeMonth;
-
-  /// Libellé de période : 1 an
-  ///
-  /// In fr, this message translates to:
-  /// **'1 An'**
-  String get statsTimeRangeYear;
-
-  /// Libellé de période : maximum
-  ///
-  /// In fr, this message translates to:
-  /// **'Max'**
-  String get statsTimeRangeMax;
-
-  /// Affiché quand il n'y a pas de données à montrer
-  ///
-  /// In fr, this message translates to:
-  /// **'Aucune donnée'**
-  String get statsNoData;
-
   /// Libellé du menu déroulant de l'équipement dans le dialogue de configuration
   ///
   /// In fr, this message translates to:
@@ -1393,12 +853,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Modifier le widget'**
   String get statsEditWidget;
-
-  /// Bouton pour supprimer un widget
-  ///
-  /// In fr, this message translates to:
-  /// **'Supprimer le widget'**
-  String get statsDeleteWidget;
 
   /// Message de confirmation avant suppression d'un widget
   ///
@@ -1454,29 +908,11 @@ abstract class AppLocalizations {
   /// **'ex : Samsung Salon'**
   String get tvNameHint;
 
-  /// Message d'erreur si le test WS échoue
-  ///
-  /// In fr, this message translates to:
-  /// **'Connexion échouée'**
-  String get tvTestFailed;
-
-  /// Confirmation de suppression TV
-  ///
-  /// In fr, this message translates to:
-  /// **'Supprimer cette TV ?'**
-  String get tvDeleteConfirm;
-
   /// Bouton de reconnexion TV
   ///
   /// In fr, this message translates to:
   /// **'Reconnecter'**
   String get tvReconnect;
-
-  /// État TV : connecté
-  ///
-  /// In fr, this message translates to:
-  /// **'Connecté'**
-  String get tvStatusConnected;
 
   /// État TV : en cours de connexion
   ///
@@ -1490,54 +926,6 @@ abstract class AppLocalizations {
   /// **'Déconnecté'**
   String get tvStatusDisconnected;
 
-  /// Touche télécommande : éteindre
-  ///
-  /// In fr, this message translates to:
-  /// **'Éteindre'**
-  String get tvKeyPower;
-
-  /// Touche télécommande : volume haut
-  ///
-  /// In fr, this message translates to:
-  /// **'Volume +'**
-  String get tvKeyVolUp;
-
-  /// Touche télécommande : volume bas
-  ///
-  /// In fr, this message translates to:
-  /// **'Volume −'**
-  String get tvKeyVolDown;
-
-  /// Touche télécommande : muet
-  ///
-  /// In fr, this message translates to:
-  /// **'Muet'**
-  String get tvKeyMute;
-
-  /// Touche télécommande : haut
-  ///
-  /// In fr, this message translates to:
-  /// **'Haut'**
-  String get tvKeyUp;
-
-  /// Touche télécommande : bas
-  ///
-  /// In fr, this message translates to:
-  /// **'Bas'**
-  String get tvKeyDown;
-
-  /// Touche télécommande : gauche
-  ///
-  /// In fr, this message translates to:
-  /// **'Gauche'**
-  String get tvKeyLeft;
-
-  /// Touche télécommande : droite
-  ///
-  /// In fr, this message translates to:
-  /// **'Droite'**
-  String get tvKeyRight;
-
   /// Touche télécommande : retour
   ///
   /// In fr, this message translates to:
@@ -1549,12 +937,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Accueil'**
   String get tvKeyHome;
-
-  /// Touche télécommande : menu
-  ///
-  /// In fr, this message translates to:
-  /// **'Menu'**
-  String get tvKeyMenu;
 
   /// Touche télécommande : clavier
   ///
@@ -1568,35 +950,11 @@ abstract class AppLocalizations {
   /// **'Source'**
   String get tvKeySource;
 
-  /// Titre de la section applications TV
-  ///
-  /// In fr, this message translates to:
-  /// **'Applications :'**
-  String get tvAppsTitle;
-
-  /// Type d'équipement : TV connectée
-  ///
-  /// In fr, this message translates to:
-  /// **'TV Connectée'**
-  String get tvTypeSmartTv;
-
-  /// Modèle TV par défaut
-  ///
-  /// In fr, this message translates to:
-  /// **'Samsung'**
-  String get tvDefaultModel;
-
   /// État TV connecté en wifi
   ///
   /// In fr, this message translates to:
   /// **'Connected (wi-fi)'**
   String get tvStatusConnectedWifi;
-
-  /// Label champ modèle TV
-  ///
-  /// In fr, this message translates to:
-  /// **'Modèle'**
-  String get tvModelLabel;
 
   /// Exemple de modèle TV
   ///
@@ -1628,23 +986,11 @@ abstract class AppLocalizations {
   /// **'Paramètres'**
   String get tvKeySettings;
 
-  /// Indication champ clavier
-  ///
-  /// In fr, this message translates to:
-  /// **'Texte à envoyer à la TV…'**
-  String get tvKeyboardHint;
-
   /// Bouton envoi clavier
   ///
   /// In fr, this message translates to:
   /// **'Envoyer'**
   String get tvKeyboardSend;
-
-  /// Titre du sélecteur de type d'appareil
-  ///
-  /// In fr, this message translates to:
-  /// **'Type d\'appareil'**
-  String get addDeviceTypeTitle;
 
   /// Type d'appareil : prise connectée
   ///
@@ -1657,18 +1003,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'TV connectée'**
   String get deviceTypeTv;
-
-  /// Type d'appareil : bandeau LED WLED
-  ///
-  /// In fr, this message translates to:
-  /// **'Bandeau LED WLED'**
-  String get deviceTypeCobLedRgb;
-
-  /// Type d'appareil : lampe LED CCT à blanc réglable
-  ///
-  /// In fr, this message translates to:
-  /// **'Éclairage LED CCT'**
-  String get deviceTypeCobLedCct;
 
   /// Titre du bottom sheet d'ajout WLED
   ///
@@ -1694,77 +1028,11 @@ abstract class AppLocalizations {
   /// **'ex : WLED v0.14'**
   String get cobLedRgbModelHint;
 
-  /// Échec du test de connexion WLED
-  ///
-  /// In fr, this message translates to:
-  /// **'Connexion échouée'**
-  String get cobLedRgbTestFailed;
-
-  /// Confirmation de suppression d'un appareil WLED
-  ///
-  /// In fr, this message translates to:
-  /// **'Supprimer cet appareil ?'**
-  String get cobLedRgbDeleteConfirm;
-
-  /// Label du curseur de luminosité
-  ///
-  /// In fr, this message translates to:
-  /// **'Luminosité'**
-  String get cobLedRgbBrightnessLabel;
-
-  /// Label du curseur de vitesse d'effet
-  ///
-  /// In fr, this message translates to:
-  /// **'Vitesse'**
-  String get cobLedRgbSpeedLabel;
-
-  /// Label du curseur d'intensité d'effet
-  ///
-  /// In fr, this message translates to:
-  /// **'Intensité'**
-  String get cobLedRgbIntensityLabel;
-
-  /// Onglet Couleurs
-  ///
-  /// In fr, this message translates to:
-  /// **'Couleurs'**
-  String get cobLedRgbColorsTab;
-
-  /// Onglet Effets
-  ///
-  /// In fr, this message translates to:
-  /// **'Effets'**
-  String get cobLedRgbEffectsTab;
-
-  /// Label de la section scènes
-  ///
-  /// In fr, this message translates to:
-  /// **'Scènes'**
-  String get cobLedRgbScenesLabel;
-
-  /// Titre de l'écran détail prise connectée
-  ///
-  /// In fr, this message translates to:
-  /// **'{name}'**
-  String smartPlugDetailTitle(String name);
-
   /// Type d'appareil dans l'en-tête
   ///
   /// In fr, this message translates to:
   /// **'Prise connectée'**
   String get smartPlugSubtitle;
-
-  /// Statut prise connectée: en ligne
-  ///
-  /// In fr, this message translates to:
-  /// **'en ligne'**
-  String get smartPlugOnline;
-
-  /// Statut prise connectée: hors ligne
-  ///
-  /// In fr, this message translates to:
-  /// **'hors ligne'**
-  String get smartPlugOffline;
 
   /// Unité de puissance — watts
   ///
@@ -1802,125 +1070,17 @@ abstract class AppLocalizations {
   /// **'Chronologie'**
   String get smartPlugSectionTimeline;
 
-  /// Sous-titre chronologie
-  ///
-  /// In fr, this message translates to:
-  /// **'On/off dernières 24h'**
-  String get smartPlugTimelineSubtitle;
-
   /// Titre section alertes
   ///
   /// In fr, this message translates to:
   /// **'Alertes'**
   String get smartPlugSectionAlerts;
 
-  /// Placeholder aucune alerte
-  ///
-  /// In fr, this message translates to:
-  /// **'Aucun seuil configuré'**
-  String get smartPlugNoAlerts;
-
-  /// Titre section informations
-  ///
-  /// In fr, this message translates to:
-  /// **'Informations'**
-  String get smartPlugSectionInformations;
-
-  /// Label IP locale
-  ///
-  /// In fr, this message translates to:
-  /// **'IP locale'**
-  String get smartPlugInfoLocalIp;
-
-  /// Label modèle
-  ///
-  /// In fr, this message translates to:
-  /// **'Modèle'**
-  String get smartPlugInfoModel;
-
-  /// Label type de connexion
-  ///
-  /// In fr, this message translates to:
-  /// **'Connexion'**
-  String get smartPlugInfoConnection;
-
-  /// Valeur connexion Wi-Fi
-  ///
-  /// In fr, this message translates to:
-  /// **'Wi-Fi'**
-  String get smartPlugWifi;
-
-  /// Bouton changer de pièce
-  ///
-  /// In fr, this message translates to:
-  /// **'Modifier'**
-  String get smartPlugChangeRoom;
-
-  /// Menu: actualiser
-  ///
-  /// In fr, this message translates to:
-  /// **'Actualiser'**
-  String get smartPlugMenuRefresh;
-
-  /// Menu: modifier
-  ///
-  /// In fr, this message translates to:
-  /// **'Modifier'**
-  String get smartPlugMenuEdit;
-
-  /// Menu: supprimer
-  ///
-  /// In fr, this message translates to:
-  /// **'Supprimer'**
-  String get smartPlugMenuDelete;
-
-  /// Titre confirmation suppression
-  ///
-  /// In fr, this message translates to:
-  /// **'Supprimer l\'équipement ?'**
-  String get smartPlugDeleteConfirmTitle;
-
-  /// Corps confirmation suppression
-  ///
-  /// In fr, this message translates to:
-  /// **'Cette action est irréversible.'**
-  String get smartPlugDeleteConfirmBody;
-
-  /// Annuler la suppression
-  ///
-  /// In fr, this message translates to:
-  /// **'Annuler'**
-  String get smartPlugDeleteConfirmCancel;
-
-  /// Confirmer la suppression
-  ///
-  /// In fr, this message translates to:
-  /// **'Supprimer'**
-  String get smartPlugDeleteConfirmConfirm;
-
-  /// Bannière affichée quand la prise est hors ligne
-  ///
-  /// In fr, this message translates to:
-  /// **'Dernières valeurs connues'**
-  String get smartPlugLastKnownValues;
-
   /// Titre du dialogue pour modifier le prix du kWh
   ///
   /// In fr, this message translates to:
   /// **'Prix de l\'électricité'**
   String get smartPlugEditKwhPriceTitle;
-
-  /// Titre du bottom sheet d'ajout d'alerte
-  ///
-  /// In fr, this message translates to:
-  /// **'Ajouter une alerte'**
-  String get smartPlugAlertSheetTitle;
-
-  /// Label au-dessus des chips de condition
-  ///
-  /// In fr, this message translates to:
-  /// **'Type d\'alerte'**
-  String get smartPlugAlertConditionLabel;
 
   /// Chip condition: seuil en watts
   ///
@@ -1934,12 +1094,6 @@ abstract class AppLocalizations {
   /// **'Coût journalier (€)'**
   String get smartPlugAlertConditionDailyCost;
 
-  /// Label au-dessus du champ de seuil
-  ///
-  /// In fr, this message translates to:
-  /// **'Seuil'**
-  String get smartPlugAlertThresholdLabel;
-
   /// Hint pour le seuil en watts
   ///
   /// In fr, this message translates to:
@@ -1952,24 +1106,6 @@ abstract class AppLocalizations {
   /// **'ex. 1,50'**
   String get smartPlugAlertThresholdHintCost;
 
-  /// Label au-dessus des chips de notification
-  ///
-  /// In fr, this message translates to:
-  /// **'Notifications'**
-  String get smartPlugAlertNotificationsLabel;
-
-  /// Chip notification: notification push
-  ///
-  /// In fr, this message translates to:
-  /// **'Push'**
-  String get smartPlugAlertNotifPush;
-
-  /// Chip notification: bannière in-app
-  ///
-  /// In fr, this message translates to:
-  /// **'Bannière'**
-  String get smartPlugAlertNotifBanner;
-
   /// Erreur de validation: aucun type de notification sélectionné
   ///
   /// In fr, this message translates to:
@@ -1981,18 +1117,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Télécommande'**
   String get tvSubtitle;
-
-  /// Statut TV : en ligne
-  ///
-  /// In fr, this message translates to:
-  /// **'en ligne'**
-  String get tvOnline;
-
-  /// Statut TV : hors ligne
-  ///
-  /// In fr, this message translates to:
-  /// **'hors ligne'**
-  String get tvOffline;
 
   /// Label affiché sous le nom de la source actuelle
   ///
@@ -2011,60 +1135,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Applications'**
   String get tvSectionApplications;
-
-  /// Titre de la carte section informations
-  ///
-  /// In fr, this message translates to:
-  /// **'Informations'**
-  String get tvSectionInformations;
-
-  /// Menu TV : actualiser
-  ///
-  /// In fr, this message translates to:
-  /// **'Actualiser'**
-  String get tvMenuRefresh;
-
-  /// Menu TV : modifier
-  ///
-  /// In fr, this message translates to:
-  /// **'Modifier'**
-  String get tvMenuEdit;
-
-  /// Menu TV : supprimer
-  ///
-  /// In fr, this message translates to:
-  /// **'Supprimer'**
-  String get tvMenuDelete;
-
-  /// Titre de la confirmation de suppression TV
-  ///
-  /// In fr, this message translates to:
-  /// **'Supprimer la TV ?'**
-  String get tvDeleteConfirmTitle;
-
-  /// Corps de la confirmation de suppression TV
-  ///
-  /// In fr, this message translates to:
-  /// **'Cette action est irréversible.'**
-  String get tvDeleteConfirmBody;
-
-  /// Bouton annuler la suppression TV
-  ///
-  /// In fr, this message translates to:
-  /// **'Annuler'**
-  String get tvDeleteConfirmCancel;
-
-  /// Bouton confirmer la suppression TV
-  ///
-  /// In fr, this message translates to:
-  /// **'Supprimer'**
-  String get tvDeleteConfirmConfirm;
-
-  /// Bannière affichée sur le détail TV quand déconnecté
-  ///
-  /// In fr, this message translates to:
-  /// **'Dernières valeurs connues'**
-  String get tvLastKnownValues;
 
   /// Titre de carte section : lecture en direct
   ///
@@ -2450,41 +1520,11 @@ abstract class AppLocalizations {
   /// **'Nom de l\'appareil'**
   String get addDeviceNameLabel;
 
-  /// Label champ : adresse IP locale
-  ///
-  /// In fr, this message translates to:
-  /// **'IP locale'**
-  String get addDeviceIpLabel;
-
-  /// Label champ : pièce associée
-  ///
-  /// In fr, this message translates to:
-  /// **'Pièce'**
-  String get addDeviceRoomLabel;
-
-  /// Label champ pièce optionnel dans les feuilles d'ajout
-  ///
-  /// In fr, this message translates to:
-  /// **'Pièce (optionnel)'**
-  String get addDeviceRoomOptionalLabel;
-
   /// Label champ modèle optionnel dans les feuilles d'ajout
   ///
   /// In fr, this message translates to:
   /// **'Modèle (optionnel)'**
   String get addDeviceModelOptionalLabel;
-
-  /// Label case à cocher : ajouter aux favoris
-  ///
-  /// In fr, this message translates to:
-  /// **'Favori'**
-  String get addDeviceFavoriteLabel;
-
-  /// Label case à cocher dans la feuille d'ajout CCT
-  ///
-  /// In fr, this message translates to:
-  /// **'Ajouter aux favoris'**
-  String get addDeviceAddToFavorites;
 
   /// Label du bouton Test quand le test de connexion réussit
   ///
@@ -2527,12 +1567,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Nom requis'**
   String get validationNameRequired;
-
-  /// Erreur validation : octets IP hors limites
-  ///
-  /// In fr, this message translates to:
-  /// **'Adresse IP invalide'**
-  String get validationIpInvalidRange;
 
   /// Erreur affichée quand le test de connexion échoue avec un message détaillé
   ///
@@ -2611,6 +1645,108 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'« {name} » sera définitivement supprimé.'**
   String cobLedCctDeleteSceneBody(String name);
+
+  /// Label générique info appareil : adresse IP locale
+  ///
+  /// In fr, this message translates to:
+  /// **'IP locale'**
+  String get deviceInfoLocalIp;
+
+  /// Label générique info appareil : nom du modèle matériel
+  ///
+  /// In fr, this message translates to:
+  /// **'Modèle'**
+  String get deviceInfoModelLabel;
+
+  /// Label générique info appareil : type de connexion
+  ///
+  /// In fr, this message translates to:
+  /// **'Connexion'**
+  String get deviceInfoConnection;
+
+  /// Valeur générique type de connexion : Wi-Fi
+  ///
+  /// In fr, this message translates to:
+  /// **'Wi-Fi'**
+  String get deviceConnectionWifi;
+
+  /// Action générique menu appareil : supprimer l'appareil
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer'**
+  String get deviceMenuDelete;
+
+  /// Action générique menu appareil : rafraîchir les données
+  ///
+  /// In fr, this message translates to:
+  /// **'Actualiser'**
+  String get deviceMenuRefresh;
+
+  /// Bandeau affiché sur le détail appareil hors ligne - valeurs du dernier sondage réussi
+  ///
+  /// In fr, this message translates to:
+  /// **'Dernières valeurs connues'**
+  String get deviceLastKnownValues;
+
+  /// État vide dans la section alertes lorsqu'aucun seuil n'est défini
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun seuil configuré'**
+  String get alertNoneConfigured;
+
+  /// Titre de la bottom sheet lors de l'ajout d'une alerte
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter une alerte'**
+  String get alertSheetAddTitle;
+
+  /// Label au-dessus des chips de sélection de condition d'alerte
+  ///
+  /// In fr, this message translates to:
+  /// **'Type d\'alerte'**
+  String get alertConditionLabel;
+
+  /// Label au-dessus du champ de saisie du seuil d'alerte
+  ///
+  /// In fr, this message translates to:
+  /// **'Seuil'**
+  String get alertThresholdLabel;
+
+  /// Label au-dessus des chips de type de notification dans la feuille d'alerte
+  ///
+  /// In fr, this message translates to:
+  /// **'Notifications'**
+  String get alertNotificationsLabel;
+
+  /// Chip notification : notification push
+  ///
+  /// In fr, this message translates to:
+  /// **'Push'**
+  String get alertNotifPush;
+
+  /// Chip notification : bannière in-app
+  ///
+  /// In fr, this message translates to:
+  /// **'Bannière'**
+  String get alertNotifBanner;
+
+  /// Action générique menu appareil : modifier l'appareil
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier'**
+  String get deviceMenuEdit;
+
+  /// Titre de section générique détail appareil : informations
+  ///
+  /// In fr, this message translates to:
+  /// **'Informations'**
+  String get deviceSectionInformations;
+
+  /// Erreur générique affichée quand un test de connexion échoue
+  ///
+  /// In fr, this message translates to:
+  /// **'Connexion échouée'**
+  String get deviceTestFailed;
 
   /// Snackbar affiché quand l'utilisateur appuie sur le FAB de scan Wi-Fi — fonctionnalité non encore implémentée.
   ///

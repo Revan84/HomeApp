@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import '../../../core/i18n/loc.dart';
 import '../../../core/theme/app_colors.dart';
@@ -47,7 +47,7 @@ class RoomsPickSheet extends StatelessWidget {
           ),
           AppSpacing.gapX3l,
           Text(
-            l10n.roomsAddRoomSheetTitle,
+            l10n.roomsAddRoomTitle,
             style: textTheme.titleMedium?.copyWith(
               color: AppColors.textPrimary,
               fontWeight: FontWeight.w600,

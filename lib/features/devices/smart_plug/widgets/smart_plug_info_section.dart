@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import '../../../../core/i18n/loc.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -23,16 +23,16 @@ class SmartPlugInfoSection extends StatelessWidget {
     };
 
     return DetailSectionCard(
-      title: l10n.smartPlugSectionInformations,
+      title: l10n.deviceSectionInformations,
       child: Column(
         children: [
-          DetailInfoRow(label: l10n.smartPlugInfoLocalIp, value: equipment.ip),
+          DetailInfoRow(label: l10n.deviceInfoLocalIp, value: equipment.ip),
           AppSpacing.gapSm,
-          DetailInfoRow(label: l10n.smartPlugInfoModel, value: modelLabel),
+          DetailInfoRow(label: l10n.deviceInfoModelLabel, value: modelLabel),
           AppSpacing.gapSm,
           DetailInfoRow(
-            label: l10n.smartPlugInfoConnection,
-            value: l10n.smartPlugWifi,
+            label: l10n.deviceInfoConnection,
+            value: l10n.deviceConnectionWifi,
           ),
         ],
       ),

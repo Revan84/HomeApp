@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:front_end/core/theme/app_radius.dart';
 import 'package:provider/provider.dart';
 
@@ -234,7 +234,7 @@ class _CobLedRgbDetailsPageState extends State<CobLedRgbDetailsPage>
                   value: _MenuAction.delete,
                   child: DetailMenuItemRow(
                     icon: Icons.delete_outline_rounded,
-                    label: context.l10n.smartPlugMenuDelete,
+                    label: context.l10n.deviceMenuDelete,
                     color: AppColors.danger,
                   ),
                 ),
@@ -345,13 +345,13 @@ class _CobLedRgbDetailsPageState extends State<CobLedRgbDetailsPage>
                     GestureDetector(
                       onTap: _editIp,
                       child: DetailInfoRow(
-                        label: context.l10n.smartPlugInfoLocalIp,
+                        label: context.l10n.deviceInfoLocalIp,
                         value: device.ipAddress,
                       ),
                     ),
                     AppSpacing.gapSm,
                     DetailInfoRow(
-                      label: context.l10n.smartPlugInfoModel,
+                      label: context.l10n.deviceInfoModelLabel,
                       value: device.modelName.isEmpty ? '—' : device.modelName,
                     ),
                     AppSpacing.gapSm,

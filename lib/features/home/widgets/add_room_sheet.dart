@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/design_system/buttons/app_button.dart';
@@ -80,7 +80,7 @@ class _AddRoomSheetState extends State<AddRoomSheet> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 AppSheetHeader(
-                  title: l.addRoomTitle,
+                  title: l.roomsAddRoomTitle,
                   onClose: () => Navigator.pop(context, false),
                 ),
                 AppSpacing.gapMd,

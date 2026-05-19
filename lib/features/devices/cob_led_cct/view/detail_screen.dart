@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -300,7 +300,7 @@ class _CobLedCctDetailScreenState extends State<CobLedCctDetailScreen>
                   label: context.l10n.detailsEditIpTooltip)),
                 PopupMenuItem(value: _MenuAction.delete, child: DetailMenuItemRow(
                   icon: Icons.delete_outline_rounded,
-                  label: context.l10n.smartPlugMenuDelete,
+                  label: context.l10n.deviceMenuDelete,
                   color: AppColors.danger)),
               ],
             ),
@@ -387,9 +387,9 @@ class _CobLedCctDetailScreenState extends State<CobLedCctDetailScreen>
                 child: Column(
                   children: [
                     GestureDetector(onTap: _editIp, child: DetailInfoRow(
-                      label: context.l10n.smartPlugInfoLocalIp, value: d.ipAddress)),
+                      label: context.l10n.deviceInfoLocalIp, value: d.ipAddress)),
                     AppSpacing.gapSm,
-                    DetailInfoRow(label: context.l10n.smartPlugInfoModel,
+                    DetailInfoRow(label: context.l10n.deviceInfoModelLabel,
                       value: d.modelName.isEmpty ? '—' : d.modelName),
                     AppSpacing.gapSm,
                     GestureDetector(onTap: _ctrl.toggleFavorite, child: DetailInfoRow(

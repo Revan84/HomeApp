@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import '../../../../core/i18n/loc.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -29,18 +29,18 @@ class TvInfoSection extends StatelessWidget {
             : l10n.tvStatusDisconnected;
 
     return DetailSectionCard(
-      title: l10n.tvSectionInformations,
+      title: l10n.deviceSectionInformations,
       child: Column(
         children: [
           DetailInfoRow(
-              label: l10n.smartPlugInfoLocalIp, value: device.ipAddress),
+              label: l10n.deviceInfoLocalIp, value: device.ipAddress),
           AppSpacing.gapSm,
           DetailInfoRow(
-            label: l10n.tvModelLabel,
+            label: l10n.deviceInfoModelLabel,
             value: device.modelName.isEmpty ? '—' : device.modelName,
           ),
           AppSpacing.gapSm,
-          DetailInfoRow(label: l10n.smartPlugInfoConnection, value: connLabel),
+          DetailInfoRow(label: l10n.deviceInfoConnection, value: connLabel),
         ],
       ),
     );

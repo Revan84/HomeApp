@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/i18n/loc.dart';
@@ -23,7 +23,7 @@ class StatTableWidget extends StatelessWidget {
       return SizedBox(
         height: 80,
         child: Center(
-          child: Text(context.l10n.statsNoData,
+          child: Text(context.l10n.noData,
               style: const TextStyle(color: AppColors.textSecondary)),
         ),
       );

@@ -82,7 +82,7 @@ class CobLedRgbCard extends StatelessWidget {
             child: BrightnessBar(
               value: brightness,
               color: displayColor,
-              onChanged: onBrightnessDrag,
+              onChanged: onBrightnessDrag, 
             ),
           ),
         ],

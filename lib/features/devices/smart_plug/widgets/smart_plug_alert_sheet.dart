@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import '../../../../core/design_system/dialogs/app_dialog.dart';
 import '../../../../core/design_system/dialogs/app_dialog_chip.dart';
@@ -79,14 +79,14 @@ class _SmartPlugAlertSheetState extends State<SmartPlugAlertSheet> {
     final l10n = context.l10n;
 
     return AppDialog(
-      title: l10n.smartPlugAlertSheetTitle,
+      title: l10n.alertSheetAddTitle,
       onSave: _save,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           // ── Alert type ─────────────────────────────────────────────────
-          _SectionLabel(l10n.smartPlugAlertConditionLabel),
+          _SectionLabel(l10n.alertConditionLabel),
           AppSpacing.gapMd,
           Wrap(
             spacing: AppSpacing.md,
@@ -116,7 +116,7 @@ class _SmartPlugAlertSheetState extends State<SmartPlugAlertSheet> {
           AppSpacing.gapX3l,
 
           // ── Threshold ──────────────────────────────────────────────────
-          _SectionLabel(l10n.smartPlugAlertThresholdLabel),
+          _SectionLabel(l10n.alertThresholdLabel),
           AppSpacing.gapMd,
           TextField(
             controller: _thresholdCtrl,
@@ -145,14 +145,14 @@ class _SmartPlugAlertSheetState extends State<SmartPlugAlertSheet> {
           AppSpacing.gapX3l,
 
           // ── Notifications ──────────────────────────────────────────────
-          _SectionLabel(l10n.smartPlugAlertNotificationsLabel),
+          _SectionLabel(l10n.alertNotificationsLabel),
           AppSpacing.gapMd,
           Wrap(
             spacing: AppSpacing.md,
             runSpacing: AppSpacing.md,
             children: [
               AppDialogChip(
-                label: l10n.smartPlugAlertNotifPush,
+                label: l10n.alertNotifPush,
                 icon: Icons.notifications_rounded,
                 selected: _notifications
                     .contains(PlugAlertNotification.push),
@@ -162,7 +162,7 @@ class _SmartPlugAlertSheetState extends State<SmartPlugAlertSheet> {
                 }),
               ),
               AppDialogChip(
-                label: l10n.smartPlugAlertNotifBanner,
+                label: l10n.alertNotifBanner,
                 icon: Icons.announcement_outlined,
                 selected: _notifications
                     .contains(PlugAlertNotification.banner),
@@ -195,7 +195,7 @@ class _SmartPlugAlertSheetState extends State<SmartPlugAlertSheet> {
     final hint = _condition == PlugAlertCondition.wattsExceeded
         ? l10n.smartPlugAlertThresholdHintWatts
         : l10n.smartPlugAlertThresholdHintCost;
-    return '${l10n.smartPlugAlertThresholdLabel}: $hint';
+    return '${l10n.alertThresholdLabel}: $hint';
   }
 
   void _toggleNotif(PlugAlertNotification notif) {

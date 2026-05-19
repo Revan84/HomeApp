@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/i18n/loc.dart';
@@ -149,7 +149,7 @@ class _TvDetailScreenState extends State<TvDetailScreen>
                       const EdgeInsets.symmetric(horizontal: AppSpacing.x2l),
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text(l10n.tvMenuEdit,
+                    child: Text(l10n.deviceMenuEdit,
                         style: const TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: AppFontSizes.sectionTitle,
@@ -172,7 +172,7 @@ class _TvDetailScreenState extends State<TvDetailScreen>
                 const Divider(indent: 56, height: 1, color: AppColors.border),
                 sheetRow(
                   icon: Icons.router_outlined,
-                  label: l10n.smartPlugInfoLocalIp,
+                  label: l10n.deviceInfoLocalIp,
                   value: d.ipAddress,
                   onTap: () => run(() async {
                     final next = await EquipmentEditDialogs.editLocalIp(
@@ -244,18 +244,18 @@ class _TvDetailScreenState extends State<TvDetailScreen>
                 PopupMenuItem(
                   value: _MenuAction.refresh,
                   child: DetailMenuItemRow(
-                      icon: Icons.refresh_rounded, label: l10n.tvMenuRefresh),
+                      icon: Icons.refresh_rounded, label: l10n.deviceMenuRefresh),
                 ),
                 PopupMenuItem(
                   value: _MenuAction.edit,
                   child: DetailMenuItemRow(
-                      icon: Icons.edit_outlined, label: l10n.tvMenuEdit),
+                      icon: Icons.edit_outlined, label: l10n.deviceMenuEdit),
                 ),
                 PopupMenuItem(
                   value: _MenuAction.delete,
                   child: DetailMenuItemRow(
                     icon: Icons.delete_outline_rounded,
-                    label: l10n.tvMenuDelete,
+                    label: l10n.deviceMenuDelete,
                     color: AppColors.danger,
                   ),
                 ),
@@ -283,7 +283,7 @@ class _TvDetailScreenState extends State<TvDetailScreen>
                     ),
                     AppSpacing.gapXl,
                     if (!isOnline) ...[
-                      DetailOfflineBanner(label: l10n.tvLastKnownValues),
+                      DetailOfflineBanner(label: l10n.deviceLastKnownValues),
                       AppSpacing.gapMd,
                     ],
                     TvSourceCard(

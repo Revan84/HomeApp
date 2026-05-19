@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/i18n/loc.dart';
@@ -357,7 +357,7 @@ class _EquipmentDetailsPageState extends State<EquipmentDetailsPage> {
                 ),
                 AppSpacing.gapX2l,
                 EquipmentInfoGrid(
-                  ipLabel: context.l10n.ipLocalLabel,
+                  ipLabel: context.l10n.deviceInfoLocalIp,
                   ip: equipment.ip,
                   onEditIp: _editLocalIp,
                   typeLabelText: context.l10n.typeLabel,

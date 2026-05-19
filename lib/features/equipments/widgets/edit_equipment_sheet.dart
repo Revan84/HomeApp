@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:front_end/core/i18n/loc.dart';
 import 'package:front_end/core/utils/validators.dart';
 import 'package:provider/provider.dart';
@@ -145,7 +145,7 @@ class _EditEquipmentSheetState extends State<EditEquipmentSheet> {
                 AppSpacing.gapLg,
                 AppTextField(
                   controller: _ipCtrl,
-                  label: l.ipLocalLabel,
+                  label: l.deviceInfoLocalIp,
                   keyboardType: TextInputType.number,
                   validator: _validateIp,
                 ),

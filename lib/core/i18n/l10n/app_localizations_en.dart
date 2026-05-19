@@ -54,9 +54,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editEquipmentTitle => 'Edit device';
 
   @override
-  String get ipLocalLabel => 'Local IP';
-
-  @override
   String get ipLocalHint => 'e.g. 192.168.1.37';
 
   @override
@@ -131,9 +128,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get validationIpInvalidFormat => 'Invalid format (e.g. 192.168.1.37)';
 
   @override
-  String get validationIpInvalid => 'Invalid IP';
-
-  @override
   String get validationNumberInvalid => 'Invalid number';
 
   @override
@@ -166,136 +160,13 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get detailsNetworkTitle => 'Network';
-
-  @override
-  String detailsWifiLine(Object value) {
-    return 'Wi-Fi: $value';
-  }
-
-  @override
-  String detailsPhoneIpLine(Object value) {
-    return 'Phone IP: $value';
-  }
-
-  @override
-  String detailsEquipmentIpLine(Object value) {
-    return 'Device: $value';
-  }
-
-  @override
-  String detailsStatusLine(Object value) {
-    return 'Status: $value';
-  }
-
-  @override
-  String get netGrantWifiAccess => 'Allow Wi-Fi access';
-
-  @override
-  String get netWifiPermissionRequired =>
-      'Permission required to read Wi-Fi (SSID/IP)';
-
-  @override
-  String get netWifiPermissionRequiredPrefix => 'Permission required';
-
-  @override
   String get netStatusOnline => 'Online';
 
   @override
   String get netStatusOffline => 'Offline';
 
   @override
-  String get netStatusNotOnWifi => 'Not on Wi-Fi (or Wi-Fi not detectable)';
-
-  @override
-  String get netStatusNotOnWifiPrefix => 'Not on Wi-Fi';
-
-  @override
-  String get netStatusWrongWifi => 'Wrong Wi-Fi (different network)';
-
-  @override
-  String get netStatusWrongWifiPrefix => 'Wrong Wi-Fi';
-
-  @override
-  String get detailsDeviceInfoTitle => 'Device info';
-
-  @override
-  String detailsDeviceModelLine(Object value) {
-    return 'Model: $value';
-  }
-
-  @override
-  String detailsDeviceGenLine(Object value) {
-    return 'Gen: $value';
-  }
-
-  @override
-  String detailsDeviceFwLine(Object value) {
-    return 'FW: $value';
-  }
-
-  @override
-  String detailsDeviceMacLine(Object value) {
-    return 'MAC: $value';
-  }
-
-  @override
-  String get detailsLiveDataTitle => 'Live data';
-
-  @override
-  String detailsOnOffLine(Object value) {
-    return 'On/Off: $value';
-  }
-
-  @override
-  String detailsPowerLine(Object value) {
-    return 'Power: $value';
-  }
-
-  @override
-  String detailsEnergyLine(Object value) {
-    return 'Energy: $value';
-  }
-
-  @override
-  String detailsRssiLine(Object value) {
-    return 'RSSI: $value';
-  }
-
-  @override
-  String detailsLastUpdatedLine(Object value) {
-    return 'Last update: $value';
-  }
-
-  @override
   String get valueUnknown => '—';
-
-  @override
-  String get valueOn => 'ON';
-
-  @override
-  String get valueOff => 'OFF';
-
-  @override
-  String get actionTurnOn => 'Turn on';
-
-  @override
-  String get actionTurnOff => 'Turn off';
-
-  @override
-  String get areas => 'Rooms';
-
-  @override
-  String get noRoomsYet => 'No rooms yet.';
-
-  @override
-  String get seeAll => 'See all';
-
-  @override
-  String get seeLess => 'See less';
-
-  @override
-  String get addRoomTitle => 'Add a room';
 
   @override
   String get roomNameLabel => 'Room name';
@@ -329,30 +200,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileLogout => 'Logout';
 
   @override
-  String get valueSystemDefault => 'System default';
-
-  @override
-  String get profileTitle => 'Profile';
-
-  @override
   String get languageFrench => 'French';
 
   @override
   String get languageEnglish => 'English';
 
   @override
-  String get detailsConnectionLabel => 'Connection';
-
-  @override
   String get detailsConnectedWifi => 'Connected (Wi-Fi)';
-
-  @override
-  String get detailsChartPlaceholder => 'Chart (placeholder)';
-
-  @override
-  String detailsUpdatedAt(Object value) {
-    return 'Updated: $value';
-  }
 
   @override
   String powerWatts(Object value) {
@@ -366,43 +220,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get valueNo => 'No';
 
   @override
-  String detailsKeyValueLine(Object key, Object value) {
-    return '$key: $value';
-  }
-
-  @override
   String energyWh(Object value) {
     return '$value Wh';
   }
-
-  @override
-  String get detailsHistoryWindow2h => 'Last 2 hours';
-
-  @override
-  String get detailsHistoryWindow24h => 'Last 24 hours';
-
-  @override
-  String get detailsHistoryWindow7d => 'Last 7 days';
-
-  @override
-  String detailsUpdatedAgo(Object ago) {
-    return 'Updated $ago ago';
-  }
-
-  @override
-  String get detailsUpdatedJustNow => 'Updated just now';
-
-  @override
-  String get detailsTrendUp => 'Rising';
-
-  @override
-  String get detailsTrendDown => 'Falling';
-
-  @override
-  String get detailsTrendFlat => 'Stable';
-
-  @override
-  String get detailsDeviceModelRightLabel => 'Model';
 
   @override
   String get detailsEditNameTooltip => 'Edit name';
@@ -414,46 +234,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get detailsSelectTypeTooltip => 'Select type';
 
   @override
-  String get detailsToggleFavoriteTooltip => 'Toggle favorite';
-
-  @override
-  String get detailsConnectionStatusLabel => 'Network status';
-
-  @override
-  String get detailsConnectedWifiShort => 'Connected (Wi-Fi)';
-
-  @override
-  String get detailsDisconnectedShort => 'Disconnected';
-
-  @override
   String get detailsRoomDropdownTooltip => 'Select room';
-
-  @override
-  String get detailsActionDelete => 'Delete';
-
-  @override
-  String get detailsEditNameDialogTitle => 'Edit device name';
-
-  @override
-  String get detailsEditNameHint => 'e.g. Plug';
-
-  @override
-  String get detailsEditIpDialogTitle => 'Edit local IP';
-
-  @override
-  String get detailsEditIpHint => 'e.g. 192.168.1.37';
-
-  @override
-  String get detailsRoomUnknown => 'Unknown room';
-
-  @override
-  String get detailsDeviceModelUnknown => 'Unknown model';
-
-  @override
-  String get detailsChartNoData => 'No data';
-
-  @override
-  String get detailsTimelineTickNow => 'Now';
 
   @override
   String get historyRange1d => '1D';
@@ -499,9 +280,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeWelcomeTitle => 'Welcome';
 
   @override
-  String get homeDefaultAreaGroupName => 'House #1';
-
-  @override
   String homeConnectionSummary(int onlineCount, int offlineCount) {
     return '$onlineCount connected devices · $offlineCount offline';
   }
@@ -510,41 +288,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get favoritesPageTitle => 'Favorites list';
 
   @override
-  String get favoriteRemoveTooltip => 'Remove from favorites';
-
-  @override
-  String get favoritesActiveFilterLabel => 'Active: All';
-
-  @override
-  String get favoritesFilterTooltip => 'Open favorites filters';
-
-  @override
-  String get favoritesAddTooltip => 'Add a favorite';
-
-  @override
   String get favoritesSearchHint => 'Search devices...';
-
-  @override
-  String favoritesOnlineOf(int online, int total) {
-    return '$online / $total online';
-  }
-
-  @override
-  String favoritesRoomsCount(int count) {
-    return '$count rooms';
-  }
 
   @override
   String get roomsSectionTitle => 'Areas';
 
   @override
   String get roomsPageTitle => 'Rooms list';
-
-  @override
-  String get roomsActiveFilterLabel => 'Active: All';
-
-  @override
-  String get roomsFilterTooltip => 'Open room filters';
 
   @override
   String get roomsEmptyState => 'No room groups yet';
@@ -565,38 +315,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get roomsRenameRoomTitle => 'Rename room';
 
   @override
-  String get roomsRoomNameLabel => 'Room name';
-
-  @override
   String get roomsRoomNameHint => 'Ex. Living room, Kitchen';
-
-  @override
-  String get roomsAddGroupTooltip => 'Add a room group';
-
-  @override
-  String get roomsAddRoomTooltip => 'Add a room';
-
-  @override
-  String get roomsRenameGroupTooltip => 'Rename group';
-
-  @override
-  String get roomsDeleteGroupTooltip => 'Delete group';
-
-  @override
-  String get roomsDeleteRoomTooltip => 'Delete room';
-
-  @override
-  String get roomsDeleteGroupTitle => 'Delete group';
-
-  @override
-  String roomsDeleteEmptyGroupMessage(String groupName) {
-    return 'Delete the group “$groupName”?';
-  }
-
-  @override
-  String roomsDeleteGroupWithRoomsMessage(String groupName, int roomCount) {
-    return 'Delete the group “$groupName” and its $roomCount room(s)?';
-  }
 
   @override
   String get roomsDeleteRoomTitle => 'Delete room';
@@ -629,15 +348,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeSelectRoomGroupTitle => 'Select a group';
 
   @override
-  String get roomsNoActiveGroupSelected =>
-      'No active room group. Select one from the Home page.';
-
-  @override
-  String roomsEmptyForGroup(String groupName) {
-    return 'No rooms yet for the group “$groupName”.';
-  }
-
-  @override
   String get roomsSearchHint => 'Search rooms...';
 
   @override
@@ -661,9 +371,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get validationRoomGroupNameRequired => 'Enter a group name';
 
   @override
-  String get roomsAddRoomSheetTitle => 'Add a room';
-
-  @override
   String get roomsCreateNewRoom => 'Create a new room';
 
   @override
@@ -673,9 +380,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String roomsEquipmentCount(int count) {
     return '($count devices)';
   }
-
-  @override
-  String get statsAddWidgetTitle => 'Add widget';
 
   @override
   String get statsAddChart => 'Chart';
@@ -705,24 +409,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statsChartTypeLabel => 'Chart type';
 
   @override
-  String get statsTimeRangeDay => '1 Day';
-
-  @override
-  String get statsTimeRangeWeek => '1 Week';
-
-  @override
-  String get statsTimeRangeMonth => '1 Month';
-
-  @override
-  String get statsTimeRangeYear => '1 Year';
-
-  @override
-  String get statsTimeRangeMax => 'Max';
-
-  @override
-  String get statsNoData => 'No data';
-
-  @override
   String get statsDeviceLabel => 'Device';
 
   @override
@@ -730,9 +416,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statsEditWidget => 'Edit widget';
-
-  @override
-  String get statsDeleteWidget => 'Delete widget';
 
   @override
   String get statsDeleteConfirm => 'Delete this widget?';
@@ -771,16 +454,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tvNameHint => 'e.g. Samsung Living Room';
 
   @override
-  String get tvTestFailed => 'Connection failed';
-
-  @override
-  String get tvDeleteConfirm => 'Delete this TV?';
-
-  @override
   String get tvReconnect => 'Reconnect';
-
-  @override
-  String get tvStatusConnected => 'Connected';
 
   @override
   String get tvStatusConnecting => 'Connecting…';
@@ -789,37 +463,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tvStatusDisconnected => 'Disconnected';
 
   @override
-  String get tvKeyPower => 'Power off';
-
-  @override
-  String get tvKeyVolUp => 'Volume +';
-
-  @override
-  String get tvKeyVolDown => 'Volume −';
-
-  @override
-  String get tvKeyMute => 'Mute';
-
-  @override
-  String get tvKeyUp => 'Up';
-
-  @override
-  String get tvKeyDown => 'Down';
-
-  @override
-  String get tvKeyLeft => 'Left';
-
-  @override
-  String get tvKeyRight => 'Right';
-
-  @override
   String get tvKeyBack => 'Back';
 
   @override
   String get tvKeyHome => 'Home';
-
-  @override
-  String get tvKeyMenu => 'Menu';
 
   @override
   String get tvKeyKeyboard => 'Keyboard';
@@ -828,19 +475,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tvKeySource => 'Source';
 
   @override
-  String get tvAppsTitle => 'Applications:';
-
-  @override
-  String get tvTypeSmartTv => 'Smart TV';
-
-  @override
-  String get tvDefaultModel => 'Samsung';
-
-  @override
   String get tvStatusConnectedWifi => 'Connected (wi-fi)';
-
-  @override
-  String get tvModelLabel => 'Model';
 
   @override
   String get tvModelHint => 'e.g. Samsung 55Q80B';
@@ -858,25 +493,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tvKeySettings => 'Settings';
 
   @override
-  String get tvKeyboardHint => 'Type text to send to TV…';
-
-  @override
   String get tvKeyboardSend => 'Send';
-
-  @override
-  String get addDeviceTypeTitle => 'Device type';
 
   @override
   String get deviceTypePlug => 'Connected plug';
 
   @override
   String get deviceTypeTv => 'Smart TV';
-
-  @override
-  String get deviceTypeCobLedRgb => 'WLED LED Strip';
-
-  @override
-  String get deviceTypeCobLedCct => 'CCT LED Light';
 
   @override
   String get cobLedRgbAddTitle => 'Add WLED device';
@@ -891,42 +514,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cobLedRgbModelHint => 'e.g. WLED v0.14';
 
   @override
-  String get cobLedRgbTestFailed => 'Connection failed';
-
-  @override
-  String get cobLedRgbDeleteConfirm => 'Delete this device?';
-
-  @override
-  String get cobLedRgbBrightnessLabel => 'Brightness';
-
-  @override
-  String get cobLedRgbSpeedLabel => 'Speed';
-
-  @override
-  String get cobLedRgbIntensityLabel => 'Intensity';
-
-  @override
-  String get cobLedRgbColorsTab => 'Colors';
-
-  @override
-  String get cobLedRgbEffectsTab => 'Effects';
-
-  @override
-  String get cobLedRgbScenesLabel => 'Scenes';
-
-  @override
-  String smartPlugDetailTitle(String name) {
-    return '$name';
-  }
-
-  @override
   String get smartPlugSubtitle => 'Smart Plug';
-
-  @override
-  String get smartPlugOnline => 'online';
-
-  @override
-  String get smartPlugOffline => 'offline';
 
   @override
   String get smartPlugKpiUnit => 'W';
@@ -953,64 +541,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get smartPlugSectionTimeline => 'Timeline';
 
   @override
-  String get smartPlugTimelineSubtitle => 'On/off last 24h';
-
-  @override
   String get smartPlugSectionAlerts => 'Alerts';
 
   @override
-  String get smartPlugNoAlerts => 'No threshold configured';
-
-  @override
-  String get smartPlugSectionInformations => 'Informations';
-
-  @override
-  String get smartPlugInfoLocalIp => 'Local IP';
-
-  @override
-  String get smartPlugInfoModel => 'Model';
-
-  @override
-  String get smartPlugInfoConnection => 'Connection';
-
-  @override
-  String get smartPlugWifi => 'Wi-Fi';
-
-  @override
-  String get smartPlugChangeRoom => 'Change';
-
-  @override
-  String get smartPlugMenuRefresh => 'Refresh';
-
-  @override
-  String get smartPlugMenuEdit => 'Edit';
-
-  @override
-  String get smartPlugMenuDelete => 'Delete';
-
-  @override
-  String get smartPlugDeleteConfirmTitle => 'Delete equipment?';
-
-  @override
-  String get smartPlugDeleteConfirmBody => 'This action cannot be undone.';
-
-  @override
-  String get smartPlugDeleteConfirmCancel => 'Cancel';
-
-  @override
-  String get smartPlugDeleteConfirmConfirm => 'Delete';
-
-  @override
-  String get smartPlugLastKnownValues => 'Last known values';
-
-  @override
   String get smartPlugEditKwhPriceTitle => 'Electricity price';
-
-  @override
-  String get smartPlugAlertSheetTitle => 'Add Alert';
-
-  @override
-  String get smartPlugAlertConditionLabel => 'Alert type';
 
   @override
   String get smartPlugAlertConditionWatts => 'Power (W)';
@@ -1019,22 +553,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get smartPlugAlertConditionDailyCost => 'Daily cost (€)';
 
   @override
-  String get smartPlugAlertThresholdLabel => 'Threshold';
-
-  @override
   String get smartPlugAlertThresholdHintWatts => 'e.g. 2500';
 
   @override
   String get smartPlugAlertThresholdHintCost => 'e.g. 1.50';
-
-  @override
-  String get smartPlugAlertNotificationsLabel => 'Notifications';
-
-  @override
-  String get smartPlugAlertNotifPush => 'Push';
-
-  @override
-  String get smartPlugAlertNotifBanner => 'In-app banner';
 
   @override
   String get smartPlugAlertNotifRequired =>
@@ -1044,12 +566,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tvSubtitle => 'Remote Control';
 
   @override
-  String get tvOnline => 'online';
-
-  @override
-  String get tvOffline => 'offline';
-
-  @override
   String get tvSourceActive => 'Source active';
 
   @override
@@ -1057,33 +573,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tvSectionApplications => 'Applications';
-
-  @override
-  String get tvSectionInformations => 'Informations';
-
-  @override
-  String get tvMenuRefresh => 'Refresh';
-
-  @override
-  String get tvMenuEdit => 'Edit';
-
-  @override
-  String get tvMenuDelete => 'Delete';
-
-  @override
-  String get tvDeleteConfirmTitle => 'Delete TV?';
-
-  @override
-  String get tvDeleteConfirmBody => 'This action cannot be undone.';
-
-  @override
-  String get tvDeleteConfirmCancel => 'Cancel';
-
-  @override
-  String get tvDeleteConfirmConfirm => 'Delete';
-
-  @override
-  String get tvLastKnownValues => 'Last known values';
 
   @override
   String get detailSectionLive => 'LIVE';
@@ -1288,22 +777,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addDeviceNameLabel => 'Device Name';
 
   @override
-  String get addDeviceIpLabel => 'Local IP';
-
-  @override
-  String get addDeviceRoomLabel => 'Room';
-
-  @override
-  String get addDeviceRoomOptionalLabel => 'Room (optional)';
-
-  @override
   String get addDeviceModelOptionalLabel => 'Model (optional)';
-
-  @override
-  String get addDeviceFavoriteLabel => 'Favorite';
-
-  @override
-  String get addDeviceAddToFavorites => 'Add to Favorites';
 
   @override
   String get addDeviceConnectedCheck => 'Connected ✓';
@@ -1326,9 +800,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get validationNameRequired => 'Name required';
-
-  @override
-  String get validationIpInvalidRange => 'Invalid IP address';
 
   @override
   String connectionFailedDetail(String error) {
@@ -1373,6 +844,57 @@ class AppLocalizationsEn extends AppLocalizations {
   String cobLedCctDeleteSceneBody(String name) {
     return '\"$name\" will be permanently removed.';
   }
+
+  @override
+  String get deviceInfoLocalIp => 'Local IP';
+
+  @override
+  String get deviceInfoModelLabel => 'Model';
+
+  @override
+  String get deviceInfoConnection => 'Connection';
+
+  @override
+  String get deviceConnectionWifi => 'Wi-Fi';
+
+  @override
+  String get deviceMenuDelete => 'Delete';
+
+  @override
+  String get deviceMenuRefresh => 'Refresh';
+
+  @override
+  String get deviceLastKnownValues => 'Last known values';
+
+  @override
+  String get alertNoneConfigured => 'No threshold configured';
+
+  @override
+  String get alertSheetAddTitle => 'Add Alert';
+
+  @override
+  String get alertConditionLabel => 'Alert type';
+
+  @override
+  String get alertThresholdLabel => 'Threshold';
+
+  @override
+  String get alertNotificationsLabel => 'Notifications';
+
+  @override
+  String get alertNotifPush => 'Push';
+
+  @override
+  String get alertNotifBanner => 'In-app banner';
+
+  @override
+  String get deviceMenuEdit => 'Edit';
+
+  @override
+  String get deviceSectionInformations => 'Informations';
+
+  @override
+  String get deviceTestFailed => 'Connection failed';
 
   @override
   String get fabScanOnWifiComingSoon => 'Wi-Fi scan coming soon';

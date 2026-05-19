@@ -1,4 +1,4 @@
-import 'dart:developer' as dev;
+﻿import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -73,11 +73,11 @@ class _AddCobLedCctSheetState extends State<AddCobLedCctSheet> {
       if (!mounted) return;
       setState(() {
         _testOk = ok;
-        if (!ok) _testError = context.l10n.cobLedRgbTestFailed;
+        if (!ok) _testError = context.l10n.deviceTestFailed;
       });
     } catch (_) {
       if (!mounted) return;
-      setState(() => _testError = context.l10n.cobLedRgbTestFailed);
+      setState(() => _testError = context.l10n.deviceTestFailed);
     } finally {
       if (mounted) setState(() => _testing = false);
     }
@@ -138,7 +138,7 @@ class _AddCobLedCctSheetState extends State<AddCobLedCctSheet> {
                         hint: l.nameHintExample, validator: _validateName),
                     AppSpacing.gapLg,
                     AppTextField(controller: _ipCtrl, keyboardType: TextInputType.number,
-                        label: l.ipLocalLabel, hint: l.ipLocalHint, validator: _validateIp),
+                        label: l.deviceInfoLocalIp, hint: l.ipLocalHint, validator: _validateIp),
                     AppSpacing.gapLg,
                     AppTextField(controller: _modelCtrl,
                         label: l.addDeviceModelOptionalLabel, hint: l.cobLedCctDeviceHint),

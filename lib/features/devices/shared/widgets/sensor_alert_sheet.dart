@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import '../../../../core/i18n/loc.dart';
 import '../../../../core/design_system/dialogs/app_dialog.dart';
@@ -96,7 +96,7 @@ class _SensorAlertSheetState extends State<SensorAlertSheet> {
     final accent = _accentColor;
 
     return AppDialog(
-      title: context.l10n.smartPlugAlertSheetTitle,
+      title: context.l10n.alertSheetAddTitle,
       onSave: _save,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,7 +107,7 @@ class _SensorAlertSheetState extends State<SensorAlertSheet> {
           AppSpacing.gapX3l,
 
           // ── Alert type ─────────────────────────────────────────────────
-          _SectionLabel(context.l10n.smartPlugAlertConditionLabel),
+          _SectionLabel(context.l10n.alertConditionLabel),
           AppSpacing.gapMd,
           Wrap(
             spacing: AppSpacing.md,
@@ -136,7 +136,7 @@ class _SensorAlertSheetState extends State<SensorAlertSheet> {
           AppSpacing.gapX3l,
 
           // ── Threshold ──────────────────────────────────────────────────
-          _SectionLabel(context.l10n.smartPlugAlertThresholdLabel),
+          _SectionLabel(context.l10n.alertThresholdLabel),
           AppSpacing.gapMd,
           TextField(
             controller: _thresholdCtrl,
@@ -159,14 +159,14 @@ class _SensorAlertSheetState extends State<SensorAlertSheet> {
           AppSpacing.gapX3l,
 
           // ── Notifications ──────────────────────────────────────────────
-          _SectionLabel(context.l10n.smartPlugAlertNotificationsLabel),
+          _SectionLabel(context.l10n.alertNotificationsLabel),
           AppSpacing.gapMd,
           Wrap(
             spacing: AppSpacing.md,
             runSpacing: AppSpacing.md,
             children: [
               AppDialogChip(
-                label: context.l10n.smartPlugAlertNotifPush,
+                label: context.l10n.alertNotifPush,
                 icon: Icons.notifications_rounded,
                 selected: _notifications
                     .contains(SensorAlertNotification.push),
@@ -176,7 +176,7 @@ class _SensorAlertSheetState extends State<SensorAlertSheet> {
                 }),
               ),
               AppDialogChip(
-                label: context.l10n.smartPlugAlertNotifBanner,
+                label: context.l10n.alertNotifBanner,
                 icon: Icons.announcement_outlined,
                 selected: _notifications
                     .contains(SensorAlertNotification.banner),

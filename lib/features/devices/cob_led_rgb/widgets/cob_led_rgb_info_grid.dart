@@ -26,7 +26,7 @@ class CobLedRgbInfoGrid extends StatelessWidget {
           if (device.modelName.isNotEmpty) ...[
             Divider(height: AppSpacing.x5l, color: AppColors.border.withValues(alpha: 0.35)),
             _InfoRow(
-              label: context.l10n.tvModelLabel,
+              label: context.l10n.deviceInfoModelLabel,
               value: device.modelName,
             ),
           ],

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/design_system/buttons/app_button.dart';
@@ -319,7 +319,7 @@ class _AddDeviceDialogState extends State<AddDeviceDialog> {
               AppSpacing.gapX2l,
 
               // Local IP
-              AppFormLabel(l10n.addDeviceIpLabel),
+              AppFormLabel(l10n.deviceInfoLocalIp),
               AppSpacing.gapMd,
               AppTextField(
                 controller: _ipCtrl,
@@ -335,7 +335,7 @@ class _AddDeviceDialogState extends State<AddDeviceDialog> {
               AppSpacing.gapX2l,
 
               // Room
-              AppFormLabel(l10n.addDeviceRoomLabel),
+              AppFormLabel(l10n.roomLabel),
               AppSpacing.gapMd,
               AppDropdownField<String?>(
                 value: _selectedRoomId,
@@ -359,7 +359,7 @@ class _AddDeviceDialogState extends State<AddDeviceDialog> {
                 children: [
                   Expanded(
                     child: Text(
-                      l10n.addDeviceFavoriteLabel,
+                      l10n.favorite,
                       style: const TextStyle(
                         fontSize: AppFontSizes.body,
                         color: AppColors.textPrimary,

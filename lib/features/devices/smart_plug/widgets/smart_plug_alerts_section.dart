@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import '../../../../core/design_system/buttons/app_outline_add_button.dart';
 import '../../../../core/i18n/loc.dart';
@@ -54,7 +54,7 @@ class SmartPlugAlertsSection extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  l10n.smartPlugNoAlerts,
+                  l10n.alertNoneConfigured,
                   style: const TextStyle(
                     fontSize: AppFontSizes.body,
                     color: AppColors.textSecondary,

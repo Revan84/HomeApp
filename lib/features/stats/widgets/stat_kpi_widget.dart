@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import '../../../core/i18n/loc.dart';
 import '../../../core/theme/app_colors.dart';
@@ -25,7 +25,7 @@ class StatKpiWidget extends StatelessWidget {
       return SizedBox(
         height: 80,
         child: Center(
-          child: Text(context.l10n.statsNoData,
+          child: Text(context.l10n.noData,
               style: const TextStyle(color: AppColors.textSecondary)),
         ),
       );

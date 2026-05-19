@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/i18n/loc.dart';
@@ -192,7 +192,7 @@ class _ThermometerDetailScreenState extends State<ThermometerDetailScreen>
                   value: _MenuAction.refresh,
                   child: DetailMenuItemRow(
                     icon: Icons.refresh_rounded,
-                    label: context.l10n.smartPlugMenuRefresh,
+                    label: context.l10n.deviceMenuRefresh,
                   ),
                 ),
                 PopupMenuItem(
@@ -206,7 +206,7 @@ class _ThermometerDetailScreenState extends State<ThermometerDetailScreen>
                   value: _MenuAction.delete,
                   child: DetailMenuItemRow(
                     icon: Icons.delete_outline_rounded,
-                    label: context.l10n.smartPlugMenuDelete,
+                    label: context.l10n.deviceMenuDelete,
                     color: AppColors.danger,
                   ),
                 ),
@@ -235,7 +235,7 @@ class _ThermometerDetailScreenState extends State<ThermometerDetailScreen>
 
               // ── 2. Offline banner ────────────────────────────────────────
               if (!isOnline && liveState != null) ...[
-                DetailOfflineBanner(label: context.l10n.smartPlugLastKnownValues),
+                DetailOfflineBanner(label: context.l10n.deviceLastKnownValues),
                 AppSpacing.gapMd,
               ],
 
@@ -388,18 +388,18 @@ class _ThermometerDetailScreenState extends State<ThermometerDetailScreen>
                 child: Column(
                   children: [
                     DetailInfoRow(
-                      label: context.l10n.smartPlugInfoLocalIp,
+                      label: context.l10n.deviceInfoLocalIp,
                       value: e.ip,
                     ),
                     AppSpacing.gapSm,
                     DetailInfoRow(
-                      label: context.l10n.smartPlugInfoModel,
+                      label: context.l10n.deviceInfoModelLabel,
                       value: context.l10n.thermometerTypeLabel,
                     ),
                     AppSpacing.gapSm,
                     DetailInfoRow(
-                      label: context.l10n.smartPlugInfoConnection,
-                      value: isOnline ? context.l10n.smartPlugWifi : context.l10n.netStatusOffline,
+                      label: context.l10n.deviceInfoConnection,
+                      value: isOnline ? context.l10n.deviceConnectionWifi : context.l10n.netStatusOffline,
                     ),
                   ],
                 ),

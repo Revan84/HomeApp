@@ -60,11 +60,11 @@ class _AddCobLedRgbSheetState extends State<AddCobLedRgbSheet> {
       if (!mounted) return;
       setState(() {
         _testOk = ok;
-        if (!ok) _testError = context.l10n.cobLedRgbTestFailed;
+        if (!ok) _testError = context.l10n.deviceTestFailed;
       });
     } catch (_) {
       if (!mounted) return;
-      setState(() => _testError = context.l10n.cobLedRgbTestFailed);
+      setState(() => _testError = context.l10n.deviceTestFailed);
     } finally {
       if (mounted) setState(() => _testing = false);
     }
@@ -122,14 +122,14 @@ class _AddCobLedRgbSheetState extends State<AddCobLedRgbSheet> {
                     AppTextField(
                       controller: _ipCtrl,
                       keyboardType: TextInputType.number,
-                      label: l.ipLocalLabel,
+                      label: l.deviceInfoLocalIp,
                       hint: l.ipLocalHint,
                       validator: _validateIp,
                     ),
                     AppSpacing.gapLg,
                     AppTextField(
                       controller: _modelCtrl,
-                      label: l.tvModelLabel,
+                      label: l.deviceInfoModelLabel,
                       hint: l.cobLedRgbModelHint,
                     ),
                     AppSpacing.gapLg,
