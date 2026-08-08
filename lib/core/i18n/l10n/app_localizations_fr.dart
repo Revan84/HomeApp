@@ -899,4 +899,51 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get fabScanOnWifiComingSoon => 'Scan Wi-Fi bientôt disponible';
+
+  @override
+  String get connectedCameraTypeLabel => 'Caméra IP';
+
+  @override
+  String get connectedCameraAddTitle => 'Ajouter une caméra IP';
+
+  @override
+  String get connectedCameraDeviceHint => 'ex. HomeCam 3';
+
+  @override
+  String get connectedCameraAddDeviceError =>
+      'Impossible d\'ajouter la caméra. Vérifiez l\'IP et réessayez.';
+
+  @override
+  String get connectedCameraOffline => 'Hors ligne';
+
+  @override
+  String get connectedCameraRtspUsernameLabel => 'Identifiant RTSP';
+
+  @override
+  String get connectedCameraRtspPasswordLabel => 'Mot de passe RTSP';
+
+  @override
+  String get connectedCameraStreamSectionTitle => 'Flux en direct';
+
+  @override
+  String get connectedCameraStreamComingSoon =>
+      'Le flux en temps réel sera disponible dans la prochaine mise à jour.';
+
+  @override
+  String get connectedCameraRtspLabel => 'Identifiants caméra';
+
+  @override
+  String get cameraAccountUserLabel => 'Identifiant caméra';
+
+  @override
+  String get cameraAccountUserHint => 'admin';
+
+  @override
+  String get cameraAccountPasswordLabel => 'Mot de passe caméra';
+
+  @override
+  String get cameraAccountPasswordHint => 'Saisir le mot de passe';
+
+  @override
+  String get cameraTestSaveAnyway => 'Enregistrer quand même';
 }

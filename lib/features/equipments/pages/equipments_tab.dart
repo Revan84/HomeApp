@@ -10,12 +10,14 @@ import '../../../core/design_system/tiles/device_list_tile.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../domain/entities/cob_led_cct_device.dart';
 import '../../../domain/entities/cob_led_rgb_device.dart';
+import '../../../domain/entities/connected_camera_device.dart';
 import '../../../domain/entities/equipment.dart';
 import '../../../domain/entities/live_state.dart';
 import '../../../domain/entities/tv_device.dart';
 
 import '../../devices/cob_led_cct/view/detail_screen.dart';
 import '../../devices/cob_led_rgb/pages/cob_led_rgb_details_page.dart';
+import '../../devices/connected_camera/view/detail_screen.dart';
 import '../../devices/hygrometer/view/hygrometer_detail_screen.dart';
 import '../../devices/smart_plug/view/smart_plug_detail_screen.dart';
 import '../../devices/thermometer/view/thermometer_detail_screen.dart';
@@ -83,6 +85,7 @@ enum _DeviceKind {
   cobLedCct,
   thermometer,
   hygrometer,
+  connectedCamera,
 }
 
 // ── Widget ────────────────────────────────────────────────────────────────────
@@ -174,6 +177,14 @@ class _EquipmentsTabState extends State<EquipmentsTab> {
     if (changed == true) _reload();
   }
 
+  Future<void> _onConnectedCameraTap(ConnectedCameraDevice device) async {
+    final changed = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+          builder: (_) => ConnectedCameraDetailScreen(device: device)),
+    );
+    if (changed == true) _reload();
+  }
+
   // ── Type filter menu ─────────────────────────────────────────────────────────
 
   Future<void> _showTypeMenu() async {
@@ -186,6 +197,7 @@ class _EquipmentsTabState extends State<EquipmentsTab> {
       (_DeviceKind.cobLedCct, l10n.cobLedCctTypeLabel),
       (_DeviceKind.thermometer, l10n.thermometerTypeLabel),
       (_DeviceKind.hygrometer, l10n.hygrometerTypeLabel),
+      (_DeviceKind.connectedCamera, l10n.connectedCameraTypeLabel),
     ];
 
     final overlay =
@@ -240,11 +252,13 @@ class _EquipmentsTabState extends State<EquipmentsTab> {
     List<TvDevice> tvs,
     List<CobLedRgbDevice> rgbs,
     List<CobLedCctDevice> ccts,
+    List<ConnectedCameraDevice> cameras,
   ) =>
       equips.where((e) => e.roomId == roomId).length +
       tvs.where((t) => t.roomId == roomId).length +
       rgbs.where((d) => d.roomId == roomId).length +
-      ccts.where((d) => d.roomId == roomId).length;
+      ccts.where((d) => d.roomId == roomId).length +
+      cameras.where((c) => c.roomId == roomId).length;
 
   // ── Build ────────────────────────────────────────────────────────────────────
 
@@ -263,6 +277,7 @@ class _EquipmentsTabState extends State<EquipmentsTab> {
     final allTvDevices = controller.tvDevicesForGroup(groupId);
     final allCobLedRgbDevices = controller.cobLedRgbDevicesForGroup(groupId);
     final allCobLedCctDevices = controller.cobLedCctDevicesForGroup(groupId);
+    final allCameraDevices = controller.cameraDevicesForGroup(groupId);
 
     // ── Header stats ─────────────────────────────────────────────────────────
     final onlineCount =
@@ -270,12 +285,14 @@ class _EquipmentsTabState extends State<EquipmentsTab> {
     final totalCount = allEquipments.length +
         allTvDevices.length +
         allCobLedRgbDevices.length +
-        allCobLedCctDevices.length;
+        allCobLedCctDevices.length +
+        allCameraDevices.length;
     final roomsWithDevices = {
       ...allEquipments.where((e) => e.roomId != null).map((e) => e.roomId!),
       ...allTvDevices.where((t) => t.roomId != null).map((t) => t.roomId!),
       ...allCobLedRgbDevices.where((d) => d.roomId != null).map((d) => d.roomId!),
       ...allCobLedCctDevices.where((d) => d.roomId != null).map((d) => d.roomId!),
+      ...allCameraDevices.where((c) => c.roomId != null).map((c) => c.roomId!),
     }.length;
 
     // ── Apply room filter ────────────────────────────────────────────────────
@@ -291,6 +308,9 @@ class _EquipmentsTabState extends State<EquipmentsTab> {
     var cobLedCctDevices = _selectedRoomId == null
         ? allCobLedCctDevices
         : allCobLedCctDevices.where((d) => d.roomId == _selectedRoomId).toList();
+    var cameraDevices = _selectedRoomId == null
+        ? allCameraDevices
+        : allCameraDevices.where((c) => c.roomId == _selectedRoomId).toList();
 
     // ── Apply kind filter ────────────────────────────────────────────────────
     switch (_selectedKind) {
@@ -298,28 +318,39 @@ class _EquipmentsTabState extends State<EquipmentsTab> {
         tvDevices = [];
         cobLedRgbDevices = [];
         cobLedCctDevices = [];
+        cameraDevices = [];
       case _DeviceKind.tv:
         equipments = [];
         cobLedRgbDevices = [];
         cobLedCctDevices = [];
+        cameraDevices = [];
       case _DeviceKind.cobLedRgb:
         equipments = [];
         tvDevices = [];
         cobLedCctDevices = [];
+        cameraDevices = [];
       case _DeviceKind.cobLedCct:
         equipments = [];
         tvDevices = [];
         cobLedRgbDevices = [];
+        cameraDevices = [];
       case _DeviceKind.thermometer:
         equipments =
             equipments.where((e) => e.type == EquipmentType.shellyHT).toList();
         tvDevices = [];
         cobLedRgbDevices = [];
         cobLedCctDevices = [];
+        cameraDevices = [];
       case _DeviceKind.hygrometer:
         equipments = equipments
             .where((e) => e.type == EquipmentType.hygrometer)
             .toList();
+        tvDevices = [];
+        cobLedRgbDevices = [];
+        cobLedCctDevices = [];
+        cameraDevices = [];
+      case _DeviceKind.connectedCamera:
+        equipments = [];
         tvDevices = [];
         cobLedRgbDevices = [];
         cobLedCctDevices = [];
@@ -340,6 +371,9 @@ class _EquipmentsTabState extends State<EquipmentsTab> {
           .toList();
       cobLedCctDevices = cobLedCctDevices
           .where((d) => d.name.toLowerCase().contains(_searchQuery))
+          .toList();
+      cameraDevices = cameraDevices
+          .where((c) => c.name.toLowerCase().contains(_searchQuery))
           .toList();
     }
 
@@ -405,6 +439,18 @@ class _EquipmentsTabState extends State<EquipmentsTab> {
               : null,
           dotColor: _dotColor(liveCtl.live[cct.id]?.online),
           onTap: () => _onCobLedCctTap(cct),
+        ),
+      for (final cam in cameraDevices)
+        DeviceListTile(
+          icon: Icons.videocam_rounded,
+          iconColor: AppColors.connectedCameraAccent,
+          title: cam.name,
+          subtitle: [
+            if (roomName(cam.roomId).isNotEmpty) roomName(cam.roomId),
+            context.l10n.connectedCameraTypeLabel,
+          ].join(' · '),
+          dotColor: AppColors.textSecondary,
+          onTap: () => _onConnectedCameraTap(cam),
         ),
     ];
 
@@ -479,6 +525,7 @@ class _EquipmentsTabState extends State<EquipmentsTab> {
                   allTvDevices,
                   allCobLedRgbDevices,
                   allCobLedCctDevices,
+                  allCameraDevices,
                 );
                 return AppChip(
                   label: context.l10n.equipmentsRoomItem(room.name, count),

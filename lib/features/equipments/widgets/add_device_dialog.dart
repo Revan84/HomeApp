@@ -13,6 +13,7 @@ import '../../../core/theme/app_font_sizes.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../domain/entities/cob_led_cct_device.dart';
 import '../../../domain/entities/cob_led_rgb_device.dart';
+import '../../../domain/entities/connected_camera_device.dart';
 import '../../../domain/entities/equipment.dart';
 import '../../../domain/entities/tv_device.dart';
 import '../../integrations/shelly/data/dto/shelly_device_info_dto.dart';
@@ -30,6 +31,7 @@ enum _DeviceKind {
   cobLedCct,
   thermometer,
   hygrometer,
+  connectedCamera,
 }
 
 extension _DeviceKindX on _DeviceKind {
@@ -40,6 +42,7 @@ extension _DeviceKindX on _DeviceKind {
         _DeviceKind.cobLedCct => context.l10n.cobLedCctTypeLabel,
         _DeviceKind.thermometer => context.l10n.thermometerTypeLabel,
         _DeviceKind.hygrometer => context.l10n.hygrometerTypeLabel,
+        _DeviceKind.connectedCamera => context.l10n.connectedCameraTypeLabel,
       };
 
   IconData get icon => switch (this) {
@@ -49,10 +52,15 @@ extension _DeviceKindX on _DeviceKind {
         _DeviceKind.cobLedCct => Icons.wb_incandescent_outlined,
         _DeviceKind.thermometer => Icons.thermostat_rounded,
         _DeviceKind.hygrometer => Icons.water_drop_outlined,
+        _DeviceKind.connectedCamera => Icons.videocam_rounded,
       };
 
   /// Whether to show the "Test" connection button.
-  bool get hasTest => this != _DeviceKind.tv;
+  ///
+  /// Why: connectedCamera credentials are entered in the dedicated
+  /// AddConnectedCameraSheet, not here — so no test button in this dialog.
+  bool get hasTest =>
+      this != _DeviceKind.tv && this != _DeviceKind.connectedCamera;
 
   /// Default device name hint.
   String get nameHint => switch (this) {
@@ -62,6 +70,7 @@ extension _DeviceKindX on _DeviceKind {
         _DeviceKind.cobLedCct => 'e.g. Ceiling Light',
         _DeviceKind.thermometer => 'e.g. Bedroom sensor',
         _DeviceKind.hygrometer => 'e.g. Bathroom sensor',
+        _DeviceKind.connectedCamera => 'e.g. Garage camera',
       };
 }
 
@@ -244,6 +253,18 @@ class _AddDeviceDialogState extends State<AddDeviceDialog> {
           ));
         case _DeviceKind.cobLedCct:
           await ctrl.addCobLedCctDevice(CobLedCctDevice(
+            id: id,
+            name: name,
+            ipAddress: ip,
+            roomId: _selectedRoomId,
+            isFavorite: _isFavorite,
+          ));
+        case _DeviceKind.connectedCamera:
+          // Why: the unified dialog has no credential fields — credentials
+          // are collected in AddConnectedCameraSheet. Save with empty
+          // credentials so the device is visible; the user can update them
+          // from the detail screen.
+          await ctrl.addConnectedCameraDevice(ConnectedCameraDevice(
             id: id,
             name: name,
             ipAddress: ip,
