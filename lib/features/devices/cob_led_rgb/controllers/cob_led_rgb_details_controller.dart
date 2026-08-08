@@ -249,6 +249,25 @@ class CobLedRgbDetailsController extends BaseDeviceController {
     notify();
   }
 
+  /// If a template is active, overwrites it with the current device state.
+  /// Called automatically after the user finishes adjusting any parameter.
+  Future<void> saveActiveSceneSnapshot() async {
+    final d = _device;
+    if (d == null || d.activeSceneId.isEmpty) return;
+    final idx = d.scenes.indexWhere((s) => s.id == d.activeSceneId);
+    if (idx < 0) return;
+    final s = _cobLedRgbState;
+    await updateScene(d.scenes[idx].copyWith(
+      colorRed: s.primaryColor.red,
+      colorGreen: s.primaryColor.green,
+      colorBlue: s.primaryColor.blue,
+      brightness: s.brightness,
+      effectId: s.effectId,
+      effectSpeed: s.effectSpeed,
+      effectIntensity: s.effectIntensity,
+    ));
+  }
+
   /// Removes a scene by [sceneId].
   Future<void> deleteScene(String sceneId) async {
     final d = _device;

@@ -1,30 +1,41 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/i18n/loc.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_font_sizes.dart';
 import '../../../../core/theme/app_radius.dart';
 
-/// Dropdown for selecting a WLED effect by index.
-class CobLedCctEffectDropdown extends StatelessWidget {
-  const CobLedCctEffectDropdown({
+/// Shared WLED effect selector used by both COB LED CCT and RGB.
+///
+/// Shows a placeholder text while effects are loading or unavailable, and a
+/// [DropdownButton] once the list is populated.
+class CobLedEffectDropdown extends StatelessWidget {
+  const CobLedEffectDropdown({
     super.key,
     required this.selectedIndex,
     required this.effectNames,
     required this.accentColor,
     required this.onChanged,
+    this.isLoading = false,
   });
 
   final int selectedIndex;
   final List<String> effectNames;
   final Color accentColor;
+
+  /// True while the first effects fetch is in-flight.
+  final bool isLoading;
+
   final void Function(int) onChanged;
 
   @override
   Widget build(BuildContext context) {
     if (effectNames.isEmpty) {
-      return const Text(
-        'Loading effects…',
-        style: TextStyle(
+      return Text(
+        isLoading
+            ? context.l10n.cobLedLoadingEffects
+            : context.l10n.cobLedEffectsUnavailable,
+        style: const TextStyle(
           fontSize: AppFontSizes.body,
           color: AppColors.textSecondary,
         ),

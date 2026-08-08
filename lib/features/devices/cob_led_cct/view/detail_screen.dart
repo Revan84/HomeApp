@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -16,6 +16,9 @@ import '../../../../domain/repositories/cob_led_cct_repository.dart';
 import '../../../../domain/repositories/room_repository.dart';
 import '../../../equipments/dialogs/equipment_edit_dialogs.dart';
 import '../../shared/mixins/device_detail_mixin.dart';
+import '../../shared/widgets/cob_led_active_scene_card.dart';
+import '../../shared/widgets/cob_led_templates_card.dart';
+import '../../shared/widgets/cob_led_wled_section.dart';
 import '../../shared/widgets/detail_header_card.dart';
 import '../../shared/widgets/device_room_card.dart';
 import '../../shared/widgets/detail_info_row.dart';
@@ -23,10 +26,8 @@ import '../../shared/widgets/detail_menu_item_row.dart';
 import '../../shared/widgets/detail_offline_banner.dart';
 import '../../shared/widgets/detail_section_card.dart';
 import '../controllers/controller.dart';
-import '../widgets/active_scene_card.dart';
+import '../widgets/cct_helpers.dart';
 import '../widgets/colour_temp_section.dart';
-import '../widgets/templates_card.dart';
-import '../widgets/wled_section.dart';
 
 enum _MenuAction { refresh, editName, editIp, delete }
 
@@ -52,7 +53,7 @@ class _CobLedCctDetailScreenState extends State<CobLedCctDetailScreen>
   bool _sliderDragging = false;
 
   // Debouncers — fire the API call a short time after each drag frame so the
-  // LED updates in real-time without flooding the device. See [_SliderDebouncer].
+  // LED updates in real-time without flooding the device.
   late final _SliderDebouncer _briDebouncer;
   late final _SliderDebouncer _ctDebouncer;
   late final _SliderDebouncer _speedDebouncer;
@@ -66,8 +67,6 @@ class _CobLedCctDetailScreenState extends State<CobLedCctDetailScreen>
     _ctrl = CobLedCctController(
       repo: context.read<CobLedCctRepository>(),
       roomRepo: context.read<RoomRepository>(),
-      // Why: explicit type guards against silent breakage if the controller's
-      // parameter type ever changes.
       httpClient: context.read<http.Client>(),
       initialDevice: widget.device,
     );
@@ -128,7 +127,6 @@ class _CobLedCctDetailScreenState extends State<CobLedCctDetailScreen>
 
   // ── Save-as-scene / edit-scene sheet ────────────────────────────────────────
 
-  /// Opens the "save as template" bottom sheet.
   Future<void> _showAddSceneDialog() async {
     final name = await _showSceneNameSheet(
       title: context.l10n.cobLedCctSaveAsTemplateTitle,
@@ -146,8 +144,6 @@ class _CobLedCctDetailScreenState extends State<CobLedCctDetailScreen>
     );
   }
 
-  /// Opens an edit sheet for an existing scene and updates it with the current
-  /// device state.
   Future<void> _showEditSceneDialog(CctScene scene) async {
     final s = _ctrl.cctState;
     final summaryParts = [
@@ -170,8 +166,6 @@ class _CobLedCctDetailScreenState extends State<CobLedCctDetailScreen>
     ));
   }
 
-  /// Shared bottom sheet for entering a template name.  Returns the entered
-  /// name, or null if the user cancelled.
   Future<String?> _showSceneNameSheet({
     required String title,
     required String initialName,
@@ -209,9 +203,7 @@ class _CobLedCctDetailScreenState extends State<CobLedCctDetailScreen>
               TextField(
                 controller: nameCtrl,
                 autofocus: true,
-                style: const TextStyle(
-                  color: AppColors.textPrimary,
-                ),
+                style: const TextStyle(color: AppColors.textPrimary),
                 decoration: InputDecoration(
                   hintText: context.l10n.cobLedCctTemplateNameHint,
                   hintStyle: const TextStyle(color: AppColors.textSecondary),
@@ -311,6 +303,7 @@ class _CobLedCctDetailScreenState extends State<CobLedCctDetailScreen>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // ── 1. Header card ───────────────────────────────────────────────
               DetailHeaderCard(
                 isFavorite: d.isFavorite,
                 typeLabel: context.l10n.cobLedCctTypeLabel,
@@ -327,15 +320,21 @@ class _CobLedCctDetailScreenState extends State<CobLedCctDetailScreen>
                 AppSpacing.gapMd,
                 DetailOfflineBanner(label: context.l10n.deviceOfflineBanner),
               ],
+
+              // ── 2. Active scene card ─────────────────────────────────────────
               if (_ctrl.scenes.isNotEmpty) ...[
                 AppSpacing.gapXl,
-                CobLedCctActiveSceneCard(
+                CobLedActiveSceneCard<CctScene>(
                   activeSceneId: d.activeSceneId,
                   scenes: _ctrl.scenes,
                   accentColor: accentColor,
+                  idOf: (scene) => scene.id,
+                  nameOf: (scene) => scene.name,
                   onApply: _ctrl.applyScene,
                 ),
               ],
+
+              // ── 3. Colour temperature + luminosity ───────────────────────────
               AppSpacing.gapXl,
               CobLedCctColourTempSection(
                 value: _colorTempLocal,
@@ -354,33 +353,57 @@ class _CobLedCctDetailScreenState extends State<CobLedCctDetailScreen>
                 },
                 onBrightnessChangeEnd: _briDebouncer.onChangeEnd,
               ),
+
+              // ── 4. WLED Controls ─────────────────────────────────────────────
               AppSpacing.gapXl,
-              CobLedCctWledSection(
+              CobLedWledSection(
                 effectId: s.effectId,
                 effectNames: _ctrl.effectNames,
                 speed: _speedLocal,
                 accentColor: accentColor,
-                onEffectChanged: (id) {
-                  _ctrl.setEffect(id);
-                  _ctrl.saveActiveSceneSnapshot();
-                },
-                onSpeedChangeStart: _onSliderStart,
+                onDragStart: () => setState(() => _sliderDragging = true),
                 onSpeedChanged: (v) {
                   setState(() => _speedLocal = v);
                   _speedDebouncer.onChanged(v);
                 },
-                onSpeedChangeEnd: _speedDebouncer.onChangeEnd,
+                onSpeedEnd: _speedDebouncer.onChangeEnd,
+                onEffectChanged: (id) {
+                  _ctrl.setEffect(id);
+                  _ctrl.saveActiveSceneSnapshot();
+                },
               ),
+
+              // ── 5. Templates ─────────────────────────────────────────────────
               AppSpacing.gapXl,
-              CobLedCctTemplatesCard(
+              CobLedTemplatesCard<CctScene>(
                 scenes: _ctrl.scenes,
                 activeSceneId: d.activeSceneId,
                 accentColor: accentColor,
+                title: context.l10n.cobLedCctTemplatesTitle,
+                emptyLabel: context.l10n.cobLedCctNoTemplates,
+                deleteTitle: context.l10n.cobLedCctDeleteSceneTitle,
+                deleteBody: (name) => context.l10n.cobLedCctDeleteSceneBody(name),
+                idOf: (scene) => scene.id,
+                nameOf: (scene) => scene.name,
+                colorDotOf: (scene) => cctTempToColor(scene.colorTempK),
+                paramsOf: (ctx, scene) {
+                  final l = ctx.l10n;
+                  final parts = <String>[
+                    '${scene.colorTempK} K',
+                    '${(scene.brightness / 255.0 * 100).round()} %',
+                    if (scene.effectId != 0) 'FX ${scene.effectId}',
+                    if (scene.effectId != 0)
+                      '${(scene.effectSpeed / 255.0 * 100).round()} ${l.cobLedCctSpdSuffix}',
+                  ];
+                  return parts.join(' - ');
+                },
                 onAdd: _showAddSceneDialog,
                 onApply: _ctrl.applyScene,
                 onEdit: _showEditSceneDialog,
                 onDelete: (scene) => _ctrl.deleteScene(scene.id),
               ),
+
+              // ── 6. Informations ──────────────────────────────────────────────
               AppSpacing.gapXl,
               DetailSectionCard(
                 title: context.l10n.detailSectionInformations,
@@ -401,6 +424,8 @@ class _CobLedCctDetailScreenState extends State<CobLedCctDetailScreen>
                   ],
                 ),
               ),
+
+              // ── 7. Room picker ───────────────────────────────────────────────
               AppSpacing.gapXl,
               DeviceRoomCard(
                 roomName: _ctrl.roomName(context.l10n.none),
@@ -421,12 +446,6 @@ class _CobLedCctDetailScreenState extends State<CobLedCctDetailScreen>
 // ── Slider debouncer ─────────────────────────────────────────────────────────
 
 /// Coalesces rapid slider drag events into a single trailing API call.
-///
-/// Why: dragging a slider emits onChanged on every frame; without debouncing,
-/// each drag floods the device with HTTP PATCHes. We schedule the API call
-/// [_kDebounce] after the last frame; on release we cancel the pending timer
-/// and fire one final synchronous call so the device ends exactly where the
-/// user dropped.
 class _SliderDebouncer {
   _SliderDebouncer({required this.onSet, required this.onAfterRelease});
   final ValueChanged<double> onSet;

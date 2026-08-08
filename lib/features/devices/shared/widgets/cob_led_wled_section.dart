@@ -4,35 +4,39 @@ import '../../../../core/i18n/loc.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_font_sizes.dart';
 import '../../../../core/theme/app_spacing.dart';
-import '../../shared/widgets/detail_section_card.dart';
-import 'cob_led_rgb_effect_dropdown.dart';
+import 'cob_led_effect_dropdown.dart';
+import 'detail_section_card.dart';
 
-/// Section card exposing WLED-specific controls: effect, speed, and intensity.
+/// Shared WLED controls section for COB LED devices.
 ///
-/// Slider local state lives in the parent — [speed] and [intensity] are the
-/// current display values (0–1). [onDragStart] is called at the start of any
-/// slider interaction so the parent can suppress API-driven resets.
-class CobLedRgbControlsSection extends StatelessWidget {
-  const CobLedRgbControlsSection({
+/// Always renders: effect selector + speed slider.
+/// Renders intensity slider only when [intensity] is non-null (RGB only).
+class CobLedWledSection extends StatelessWidget {
+  const CobLedWledSection({
     super.key,
-    required this.speed,
-    required this.intensity,
     required this.effectId,
     required this.effectNames,
+    required this.speed,
     required this.accentColor,
-    required this.isLoadingEffects,
     required this.onDragStart,
     required this.onSpeedChanged,
     required this.onSpeedEnd,
-    required this.onIntensityChanged,
-    required this.onIntensityEnd,
     required this.onEffectChanged,
+    this.intensity,
+    this.onIntensityChanged,
+    this.onIntensityEnd,
+    this.isLoadingEffects = false,
   });
 
-  final double speed;
-  final double intensity;
   final int effectId;
   final List<String> effectNames;
+
+  /// Normalised speed in [0.0 … 1.0].
+  final double speed;
+
+  /// Normalised intensity in [0.0 … 1.0]. Pass null to hide the slider (CCT).
+  final double? intensity;
+
   final Color accentColor;
 
   /// True while the initial effects fetch is in-flight.
@@ -41,8 +45,8 @@ class CobLedRgbControlsSection extends StatelessWidget {
   final VoidCallback onDragStart;
   final ValueChanged<double> onSpeedChanged;
   final ValueChanged<double> onSpeedEnd;
-  final ValueChanged<double> onIntensityChanged;
-  final ValueChanged<double> onIntensityEnd;
+  final ValueChanged<double>? onIntensityChanged;
+  final ValueChanged<double>? onIntensityEnd;
   final ValueChanged<int> onEffectChanged;
 
   @override
@@ -65,7 +69,7 @@ class CobLedRgbControlsSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Effect dropdown ─────────────────────────────────────────────
+          // ── Effect selector ─────────────────────────────────────────────
           Text(
             context.l10n.cobLedEffectLabel,
             style: const TextStyle(
@@ -74,9 +78,10 @@ class CobLedRgbControlsSection extends StatelessWidget {
             ),
           ),
           AppSpacing.gapXs,
-          CobLedRgbEffectDropdown(
+          CobLedEffectDropdown(
             selectedIndex: effectId,
             effectNames: effectNames,
+            accentColor: accentColor,
             isLoading: isLoadingEffects,
             onChanged: onEffectChanged,
           ),
@@ -93,24 +98,25 @@ class CobLedRgbControlsSection extends StatelessWidget {
             onChangeEnd: onSpeedEnd,
           ),
 
-          AppSpacing.gapMd,
-
-          // ── Intensity slider ────────────────────────────────────────────
-          _SliderRow(
-            label: context.l10n.cobLedIntensityLabel,
-            value: intensity,
-            sliderTheme: sliderTheme,
-            onChangeStart: onDragStart,
-            onChanged: onIntensityChanged,
-            onChangeEnd: onIntensityEnd,
-          ),
+          // ── Intensity slider (RGB only) ──────────────────────────────────
+          if (intensity != null) ...[
+            AppSpacing.gapMd,
+            _SliderRow(
+              label: context.l10n.cobLedIntensityLabel,
+              value: intensity!,
+              sliderTheme: sliderTheme,
+              onChangeStart: onDragStart,
+              onChanged: onIntensityChanged!,
+              onChangeEnd: onIntensityEnd!,
+            ),
+          ],
         ],
       ),
     );
   }
 }
 
-// ── Internal helper ───────────────────────────────────────────────────────────
+// ── Slider row ────────────────────────────────────────────────────────────────
 
 class _SliderRow extends StatelessWidget {
   const _SliderRow({

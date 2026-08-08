@@ -6,32 +6,46 @@ import '../../../../core/i18n/loc.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_font_sizes.dart';
 import '../../../../core/theme/app_spacing.dart';
-import '../../../../domain/entities/cct_scene.dart';
 
-/// Card showing the currently active scene name and a horizontal scene chip list.
+/// Generic active-scene card used by both COB LED CCT and RGB detail screens.
 ///
-/// Layout matches the screen mockup:
-///   [accent dot]  Cozy          ← large scene name
-///                 Scene active  ← secondary label
-///   [Cozy] [Night]              ← tappable scene chips
-class CobLedCctActiveSceneCard extends StatelessWidget {
-  const CobLedCctActiveSceneCard({
+/// Shows the currently active scene name at the top, then a horizontal chip
+/// list so the user can switch scenes with one tap.
+class CobLedActiveSceneCard<T> extends StatelessWidget {
+  const CobLedActiveSceneCard({
     super.key,
     required this.activeSceneId,
     required this.scenes,
     required this.accentColor,
+    required this.idOf,
+    required this.nameOf,
     required this.onApply,
+    this.noActiveLabel,
+    this.activeLabel,
   });
 
   final String activeSceneId;
-  final List<CctScene> scenes;
+  final List<T> scenes;
   final Color accentColor;
-  final void Function(CctScene) onApply;
+
+  /// Extracts the unique id from a scene object.
+  final String Function(T) idOf;
+
+  /// Extracts the display name from a scene object.
+  final String Function(T) nameOf;
+
+  final void Function(T) onApply;
+
+  /// Override for "No active template" text. Defaults to [cobLedCctNoActiveTemplate].
+  final String? noActiveLabel;
+
+  /// Override for "Scene active" suffix. Defaults to [cobLedCctSceneActive].
+  final String? activeLabel;
 
   @override
   Widget build(BuildContext context) {
     final activeScene = activeSceneId.isNotEmpty
-        ? scenes.where((s) => s.id == activeSceneId).firstOrNull
+        ? scenes.where((s) => idOf(s) == activeSceneId).firstOrNull
         : null;
 
     return AppCard(
@@ -46,7 +60,9 @@ class CobLedCctActiveSceneCard extends StatelessWidget {
               TextSpan(
                 children: [
                   TextSpan(
-                    text: activeScene?.name ?? context.l10n.cobLedCctNoActiveTemplate,
+                    text: activeScene != null
+                        ? nameOf(activeScene)
+                        : (noActiveLabel ?? context.l10n.cobLedCctNoActiveTemplate),
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 20,
@@ -54,10 +70,10 @@ class CobLedCctActiveSceneCard extends StatelessWidget {
                     ),
                   ),
                   if (activeScene != null)
-                  
                     TextSpan(
-                      text: '  ${context.l10n.cobLedCctSceneActive}',
-                      style: TextStyle(
+                      text:
+                          '  ${activeLabel ?? context.l10n.cobLedCctSceneActive}',
+                      style: const TextStyle(
                         fontSize: AppFontSizes.md,
                         color: AppColors.textSecondary,
                       ),
@@ -82,8 +98,8 @@ class CobLedCctActiveSceneCard extends StatelessWidget {
                 itemBuilder: (_, i) {
                   final scene = scenes[i];
                   return AppChip(
-                    label: scene.name,
-                    selected: scene.id == activeSceneId,
+                    label: nameOf(scene),
+                    selected: idOf(scene) == activeSceneId,
                     variant: AppChipVariant.outlined,
                     accentColor: accentColor,
                     onTap: () => onApply(scene),
