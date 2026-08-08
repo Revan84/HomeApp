@@ -7,8 +7,7 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../shared/widgets/detail_section_card.dart';
 import 'cob_led_rgb_effect_dropdown.dart';
 
-/// Section card exposing WLED-specific controls: effect, speed, intensity,
-/// and audio-reactive mode.
+/// Section card exposing WLED-specific controls: effect, speed, and intensity.
 ///
 /// Slider local state lives in the parent — [speed] and [intensity] are the
 /// current display values (0–1). [onDragStart] is called at the start of any
@@ -18,43 +17,47 @@ class CobLedRgbControlsSection extends StatelessWidget {
     super.key,
     required this.speed,
     required this.intensity,
-    required this.audioReactive,
     required this.effectId,
     required this.effectNames,
     required this.accentColor,
+    required this.isLoadingEffects,
     required this.onDragStart,
     required this.onSpeedChanged,
     required this.onSpeedEnd,
     required this.onIntensityChanged,
     required this.onIntensityEnd,
-    required this.onAudioChanged,
     required this.onEffectChanged,
   });
 
   final double speed;
   final double intensity;
-  final bool audioReactive;
   final int effectId;
   final List<String> effectNames;
   final Color accentColor;
 
-  /// Called when the user begins dragging any slider.
-  final VoidCallback onDragStart;
+  /// True while the initial effects fetch is in-flight.
+  final bool isLoadingEffects;
 
+  final VoidCallback onDragStart;
   final ValueChanged<double> onSpeedChanged;
   final ValueChanged<double> onSpeedEnd;
   final ValueChanged<double> onIntensityChanged;
   final ValueChanged<double> onIntensityEnd;
-  final ValueChanged<bool> onAudioChanged;
   final ValueChanged<int> onEffectChanged;
 
   @override
   Widget build(BuildContext context) {
     final sliderTheme = SliderTheme.of(context).copyWith(
+      trackHeight: 6,
       activeTrackColor: accentColor,
-      thumbColor: accentColor,
-      inactiveTrackColor: AppColors.border.withValues(alpha: 0.4),
+      inactiveTrackColor: AppColors.border.withValues(alpha: 0.35),
+      thumbColor: Colors.white,
+      thumbShape: const RoundSliderThumbShape(
+        enabledThumbRadius: 10,
+        elevation: 4,
+      ),
       overlayColor: accentColor.withValues(alpha: 0.12),
+      overlayShape: const RoundSliderOverlayShape(overlayRadius: 18),
     );
 
     return DetailSectionCard(
@@ -74,6 +77,7 @@ class CobLedRgbControlsSection extends StatelessWidget {
           CobLedRgbEffectDropdown(
             selectedIndex: effectId,
             effectNames: effectNames,
+            isLoading: isLoadingEffects,
             onChanged: onEffectChanged,
           ),
 
@@ -99,41 +103,6 @@ class CobLedRgbControlsSection extends StatelessWidget {
             onChangeStart: onDragStart,
             onChanged: onIntensityChanged,
             onChangeEnd: onIntensityEnd,
-          ),
-
-          AppSpacing.gapMd,
-
-          // ── Audio reactive toggle ───────────────────────────────────────
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      context.l10n.cobLedAudioReactive,
-                      style: const TextStyle(
-                        fontSize: AppFontSizes.body,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    Text(
-                      context.l10n.cobLedAudioReactiveHint,
-                      style: const TextStyle(
-                        fontSize: AppFontSizes.xs,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Switch(
-                value: audioReactive,
-                activeTrackColor: accentColor,
-                activeThumbColor: Colors.white,
-                onChanged: onAudioChanged,
-              ),
-            ],
           ),
         ],
       ),

@@ -882,6 +882,25 @@
     "@cobLedHexCodeLabel": {
         "description": "Label for the hex color code input field"
     },
+    "cobLedEffectsUnavailable": "Effects unavailable (device offline)",
+    "@cobLedEffectsUnavailable": {
+        "description": "Message shown when the WLED effect list cannot be loaded"
+    },
+    "cobLedRgbNoScenes": "No templates yet",
+    "@cobLedRgbNoScenes": {
+        "description": "Empty state for the RGB templates card"
+    },
+    "cobLedRgbDeleteSceneTitle": "Delete template?",
+    "@cobLedRgbDeleteSceneTitle": {
+        "description": "Confirmation dialog title when deleting an RGB scene"
+    },
+    "cobLedRgbDeleteSceneBody": "\"{name}\" will be deleted.",
+    "@cobLedRgbDeleteSceneBody": {
+        "description": "Confirmation dialog body when deleting an RGB scene",
+        "placeholders": {
+            "name": {}
+        }
+    },
     "cobLedCctSectionColourTemp": "COLOUR TEMPERATURE",
     "@cobLedCctSectionColourTemp": {
         "description": "Section card title: colour temperature controls"

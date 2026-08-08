@@ -11,13 +11,14 @@ import '../../shared/widgets/detail_section_card.dart';
 import '../domain/rgb_color.dart';
 import 'cob_led_rgb_color_wheel.dart';
 
-/// Section card: colour swatch, editable hex field, full-width colour wheel,
-/// and luminosity slider — all in one container (per design spec).
+/// Section card: hex label → editable hex box → colour square, full-width
+/// colour wheel, and luminosity slider — all in one container.
 class CobLedRgbColorSection extends StatefulWidget {
   const CobLedRgbColorSection({
     super.key,
     required this.color,
     required this.rgbColor,
+    required this.accentColor,
     required this.onColorChanged,
     required this.brightness,
     required this.onBrightnessChangeStart,
@@ -27,6 +28,10 @@ class CobLedRgbColorSection extends StatefulWidget {
 
   final Color color;
   final RgbColor rgbColor;
+
+  /// Device accent color — used for the luminosity slider track.
+  final Color accentColor;
+
   final ValueChanged<Color> onColorChanged;
 
   /// Brightness in [0, 1].
@@ -89,62 +94,52 @@ class _CobLedRgbColorSectionState extends State<CobLedRgbColorSection> {
         return;
       } catch (_) {}
     }
-    // Invalid input — revert to current color.
     _hexCtrl.text = widget.rgbColor.hex;
   }
 
   @override
   Widget build(BuildContext context) {
     final color = widget.color;
+    final accent = widget.accentColor;
 
     return DetailSectionCard(
       title: context.l10n.cobLedRgbSectionColor,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Colour swatch + editable hex field ─────────────────────────
+          // ── Row: label | hex box | colour square ───────────────────────
           Row(
             children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: color.withValues(alpha: 0.18),
-                  border: Border.all(color: color, width: 2),
-                ),
-                child: Center(
-                  child: Icon(Icons.circle, color: color, size: 18),
-                ),
-              ),
-              AppSpacing.gapHMd,
               Text(
-                context.l10n.cobLedHexCodeLabel,
+                '${context.l10n.cobLedHexCodeLabel} :',
                 style: const TextStyle(
                   fontSize: AppFontSizes.body,
                   color: AppColors.textSecondary,
                 ),
               ),
               AppSpacing.gapHSm,
-              Expanded(
+              // Fixed-width hex input box
+              SizedBox(
+                width: 96,
                 child: TextField(
                   controller: _hexCtrl,
                   focusNode: _hexFocus,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: AppFontSizes.body,
-                    color: _hexEditing ? color : AppColors.textPrimary,
-                    letterSpacing: 1.4,
+                    color: AppColors.textPrimary,
+                    letterSpacing: 1.2,
                   ),
                   decoration: InputDecoration(
                     isDense: true,
                     contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 8),
+                        horizontal: 8, vertical: 8),
                     filled: true,
                     fillColor: AppColors.surface,
                     border: OutlineInputBorder(
                       borderRadius: AppRadius.mdBR,
-                      borderSide: const BorderSide(color: AppColors.border),
+                      borderSide:
+                          const BorderSide(color: AppColors.border),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: AppRadius.mdBR,
@@ -161,6 +156,20 @@ class _CobLedRgbColorSectionState extends State<CobLedRgbColorSection> {
                     _hexFocus.unfocus();
                     _applyHex(v);
                   },
+                ),
+              ),
+              AppSpacing.gapHSm,
+              // Colour square preview
+              Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: AppRadius.smBR,
+                  border: Border.all(
+                    color: color.withValues(alpha: 0.5),
+                    width: 1,
+                  ),
                 ),
               ),
             ],
@@ -216,11 +225,18 @@ class _CobLedRgbColorSectionState extends State<CobLedRgbColorSection> {
               Expanded(
                 child: SliderTheme(
                   data: SliderTheme.of(context).copyWith(
-                    activeTrackColor: color,
-                    thumbColor: color,
+                    trackHeight: 6,
+                    activeTrackColor: accent,
                     inactiveTrackColor:
-                        AppColors.border.withValues(alpha: 0.4),
-                    overlayColor: color.withValues(alpha: 0.12),
+                        AppColors.border.withValues(alpha: 0.35),
+                    thumbColor: Colors.white,
+                    thumbShape: const RoundSliderThumbShape(
+                      enabledThumbRadius: 10,
+                      elevation: 4,
+                    ),
+                    overlayColor: accent.withValues(alpha: 0.12),
+                    overlayShape:
+                        const RoundSliderOverlayShape(overlayRadius: 18),
                   ),
                   child: Slider(
                     value: widget.brightness,

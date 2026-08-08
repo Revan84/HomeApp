@@ -1,4 +1,6 @@
-﻿/// A WLED-powered LED strip/light device stored locally.
+import 'rgb_scene.dart';
+
+/// A WLED-powered LED strip/light device stored locally.
 class CobLedRgbDevice {
   final String id;
   final String name;
@@ -6,6 +8,8 @@ class CobLedRgbDevice {
   final String? roomId;
   final bool isFavorite;
   final String modelName;
+  final List<RgbScene> scenes;
+  final String activeSceneId;
 
   const CobLedRgbDevice({
     required this.id,
@@ -14,6 +18,8 @@ class CobLedRgbDevice {
     this.roomId,
     this.isFavorite = false,
     this.modelName = '',
+    this.scenes = const [],
+    this.activeSceneId = '',
   });
 
   CobLedRgbDevice copyWith({
@@ -23,7 +29,10 @@ class CobLedRgbDevice {
     String? roomId,
     bool? isFavorite,
     String? modelName,
+    List<RgbScene>? scenes,
+    String? activeSceneId,
     bool clearRoomId = false,
+    bool clearActiveSceneId = false,
   }) {
     return CobLedRgbDevice(
       id: id ?? this.id,
@@ -32,6 +41,9 @@ class CobLedRgbDevice {
       roomId: clearRoomId ? null : (roomId ?? this.roomId),
       isFavorite: isFavorite ?? this.isFavorite,
       modelName: modelName ?? this.modelName,
+      scenes: scenes ?? this.scenes,
+      activeSceneId:
+          clearActiveSceneId ? '' : (activeSceneId ?? this.activeSceneId),
     );
   }
 }

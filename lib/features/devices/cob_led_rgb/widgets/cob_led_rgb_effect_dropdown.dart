@@ -11,17 +11,23 @@ class CobLedRgbEffectDropdown extends StatelessWidget {
     required this.selectedIndex,
     required this.effectNames,
     required this.onChanged,
+    this.isLoading = false,
   });
 
   final int selectedIndex;
   final List<String> effectNames;
   final void Function(int) onChanged;
 
+  /// True while the first network refresh is still in-flight.
+  final bool isLoading;
+
   @override
   Widget build(BuildContext context) {
     if (effectNames.isEmpty) {
       return Text(
-        context.l10n.cobLedLoadingEffects,
+        isLoading
+            ? context.l10n.cobLedLoadingEffects
+            : context.l10n.cobLedEffectsUnavailable,
         style: const TextStyle(
           fontSize: AppFontSizes.body,
           color: AppColors.textSecondary,

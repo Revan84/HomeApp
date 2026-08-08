@@ -1,13 +1,11 @@
-﻿import '../../../../core/device/base_device_controller.dart';
+import '../../../../core/device/base_device_controller.dart';
 import '../../../../domain/entities/cob_led_rgb_device.dart';
+import '../../../../domain/entities/rgb_scene.dart';
 import '../../../../domain/repositories/cob_led_rgb_repository.dart';
 import '../../../integrations/cob_led_rgb/data/cob_led_rgb_api_client.dart';
 import '../domain/rgb_color.dart';
 
 /// Manages all state and side-effects for the COB LED RGB details screen.
-///
-/// Owns the API client calls, device state (on/off, color, effects, presets),
-/// and room data. The UI only displays state and forwards user actions.
 class CobLedRgbDetailsController extends BaseDeviceController {
   final CobLedRgbRepository _cobLedRgbRepo;
   final CobLedRgbApiClient _api;
@@ -36,6 +34,13 @@ class CobLedRgbDetailsController extends BaseDeviceController {
 
   bool _polling = false;
   bool get isPolling => _polling;
+
+  // True after the first refresh() completes (whether or not effects loaded).
+  bool _effectsLoaded = false;
+  bool get effectsLoaded => _effectsLoaded;
+
+  List<RgbScene> get scenes => List.unmodifiable(_device?.scenes ?? const []);
+  String get activeSceneId => _device?.activeSceneId ?? '';
 
   // ---------------------------------------------------------------------------
   // Lifecycle
@@ -86,11 +91,12 @@ class CobLedRgbDetailsController extends BaseDeviceController {
     if (presets.isNotEmpty) _presets = presets;
 
     _polling = false;
+    _effectsLoaded = true;
     notify();
   }
 
   // ---------------------------------------------------------------------------
-  // Controls
+  // Device controls
   // ---------------------------------------------------------------------------
 
   Future<void> togglePower() async {
@@ -102,8 +108,6 @@ class CobLedRgbDetailsController extends BaseDeviceController {
     await _api.setOn(ip, on: newOn);
   }
 
-  /// [color] is already in the domain [RgbColor] format.
-  /// The UI converts Flutter [Color] → [RgbColor] at the boundary.
   Future<void> setColor(RgbColor color) async {
     final ip = _device?.ipAddress;
     if (ip == null) return;
@@ -135,7 +139,6 @@ class CobLedRgbDetailsController extends BaseDeviceController {
     );
   }
 
-  /// [value] is a 0.0–1.0 fraction; converted to 0–255 internally.
   Future<void> setEffectSpeed(double value) async {
     final ip = _device?.ipAddress;
     if (ip == null) return;
@@ -150,7 +153,6 @@ class CobLedRgbDetailsController extends BaseDeviceController {
     );
   }
 
-  /// [value] is a 0.0–1.0 fraction; converted to 0–255 internally.
   Future<void> setEffectIntensity(double value) async {
     final ip = _device?.ipAddress;
     if (ip == null) return;
@@ -175,17 +177,104 @@ class CobLedRgbDetailsController extends BaseDeviceController {
     await refresh();
   }
 
-  Future<void> setAudio(bool enabled) async {
-    final ip = _device?.ipAddress;
-    if (ip == null) return;
-    _cobLedRgbState = _cobLedRgbState.copyWith(audioReactive: enabled);
+  // ---------------------------------------------------------------------------
+  // Scene / template management
+  // ---------------------------------------------------------------------------
+
+  /// Applies [scene] to the device immediately.
+  Future<void> applyScene(RgbScene scene) async {
+    final d = _device;
+    if (d == null) return;
+    final updated = d.copyWith(activeSceneId: scene.id);
+    await _cobLedRgbRepo.update(updated);
+    _device = updated;
+    final color = RgbColor(
+        red: scene.colorRed,
+        green: scene.colorGreen,
+        blue: scene.colorBlue);
+    _cobLedRgbState = _cobLedRgbState.copyWith(
+      primaryColor: color,
+      brightness: scene.brightness,
+      effectId: scene.effectId,
+      effectSpeed: scene.effectSpeed,
+      effectIntensity: scene.effectIntensity,
+    );
     notify();
-    await _api.setAudio(ip, enabled: enabled);
+    final ip = d.ipAddress;
+    await _api.setColor(ip, color);
+    await _api.setBrightness(ip, scene.brightness);
+    await _api.setEffect(ip, scene.effectId,
+        speed: scene.effectSpeed, intensity: scene.effectIntensity);
+  }
+
+  /// Captures the current device state as a new named scene.
+  Future<void> addSceneWithValues({
+    required String name,
+    required int colorRed,
+    required int colorGreen,
+    required int colorBlue,
+    required int brightness,
+    required int effectId,
+    required int effectSpeed,
+    required int effectIntensity,
+  }) async {
+    final d = _device;
+    if (d == null) return;
+    final scene = RgbScene(
+      id: DateTime.now().microsecondsSinceEpoch.toString(),
+      name: name,
+      colorRed: colorRed,
+      colorGreen: colorGreen,
+      colorBlue: colorBlue,
+      brightness: brightness,
+      effectId: effectId,
+      effectSpeed: effectSpeed,
+      effectIntensity: effectIntensity,
+    );
+    final updated = d.copyWith(scenes: [...d.scenes, scene]);
+    await _cobLedRgbRepo.update(updated);
+    _device = updated;
+    notify();
+  }
+
+  /// Overwrites an existing scene (used when editing the active template).
+  Future<void> updateScene(RgbScene scene) async {
+    final d = _device;
+    if (d == null) return;
+    final nextScenes =
+        d.scenes.map((s) => s.id == scene.id ? scene : s).toList();
+    final updated = d.copyWith(scenes: nextScenes);
+    await _cobLedRgbRepo.update(updated);
+    _device = updated;
+    notify();
+  }
+
+  /// Removes a scene by [sceneId].
+  Future<void> deleteScene(String sceneId) async {
+    final d = _device;
+    if (d == null) return;
+    final nextScenes = d.scenes.where((s) => s.id != sceneId).toList();
+    final clearActive = d.activeSceneId == sceneId;
+    final updated = clearActive
+        ? d.copyWith(scenes: nextScenes, clearActiveSceneId: true)
+        : d.copyWith(scenes: nextScenes);
+    await _cobLedRgbRepo.update(updated);
+    _device = updated;
+    notify();
   }
 
   // ---------------------------------------------------------------------------
-  // Editing
+  // Device metadata
   // ---------------------------------------------------------------------------
+
+  Future<void> toggleFavorite() async {
+    final d = _device;
+    if (d == null) return;
+    final updated = d.copyWith(isFavorite: !d.isFavorite);
+    await _cobLedRgbRepo.update(updated);
+    _device = updated;
+    notify();
+  }
 
   Future<void> updateRoom(String? roomId) async {
     final d = _device;

@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 
 /// Storage/transport shape for [CobLedRgbDevice].
 /// Contains only field declarations and Map/JSON conversion.
@@ -10,6 +10,8 @@ class CobLedRgbDeviceDto {
   final String? roomId;
   final bool isFavorite;
   final String modelName;
+  final List<Map<String, dynamic>> scenes;
+  final String activeSceneId;
 
   const CobLedRgbDeviceDto({
     required this.id,
@@ -18,6 +20,8 @@ class CobLedRgbDeviceDto {
     this.roomId,
     this.isFavorite = false,
     this.modelName = '',
+    this.scenes = const [],
+    this.activeSceneId = '',
   });
 
   Map<String, dynamic> toMap() => {
@@ -27,15 +31,22 @@ class CobLedRgbDeviceDto {
         'roomId': roomId,
         'isFavorite': isFavorite,
         'modelName': modelName,
+        'scenes': scenes,
+        'activeSceneId': activeSceneId,
       };
 
-  factory CobLedRgbDeviceDto.fromMap(Map<String, dynamic> m) => CobLedRgbDeviceDto(
+  factory CobLedRgbDeviceDto.fromMap(Map<String, dynamic> m) =>
+      CobLedRgbDeviceDto(
         id: (m['id'] ?? '') as String,
         name: (m['name'] ?? '') as String,
         ipAddress: (m['ipAddress'] ?? '') as String,
         roomId: m['roomId'] as String?,
         isFavorite: (m['isFavorite'] as bool?) ?? false,
         modelName: (m['modelName'] as String?) ?? '',
+        scenes: (m['scenes'] as List<dynamic>?)
+                ?.cast<Map<String, dynamic>>() ??
+            const [],
+        activeSceneId: (m['activeSceneId'] as String?) ?? '',
       );
 
   String toJson() => jsonEncode(toMap());

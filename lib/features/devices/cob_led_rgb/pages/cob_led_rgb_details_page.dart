@@ -1,24 +1,23 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:front_end/core/theme/app_radius.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/i18n/loc.dart';
-import '../../shared/mixins/device_detail_mixin.dart';
-import '../../shared/widgets/device_room_card.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_font_sizes.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/device_accent_scope.dart';
-
+import '../../../../domain/entities/rgb_scene.dart';
 import '../../../../domain/repositories/room_repository.dart';
 import '../../../../domain/repositories/cob_led_rgb_repository.dart';
-
 import '../../../equipments/dialogs/equipment_edit_dialogs.dart';
+import '../../shared/mixins/device_detail_mixin.dart';
 import '../../shared/widgets/detail_header_card.dart';
 import '../../shared/widgets/detail_info_row.dart';
 import '../../shared/widgets/detail_menu_item_row.dart';
 import '../../shared/widgets/detail_offline_banner.dart';
 import '../../shared/widgets/detail_section_card.dart';
+import '../../shared/widgets/device_room_card.dart';
 import '../controllers/cob_led_rgb_details_controller.dart';
 import '../domain/rgb_color.dart';
 import '../../../integrations/cob_led_rgb/data/cob_led_rgb_api_client.dart';
@@ -26,6 +25,7 @@ import '../widgets/cob_led_rgb_active_preset_section.dart';
 import '../widgets/cob_led_rgb_color_section.dart';
 import '../widgets/cob_led_rgb_controls_section.dart';
 import '../widgets/cob_led_rgb_presets_section.dart';
+import '../widgets/cob_led_rgb_templates_card.dart';
 
 /// Converts between domain [RgbColor] and Flutter [Color] at the UI boundary.
 extension _RgbColorToFlutter on RgbColor {
@@ -35,8 +35,6 @@ extension _RgbColorToFlutter on RgbColor {
 RgbColor _flutterColorToRgb(Color c) =>
     RgbColor(red: (c.r * 255).round(), green: (c.g * 255).round(), blue: (c.b * 255).round());
 
-// ─────────────────────────────────────────────────────────────────────────────
-//  Screen
 // ─────────────────────────────────────────────────────────────────────────────
 
 enum _MenuAction { refresh, editName, editIp, delete }
@@ -54,7 +52,6 @@ class _CobLedRgbDetailsPageState extends State<CobLedRgbDetailsPage>
     with DeviceDetailMixin<CobLedRgbDetailsPage> {
   late final CobLedRgbDetailsController _ctrl;
 
-  // Local slider values for smooth drag (decoupled from API calls).
   double _brightnessLocal = 128 / 255.0;
   double _speedLocal = 128 / 255.0;
   double _intensityLocal = 128 / 255.0;
@@ -81,9 +78,7 @@ class _CobLedRgbDetailsPageState extends State<CobLedRgbDetailsPage>
 
   void _onUpdate() {
     if (!mounted) return;
-    if (!_sliderDragging) {
-      _syncSlidersFromState();
-    }
+    if (!_sliderDragging) _syncSlidersFromState();
     setState(() {});
   }
 
@@ -147,6 +142,124 @@ class _CobLedRgbDetailsPageState extends State<CobLedRgbDetailsPage>
     }
   }
 
+  // ── Scene / template management ───────────────────────────────────────────────
+
+  Future<void> _showAddSceneDialog() async {
+    final name = await _showSceneNameSheet(
+      title: context.l10n.cobLedCctSaveAsTemplateTitle,
+      initialName: '',
+    );
+    if (name == null || name.isEmpty || !mounted) return;
+    final s = _ctrl.cobLedRgbState;
+    await _ctrl.addSceneWithValues(
+      name: name,
+      colorRed: s.primaryColor.red,
+      colorGreen: s.primaryColor.green,
+      colorBlue: s.primaryColor.blue,
+      brightness: s.brightness,
+      effectId: s.effectId,
+      effectSpeed: s.effectSpeed,
+      effectIntensity: s.effectIntensity,
+    );
+  }
+
+  Future<void> _showEditSceneDialog(RgbScene scene) async {
+    final s = _ctrl.cobLedRgbState;
+    final name = await _showSceneNameSheet(
+      title: context.l10n.cobLedCctUpdateTemplateTitle,
+      initialName: scene.name,
+      subtitle:
+          '${(s.brightness / 255.0 * 100).round()} % · #${s.primaryColor.hex}',
+    );
+    if (name == null || !mounted) return;
+    await _ctrl.updateScene(scene.copyWith(
+      name: name.isEmpty ? scene.name : name,
+      colorRed: s.primaryColor.red,
+      colorGreen: s.primaryColor.green,
+      colorBlue: s.primaryColor.blue,
+      brightness: s.brightness,
+      effectId: s.effectId,
+      effectSpeed: s.effectSpeed,
+      effectIntensity: s.effectIntensity,
+    ));
+  }
+
+  Future<String?> _showSceneNameSheet({
+    required String title,
+    required String initialName,
+    String? subtitle,
+  }) {
+    final nameCtrl = TextEditingController(text: initialName);
+    const titleStyle = TextStyle(
+      fontWeight: FontWeight.w600,
+      fontSize: AppFontSizes.heading,
+      color: AppColors.textPrimary,
+    );
+    const bodyStyle = TextStyle(
+      fontSize: AppFontSizes.body,
+      color: AppColors.textSecondary,
+    );
+    return showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        final bottom = MediaQuery.viewInsetsOf(ctx).bottom;
+        return Padding(
+          padding: EdgeInsets.fromLTRB(24, 28, 24, bottom + 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: titleStyle),
+              if (subtitle != null) ...[
+                AppSpacing.gapSm,
+                Text(subtitle, style: bodyStyle),
+              ],
+              AppSpacing.gapX2l,
+              TextField(
+                controller: nameCtrl,
+                autofocus: true,
+                style: const TextStyle(color: AppColors.textPrimary),
+                decoration: InputDecoration(
+                  hintText: context.l10n.cobLedCctTemplateNameHint,
+                  hintStyle:
+                      const TextStyle(color: AppColors.textSecondary),
+                ),
+              ),
+              AppSpacing.gapX3l,
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(ctx),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: AppColors.textSecondary,
+                        side: const BorderSide(color: AppColors.border),
+                      ),
+                      child: Text(context.l10n.cancel),
+                    ),
+                  ),
+                  AppSpacing.gapHX2l,
+                  Expanded(
+                    child: FilledButton(
+                      onPressed: () =>
+                          Navigator.pop(ctx, nameCtrl.text.trim()),
+                      child: Text(context.l10n.save),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   // ── Build ─────────────────────────────────────────────────────────────────────
 
   @override
@@ -182,12 +295,12 @@ class _CobLedRgbDetailsPageState extends State<CobLedRgbDetailsPage>
           leading: const BackButton(),
           title: GestureDetector(
             onTap: () {
-              final device = _ctrl.device;
-              if (device == null) return;
+              final d = _ctrl.device;
+              if (d == null) return;
               editDeviceName(
-                currentName: device.name,
+                currentName: d.name,
                 onUpdate: (next) async {
-                  final updated = device.copyWith(name: next);
+                  final updated = d.copyWith(name: next);
                   await context.read<CobLedRgbRepository>().update(updated);
                   await _ctrl.init(widget.deviceId);
                 },
@@ -257,7 +370,7 @@ class _CobLedRgbDetailsPageState extends State<CobLedRgbDetailsPage>
                 toggling: false,
                 lastUpdatedAt: null,
                 onToggle: () => _ctrl.togglePower(),
-                onFavorite: () {},
+                onFavorite: () => _ctrl.toggleFavorite(),
               ),
 
               if (!isOnline) ...[
@@ -282,6 +395,7 @@ class _CobLedRgbDetailsPageState extends State<CobLedRgbDetailsPage>
               CobLedRgbColorSection(
                 color: color,
                 rgbColor: s.primaryColor,
+                accentColor: accentColor,
                 onColorChanged: (c) => _ctrl.setColor(_flutterColorToRgb(c)),
                 brightness: _brightnessLocal,
                 onBrightnessChangeStart: () =>
@@ -300,38 +414,52 @@ class _CobLedRgbDetailsPageState extends State<CobLedRgbDetailsPage>
               CobLedRgbControlsSection(
                 speed: _speedLocal,
                 intensity: _intensityLocal,
-                audioReactive: s.audioReactive,
                 effectId: s.effectId,
                 effectNames: _ctrl.effects,
                 accentColor: accentColor,
+                isLoadingEffects: !_ctrl.effectsLoaded,
                 onDragStart: () => setState(() => _sliderDragging = true),
                 onSpeedChanged: (v) => setState(() => _speedLocal = v),
                 onSpeedEnd: (v) {
                   _sliderDragging = false;
                   _ctrl.setEffectSpeed(v);
                 },
-                onIntensityChanged: (v) => setState(() => _intensityLocal = v),
+                onIntensityChanged: (v) =>
+                    setState(() => _intensityLocal = v),
                 onIntensityEnd: (v) {
                   _sliderDragging = false;
                   _ctrl.setEffectIntensity(v);
                 },
-                onAudioChanged: (v) => _ctrl.setAudio(v),
                 onEffectChanged: (idx) => _ctrl.setEffect(idx),
               ),
 
               AppSpacing.gapXl,
 
-              // ── 5. Templates (WLED presets) ──────────────────────────────────
-              CobLedRgbPresetsSection(
-                presets: _ctrl.presets,
-                activePresetId: s.presetId,
+              // ── 5. Templates (locally stored scenes) ─────────────────────────
+              CobLedRgbTemplatesCard(
+                scenes: _ctrl.scenes,
+                activeSceneId: _ctrl.activeSceneId,
                 accentColor: accentColor,
-                onApply: (preset) => _ctrl.loadPreset(preset.id),
+                onAdd: _showAddSceneDialog,
+                onApply: _ctrl.applyScene,
+                onEdit: _showEditSceneDialog,
+                onDelete: (scene) => _ctrl.deleteScene(scene.id),
               ),
 
               AppSpacing.gapXl,
 
-              // ── 6. Informations ──────────────────────────────────────────────
+              // ── 6. WLED presets ──────────────────────────────────────────────
+              if (_ctrl.presets.isNotEmpty) ...[
+                CobLedRgbPresetsSection(
+                  presets: _ctrl.presets,
+                  activePresetId: s.presetId,
+                  accentColor: accentColor,
+                  onApply: (preset) => _ctrl.loadPreset(preset.id),
+                ),
+                AppSpacing.gapXl,
+              ],
+
+              // ── 7. Informations ──────────────────────────────────────────────
               DetailSectionCard(
                 title: context.l10n.detailSectionInformations,
                 child: Column(
@@ -346,12 +474,16 @@ class _CobLedRgbDetailsPageState extends State<CobLedRgbDetailsPage>
                     AppSpacing.gapSm,
                     DetailInfoRow(
                       label: context.l10n.deviceInfoModelLabel,
-                      value: device.modelName.isEmpty ? '—' : device.modelName,
+                      value: device.modelName.isEmpty
+                          ? '—'
+                          : device.modelName,
                     ),
                     AppSpacing.gapSm,
                     DetailInfoRow(
                       label: context.l10n.detailInfoStatus,
-                      value: isOnline ? context.l10n.netStatusOnline : context.l10n.netStatusOffline,
+                      value: isOnline
+                          ? context.l10n.netStatusOnline
+                          : context.l10n.netStatusOffline,
                     ),
                   ],
                 ),
@@ -359,7 +491,7 @@ class _CobLedRgbDetailsPageState extends State<CobLedRgbDetailsPage>
 
               AppSpacing.gapXl,
 
-              // ── 7. Room picker card ──────────────────────────────────────────
+              // ── 8. Room picker card ──────────────────────────────────────────
               DeviceRoomCard(
                 roomName: _ctrl.roomName(context.l10n.none),
                 onTap: () => pickDeviceRoom(
@@ -375,4 +507,3 @@ class _CobLedRgbDetailsPageState extends State<CobLedRgbDetailsPage>
     );
   }
 }
-

@@ -882,6 +882,25 @@
     "@cobLedHexCodeLabel": {
         "description": "Libellé du champ de saisie du code couleur hexadécimal"
     },
+    "cobLedEffectsUnavailable": "Effets indisponibles (hors ligne)",
+    "@cobLedEffectsUnavailable": {
+        "description": "Message affiché si la liste des effets WLED n'a pas pu être chargée"
+    },
+    "cobLedRgbNoScenes": "Aucun modèle",
+    "@cobLedRgbNoScenes": {
+        "description": "État vide de la carte modèles RGB"
+    },
+    "cobLedRgbDeleteSceneTitle": "Supprimer le modèle ?",
+    "@cobLedRgbDeleteSceneTitle": {
+        "description": "Titre de la boîte de confirmation de suppression d'un modèle RGB"
+    },
+    "cobLedRgbDeleteSceneBody": "\"{name}\" sera supprimé.",
+    "@cobLedRgbDeleteSceneBody": {
+        "description": "Corps de la boîte de confirmation de suppression d'un modèle RGB",
+        "placeholders": {
+            "name": {}
+        }
+    },
     "cobLedCctSectionColourTemp": "TEMPÉRATURE DE COULEUR",
     "@cobLedCctSectionColourTemp": {
         "description": "Titre de carte section : contrôles température de couleur"
