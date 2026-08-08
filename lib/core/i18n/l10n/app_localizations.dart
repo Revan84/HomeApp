@@ -1753,6 +1753,96 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Scan Wi-Fi bientôt disponible'**
   String get fabScanOnWifiComingSoon;
+
+  /// Libellé du type d'appareil pour les caméras IP Avidsen dans la liste des équipements
+  ///
+  /// In fr, this message translates to:
+  /// **'Caméra IP'**
+  String get connectedCameraTypeLabel;
+
+  /// Titre de la feuille pour ajouter une nouvelle caméra IP
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter une caméra IP'**
+  String get connectedCameraAddTitle;
+
+  /// Texte indicatif pour le champ modèle / nom du produit lors de l'ajout d'une caméra
+  ///
+  /// In fr, this message translates to:
+  /// **'ex. HomeCam 3'**
+  String get connectedCameraDeviceHint;
+
+  /// Snackbar d'erreur affiché quand l'ajout d'une caméra IP échoue
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible d\'ajouter la caméra. Vérifiez l\'IP et réessayez.'**
+  String get connectedCameraAddDeviceError;
+
+  /// Badge de statut affiché sur la carte d'accueil quand la caméra est inaccessible
+  ///
+  /// In fr, this message translates to:
+  /// **'Hors ligne'**
+  String get connectedCameraOffline;
+
+  /// Libellé du champ identifiant RTSP dans l'écran de détail
+  ///
+  /// In fr, this message translates to:
+  /// **'Identifiant RTSP'**
+  String get connectedCameraRtspUsernameLabel;
+
+  /// Libellé du champ mot de passe RTSP dans l'écran de détail
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe RTSP'**
+  String get connectedCameraRtspPasswordLabel;
+
+  /// En-tête de section pour la zone de flux en direct dans l'écran de détail de la caméra
+  ///
+  /// In fr, this message translates to:
+  /// **'Flux en direct'**
+  String get connectedCameraStreamSectionTitle;
+
+  /// Texte affiché dans la section flux en direct quand RTSP n'est pas encore implémenté
+  ///
+  /// In fr, this message translates to:
+  /// **'Le flux en temps réel sera disponible dans la prochaine mise à jour.'**
+  String get connectedCameraStreamComingSoon;
+
+  /// En-tête de section pour les identifiants caméra dans l'écran de détail
+  ///
+  /// In fr, this message translates to:
+  /// **'Identifiants caméra'**
+  String get connectedCameraRtspLabel;
+
+  /// Libellé du champ identifiant de connexion caméra
+  ///
+  /// In fr, this message translates to:
+  /// **'Identifiant caméra'**
+  String get cameraAccountUserLabel;
+
+  /// Texte indicatif du champ identifiant caméra
+  ///
+  /// In fr, this message translates to:
+  /// **'admin'**
+  String get cameraAccountUserHint;
+
+  /// Libellé du champ mot de passe caméra
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe caméra'**
+  String get cameraAccountPasswordLabel;
+
+  /// Texte indicatif du champ mot de passe caméra
+  ///
+  /// In fr, this message translates to:
+  /// **'Saisir le mot de passe'**
+  String get cameraAccountPasswordHint;
+
+  /// Lien affiché sous l'erreur de test permettant d'enregistrer sans test réussi
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer quand même'**
+  String get cameraTestSaveAnyway;
 }
 
 class _AppLocalizationsDelegate

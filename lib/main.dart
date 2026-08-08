@@ -17,6 +17,7 @@ import 'domain/repositories/equipment_repository.dart';
 import 'domain/repositories/room_group_repository.dart';
 import 'domain/repositories/room_repository.dart';
 import 'domain/repositories/cob_led_cct_repository.dart';
+import 'domain/repositories/connected_camera_repository.dart';
 import 'domain/repositories/tv_repository.dart';
 import 'domain/repositories/cob_led_rgb_repository.dart';
 
@@ -25,6 +26,8 @@ import 'data/repositories/room_group_repository_local.dart';
 import 'data/repositories/room_repository_local.dart';
 import 'features/integrations/samsung/data/samsung_tv_repository.dart';
 import 'features/integrations/cob_led_cct/data/local_repository.dart';
+import 'features/integrations/cameras/data/camera_api_client_factory.dart';
+import 'features/integrations/connected_camera/data/local_repository.dart';
 import 'features/integrations/cob_led_rgb/data/cob_led_rgb_local_repository.dart';
 
 import 'features/integrations/shelly/data/shelly_live_device_repository.dart';
@@ -82,12 +85,18 @@ class MyApp extends StatelessWidget {
         Provider<CobLedCctRepository>(
           create: (_) => CobLedCctLocalRepository(storage),
         ),
+        Provider<ConnectedCameraRepository>(
+          create: (_) => ConnectedCameraLocalRepository(storage),
+        ),
         Provider<http.Client>(
           create: (_) => http.Client(),
           dispose: (_, client) => client.close(),
         ),
         Provider<HttpClient>(
           create: (context) => HttpClient(context.read<http.Client>()),
+        ),
+        Provider<CameraApiClientFactory>(
+          create: (context) => CameraApiClientFactory(context.read<http.Client>()),
         ),
         Provider<ShellyRpcClient>(
           create: (context) => ShellyRpcClient(context.read<HttpClient>()),
@@ -149,9 +158,11 @@ class MyApp extends StatelessWidget {
             tvRepo: context.read<TvRepository>(),
             cobLedRgbRepo: context.read<CobLedRgbRepository>(),
             cobLedCctRepo: context.read<CobLedCctRepository>(),
+            cameraRepo: context.read<ConnectedCameraRepository>(),
             liveController: context.read<LivePollingController>(),
             rpc: context.read<ShellyRpcClient>(),
             httpClient: context.read<http.Client>(),
+            cameraApiFactory: context.read<CameraApiClientFactory>(),
           ),
         ),
       ],

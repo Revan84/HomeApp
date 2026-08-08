@@ -6,6 +6,7 @@ abstract final class StorageKeys {
   static const tvDevices = 'tv_devices_v1';
   static const cobLedRgbDevices = 'cob_led_rgb_devices_v1';
   static const cobLedCctDevices = 'cob_led_cct_devices_v1';
+  static const connectedCameraDevices = 'connected_camera_devices_v1';
   static const liveHistory = 'live_history_v1';
   static const statsDashboardPrefix = 'stats_dashboard_';
   static const localePreference = 'app_locale';

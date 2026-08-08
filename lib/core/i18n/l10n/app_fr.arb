@@ -1238,5 +1238,65 @@
     "fabScanOnWifiComingSoon": "Scan Wi-Fi bientôt disponible",
     "@fabScanOnWifiComingSoon": {
         "description": "Snackbar affiché quand l'utilisateur appuie sur le FAB de scan Wi-Fi — fonctionnalité non encore implémentée."
+    },
+    "connectedCameraTypeLabel": "Caméra IP",
+    "@connectedCameraTypeLabel": {
+        "description": "Libellé du type d'appareil pour les caméras IP Avidsen dans la liste des équipements"
+    },
+    "connectedCameraAddTitle": "Ajouter une caméra IP",
+    "@connectedCameraAddTitle": {
+        "description": "Titre de la feuille pour ajouter une nouvelle caméra IP"
+    },
+    "connectedCameraDeviceHint": "ex. HomeCam 3",
+    "@connectedCameraDeviceHint": {
+        "description": "Texte indicatif pour le champ modèle / nom du produit lors de l'ajout d'une caméra"
+    },
+    "connectedCameraAddDeviceError": "Impossible d'ajouter la caméra. Vérifiez l'IP et réessayez.",
+    "@connectedCameraAddDeviceError": {
+        "description": "Snackbar d'erreur affiché quand l'ajout d'une caméra IP échoue"
+    },
+    "connectedCameraOffline": "Hors ligne",
+    "@connectedCameraOffline": {
+        "description": "Badge de statut affiché sur la carte d'accueil quand la caméra est inaccessible"
+    },
+    "connectedCameraRtspUsernameLabel": "Identifiant RTSP",
+    "@connectedCameraRtspUsernameLabel": {
+        "description": "Libellé du champ identifiant RTSP dans l'écran de détail"
+    },
+    "connectedCameraRtspPasswordLabel": "Mot de passe RTSP",
+    "@connectedCameraRtspPasswordLabel": {
+        "description": "Libellé du champ mot de passe RTSP dans l'écran de détail"
+    },
+    "connectedCameraStreamSectionTitle": "Flux en direct",
+    "@connectedCameraStreamSectionTitle": {
+        "description": "En-tête de section pour la zone de flux en direct dans l'écran de détail de la caméra"
+    },
+    "connectedCameraStreamComingSoon": "Le flux en temps réel sera disponible dans la prochaine mise à jour.",
+    "@connectedCameraStreamComingSoon": {
+        "description": "Texte affiché dans la section flux en direct quand RTSP n'est pas encore implémenté"
+    },
+    "connectedCameraRtspLabel": "Identifiants caméra",
+    "@connectedCameraRtspLabel": {
+        "description": "En-tête de section pour les identifiants caméra dans l'écran de détail"
+    },
+    "cameraAccountUserLabel": "Identifiant caméra",
+    "@cameraAccountUserLabel": {
+        "description": "Libellé du champ identifiant de connexion caméra"
+    },
+    "cameraAccountUserHint": "admin",
+    "@cameraAccountUserHint": {
+        "description": "Texte indicatif du champ identifiant caméra"
+    },
+    "cameraAccountPasswordLabel": "Mot de passe caméra",
+    "@cameraAccountPasswordLabel": {
+        "description": "Libellé du champ mot de passe caméra"
+    },
+    "cameraAccountPasswordHint": "Saisir le mot de passe",
+    "@cameraAccountPasswordHint": {
+        "description": "Texte indicatif du champ mot de passe caméra"
+    },
+    "cameraTestSaveAnyway": "Enregistrer quand même",
+    "@cameraTestSaveAnyway": {
+        "description": "Lien affiché sous l'erreur de test permettant d'enregistrer sans test réussi"
     }
 }

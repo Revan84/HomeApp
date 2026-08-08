@@ -2,16 +2,20 @@
 import 'package:http/http.dart' as http;
 
 import '../../../data/mappers/equipment_mapper.dart';
+import '../../../domain/entities/camera_brand.dart';
 import '../../../domain/entities/cob_led_cct_device.dart';
+import '../../../domain/entities/connected_camera_device.dart';
 import '../../../domain/entities/equipment.dart';
 import '../../../domain/entities/room.dart';
 import '../../../domain/entities/tv_device.dart';
 import '../../../domain/entities/cob_led_rgb_device.dart';
 import '../../../domain/repositories/cob_led_cct_repository.dart';
+import '../../../domain/repositories/connected_camera_repository.dart';
 import '../../../domain/repositories/equipment_repository.dart';
 import '../../../domain/repositories/room_repository.dart';
 import '../../../domain/repositories/tv_repository.dart';
 import '../../../domain/repositories/cob_led_rgb_repository.dart';
+import '../../integrations/cameras/data/camera_api_client_factory.dart';
 import '../../integrations/cob_led_cct/data/api_client.dart';
 import '../../integrations/samsung/data/samsung_ws_client.dart';
 import '../../integrations/shelly/data/dto/shelly_device_info_dto.dart';
@@ -26,9 +30,11 @@ class EquipmentsController extends ChangeNotifier {
   final TvRepository _tvRepo;
   final CobLedRgbRepository _cobLedRgbRepo;
   final CobLedCctRepository _cobLedCctRepo;
+  final ConnectedCameraRepository _cameraRepo;
   final LivePollingController _liveController;
   final ShellyRpcClient _rpc;
   final http.Client _httpClient;
+  final CameraApiClientFactory _cameraApiFactory;
 
   // Why: API clients are stateless and IP-agnostic — keep one instance per
   // controller instead of allocating one per test tap. Mirrors HomeCctHandler.
@@ -41,17 +47,21 @@ class EquipmentsController extends ChangeNotifier {
     required TvRepository tvRepo,
     required CobLedRgbRepository cobLedRgbRepo,
     required CobLedCctRepository cobLedCctRepo,
+    required ConnectedCameraRepository cameraRepo,
     required LivePollingController liveController,
     required ShellyRpcClient rpc,
     required http.Client httpClient,
+    required CameraApiClientFactory cameraApiFactory,
   })  : _equipmentRepo = equipmentRepo,
         _roomRepo = roomRepo,
         _tvRepo = tvRepo,
         _cobLedRgbRepo = cobLedRgbRepo,
         _cobLedCctRepo = cobLedCctRepo,
+        _cameraRepo = cameraRepo,
         _liveController = liveController,
         _rpc = rpc,
-        _httpClient = httpClient;
+        _httpClient = httpClient,
+        _cameraApiFactory = cameraApiFactory;
 
   bool _loading = true;
   bool get isLoading => _loading;
@@ -73,6 +83,9 @@ class EquipmentsController extends ChangeNotifier {
 
   List<CobLedCctDevice> _cobLedCctDevices = [];
   List<CobLedCctDevice> get cobLedCctDevices => _cobLedCctDevices;
+
+  List<ConnectedCameraDevice> _cameraDevices = [];
+  List<ConnectedCameraDevice> get cameraDevices => _cameraDevices;
 
   bool isSupported(Equipment e) => e.type == EquipmentType.shellyPlusPlugS;
 
@@ -116,6 +129,15 @@ class EquipmentsController extends ChangeNotifier {
     if (groupId == null) return _cobLedCctDevices;
     final roomIds = visibleRoomIds(groupId);
     return _cobLedCctDevices
+        .where((c) => c.roomId == null || roomIds.contains(c.roomId))
+        .toList(growable: false);
+  }
+
+  /// Connected camera devices filtered to visible rooms in the given group.
+  List<ConnectedCameraDevice> cameraDevicesForGroup(String? groupId) {
+    if (groupId == null) return _cameraDevices;
+    final roomIds = visibleRoomIds(groupId);
+    return _cameraDevices
         .where((c) => c.roomId == null || roomIds.contains(c.roomId))
         .toList(growable: false);
   }
@@ -179,6 +201,17 @@ class EquipmentsController extends ChangeNotifier {
     }
   }
 
+  Future<void> addConnectedCameraDevice(ConnectedCameraDevice device) async {
+    try {
+      await _cameraRepo.add(device);
+      await loadAll();
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      rethrow;
+    }
+  }
+
   // ---------------------------------------------------------------------------
   // Connection tests
   // ---------------------------------------------------------------------------
@@ -217,6 +250,25 @@ class EquipmentsController extends ChangeNotifier {
     return _cctApi.testConnection(ip);
   }
 
+  /// Tests IP camera connection using the brand's API client.
+  ///
+  /// [httpApiPort] defaults to 80 — the Reolink HTTP API port for `/api.cgi`.
+  /// This is distinct from the ONVIF port (8000), which is reserved for PR-3.
+  Future<bool> testConnectedCameraConnection({
+    required String ip,
+    required CameraBrand brand,
+    String? username,
+    String? password,
+    int httpApiPort = 80,
+  }) {
+    return _cameraApiFactory.forBrand(brand).testConnection(
+          ip: ip,
+          httpApiPort: httpApiPort,
+          username: username,
+          password: password,
+        );
+  }
+
   // ---------------------------------------------------------------------------
   // Data loading
   // ---------------------------------------------------------------------------
@@ -233,6 +285,7 @@ class EquipmentsController extends ChangeNotifier {
         _tvRepo.loadAll(),
         _cobLedRgbRepo.loadAll(),
         _cobLedCctRepo.loadAll(),
+        _cameraRepo.loadAll(),
       ]);
 
       _allEquipments = results[0] as List<Equipment>;
@@ -240,6 +293,7 @@ class EquipmentsController extends ChangeNotifier {
       _tvDevices = results[2] as List<TvDevice>;
       _cobLedRgbDevices = results[3] as List<CobLedRgbDevice>;
       _cobLedCctDevices = results[4] as List<CobLedCctDevice>;
+      _cameraDevices = results[5] as List<ConnectedCameraDevice>;
 
       final endpoints = _allEquipments
           .where(isSupported)

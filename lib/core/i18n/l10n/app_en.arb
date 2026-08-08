@@ -1238,5 +1238,65 @@
     "fabScanOnWifiComingSoon": "Wi-Fi scan coming soon",
     "@fabScanOnWifiComingSoon": {
         "description": "Snackbar shown when the user taps the FAB to scan for new Wi-Fi devices — feature not yet implemented."
+    },
+    "connectedCameraTypeLabel": "IP Camera",
+    "@connectedCameraTypeLabel": {
+        "description": "Device type label for Avidsen IP cameras in the equipment list"
+    },
+    "connectedCameraAddTitle": "Add IP Camera",
+    "@connectedCameraAddTitle": {
+        "description": "Title of the bottom sheet for adding a new IP camera"
+    },
+    "connectedCameraDeviceHint": "e.g. HomeCam 3",
+    "@connectedCameraDeviceHint": {
+        "description": "Placeholder for the model / product name field when adding a camera"
+    },
+    "connectedCameraAddDeviceError": "Couldn't add the camera. Check the IP and try again.",
+    "@connectedCameraAddDeviceError": {
+        "description": "Error snackbar shown when adding an IP camera fails"
+    },
+    "connectedCameraOffline": "Offline",
+    "@connectedCameraOffline": {
+        "description": "Status badge shown on the home card when the camera is unreachable"
+    },
+    "connectedCameraRtspUsernameLabel": "RTSP Username",
+    "@connectedCameraRtspUsernameLabel": {
+        "description": "Label for the RTSP credential username field in the detail screen"
+    },
+    "connectedCameraRtspPasswordLabel": "RTSP Password",
+    "@connectedCameraRtspPasswordLabel": {
+        "description": "Label for the RTSP credential password field in the detail screen"
+    },
+    "connectedCameraStreamSectionTitle": "Live Stream",
+    "@connectedCameraStreamSectionTitle": {
+        "description": "Section header for the live stream area in the camera detail screen"
+    },
+    "connectedCameraStreamComingSoon": "Real-time stream available in the next update.",
+    "@connectedCameraStreamComingSoon": {
+        "description": "Placeholder shown in the live-stream section when RTSP is not yet implemented"
+    },
+    "connectedCameraRtspLabel": "Camera Credentials",
+    "@connectedCameraRtspLabel": {
+        "description": "Section header for camera credentials in the camera detail screen"
+    },
+    "cameraAccountUserLabel": "Camera Username",
+    "@cameraAccountUserLabel": {
+        "description": "Label for the camera login username field"
+    },
+    "cameraAccountUserHint": "admin",
+    "@cameraAccountUserHint": {
+        "description": "Placeholder for the camera username field"
+    },
+    "cameraAccountPasswordLabel": "Camera Password",
+    "@cameraAccountPasswordLabel": {
+        "description": "Label for the camera login password field"
+    },
+    "cameraAccountPasswordHint": "Enter password",
+    "@cameraAccountPasswordHint": {
+        "description": "Placeholder for the camera password field"
+    },
+    "cameraTestSaveAnyway": "Save anyway",
+    "@cameraTestSaveAnyway": {
+        "description": "Link shown below the test error that lets the user save without a successful test"
     }
 }
