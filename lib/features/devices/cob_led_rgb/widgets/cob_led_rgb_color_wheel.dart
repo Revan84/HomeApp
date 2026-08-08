@@ -3,8 +3,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_radius.dart';
-import '../../../../core/theme/app_spacing.dart';
 
 /// Circular HSV color-picker wheel with a vertical brightness bar.
 /// Mirrors the SmartThings / WLED app color-picker style.
@@ -49,7 +47,8 @@ class _CobLedRgbColorWheelState extends State<CobLedRgbColorWheel> {
 
     final hue = (math.atan2(dy, dx) * 180 / math.pi + 360) % 360;
     final sat = (dist / radius).clamp(0.0, 1.0);
-    _hsv = _hsv.withHue(hue).withSaturation(sat);
+    // Always full value — device brightness controls actual intensity.
+    _hsv = _hsv.withHue(hue).withSaturation(sat).withValue(1.0);
     widget.onColorChanged(_hsv.toColor());
     setState(() {});
   }
@@ -58,38 +57,21 @@ class _CobLedRgbColorWheelState extends State<CobLedRgbColorWheel> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (_, constraints) {
-        final wheelSize = constraints.maxWidth - 44; // leave room for bar
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // Color wheel
-            GestureDetector(
-              onPanStart: (d) =>
-                  _updateFromWheel(d.localPosition, Size(wheelSize, wheelSize)),
-              onPanUpdate: (d) =>
-                  _updateFromWheel(d.localPosition, Size(wheelSize, wheelSize)),
-              onTapDown: (d) =>
-                  _updateFromWheel(d.localPosition, Size(wheelSize, wheelSize)),
-              child: SizedBox(
-                width: wheelSize,
-                height: wheelSize,
-                child: CustomPaint(
-                  painter: _ColorWheelPainter(_hsv),
-                ),
-              ),
+        final size = constraints.maxWidth;
+        return GestureDetector(
+          onPanStart: (d) =>
+              _updateFromWheel(d.localPosition, Size(size, size)),
+          onPanUpdate: (d) =>
+              _updateFromWheel(d.localPosition, Size(size, size)),
+          onTapDown: (d) =>
+              _updateFromWheel(d.localPosition, Size(size, size)),
+          child: SizedBox(
+            width: size,
+            height: size,
+            child: CustomPaint(
+              painter: _ColorWheelPainter(_hsv),
             ),
-            AppSpacing.gapHXl,
-            // Vertical brightness bar
-            Expanded(
-              child: _BrightnessBar(
-                hsv: _hsv,
-                onChanged: (val) {
-                  setState(() => _hsv = _hsv.withValue(val));
-                  widget.onColorChanged(_hsv.toColor());
-                },
-              ),
-            ),
-          ],
+          ),
         );
       },
     );
@@ -164,79 +146,6 @@ class _ColorWheelPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_ColorWheelPainter old) => old.hsv != hsv;
-}
-
-// ---------------------------------------------------------------------------
-// Vertical brightness bar
-// ---------------------------------------------------------------------------
-
-class _BrightnessBar extends StatelessWidget {
-  final HSVColor hsv;
-  final ValueChanged<double> onChanged;
-
-  const _BrightnessBar({required this.hsv, required this.onChanged});
-
-  @override
-  Widget build(BuildContext context) {
-    final fullColor = hsv.withValue(1).withSaturation(hsv.saturation).toColor();
-
-    return LayoutBuilder(
-      builder: (_, constraints) {
-        final height = constraints.maxHeight > 0
-            ? constraints.maxHeight
-            : 160.0;
-        final indicatorY = (1.0 - hsv.value) * height;
-
-        return GestureDetector(
-          onVerticalDragUpdate: (d) =>
-              onChanged((1.0 - (d.localPosition.dy / height)).clamp(0.0, 1.0)),
-          onTapDown: (d) =>
-              onChanged((1.0 - (d.localPosition.dy / height)).clamp(0.0, 1.0)),
-          child: SizedBox(
-            width: 24,
-            height: height,
-            child: Stack(
-              children: [
-                // Gradient track
-                Container(
-                  width: 14,
-                  margin: const EdgeInsets.symmetric(horizontal: 5),
-                  decoration: BoxDecoration(
-                    borderRadius: AppRadius.mdBR,
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [fullColor, Colors.black],
-                    ),
-                  ),
-                ),
-                // Indicator circle
-                Positioned(
-                  top: indicatorY - 10,
-                  left: 0,
-                  right: 0,
-                  child: Center(
-                    child: Container(
-                      width: 20,
-                      height: 20,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: hsv.toColor(),
-                        border: Border.all(
-                          color: AppColors.textPrimary,
-                          width: 2,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
 }
 
 // ---------------------------------------------------------------------------

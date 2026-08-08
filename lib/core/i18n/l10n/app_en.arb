@@ -878,6 +878,10 @@
     "@cobLedRgbSectionColor": {
         "description": "Section card title: color picker"
     },
+    "cobLedHexCodeLabel": "Hexa Code",
+    "@cobLedHexCodeLabel": {
+        "description": "Label for the hex color code input field"
+    },
     "cobLedCctSectionColourTemp": "COLOUR TEMPERATURE",
     "@cobLedCctSectionColourTemp": {
         "description": "Section card title: colour temperature controls"

@@ -25,7 +25,6 @@ import '../../../integrations/cob_led_rgb/data/cob_led_rgb_api_client.dart';
 import '../widgets/cob_led_rgb_active_preset_section.dart';
 import '../widgets/cob_led_rgb_color_section.dart';
 import '../widgets/cob_led_rgb_controls_section.dart';
-import '../widgets/cob_led_rgb_luminosity_section.dart';
 import '../widgets/cob_led_rgb_presets_section.dart';
 
 /// Converts between domain [RgbColor] and Flutter [Color] at the UI boundary.
@@ -279,22 +278,17 @@ class _CobLedRgbDetailsPageState extends State<CobLedRgbDetailsPage>
 
               AppSpacing.gapXl,
 
-              // ── 3. Colour section ────────────────────────────────────────────
+              // ── 3. Colour + luminosity section ──────────────────────────────
               CobLedRgbColorSection(
                 color: color,
                 rgbColor: s.primaryColor,
                 onColorChanged: (c) => _ctrl.setColor(_flutterColorToRgb(c)),
-              ),
-
-              AppSpacing.gapXl,
-
-              // ── 4. Luminosity section ────────────────────────────────────────
-              CobLedRgbLuminositySection(
                 brightness: _brightnessLocal,
-                color: color,
-                onChangeStart: () => setState(() => _sliderDragging = true),
-                onChanged: (v) => setState(() => _brightnessLocal = v),
-                onChangeEnd: (v) {
+                onBrightnessChangeStart: () =>
+                    setState(() => _sliderDragging = true),
+                onBrightnessChanged: (v) =>
+                    setState(() => _brightnessLocal = v),
+                onBrightnessChangeEnd: (v) {
                   _sliderDragging = false;
                   _ctrl.setBrightness(v);
                 },
@@ -302,7 +296,7 @@ class _CobLedRgbDetailsPageState extends State<CobLedRgbDetailsPage>
 
               AppSpacing.gapXl,
 
-              // ── 5. WLED Controls section ─────────────────────────────────────
+              // ── 4. WLED Controls section ─────────────────────────────────────
               CobLedRgbControlsSection(
                 speed: _speedLocal,
                 intensity: _intensityLocal,
@@ -327,7 +321,7 @@ class _CobLedRgbDetailsPageState extends State<CobLedRgbDetailsPage>
 
               AppSpacing.gapXl,
 
-              // ── 6. Templates (WLED presets) ──────────────────────────────────
+              // ── 5. Templates (WLED presets) ──────────────────────────────────
               CobLedRgbPresetsSection(
                 presets: _ctrl.presets,
                 activePresetId: s.presetId,
@@ -337,7 +331,7 @@ class _CobLedRgbDetailsPageState extends State<CobLedRgbDetailsPage>
 
               AppSpacing.gapXl,
 
-              // ── 7. Informations ──────────────────────────────────────────────
+              // ── 6. Informations ──────────────────────────────────────────────
               DetailSectionCard(
                 title: context.l10n.detailSectionInformations,
                 child: Column(
@@ -365,7 +359,7 @@ class _CobLedRgbDetailsPageState extends State<CobLedRgbDetailsPage>
 
               AppSpacing.gapXl,
 
-              // ── 8. Room picker card ──────────────────────────────────────────
+              // ── 7. Room picker card ──────────────────────────────────────────
               DeviceRoomCard(
                 roomName: _ctrl.roomName(context.l10n.none),
                 onTap: () => pickDeviceRoom(

@@ -878,6 +878,10 @@
     "@cobLedRgbSectionColor": {
         "description": "Titre de carte section : sélecteur de couleur"
     },
+    "cobLedHexCodeLabel": "Code Hexa",
+    "@cobLedHexCodeLabel": {
+        "description": "Libellé du champ de saisie du code couleur hexadécimal"
+    },
     "cobLedCctSectionColourTemp": "TEMPÉRATURE DE COULEUR",
     "@cobLedCctSectionColourTemp": {
         "description": "Titre de carte section : contrôles température de couleur"
