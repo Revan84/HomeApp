@@ -651,6 +651,23 @@ class AppLocalizationsFr extends AppLocalizations {
   String get cobLedRgbSectionColor => 'COULEUR';
 
   @override
+  String get cobLedHexCodeLabel => 'Code Hexa';
+
+  @override
+  String get cobLedEffectsUnavailable => 'Effets indisponibles (hors ligne)';
+
+  @override
+  String get cobLedRgbNoScenes => 'Aucun modèle';
+
+  @override
+  String get cobLedRgbDeleteSceneTitle => 'Supprimer le modèle ?';
+
+  @override
+  String cobLedRgbDeleteSceneBody(Object name) {
+    return '\"$name\" sera supprimé.';
+  }
+
+  @override
   String get cobLedCctSectionColourTemp => 'TEMPÉRATURE DE COULEUR';
 
   @override

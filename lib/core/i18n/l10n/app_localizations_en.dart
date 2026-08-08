@@ -650,6 +650,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cobLedRgbSectionColor => 'COLOR';
 
   @override
+  String get cobLedHexCodeLabel => 'Hexa Code';
+
+  @override
+  String get cobLedEffectsUnavailable => 'Effects unavailable (device offline)';
+
+  @override
+  String get cobLedRgbNoScenes => 'No templates yet';
+
+  @override
+  String get cobLedRgbDeleteSceneTitle => 'Delete template?';
+
+  @override
+  String cobLedRgbDeleteSceneBody(Object name) {
+    return '\"$name\" will be deleted.';
+  }
+
+  @override
   String get cobLedCctSectionColourTemp => 'COLOUR TEMPERATURE';
 
   @override

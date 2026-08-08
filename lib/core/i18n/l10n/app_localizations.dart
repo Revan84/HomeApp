@@ -1286,6 +1286,36 @@ abstract class AppLocalizations {
   /// **'COULEUR'**
   String get cobLedRgbSectionColor;
 
+  /// Libellé du champ de saisie du code couleur hexadécimal
+  ///
+  /// In fr, this message translates to:
+  /// **'Code Hexa'**
+  String get cobLedHexCodeLabel;
+
+  /// Message affiché si la liste des effets WLED n'a pas pu être chargée
+  ///
+  /// In fr, this message translates to:
+  /// **'Effets indisponibles (hors ligne)'**
+  String get cobLedEffectsUnavailable;
+
+  /// État vide de la carte modèles RGB
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun modèle'**
+  String get cobLedRgbNoScenes;
+
+  /// Titre de la boîte de confirmation de suppression d'un modèle RGB
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer le modèle ?'**
+  String get cobLedRgbDeleteSceneTitle;
+
+  /// Corps de la boîte de confirmation de suppression d'un modèle RGB
+  ///
+  /// In fr, this message translates to:
+  /// **'\"{name}\" sera supprimé.'**
+  String cobLedRgbDeleteSceneBody(Object name);
+
   /// Titre de carte section : contrôles température de couleur
   ///
   /// In fr, this message translates to:
